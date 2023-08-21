@@ -1,0 +1,24 @@
+import styled from "styled-components";
+import { possible } from "../html";
+
+
+export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
+  cursor: pointer;
+  transition: 0.2s all;
+  background: #121212;
+  padding: 8px 16px;
+  opacity: ${p => p.disabled ? 0.5 : 1};
+  pointer-events: ${p => p.disabled ? 'none' : 'auto'};
+  transform: scale(0.8);
+  transition: all 0.2s cubic-bezier(0,.73,.44,1);
+  background-color: ${p => p.selected ? '#000' : 'transparent'};
+  display: flex;
+  :hover {
+    transform: scale(1);
+    background-color: ${p => p.selected ? '#000' : '#313131'};
+    filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
+  }
+  :active {
+    transform: scale(0.8);
+  }
+`;
