@@ -10,7 +10,7 @@
     "dev:ts": "yarn dev & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",
     "ts:watch": "yarn ts --watch",
-    "postinstall": "npx prisma migrate deploy --schema='./prisma/schema.prisma'"
+    "postinstall": "ls && npx prisma migrate deploy --schema='./prisma/schema.prisma'"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
