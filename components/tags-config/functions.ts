@@ -13,13 +13,27 @@ export const completeCreateTagForSynonym = async (state: State) => {
   switch (apiResponse.status) {
     case 'BAD_REQUEST': return state.notifyError(apiResponse.fields.text);
   }
-  const tagIds = apiResponse.noteTagsCreated.filter(nt => nt.noteId === state.activeNoteId).map(nt => nt.tagId).distinct();
-  const synonymIds = state.appStore.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
+  transact(
+    () => state.store.tagId.$set(apiResponse.tagCreated.id),
+    () => state.appStore.tags.$push(apiResponse.tagCreated),
+    () => state.appStore.noteTags.$push(apiResponse.noteTagsCreated),
+  )
+  state.notifySuccess('Tag created');
+  blurAutocompleteInput(state);
+}
+
+export const completeCreateTag = async (state: State) => {
+  const apiResponse = await trpc.tag.create.mutate({
+    text: state.autocompleteText.trim(),
+  });
+  switch (apiResponse.status) {
+    case 'BAD_REQUEST': return state.notifyError(apiResponse.fields.text);
+  }
   transact(
     () => state.store.$patch({ synonymId: apiResponse.tagCreated.synonymId, tagId: apiResponse.tagCreated.id }),
     () => state.appStore.tags.$push(apiResponse.tagCreated),
     () => state.appStore.noteTags.$push(apiResponse.noteTagsCreated),
-    () => state.appStore.synonymIds.$push(synonymIds),
+    () => state.appStore.synonymIds.$push(apiResponse.tagCreated.synonymId),
   )
   state.notifySuccess('Tag created');
   blurAutocompleteInput(state);

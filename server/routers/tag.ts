@@ -10,6 +10,25 @@ import { TRPCError } from '@trpc/server';
 
 export const tagRouter = router({
 
+  create: procedure
+    .input(z.object({
+      text: z.string(),
+    }))
+    .mutation(async ({ ctx: { userId }, input: { text } }) => {
+
+      // Validation
+      if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
+      const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId } });
+      if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
+
+      // Logic
+      const synonym = await prisma.synonym.create({ data: {} });
+      const tagCreated = await prisma.tag.create({ data: { userId, text, synonymId: synonym.id } });
+      const notesWithTag = await listNotesWithTagText({ userId, tagText: text });
+      const noteTagsCreated = await prisma.$transaction(notesWithTag.map(note => prisma.noteTag.create({ data: { noteId: note.id, tagId: tagCreated.id } })));
+      return { status: 'TAG_CREATED', tagCreated, noteTagsCreated } as const;
+    }),
+
   update: procedure
     .input(z.object({
       tagId: ZodTagId,

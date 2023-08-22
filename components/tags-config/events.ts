@@ -3,6 +3,7 @@ import { useEventHandlerForDocument } from '@/utils/hooks';
 import {
   blurAutocompleteInput,
   completeCreateGroup,
+  completeCreateTag,
   completeCreateTagForGroup,
   completeCreateTagForSynonym,
   completeEditGroupName,
@@ -108,7 +109,9 @@ export const useEvents = (state: ReturnType<typeof useHooks>) => ({
     focusAutocompleteInput(state);
   },
   onAutocompleteInputEnter: async () => {
-    if (state.tagId) {
+    if (!state.synonymId) {
+      await completeCreateTag(state)
+    } else if (state.tagId) {
       await completeEditTag(state)
     } else if (state.autocompleteAction === 'addSynonymsToActiveSynonyms') {
       await completeCreateTagForSynonym(state)

@@ -9,7 +9,8 @@
     "lint": "next lint",
     "dev:ts": "yarn dev & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",
-    "ts:watch": "yarn ts --watch"
+    "ts:watch": "yarn ts --watch",
+    "migrate": "npx prisma migrate dev --skip-seed"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
