@@ -35,6 +35,7 @@ export const customLink: TRPCLink<AppRouter> = () => {
         },
         error(err) {
           observer.error(err);
+          console.error(err);
           if (err?.data?.code === "UNAUTHORIZED") {
             const win: Window = window;
             win.location = '/?session-expired=true';
