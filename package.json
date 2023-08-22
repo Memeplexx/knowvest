@@ -10,7 +10,7 @@
     "dev:ts": "yarn dev & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",
     "ts:watch": "yarn ts --watch",
-    "postinstall": "patch-package"
+    "postinstall": "npx prisma migrate deploy"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -50,7 +50,6 @@
     "next-superjson": "^0.0.4",
     "olik": "1.0.14",
     "olik-react": "1.0.5",
-    "patch-package": "^8.0.0",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
