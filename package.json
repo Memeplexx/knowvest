@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "dev:ts": "yarn dev & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",
     "ts:watch": "yarn ts --watch",
-    "migrate": "npx prisma migrate dev --skip-seed"
+    "migrate": "npx prisma migrate dev --skip-seed",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
