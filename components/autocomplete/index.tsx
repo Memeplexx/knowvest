@@ -7,9 +7,9 @@ import { ForwardedRef, forwardRef } from 'react';
 
 export const Autocomplete = forwardRef(function Autocomplete<Option extends OptionBase>(
   props: Props<Option>,
-  ref: ForwardedRef<AutocompleteHandle>
+  forwardedRef: ForwardedRef<AutocompleteHandle>
 ) {
-  const inputs = useInputs(props, ref);
+  const inputs = useInputs(props, forwardedRef);
   const outputs = useOutputs(inputs);
   const { refs, state } = inputs;
   return (

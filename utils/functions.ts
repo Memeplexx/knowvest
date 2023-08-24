@@ -71,3 +71,9 @@ export const ancestorMatches = (element: EventTarget | null, check: (element: HT
     }
   }
 }
+
+export function pipe<A0, A1>(arg0: A0, arg1: (arg0: A0) => A1): A1;
+export function pipe<A0, A1, A2>(arg0: A0, arg1: (arg0: A0) => A1, arg2: (arg1: A1) => A2): A2;
+export function pipe(arg0: unknown, ...fns: Array<(arg: unknown) => unknown>) {
+  return fns.reduce((prev, curr) => curr(prev), arg0);
+}
