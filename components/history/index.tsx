@@ -9,8 +9,9 @@ import { store } from '@/utils/store';
 export const History = (
   props: Props
 ) => {
-  const state = useHooks(props);
-  const events = defineEvents(state);
+  const hooks = useHooks(props);
+  const events = defineEvents(hooks);
+  const { state } = hooks;
   return (
     <Card
       {...usePropsWithoutFunctions(props)}

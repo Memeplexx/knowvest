@@ -1,10 +1,13 @@
 import { MouseEvent } from "react";
 import { State } from "./constants";
 
-export const defineEvents = (state: State) => ({
-  onClickBackdrop: (e: MouseEvent<HTMLDivElement>) => {
-    if (state.backdropRef.current === e.target) {
-      state.onBackdropClick?.(e);
-    }
-  },
-});
+export const defineEvents = (hooks: State) => {
+  const { props, refs } = hooks;
+  return {
+    onClickBackdrop: (e: MouseEvent<HTMLDivElement>) => {
+      if (refs.backdrop.current === e.target) {
+        props.onBackdropClick?.(e);
+      }
+    },
+  };
+};

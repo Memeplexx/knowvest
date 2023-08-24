@@ -42,21 +42,25 @@ export const useHooks = () => {
 
   const state = store.activePanel.$useState();
 
-  const editorDomElement = useRef<HTMLDivElement>(null);
+  const editor = useRef<HTMLDivElement>(null);
 
-  const codeMirror = useCodeMirror(editorDomElement);
+  const codeMirror = useCodeMirror(editor);
 
   useNoteTagsToTagHighlighter(codeMirror, store.synonymIds);
 
   useActiveNoteIdToCodeMirrorUpdater(codeMirror);
 
   return {
-    mayDeleteNote: mayDeleteNote.$useState(),
-    floating,
-    editorDomElement,
-    codeMirror,
-    ...useContext(NotificationContext)!,
-    ...state,
+    refs: {
+      floating,
+      editor,
+    },
+    state: {
+      ...state,
+      mayDeleteNote: mayDeleteNote.$useState(),
+      codeMirror,
+    },
+    notify: useContext(NotificationContext)!,
   };
 }
 

@@ -5,9 +5,9 @@ import { decide } from '@/utils/functions';
 import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik';
 import { AutocompleteHandle } from '../autocomplete/constants';
-import { Props } from './constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { store } from '@/utils/store';
+import { Props } from './constants';
 
 
 
@@ -154,20 +154,24 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   return {
-    props,
-    floating,
-    containerRef: useForwardedRef(ref),
-    modalRef: useRef<HTMLDivElement>(null),
-    autocompleteRef: useRef<AutocompleteHandle>(null),
-    selectedTagRef: useRef<HTMLDivElement>(null),
-    activeNoteId: store.activeNoteId.$useState(),
-    autocompleteOptions: autocompleteOptions.$useState(),
-    tagsInCustomGroups: tagsInCustomGroups.$useState(),
-    tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
-    autocompleteTitle: autocompleteTitle.$useState(),
-    selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
-    autocompleteDisabled: !!state.groupSynonymId,
+    state: {
+      ...state,
+      activeNoteId: store.activeNoteId.$useState(),
+      autocompleteOptions: autocompleteOptions.$useState(),
+      tagsInCustomGroups: tagsInCustomGroups.$useState(),
+      tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
+      autocompleteTitle: autocompleteTitle.$useState(),
+      selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
+      autocompleteDisabled: !!state.groupSynonymId,
+    },
+    refs: {
+      floating,
+      container: useForwardedRef(ref),
+      modal: useRef<HTMLDivElement>(null),
+      autocomplete: useRef<AutocompleteHandle>(null),
+      selectedTag: useRef<HTMLDivElement>(null),
+    },
     notify,
-    ...state,
+    props,
   };
 }

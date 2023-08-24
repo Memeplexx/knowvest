@@ -1,18 +1,21 @@
 import { State } from "./constants";
 
-export const defineEvents = (props: State) => ({
-  onClickCancel: () => {
-    props.onClose?.();
-  },
-  onClickConfirm: () => {
-    props.onClose?.();
-  },
-  onMouseLeaveButton: () => {
-    props.setSelection('none');
-  },
-  onCloseComplete: () => {
-    if (props.selection === 'confirm') {
-      props.onConfirm?.();
+export const defineEvents = (hooks: State) => {
+  const { props, state } = hooks;
+  return {
+    onClickCancel: () => {
+      props.onClose?.();
+    },
+    onClickConfirm: () => {
+      props.onClose?.();
+    },
+    onMouseLeaveButton: () => {
+      state.set({ selection: 'none' });
+    },
+    onCloseComplete: () => {
+      if (state.selection === 'confirm') {
+        props.onConfirm?.();
+      }
     }
-  }
-})
+  };
+}

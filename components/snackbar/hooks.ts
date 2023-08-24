@@ -1,11 +1,11 @@
 import { ReferenceType, useFloating } from "@floating-ui/react";
-import { ForwardedRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Props, defaultProps, initialState } from "./constants";
-import { useForwardedRef, usePropsWithDefaults, useRecord } from "@/utils/hooks";
+import { usePropsWithDefaults, useRecord } from "@/utils/hooks";
 
 
 
-export const useHooks = (incomingProps: Props, ref: ForwardedRef<HTMLElement>) => {
+export const useHooks = (incomingProps: Props) => {
 
   const props = usePropsWithDefaults(incomingProps, defaultProps);
 
@@ -43,9 +43,8 @@ export const useHooks = (incomingProps: Props, ref: ForwardedRef<HTMLElement>) =
   }, [props, set]);
 
   return {
-    floating,
-    containerRef: useForwardedRef(ref),
-    ...props,
-    ...state,
+    refs: { floating },
+    props,
+    state,
   }
 }

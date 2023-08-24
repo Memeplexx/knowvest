@@ -13,8 +13,9 @@ import { store } from '@/utils/store';
 export const Active = (
   props: HTMLAttributes<HTMLDivElement>
 ) => {
-  const state = useHooks();
-  const events = useEvents(state);
+  const inputs = useHooks();
+  const events = useEvents(inputs);
+  const { state, refs } = inputs;
   return (
     <Card
       {...props}
@@ -32,12 +33,12 @@ export const Active = (
               <IconButton
                 children={<SettingsIcon />}
                 onClick={events.onClickSettingsButton}
-                ref={state.floating.refs.setReference}
+                ref={refs.floating.refs.setReference}
               />
               <PopupOptions
                 showIf={state.showOptions}
-                ref={state.floating.refs.setFloating}
-                style={state.floating.floatingStyles}
+                ref={refs.floating.refs.setFloating}
+                style={refs.floating.floatingStyles}
                 children={
                   <>
                     <PopupOption
@@ -85,7 +86,7 @@ export const Active = (
           children={
             <>
               <TextEditor
-                ref={state.editorDomElement}
+                ref={refs.editor}
                 onBlur={events.onBlurTextEditor}
               />
               <SelectionOptions

@@ -2,9 +2,7 @@ export type Props = {
   $show: boolean
 };
 
-export const initialState = {
-  navbar: {
-    showOptions: false,
-    showDialog: false,
-  },
+export const navBarInitialState = {
+  showOptions: false,
+  showDialog: false,
 };

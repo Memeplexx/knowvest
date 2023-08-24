@@ -20,8 +20,9 @@ export const Tags = forwardRef(function Tags(
   props: HTMLAttributes<HTMLDivElement>,
   ref: ForwardedRef<HTMLElement>
 ) {
-  const state = useHooks(ref);
-  const events = useEvents(state);
+  const hooks = useHooks(ref);
+  const events = useEvents(hooks);
+  const { state, refs } = hooks;
   return (
     <>
       <TagsConfig
@@ -32,7 +33,7 @@ export const Tags = forwardRef(function Tags(
         {...props}
         title='Tags for active note'
         $themeType='light'
-        ref={state.containerRef}
+        ref={refs.container}
         actions={
           <IconButton
             children={<SettingsIcon />}

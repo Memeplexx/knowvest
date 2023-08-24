@@ -8,8 +8,9 @@ export const Card = forwardRef(function Card(
   props: CardProps,
   ref: ForwardedRef<HTMLElement>
 ) {
-  const state = useHooks(ref);
-  const events = useEvents(state);
+  const hooks = useHooks(ref);
+  const events = useEvents(hooks);
+  const { refs } = hooks;
   return (
     <Wrapper
       {...props}
@@ -18,7 +19,7 @@ export const Card = forwardRef(function Card(
         <>
           {(props.title || props.actions) && (
             <Header
-              ref={state.headEl}
+              ref={refs.head}
               children={
                 <>
                   {props.title}
@@ -28,7 +29,7 @@ export const Card = forwardRef(function Card(
             />
           )}
           <Body 
-            ref={state.bodyEl}
+            ref={refs.body}
             children={props.body}
             onScroll={events.onBodyScroll}
           />

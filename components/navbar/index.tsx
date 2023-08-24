@@ -7,11 +7,12 @@ import { Props } from './constants';
 
 export const Navbar = (props: Props) => {
   const hooks = useHooks();
-  const events = useEvents(hooks);
+  const events = useEvents();
+  const { state, refs } = hooks;
   return (
     <>
       <SearchDialog
-        show={hooks.showDialog}
+        show={state.showDialog}
         onHide={events.onHideDialog}
       />
       <Wrapper
@@ -33,15 +34,15 @@ export const Navbar = (props: Props) => {
                     onClick={events.onClickSearchButton}
                   />
                   <UserButton
-                    src={hooks.session?.user?.image ?? ''}
+                    src={state.session?.user?.image ?? ''}
                     alt='user image'
-                    ref={hooks.floating.refs.setReference}
+                    ref={refs.floating.refs.setReference}
                     onClick={events.onClickUserButton}
                   />
                   <PopupOptions
-                    showIf={hooks.showOptions}
-                    ref={hooks.showOptions ? hooks.floating.refs.setFloating : null}
-                    style={hooks.floating.floatingStyles}
+                    showIf={state.showOptions}
+                    ref={state.showOptions ? refs.floating.refs.setFloating : null}
+                    style={refs.floating.floatingStyles}
                     children={
                       <>
                         <PopupOption

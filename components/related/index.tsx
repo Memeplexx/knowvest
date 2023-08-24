@@ -1,5 +1,5 @@
 import { useHooks } from './hooks';
-import { useSimilarEvents } from './events';
+import { useEvents } from './events';
 import { Header, Icon, NoteCount, Result, Wrapper } from './styles';
 import { Card } from '../card';
 import { Props } from './constants';
@@ -10,8 +10,9 @@ import { store } from '@/utils/store';
 export const Related = (
   props: Props
 ) => {
-  const state = useHooks(props);
-  const events = useSimilarEvents(state);
+  const hooks = useHooks(props);
+  const events = useEvents(hooks);
+  const { state } = hooks;
   return (
     <Card
       {...usePropsWithoutFunctions(props)}

@@ -81,12 +81,16 @@ export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
   });
 
   return {
-    ...state,
-    groupsWithSynonyms: groupsWithSynonyms.$useState(),
-    tagsForActiveNote: tagsForActiveNote.$useState(),
-    allGroupTagsSelected: allGroupTagsSelected.$useState(),
-    allActiveTagsSelected: allActiveTagsSelected.$useState(),
-    tagIdsForActiveNote: tagIdsForActiveNote.$useState(),
-    containerRef: useForwardedRef(ref),
+    state: {
+      ...state,
+      groupsWithSynonyms: groupsWithSynonyms.$useState(),
+      tagsForActiveNote: tagsForActiveNote.$useState(),
+      allGroupTagsSelected: allGroupTagsSelected.$useState(),
+      allActiveTagsSelected: allActiveTagsSelected.$useState(),
+      tagIdsForActiveNote: tagIdsForActiveNote.$useState(),
+    },
+    refs: {
+      container: useForwardedRef(ref),
+    }
   };
 };

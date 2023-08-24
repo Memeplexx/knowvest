@@ -5,6 +5,7 @@ import { createStore } from "olik";
 import { Group, Note, NoteId, NoteTag, SynonymGroup, SynonymId, Tag } from "@/server/dtos";
 import { homeInitialState } from "./pages/home/constants";
 import { searchInitialState } from "@/components/search/constants";
+import { navBarInitialState } from "@/components/navbar/constants";
 
 export const store = createStore({
   activeNoteId: 0 as NoteId,
@@ -19,4 +20,5 @@ export const store = createStore({
   tagsPanel: tagsPanelInitialState,
   activePanel: activePanelInitialState,
   search: searchInitialState,
+  navBar: navBarInitialState,
 })

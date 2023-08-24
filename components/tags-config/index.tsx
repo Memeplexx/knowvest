@@ -28,14 +28,15 @@ export const TagsConfig = forwardRef(function TagsConfig(
   props: Props,
   ref: ForwardedRef<HTMLDivElement>
 ) {
-  const state = useHooks(ref, props);
-  const events = useEvents(state);
+  const hooks = useHooks(ref, props);
+  const events = useEvents(hooks);
+  const { state, refs } = hooks;
   return (
     <Modal
       show={props.show}
       children={
         <ModalContent
-          ref={state.modalRef}
+          ref={refs.modal}
           children={
             <>
               <Body
@@ -48,7 +49,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             children={state.autocompleteTitle}
                           />
                           <Autocomplete<AutocompleteOptionType>
-                            ref={state.autocompleteRef}
+                            ref={refs.autocomplete}
                             options={state.autocompleteOptions}
                             inputPlaceholder='Start typing...'
                             onValueChange={events.onAutocompleteSelected}
@@ -93,7 +94,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                   onClick={events.onClickShowOptionsForSynonyms}
                                   selected={state.modal === 'synonymOptions'}
                                   $show={!state.groupId}
-                                  ref={state.modal === 'synonymOptions' ? state.floating.refs.setReference : null}
+                                  ref={state.modal === 'synonymOptions' ? refs.floating.refs.setReference : null}
                                 />
                               </>
                             }
@@ -103,7 +104,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                               <Tag
                                 key={tag.id}
                                 selected={tag.id === state.tagId}
-                                ref={tag.id === state.tagId ? state.selectedTagRef : null}
+                                ref={tag.id === state.tagId ? refs.selectedTag : null}
                                 onClick={e => events.onClickTagSynonym(e, tag.id)}
                                 children={state.tagId === tag.id || (!state.tagId && state.tagId === tag.id) ? state.autocompleteText : tag.text}
                                 $first={!i}
@@ -113,8 +114,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
                           />
                           <PopupOptions
                             showIf={state.modal === 'synonymOptions'}
-                            ref={state.modal === 'synonymOptions' ? state.floating.refs.setFloating : null}
-                            style={state.floating.floatingStyles}
+                            ref={state.modal === 'synonymOptions' ? refs.floating.refs.setFloating : null}
+                            style={refs.floating.floatingStyles}
                             onClick={events.onClickHideOptionsForSynonyms}
                             children={
                               <>
@@ -177,7 +178,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                     onClick={() => events.onClickShowOptionsForGroup(group.group.id)}
                                     selected={state.modal === 'groupOptions'}
                                     $show={state.groupId === group.group.id}
-                                    ref={state.groupId === group.group.id && state.modal === 'groupOptions' ? state.floating.refs.setReference : null}
+                                    ref={state.groupId === group.group.id && state.modal === 'groupOptions' ? refs.floating.refs.setReference : null}
                                   />
                                 </>
                               }
@@ -187,7 +188,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                 synonym.tags.map((tag, i) => (
                                   <Tag
                                     key={tag}
-                                    ref={state.groupId === group.group.id && state.groupSynonymId === synonym.synonymId ? state.selectedTagRef : null}
+                                    ref={state.groupId === group.group.id && state.groupSynonymId === synonym.synonymId ? refs.selectedTag : null}
                                     selected={
                                       (state.hoveringGroupId === group.group.id && state.hoveringSynonymId === synonym.synonymId) ||
                                       (state.groupId === group.group.id && state.groupSynonymId === synonym.synonymId)}
@@ -203,8 +204,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             />
                             <PopupOptions
                               showIf={state.groupId === group.group.id && state.modal === 'groupOptions'}
-                              ref={state.groupId === group.group.id && state.modal === 'groupOptions' ? state.floating.refs.setFloating : null}
-                              style={state.floating.floatingStyles}
+                              ref={state.groupId === group.group.id && state.modal === 'groupOptions' ? refs.floating.refs.setFloating : null}
+                              style={refs.floating.floatingStyles}
                               onClick={events.onClickHideOptionsForGroup}
                               children={
                                 <>

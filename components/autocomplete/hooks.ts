@@ -12,7 +12,7 @@ export const useHooks = <Option extends OptionBase>(
 
   const input = floating.refs.domReference;
 
-  const optionsRef = floating.refs.floating;
+  const options = floating.refs.floating;
 
   const container = useForwardedRef(useRef<HTMLDivElement | null>(null));
 
@@ -37,7 +37,7 @@ export const useHooks = <Option extends OptionBase>(
       input,
       container,
       floating,
-      optionsRef,
+      options,
     },
     state: {
       optionsPopupExpanded,

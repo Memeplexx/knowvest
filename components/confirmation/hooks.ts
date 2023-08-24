@@ -1,13 +1,12 @@
-import { useState } from "react";
 import { Props, Selection } from "./constants";
+import { useRecord } from "@/utils/hooks";
 
 export const useHooks = (props: Props) => {
 
-  const [selection, setSelection] = useState<Selection>('none');
+  const state = useRecord({ selection: 'none' as Selection })
 
   return {
-    selection,
-    setSelection,
-    ...props,
+    state,
+    props,
   }
 }

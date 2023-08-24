@@ -12,8 +12,10 @@ export const useHooks = (props: Props) => {
   const notes = useEmbellishNotesWithDates(notesSorted);
 
   return {
-    ...props,
-    notes,
+    props,
+    state: {
+      notes,
+    }
   };
 }
 

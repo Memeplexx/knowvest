@@ -8,13 +8,14 @@ import { defineEvents } from './events';
 export const Modal = (
   props: Props
 ) => {
-  const state = useHooks(props);
-  const events = defineEvents(state);
+  const hooks = useHooks(props);
+  const events = defineEvents(hooks);
+  const { state, refs } = hooks;
   return !state.showInternal ? <></> : createPortal(
     <>
       <Background
         style={state.backgroundAnimations}
-        ref={state.backdropRef}
+        ref={refs.backdrop}
         onClick={events.onClickBackdrop}
       />
       <ForegroundWrapper

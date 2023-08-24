@@ -1,17 +1,17 @@
 import { signOut } from "next-auth/react"
-import { useHooks } from "./hooks";
+import { store } from "@/utils/store";
 
-export const useEvents = (hooks: ReturnType<typeof useHooks>) => ({
+export const useEvents = () => ({
   onClickUserButton: () => {
-    hooks.store.showOptions.$toggle()
+    store.navBar.showOptions.$toggle()
   },
   onClickSignOut: async () => {
     await signOut();
   },
   onClickSearchButton: () => {
-    hooks.store.showDialog.$set(true);
+    store.navBar.showDialog.$set(true);
   },
   onHideDialog: () => {
-    hooks.store.showDialog.$set(false);
+    store.navBar.showDialog.$set(false);
   },
 })

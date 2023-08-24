@@ -35,9 +35,11 @@ export const useHooks = (props: Props) => {
   })
 
   return {
-    ...props,
-    queriedNotes: queriedNotes.$useState(),
-    noteCountString: noteCountString.$useState(),
+    props,
+    state: {
+      queriedNotes: queriedNotes.$useState(),
+      noteCountString: noteCountString.$useState(),
+    }
   }
 
 };

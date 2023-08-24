@@ -6,29 +6,31 @@ import { ancestorMatches } from '@/utils/functions';
 import { store } from '@/utils/store';
 
 
-export const completeCreateTagForSynonym = async (state: State) => {
+export const completeCreateTagForSynonym = async (hooks: State) => {
+  const { state, notify } = hooks;
   const apiResponse = await trpc.synonym.createTag.mutate({
     text: state.autocompleteText.trim(),
     synonymId: state.synonymId
   });
   switch (apiResponse.status) {
-    case 'BAD_REQUEST': return state.notify.error(apiResponse.fields.text);
+    case 'BAD_REQUEST': return notify.error(apiResponse.fields.text);
   }
   transact(
     () => store.config.tagId.$set(apiResponse.tagCreated.id),
     () => store.tags.$push(apiResponse.tagCreated),
     () => store.noteTags.$push(apiResponse.noteTagsCreated),
   )
-  state.notify.success('Tag created');
-  blurAutocompleteInput(state);
+  notify.success('Tag created');
+  blurAutocompleteInput(hooks);
 }
 
-export const completeCreateTag = async (state: State) => {
+export const completeCreateTag = async (hooks: State) => {
+  const { state, notify } = hooks;
   const apiResponse = await trpc.tag.create.mutate({
     text: state.autocompleteText.trim(),
   });
   switch (apiResponse.status) {
-    case 'BAD_REQUEST': return state.notify.error(apiResponse.fields.text);
+    case 'BAD_REQUEST': return notify.error(apiResponse.fields.text);
   }
   transact(
     () => store.config.$patch({ synonymId: apiResponse.tagCreated.synonymId, tagId: apiResponse.tagCreated.id }),
@@ -36,10 +38,11 @@ export const completeCreateTag = async (state: State) => {
     () => store.noteTags.$push(apiResponse.noteTagsCreated),
     () => store.synonymIds.$push(apiResponse.tagCreated.synonymId),
   )
-  state.notify.success('Tag created');
-  blurAutocompleteInput(state);
+  notify.success('Tag created');
+  blurAutocompleteInput(hooks);
 }
-export const completeCreateTagForGroup = async (state: State) => {
+export const completeCreateTagForGroup = async (hooks: State) => {
+  const { state, notify } = hooks;
   if (!state.groupId || !state.synonymId) { return }
   const apiResponse = await trpc.group.createTag.mutate({
     text: state.autocompleteText.trim(),
@@ -47,7 +50,7 @@ export const completeCreateTagForGroup = async (state: State) => {
     synonymId: state.synonymId
   });
   switch (apiResponse.status) {
-    case 'BAD_REQUEST': return state.notify.error(apiResponse.fields.text)
+    case 'BAD_REQUEST': return notify.error(apiResponse.fields.text)
   }
   transact(
     () => store.config.autocompleteText.$set(''),
@@ -55,46 +58,49 @@ export const completeCreateTagForGroup = async (state: State) => {
     () => store.noteTags.$push(apiResponse.noteTagsCreated),
     () => store.synonymGroups.$push(apiResponse.synonymGroupsCreated),
   )
-  state.notify.success('Tag created');
-  blurAutocompleteInput(state);
+  notify.success('Tag created');
+  blurAutocompleteInput(hooks);
 }
-export const completeCreateGroup = async (state: State) => {
+export const completeCreateGroup = async (hooks: State) => {
+  const { state, notify } = hooks;
   if (!state.synonymId) { throw new Error() }
   const apiResponse = await trpc.group.create.mutate({
     name: state.autocompleteText.trim(),
     synonymId: state.synonymId
   });
   switch (apiResponse.status) {
-    case 'BAD_REQUEST': return state.notify.error(apiResponse.fields.name);
+    case 'BAD_REQUEST': return notify.error(apiResponse.fields.name);
   }
   transact(
     () => store.config.autocompleteText.$set(''),
     () => store.groups.$push(apiResponse.created),
     () => apiResponse.createdSynonymGroup && store.synonymGroups.$push(apiResponse.createdSynonymGroup),
   )
-  state.notify.success('Group created');
-  blurAutocompleteInput(state);
+  notify.success('Group created');
+  blurAutocompleteInput(hooks);
 }
-export const completeEditGroupName = async (state: State) => {
+export const completeEditGroupName = async (hooks: State) => {
+  const { state, notify } = hooks;
   if (!state.groupId) { throw new Error(); }
   const apiResponse = await trpc.group.update.mutate({
     groupId: state.groupId,
     name: state.focusedGroupNameInputText,
   });
   switch (apiResponse.status) {
-    case 'BAD_REQUEST': return state.notify.error(apiResponse.fields.name)
-    case 'CONFLICT': return state.notify.error(apiResponse.message)
+    case 'BAD_REQUEST': return notify.error(apiResponse.fields.name)
+    case 'CONFLICT': return notify.error(apiResponse.message)
   }
   store.groups.$find.id.$eq(state.groupId!).$set(apiResponse.updated);
-  state.notify.success('Group updated');
-  blurAutocompleteInput(state);
+  notify.success('Group updated');
+  blurAutocompleteInput(hooks);
 }
-export const completeEditTag = async (state: State) => {
+export const completeEditTag = async (hooks: State) => {
+  const { state, notify } = hooks;
   if (!state.tagId) { throw new Error() }
   const apiResponse = await trpc.tag.update.mutate({ tagId: state.tagId, text: state.autocompleteText.trim() })
   switch (apiResponse.status) {
-    case 'TAG_UNCHANGED': return state.notify.info('Tag unchanged')
-    case 'BAD_REQUEST': return state.notify.error(apiResponse.fields.text)
+    case 'TAG_UNCHANGED': return notify.info('Tag unchanged')
+    case 'BAD_REQUEST': return notify.error(apiResponse.fields.text)
   }
   const activeTagIdsToBeDeselected = apiResponse.noteTagsDeleted.filter(nt => nt.noteId === state.activeNoteId).map(nt => nt.tagId);
   const activeSynonymIdsToBeDeselected = store.$state.tags.filter(t => activeTagIdsToBeDeselected.includes(t.id)).map(t => t.synonymId);
@@ -108,11 +114,12 @@ export const completeEditTag = async (state: State) => {
     () => store.noteTags.$push(apiResponse.noteTagsCreated),
     () => store.synonymIds.$set([...store.synonymIds.$filter.$ni(activeSynonymIdsToBeDeselected).$state, ...activeSynonymIdsToBeSelected]),
   )
-  state.notify.success('Tag updated');
-  blurAutocompleteInput(state);
+  notify.success('Tag updated');
+  blurAutocompleteInput(hooks);
 }
-export const doCancel = (state: State, eventTarget: EventTarget | null) => {
-  if (!state.props.show) {
+export const doCancel = (hooks: State, eventTarget: EventTarget | null) => {
+  const { state, props, refs } = hooks;
+  if (!props.show) {
     return;
   }
   if (ancestorMatches(eventTarget, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
@@ -130,7 +137,7 @@ export const doCancel = (state: State, eventTarget: EventTarget | null) => {
   if (state.modal) {
     return store.config.modal.$set(null);
   }
-  if (state.modalRef.current?.contains(eventTarget as HTMLElement)) {
+  if (refs.modal.current?.contains(eventTarget as HTMLElement)) {
     return;
   }
   store.config.$patch({
@@ -142,15 +149,16 @@ export const doCancel = (state: State, eventTarget: EventTarget | null) => {
     modal: null,
     autocompleteText: '',
   })
-  state.props.onHide();
+  props.onHide();
 }
-export const onAutocompleteSelectedWhileNothingIsSelected = async (state: State, tagId: TagId) => {
+export const onAutocompleteSelectedWhileNothingIsSelected = async (hooks: State, tagId: TagId) => {
   const synonymId = store.tags.$find.id.$eq(tagId).synonymId.$state;
   const autocompleteText = store.tags.$find.id.$eq(tagId).text.$state;
   store.config.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: 'addSynonymsToActiveGroup' });
-  focusAutocompleteInput(state);
+  focusAutocompleteInput(hooks);
 }
-export const onAutocompleteSelectedWhileSynonymIsSelected = async (state: State, tagId: TagId) => {
+export const onAutocompleteSelectedWhileSynonymIsSelected = async (hooks: State, tagId: TagId) => {
+  const { state, notify } = hooks;
   if (!state.synonymId) { throw new Error(); }
   const selected = store.tags.$find.id.$eq(tagId).$state;
   const apiResponse = await trpc.synonym.addTag.mutate({ tagId, synonymId: state.synonymId });
@@ -163,10 +171,11 @@ export const onAutocompleteSelectedWhileSynonymIsSelected = async (state: State,
     () => store.tags.$filter.id.$in(apiResponse.tagsUpdated.map(tu => tu.id)).$set(apiResponse.tagsUpdated),
     () => store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete(),
     () => store.config.$patch({ tagId, synonymId, autocompleteText: selected.text }),
-    () => groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && state.notify.success('Tag(s) added to synonyms'),
+    () => groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && notify.success('Tag(s) added to synonyms'),
   )
 };
-export const onAutocompleteSelectedWhileGroupIsSelected = async (state: State, tagId: TagId) => {
+export const onAutocompleteSelectedWhileGroupIsSelected = async (hooks: State, tagId: TagId) => {
+  const { state, notify } = hooks;
   if (!state.groupId) { throw new Error(); }
   const selected = store.tags.$find.id.$eq(tagId).$state;
   const apiResponse = await trpc.group.addSynonym.mutate({ groupId: state.groupId, synonymId: selected.synonymId });
@@ -174,25 +183,26 @@ export const onAutocompleteSelectedWhileGroupIsSelected = async (state: State, t
     () => store.config.autocompleteText.$set(''),
     () => store.synonymGroups.$push(apiResponse.created),
   )
-  state.notify.success('Added to group');
+  notify.success('Added to group');
 };
 
-export const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async (state: State, groupId: GroupId) => {
+export const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async (hooks: State, groupId: GroupId) => {
+  const { state, notify } = hooks;
   if (!state.synonymId) { throw new Error(); }
   const apiResponse = await trpc.group.addSynonym.mutate({ groupId, synonymId: state.synonymId });
   store.synonymGroups.$push(apiResponse.created);
-  state.notify.success('Added to group');
+  notify.success('Added to group');
 }
 
 export const focusAutocompleteInput = (state: State) => {
   setTimeout(() => {
-    state.autocompleteRef.current?.focusInput();
+    state.refs.autocomplete.current?.focusInput();
   });
 }
 
 export const blurAutocompleteInput = (state: State) => {
   setTimeout(() => {
-    state.autocompleteRef.current?.blurInput();
+    state.refs.autocomplete.current?.blurInput();
   });
 }
 

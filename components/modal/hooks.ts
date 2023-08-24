@@ -6,7 +6,7 @@ export const useHooks = (props: Props) => {
 
   const [showInternal, setShowInternal] = useState(props.show);
   
-  const backdropRef = useRef<HTMLDivElement>(null);
+  const backdrop = useRef<HTMLDivElement>(null);
 
   const isClosingRef = useRef(false);
 
@@ -34,11 +34,14 @@ export const useHooks = (props: Props) => {
   }
 
   return {
-    // modalRef
-    backdropRef,
-    showInternal,
-    backgroundAnimations,
-    foregroundAnimations,
-    ...props,
+    refs: {
+      backdrop,
+    },
+    state: {
+      showInternal,
+      backgroundAnimations,
+      foregroundAnimations,
+    },
+    props,
   }
 }

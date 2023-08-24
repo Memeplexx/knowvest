@@ -5,11 +5,12 @@ import { Wrapper } from './styles';
 export default function ReadonlyNote(
   props: Props
 ) {
-  const state = useHooks(props);
+  const hooks = useHooks(props);
+  const { refs } = hooks;
   return (
     <Wrapper
       {...props}
-      ref={state.editorDomElement}
+      ref={refs.editor}
     />
   );
 }

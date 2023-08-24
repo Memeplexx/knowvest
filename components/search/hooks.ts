@@ -113,16 +113,19 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [listener]);
 
   return {
-    autocompleteRef: useRef<AutocompleteHandle>(null),
-    bodyRef: useRef<HTMLDivElement>(null),
-    autocompleteOptions: autocompleteOptions.$useState(),
-    selectedSynonymTags: selectedSynonymTags.$useState(),
-    selectedGroupTags: selectedGroupTags.$useState(),
-    notesByTags: notesByTags.$useState(),
-    tabTitleText,
-    tabButtonText,
+    refs: {
+      autocomplete: useRef<AutocompleteHandle>(null),
+      body: useRef<HTMLDivElement>(null),
+    },
+    state: {
+      autocompleteOptions: autocompleteOptions.$useState(),
+      selectedSynonymTags: selectedSynonymTags.$useState(),
+      selectedGroupTags: selectedGroupTags.$useState(),
+      notesByTags: notesByTags.$useState(),
+      tabTitleText,
+      tabButtonText,
+      ...state,
+    },
     props,
-    ...state,
-    store,
   }
 }

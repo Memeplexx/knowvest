@@ -1,21 +1,20 @@
-import { forwardRef, ForwardedRef } from 'react';
 import { Container, Message, Popup } from './styles';
 import { Props, snackbarStatuses } from './constants';
 import { useHooks } from './hooks';
 
 
-export const Snackbar = forwardRef(function Snackbar(
-  props: Props,
-  ref: ForwardedRef<HTMLElement>
+export const Snackbar = function Snackbar(
+  partialProps: Props,
 ) {
-  const state = useHooks(props, ref);
+  const hooks = useHooks(partialProps);
+  const { state, refs, props } = hooks;
   return (
     <Container
-      ref={state.floating.refs.setReference}
+      ref={refs.floating.refs.setReference}
       children={
         <Popup
-          ref={state.floating.refs.setFloating}
-          style={state.floating.floatingStyles}
+          ref={refs.floating.refs.setFloating}
+          style={refs.floating.floatingStyles}
           children={
             state.messages.map(m => (
               <Message
@@ -23,12 +22,12 @@ export const Snackbar = forwardRef(function Snackbar(
                 count={state.count}
                 showIf={m.show}
                 index={m.index}
-                animation={state.animationDuration}
-                gap={state.stackGap}
-                status={state.status}
+                animation={props.animationDuration}
+                gap={props.stackGap}
+                status={props.status}
                 children={
                   <>
-                    {snackbarStatuses[state.status].icon()}
+                    {snackbarStatuses[props.status].icon()}
                     {props.renderMessage ? props.renderMessage(m.text) : m.text}
                   </>
                 }
@@ -39,5 +38,5 @@ export const Snackbar = forwardRef(function Snackbar(
       }
     />
   );
-});
+};
 

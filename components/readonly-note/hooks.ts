@@ -18,8 +18,8 @@ export const useHooks = (props: Props) => {
   useNoteTagsToTagHighlighter(codeMirror, props.synonymIds);
 
   return {
-    editorDomElement,
-    ...props,
+    refs: { editor: editorDomElement },
+    props,
   }
 }
 

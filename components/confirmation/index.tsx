@@ -9,8 +9,9 @@ import { defineEvents } from './events';
 export const Confirmation = (
   props: Props
 ) => {
-  const state = useHooks(props);
-  const events = defineEvents(state);
+  const hooks = useHooks(props);
+  const events = defineEvents(hooks);
+  const { state } = hooks;
   return (
     <Modal
       onBackdropClick={events.onClickCancel}
@@ -33,14 +34,14 @@ export const Confirmation = (
                       selected={state.selection === 'cancel'}
                       onMouseUp={events.onClickCancel}
                       onMouseLeave={events.onMouseLeaveButton}
-                      onMouseDown={() => state.setSelection('cancel')}
+                      onMouseDown={() => state.set({ selection: 'cancel' })}
                       children={props.cancelText || 'Cancel'}
                     />
                     <ConfirmButton
                       selected={state.selection === 'confirm'}
                       onMouseUp={events.onClickConfirm}
                       onMouseLeave={events.onMouseLeaveButton}
-                      onMouseDown={() => state.setSelection('confirm')}
+                      onMouseDown={() => state.set({ selection: 'confirm' })}
                       children={props.confirmText || 'Confirm'}
                     />
                   </>

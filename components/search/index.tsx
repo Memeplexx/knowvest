@@ -12,14 +12,15 @@ export const SearchDialog = forwardRef(function SearchDialog(
   props: Props,
   ref: ForwardedRef<HTMLDivElement>
 ) {
-  const state = useHooks(ref, props);
-  const events = useEvents(state);
+  const hooks = useHooks(ref, props);
+  const events = useEvents(hooks);
+  const { state, refs } = hooks;
   return (
     <Modal
       show={props.show}
       children={
         <Body
-          ref={state.bodyRef}
+          ref={refs.body}
           children={
             <>
               <TabsWrapper
@@ -44,7 +45,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                       children={
                         <>
                           <Autocomplete<AutocompleteOptionType>
-                            ref={state.autocompleteRef}
+                            ref={refs.autocomplete}
                             options={state.autocompleteOptions}
                             inputPlaceholder='Search Tags and Groups'
                             onValueChange={events.onAutocompleteSelected}
