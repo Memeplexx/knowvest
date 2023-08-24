@@ -1,22 +1,22 @@
 import { createPortal } from 'react-dom';
 import { Background, Foreground, ForegroundWrapper } from './styles';
-import { useHooks } from './hooks';
+import { useInputs } from './inputs';
 import { Props } from './constants';
-import { defineEvents } from './events';
+import { useOutputs } from './outputs';
 
 
 export const Modal = (
   props: Props
 ) => {
-  const hooks = useHooks(props);
-  const events = defineEvents(hooks);
-  const { state, refs } = hooks;
+  const inputs = useInputs(props);
+  const outputs = useOutputs(inputs);
+  const { state, refs } = inputs;
   return !state.showInternal ? <></> : createPortal(
     <>
       <Background
         style={state.backgroundAnimations}
         ref={refs.backdrop}
-        onClick={events.onClickBackdrop}
+        onClick={outputs.onClickBackdrop}
       />
       <ForegroundWrapper
         children={

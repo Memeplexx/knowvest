@@ -1,5 +1,5 @@
 import { MouseEvent, ReactNode } from "react";
-import { useHooks } from "./hooks";
+import { useInputs } from "./inputs";
 
 export type Props = {
   show?: boolean;
@@ -8,6 +8,6 @@ export type Props = {
   children: ReactNode | undefined,
 };
 
-export type State = ReturnType<typeof useHooks>;
+export type Inputs = ReturnType<typeof useInputs>;
 
 export const animationDuration = 200;

@@ -1,13 +1,13 @@
 import { Container, Message, Popup } from './styles';
 import { Props, snackbarStatuses } from './constants';
-import { useHooks } from './hooks';
+import { useInputs } from './inputs';
 
 
 export const Snackbar = function Snackbar(
   partialProps: Props,
 ) {
-  const hooks = useHooks(partialProps);
-  const { state, refs, props } = hooks;
+  const inputs = useInputs(partialProps);
+  const { state, refs, props } = inputs;
   return (
     <Container
       ref={refs.floating.refs.setReference}

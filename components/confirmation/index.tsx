@@ -1,21 +1,21 @@
 import { Modal } from '../modal';
 import { CancelButton, ConfirmButton, DialogBody, ButtonWrapper, MessageWrapper, HeaderWrapper } from './styles';
 import { Props } from './constants';
-import { useHooks } from './hooks';
-import { defineEvents } from './events';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
 
 
 
 export const Confirmation = (
   props: Props
 ) => {
-  const hooks = useHooks(props);
-  const events = defineEvents(hooks);
-  const { state } = hooks;
+  const inputs = useInputs(props);
+  const outputs = useOutputs(inputs);
+  const { state } = inputs;
   return (
     <Modal
-      onBackdropClick={events.onClickCancel}
-      onCloseComplete={events.onCloseComplete}
+      onBackdropClick={outputs.onClickCancel}
+      onCloseComplete={outputs.onCloseComplete}
       show={props.show}
       children={
         <DialogBody
@@ -32,15 +32,15 @@ export const Confirmation = (
                   <>
                     <CancelButton
                       selected={state.selection === 'cancel'}
-                      onMouseUp={events.onClickCancel}
-                      onMouseLeave={events.onMouseLeaveButton}
+                      onMouseUp={outputs.onClickCancel}
+                      onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={() => state.set({ selection: 'cancel' })}
                       children={props.cancelText || 'Cancel'}
                     />
                     <ConfirmButton
                       selected={state.selection === 'confirm'}
-                      onMouseUp={events.onClickConfirm}
-                      onMouseLeave={events.onMouseLeaveButton}
+                      onMouseUp={outputs.onClickConfirm}
+                      onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={() => state.set({ selection: 'confirm' })}
                       children={props.confirmText || 'Confirm'}
                     />

@@ -1,6 +1,6 @@
 import { Card } from '../card';
-import { useHooks } from './hooks';
-import { defineEvents } from './events';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
 import { Props } from './constants';
 import { usePropsWithoutFunctions } from '@/utils/functions';
 import { Header, Icon, Result, RightBorder, Wrapper } from './styles';
@@ -9,9 +9,9 @@ import { store } from '@/utils/store';
 export const History = (
   props: Props
 ) => {
-  const hooks = useHooks(props);
-  const events = defineEvents(hooks);
-  const { state } = hooks;
+  const inputs = useInputs(props);
+  const events = useOutputs(inputs);
+  const { state } = inputs;
   return (
     <Card
       {...usePropsWithoutFunctions(props)}

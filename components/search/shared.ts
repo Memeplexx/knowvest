@@ -1,9 +1,9 @@
 import { GroupId, SynonymId } from "@/server/dtos";
-import { State } from "./constants";
+import { Inputs } from "./constants";
 import { store } from "@/utils/store";
 
-export const onSelectSynonym = (hooks: State, synonymId: SynonymId) => {
-  const { state } = hooks;
+export const onSelectSynonym = (inputs: Inputs, synonymId: SynonymId) => {
+  const { state } = inputs;
   if (state.selectedSynonymIds.includes(synonymId)) {
     store.search.selectedSynonymIds.$find.$eq(synonymId).$delete();
   } else {
@@ -11,8 +11,8 @@ export const onSelectSynonym = (hooks: State, synonymId: SynonymId) => {
   }
 }
 
-export const onSelectGroup = (hooks: State, groupId: GroupId) => {
-  const { state } = hooks;
+export const onSelectGroup = (inputs: Inputs, groupId: GroupId) => {
+  const { state } = inputs;
   if (state.selectedGroupIds.includes(groupId)) {
     store.search.selectedGroupIds.$find.$eq(groupId).$delete();
   } else {

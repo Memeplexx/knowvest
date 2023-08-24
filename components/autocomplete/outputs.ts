@@ -1,9 +1,9 @@
 import { ChangeEvent, KeyboardEvent } from "react";
-import { OptionBase, State } from "./constants";
+import { OptionBase, Inputs } from "./constants";
 import { TypedKeyboardEvent } from "@/utils/types";
 
-export const defineEvents = <Option extends OptionBase>(hooks: State<Option>) => {
-  const { state, props, refs } = hooks;
+export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) => {
+  const { state, props, refs } = inputs;
   return {
     onFocusInput: () => {
       props.onInputFocused();

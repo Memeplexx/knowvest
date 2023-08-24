@@ -5,7 +5,7 @@ import { usePropsWithDefaults, useRecord } from "@/utils/hooks";
 
 
 
-export const useHooks = (incomingProps: Props) => {
+export const useInputs = (incomingProps: Props) => {
 
   const props = usePropsWithDefaults(incomingProps, defaultProps);
 

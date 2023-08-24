@@ -1,9 +1,10 @@
 import { GroupId, SynonymId } from "@/server/dtos";
-import { State } from "./constants";
+import { Inputs } from "./constants";
 import { store } from "@/utils/store";
 
 
-export const useEvents = (hooks: State) => {
+export const useOutputs = (inputs: Inputs) => {
+  const { state } = inputs;
   return {
     onClickSynonym: (synonymId: SynonymId) => {
       if (store.$state.synonymIds.includes(synonymId)) {
@@ -13,7 +14,6 @@ export const useEvents = (hooks: State) => {
       }
     },
     onChangeAllGroupTagsSelected: (groupId: GroupId) => {
-      const { state } = hooks;
       const synonyms = state.groupsWithSynonyms
         .findOrThrow(g => g.groupId === groupId).synonyms;
       if (synonyms.some(s => s.selected)) {
@@ -23,7 +23,6 @@ export const useEvents = (hooks: State) => {
       }
     },
     onChangeAllActiveTagsSelected: () => {
-      const { state } = hooks;
       if (state.tagsForActiveNote.some(s => s.selected)) {
         store.synonymIds.$filter.$in(state.tagsForActiveNote.map(s => s.synonymId)).$delete();
       } else {

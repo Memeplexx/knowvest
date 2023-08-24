@@ -9,7 +9,7 @@ import { RefObject, useRef, useState } from 'react';
 import { Props } from './constants';
 
 
-export const useHooks = (props: Props) => {
+export const useInputs = (props: Props) => {
 
   const editorDomElement = useRef<HTMLDivElement>(null);
 

@@ -1,7 +1,7 @@
-import { State } from "./constants";
+import { Inputs } from "./constants";
 
-export const useEvents = (hooks: State) => {
-  const { state, refs } = hooks;
+export const useOutputs = (inputs: Inputs) => {
+  const { state, refs } = inputs;
   return {
     onBodyScroll: () => {
       const isScrollingDown = state.previousScrollOffset.current < refs.body.current!.scrollTop;

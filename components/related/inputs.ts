@@ -2,7 +2,7 @@ import { derive } from "olik";
 import { Props } from "./constants";
 import { store } from "@/utils/store";
 
-export const useHooks = (props: Props) => {
+export const useInputs = (props: Props) => {
 
   const queriedNotes = derive(
     store.activeNoteId,

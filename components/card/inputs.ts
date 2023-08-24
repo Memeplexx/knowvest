@@ -1,7 +1,7 @@
 import { useForwardedRef } from "@/utils/hooks";
 import { ForwardedRef, useRef } from "react";
 
-export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
+export const useInputs = (ref: ForwardedRef<HTMLElement>) => {
   const head = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
   const previousScrollOffset = useRef(0);

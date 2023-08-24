@@ -1,6 +1,6 @@
-import { useHooks } from './hooks';
+import { useInputs } from './inputs';
 import { Buttons, SelectionOptions, TextEditor, TextEditorWrapper } from './styles';
-import { useEvents } from './events';
+import { useEvents as useOutputs } from './outputs';
 import { IconButton } from '../card-header-button';
 import { Confirmation } from '../confirmation';
 import { Card } from '../card';
@@ -13,8 +13,8 @@ import { store } from '@/utils/store';
 export const Active = (
   props: HTMLAttributes<HTMLDivElement>
 ) => {
-  const inputs = useHooks();
-  const events = useEvents(inputs);
+  const inputs = useInputs();
+  const outputs = useOutputs(inputs);
   const { state, refs } = inputs;
   return (
     <Card
@@ -26,13 +26,13 @@ export const Active = (
           children={
             <>
               <IconButton
-                onClick={events.onClickCreateNote}
+                onClick={outputs.onClickCreateNote}
                 title='Create a new note'
                 children={<CreateIcon />}
               />
               <IconButton
                 children={<SettingsIcon />}
-                onClick={events.onClickSettingsButton}
+                onClick={outputs.onClickSettingsButton}
                 ref={refs.floating.refs.setReference}
               />
               <PopupOptions
@@ -42,7 +42,7 @@ export const Active = (
                 children={
                   <>
                     <PopupOption
-                      onClick={events.onClickDuplicateNote}
+                      onClick={outputs.onClickDuplicateNote}
                       children={
                         <>
                           <OptionText
@@ -55,7 +55,7 @@ export const Active = (
                     />
                     <PopupOption
                       disabled={!state.mayDeleteNote}
-                      onClick={events.onClickRequestDeleteNote}
+                      onClick={outputs.onClickRequestDeleteNote}
                       children={
                         <>
                           <OptionText
@@ -72,7 +72,7 @@ export const Active = (
               <Confirmation
                 show={state.confirmDelete}
                 onClose={() => store.activePanel.confirmDelete.$set(false)}
-                onConfirm={events.onClickRemoveNote}
+                onConfirm={outputs.onClickRemoveNote}
                 title='Delete note requested'
                 message='Are you sure you want to delete this note?'
               />
@@ -82,18 +82,18 @@ export const Active = (
       }
       body={
         <TextEditorWrapper
-          onClick={events.onClickTextEditorWrapper}
+          onClick={outputs.onClickTextEditorWrapper}
           children={
             <>
               <TextEditor
                 ref={refs.editor}
-                onBlur={events.onBlurTextEditor}
+                onBlur={outputs.onBlurTextEditor}
               />
               <SelectionOptions
                 showIf={!!state.selection}
-                onClickCreateNewTag={events.onClickCreateNewTagFromSelection}
-                onClickFilterNotes={events.onClickFilterNotesFromSelection}
-                onClickSplitNote={events.onClickSplitNoteFromSelection}
+                onClickCreateNewTag={outputs.onClickCreateNewTagFromSelection}
+                onClickFilterNotes={outputs.onClickFilterNotesFromSelection}
+                onClickSplitNote={outputs.onClickSplitNoteFromSelection}
                 selection={state.selection}
               />
             </>

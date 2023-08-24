@@ -1,12 +1,12 @@
 import { GroupId, NoteId, SynonymId } from "@/server/dtos";
-import { State } from "./constants";
-import { onSelectGroup, onSelectSynonym } from "./functions";
+import { Inputs } from "./constants";
+import { onSelectGroup, onSelectSynonym } from "./shared";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { ancestorMatches } from "@/utils/functions";
 import { store } from "@/utils/store";
 
-export const useEvents = (hooks: State) => {
-  const { state, refs, props } = hooks;
+export const useOutputs = (inputs: Inputs) => {
+  const { state, refs, props } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
       if (!props.show) {
@@ -30,19 +30,19 @@ export const useEvents = (hooks: State) => {
       state.autocompleteText && store.search.autocompleteText.$set('');
       const selection = state.autocompleteOptions.findOrThrow(o => o.value === value);
       if (selection.type === 'synonym') {
-        onSelectSynonym(hooks, selection.id as SynonymId);
+        onSelectSynonym(inputs, selection.id as SynonymId);
       } else if (selection.type === 'group') {
-        onSelectGroup(hooks, selection.id as GroupId);
+        onSelectGroup(inputs, selection.id as GroupId);
       }
     },
     onAutocompleteInputChange: (value: string) => {
       store.search.autocompleteText.$set(value);
     },
     onClickSelectedSynonym: (synonymId: SynonymId) => {
-      onSelectSynonym(hooks, synonymId);
+      onSelectSynonym(inputs, synonymId);
     },
     onClickSelectedGroup: (groupId: GroupId) => {
-      onSelectGroup(hooks, groupId);
+      onSelectGroup(inputs, groupId);
     },
     onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => {
       store.search.hoveredSynonymId.$set(hoveredSynonymId);

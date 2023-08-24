@@ -11,8 +11,8 @@ import {
   GroupHeaderTag,
 } from './styles';
 import { TagsConfig } from '../tags-config';
-import { useHooks } from './hooks';
-import { useEvents } from './events';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
 import { Card } from '../card';
 
 
@@ -20,14 +20,14 @@ export const Tags = forwardRef(function Tags(
   props: HTMLAttributes<HTMLDivElement>,
   ref: ForwardedRef<HTMLElement>
 ) {
-  const hooks = useHooks(ref);
-  const events = useEvents(hooks);
-  const { state, refs } = hooks;
+  const inputs = useInputs(ref);
+  const outputs = useOutputs(inputs);
+  const { state, refs } = inputs;
   return (
     <>
       <TagsConfig
         show={state.showConfigDialog}
-        onHide={events.onHideDialog}
+        onHide={outputs.onHideDialog}
       />
       <Card
         {...props}
@@ -37,7 +37,7 @@ export const Tags = forwardRef(function Tags(
         actions={
           <IconButton
             children={<SettingsIcon />}
-            onClick={events.onShowDialog}
+            onClick={outputs.onShowDialog}
           />
         }
         body={
@@ -49,7 +49,7 @@ export const Tags = forwardRef(function Tags(
                     <>
                       <ActiveHeaderTag
                         selected={state.allActiveTagsSelected}
-                        onClick={events.onChangeAllActiveTagsSelected}
+                        onClick={outputs.onChangeAllActiveTagsSelected}
                         children='Active'
                       />
                       <TagsWrapper
@@ -65,7 +65,7 @@ export const Tags = forwardRef(function Tags(
                                   $first={!i}
                                   $last={i === synonyms.tags.length - 1}
                                   children={t.text}
-                                  onClick={() => events.onClickSynonym(t.synonymId)}
+                                  onClick={() => outputs.onClickSynonym(t.synonymId)}
                                 />
                               ))}
                             />
@@ -82,7 +82,7 @@ export const Tags = forwardRef(function Tags(
                       <>
                         <GroupHeaderTag
                           selected={!!state.allGroupTagsSelected.get(group.groupId)}
-                          onClick={() => events.onChangeAllGroupTagsSelected(group.groupId)}
+                          onClick={() => outputs.onChangeAllGroupTagsSelected(group.groupId)}
                           children={`Group: ${group.groupName}`}
                         />
                         <TagsWrapper
@@ -91,12 +91,12 @@ export const Tags = forwardRef(function Tags(
                               <Tag
                                 key={tag.id}
                                 selected={(state.hoveringGroupId === group.groupId && state.hoveringSynonymId === synonym.id) || synonym.selected}
-                                onClick={() => events.onClickSynonym(synonym.id)}
+                                onClick={() => outputs.onClickSynonym(synonym.id)}
                                 children={tag.text}
                                 $first={!i}
                                 $last={i === synonym.tags.length - 1}
-                                onMouseOver={() => events.onMouseOverGroupTag(group.groupId, synonym.id)}
-                                onMouseOut={events.onMouseOutGroupTag}
+                                onMouseOver={() => outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
+                                onMouseOut={outputs.onMouseOutGroupTag}
                                 $active={tag.active}
                               />
                             ))

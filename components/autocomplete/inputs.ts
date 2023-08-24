@@ -4,7 +4,7 @@ import { ForwardedRef, useImperativeHandle, useMemo, useRef } from "react";
 import { Props, AutocompleteHandle, OptionBase } from "./constants";
 import { useForwardedRef } from "@/utils/hooks";
 
-export const useHooks = <Option extends OptionBase>(
+export const useInputs = <Option extends OptionBase>(
   props: Props<Option>,
   forwardedRef: ForwardedRef<AutocompleteHandle>
 ) => {

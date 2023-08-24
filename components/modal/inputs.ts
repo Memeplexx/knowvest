@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useSpring } from "react-spring";
 import { Props, animationDuration } from "./constants";
 
-export const useHooks = (props: Props) => {
+export const useInputs = (props: Props) => {
 
   const [showInternal, setShowInternal] = useState(props.show);
   

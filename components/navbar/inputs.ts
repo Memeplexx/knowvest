@@ -2,7 +2,7 @@ import { store } from "@/utils/store";
 import { useFloating } from "@floating-ui/react"
 import { useSession } from "next-auth/react"
 
-export const useHooks = () => {
+export const useInputs = () => {
 
   const state = store.navBar.$useState();
 

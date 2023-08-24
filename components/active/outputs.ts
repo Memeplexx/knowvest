@@ -1,11 +1,11 @@
 import { trpc } from "@/utils/trpc";
 import { useEventHandlerForDocument } from "@/utils/hooks";
-import { State } from "./constants";
+import { Inputs } from "./constants";
 import { MouseEvent } from "react";
 import { store } from "@/utils/store";
 
 
-export const useEvents = (inputs: State) => {
+export const useEvents = (inputs: Inputs) => {
   const { refs, state, notify } = inputs;
   return {
     onClickCreateNote: async () => {

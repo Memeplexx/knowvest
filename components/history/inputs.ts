@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Note } from "@/server/dtos";
 import { store } from "@/utils/store";
 
-export const useHooks = (props: Props) => {
+export const useInputs = (props: Props) => {
 
   const notesSorted = useNotesSortedAndSliced();
 

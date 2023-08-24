@@ -14,18 +14,18 @@ import {
   onAutocompleteSelectedWhileGroupIsSelected,
   onAutocompleteSelectedWhileNothingIsSelected,
   onAutocompleteSelectedWhileSynonymIsSelected,
-} from './functions';
+} from './shared';
 import { GroupId, SynonymId, TagId } from '@/server/dtos';
 import { trpc } from '@/utils/trpc';
 import { transact } from 'olik';
 import { ChangeEvent, MouseEvent } from 'react';
 import { TypedKeyboardEvent } from '@/utils/types';
 import { store } from '@/utils/store';
-import { State } from './constants';
+import { Inputs } from './constants';
 
 
-export const useEvents = (hooks: State) => {
-  const { state, notify, refs } = hooks;
+export const useOutputs = (inputs: Inputs) => {
+  const { state, notify, refs } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       store.config.$patch({
@@ -36,7 +36,7 @@ export const useEvents = (hooks: State) => {
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
-        await completeEditGroupName(hooks);
+        await completeEditGroupName(inputs);
       } else if (event.key === 'Escape') {
         event.target.blur();
         event.stopPropagation();
@@ -67,7 +67,7 @@ export const useEvents = (hooks: State) => {
         autocompleteText: store.tags.$find.id.$eq(tagId).text.$state,
         groupSynonymId: null,
       });
-      focusAutocompleteInput(hooks);
+      focusAutocompleteInput(inputs);
     },
     onClickGroupSynonym: (event: MouseEvent<HTMLElement>, groupId: GroupId, groupSynonymId: SynonymId) => {
       event.stopPropagation();
@@ -109,19 +109,19 @@ export const useEvents = (hooks: State) => {
       store.config.modal.$set('confirmDeleteTag');
     },
     onClickEnterEditTextMode: () => {
-      focusAutocompleteInput(hooks);
+      focusAutocompleteInput(inputs);
     },
     onAutocompleteInputEnter: async () => {
       if (!state.synonymId) {
-        await completeCreateTag(hooks)
+        await completeCreateTag(inputs)
       } else if (state.tagId) {
-        await completeEditTag(hooks)
+        await completeEditTag(inputs)
       } else if (state.autocompleteAction === 'addSynonymsToActiveSynonyms') {
-        await completeCreateTagForSynonym(hooks)
+        await completeCreateTagForSynonym(inputs)
       } else if (state.autocompleteAction === 'addSynonymsToActiveGroup') {
-        await completeCreateTagForGroup(hooks)
+        await completeCreateTagForGroup(inputs)
       } else if (state.autocompleteAction === 'addActiveSynonymsToAGroup') {
-        await completeCreateGroup(hooks)
+        await completeCreateGroup(inputs)
       }
     },
     onAutocompleteInputChange: (value: string) => {
@@ -135,7 +135,7 @@ export const useEvents = (hooks: State) => {
     onAutocompleteInputCancel: () => {
       const autocompleteText = !state.tagId ? '' : store.tags.$find.id.$eq(state.tagId).text.$state
       store.config.autocompleteText.$set(autocompleteText);
-      blurAutocompleteInput(hooks);
+      blurAutocompleteInput(inputs);
     },
     onClickAddNewTagToSynonymGroup: () => {
       store.config.$patch({
@@ -143,7 +143,7 @@ export const useEvents = (hooks: State) => {
         autocompleteText: '',
         tagId: null,
       });
-      focusAutocompleteInput(hooks);
+      focusAutocompleteInput(inputs);
     },
     onClickAddCurrentSynonymsToExistingGroup: () => {
       store.config.$patch({
@@ -151,14 +151,14 @@ export const useEvents = (hooks: State) => {
         autocompleteText: '',
         tagId: null,
       });
-      focusAutocompleteInput(hooks);
+      focusAutocompleteInput(inputs);
     },
     onClickAddSynonymToCustomGroup: () => {
       store.config.$patch({
         autocompleteAction: 'addSynonymsToActiveGroup',
         autocompleteText: '',
       });
-      focusAutocompleteInput(hooks);
+      focusAutocompleteInput(inputs);
     },
     onClickUpdateGroupSynonym: () => {
       if (!state.groupId || !state.groupSynonymId) { throw new Error(); }
@@ -183,7 +183,7 @@ export const useEvents = (hooks: State) => {
         autocompleteAction: null,
         focusedGroupNameInputText: '',
       });
-      focusAutocompleteInput(hooks);
+      focusAutocompleteInput(inputs);
     },
     onClickDeleteGroup: (event: MouseEvent) => {
       event.stopPropagation();
@@ -191,20 +191,20 @@ export const useEvents = (hooks: State) => {
     },
     onAutocompleteSelected: async (id: TagId | GroupId | null) => {
       if (state.autocompleteAction === 'addActiveSynonymsToAGroup') {
-        await onAutocompleteSelectedWhileAddActiveSynonymsToGroup(hooks, id as GroupId);
+        await onAutocompleteSelectedWhileAddActiveSynonymsToGroup(inputs, id as GroupId);
       } else if (state.autocompleteAction === 'addSynonymsToActiveSynonyms') {
-        await onAutocompleteSelectedWhileSynonymIsSelected(hooks, id as TagId);
+        await onAutocompleteSelectedWhileSynonymIsSelected(inputs, id as TagId);
       } else if (state.autocompleteAction === 'addSynonymsToActiveGroup') {
-        await onAutocompleteSelectedWhileGroupIsSelected(hooks, id as TagId);
+        await onAutocompleteSelectedWhileGroupIsSelected(inputs, id as TagId);
       } else {
-        await onAutocompleteSelectedWhileNothingIsSelected(hooks, id as TagId);
+        await onAutocompleteSelectedWhileNothingIsSelected(inputs, id as TagId);
       }
     },
     onClickRenameTag: () => {
-      focusAutocompleteInput(hooks);
+      focusAutocompleteInput(inputs);
     },
     onClickDocument: useEventHandlerForDocument('click', event => {
-      doCancel(hooks, event.target);
+      doCancel(inputs, event.target);
     }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
       if (event.key !== 'Escape') {
@@ -217,7 +217,7 @@ export const useEvents = (hooks: State) => {
         }
         return;
       }
-      doCancel(hooks, event.target);
+      doCancel(inputs, event.target);
     }),
     onClickDialogBody: (event: MouseEvent) => {
       event.stopPropagation();
@@ -230,7 +230,7 @@ export const useEvents = (hooks: State) => {
         autocompleteText: '',
         focusedGroupNameInputText: '',
       })
-      blurAutocompleteInput(hooks);
+      blurAutocompleteInput(inputs);
     },
     onClickConfirmDeleteTag: async () => {
       const apiResponse = await trpc.tag.delete.mutate({ tagId: state.tagId! });

@@ -1,19 +1,19 @@
 import { ImageLogo, RightContent, SearchButton, SearchIcon, UserButton, Wrapper } from './styles';
-import { useHooks } from './hooks';
-import { useEvents } from './events';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
 import { PopupOption, PopupOptions } from '@/utils/styles';
 import { SearchDialog } from '../search';
 import { Props } from './constants';
 
 export const Navbar = (props: Props) => {
-  const hooks = useHooks();
-  const events = useEvents();
-  const { state, refs } = hooks;
+  const inputs = useInputs();
+  const outputs = useOutputs();
+  const { state, refs } = inputs;
   return (
     <>
       <SearchDialog
         show={state.showDialog}
-        onHide={events.onHideDialog}
+        onHide={outputs.onHideDialog}
       />
       <Wrapper
         $show={props.$show}
@@ -31,13 +31,13 @@ export const Navbar = (props: Props) => {
                 <>
                   <SearchButton
                     children={<SearchIcon />}
-                    onClick={events.onClickSearchButton}
+                    onClick={outputs.onClickSearchButton}
                   />
                   <UserButton
                     src={state.session?.user?.image ?? ''}
                     alt='user image'
                     ref={refs.floating.refs.setReference}
-                    onClick={events.onClickUserButton}
+                    onClick={outputs.onClickUserButton}
                   />
                   <PopupOptions
                     showIf={state.showOptions}
@@ -47,7 +47,7 @@ export const Navbar = (props: Props) => {
                       <>
                         <PopupOption
                           children='Sign Out'
-                          onClick={events.onClickSignOut}
+                          onClick={outputs.onClickSignOut}
                         />
                         <PopupOption
                           children='Settings'

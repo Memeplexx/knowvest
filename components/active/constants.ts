@@ -1,4 +1,4 @@
-import { useHooks } from "./hooks";
+import { useInputs } from "./inputs";
 import { tags as t } from '@lezer/highlight';
 import { createTheme } from 'thememirror';
 
@@ -9,7 +9,7 @@ export const activePanelInitialState = {
   showOptions: false,
 };
 
-export type State = ReturnType<typeof useHooks>;
+export type Inputs = ReturnType<typeof useInputs>;
 
 export const codeMirrorTheme: Parameters<typeof createTheme>[0] = {
   variant: 'dark',

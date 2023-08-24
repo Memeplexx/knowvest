@@ -1,7 +1,7 @@
 import { signOut } from "next-auth/react"
 import { store } from "@/utils/store";
 
-export const useEvents = () => ({
+export const useOutputs = () => ({
   onClickUserButton: () => {
     store.navBar.showOptions.$toggle()
   },

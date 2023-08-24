@@ -4,7 +4,7 @@ import { AutocompleteHandle } from "../autocomplete/constants";
 import { derive } from "olik";
 import { store } from "@/utils/store";
 
-export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
+export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const state = store.search.$useState();
 

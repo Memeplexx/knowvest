@@ -1,16 +1,16 @@
 import { ForwardedRef, forwardRef } from 'react';
 import { Body, Header, Wrapper } from './styles';
-import { useHooks } from './hooks';
-import { useEvents } from './events';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
 import { CardProps } from './constants';
 
 export const Card = forwardRef(function Card(
   props: CardProps,
   ref: ForwardedRef<HTMLElement>
 ) {
-  const hooks = useHooks(ref);
-  const events = useEvents(hooks);
-  const { refs } = hooks;
+  const inputs = useInputs(ref);
+  const outputs = useOutputs(inputs);
+  const { refs } = inputs;
   return (
     <Wrapper
       {...props}
@@ -31,7 +31,7 @@ export const Card = forwardRef(function Card(
           <Body 
             ref={refs.body}
             children={props.body}
-            onScroll={events.onBodyScroll}
+            onScroll={outputs.onBodyScroll}
           />
         </>
       }

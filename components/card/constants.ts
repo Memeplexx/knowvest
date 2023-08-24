@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { useHooks } from "./hooks";
+import { useInputs } from "./inputs";
 
 export type CardProps = {
   title?: string,
@@ -8,4 +8,4 @@ export type CardProps = {
   body: JSX.Element,
 } & HTMLAttributes<HTMLElement>;
 
-export type State = ReturnType<typeof useHooks>;
+export type Inputs = ReturnType<typeof useInputs>;

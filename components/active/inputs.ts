@@ -29,12 +29,12 @@ import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
 import { createTheme } from 'thememirror';
 import { codeMirrorTheme } from './constants';
-import { createAutocompleteExtension, createBulletPointPlugin, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin } from './functions';
+import { createAutocompleteExtension, createBulletPointPlugin, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin } from './shared';
 import { store } from '@/utils/store';
 
 
 
-export const useHooks = () => {
+export const useInputs = () => {
 
   const floating = useFloating<HTMLButtonElement>({ placement: 'bottom-end' });
 

@@ -1,7 +1,7 @@
-import { State } from "./constants";
+import { Inputs } from "./constants";
 
-export const defineEvents = (hooks: State) => {
-  const { props, state } = hooks;
+export const useOutputs = (inputs: Inputs) => {
+  const { props, state } = inputs;
   return {
     onClickCancel: () => {
       props.onClose?.();

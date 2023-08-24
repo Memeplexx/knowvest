@@ -1,10 +1,10 @@
 import { NoteId } from "@/server/dtos";
 import { trpc } from "@/utils/trpc";
-import { State } from "./constants";
+import { Inputs } from "./constants";
 import { store } from "@/utils/store";
 
-export const useEvents = (hooks: State) => {
-  const { props } = hooks;
+export const useOutputs = (inputs: Inputs) => {
+  const { props } = inputs;
   return {
     onSelectNote: async (noteId: NoteId) => {
       trpc.note.view.mutate({ noteId }).catch(console.error);

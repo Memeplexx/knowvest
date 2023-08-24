@@ -3,7 +3,7 @@ import { store } from "@/utils/store";
 import { derive } from "olik";
 import { ForwardedRef } from "react";
 
-export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
+export const useInputs = (ref: ForwardedRef<HTMLElement>) => {
 
   const state = store.tagsPanel.$useState();
 

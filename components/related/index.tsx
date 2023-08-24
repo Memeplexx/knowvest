@@ -1,5 +1,5 @@
-import { useHooks } from './hooks';
-import { useEvents } from './events';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
 import { Header, Icon, NoteCount, Result, Wrapper } from './styles';
 import { Card } from '../card';
 import { Props } from './constants';
@@ -10,9 +10,9 @@ import { store } from '@/utils/store';
 export const Related = (
   props: Props
 ) => {
-  const hooks = useHooks(props);
-  const events = useEvents(hooks);
-  const { state } = hooks;
+  const inputs = useInputs(props);
+  const outputs = useOutputs(inputs);
+  const { state } = inputs;
   return (
     <Card
       {...usePropsWithoutFunctions(props)}
@@ -28,7 +28,7 @@ export const Related = (
           {state.queriedNotes.map(note => (
             <Wrapper
               key={note.note.id}
-              onClick={() => events.onSelectNote(note.note.id)}
+              onClick={() => outputs.onSelectNote(note.note.id)}
               children={
                 <>
                   <Header

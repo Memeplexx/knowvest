@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { useHooks } from "./hooks";
+import { useInputs } from "./inputs";
 
 export interface Props {
   show: boolean;
@@ -11,6 +11,6 @@ export interface Props {
   onClose?: () => void;
 }
 
-export type State = ReturnType<typeof useHooks>;
+export type Inputs = ReturnType<typeof useInputs>;
 
 export type Selection = 'none' | 'confirm' | 'cancel';

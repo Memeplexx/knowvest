@@ -1,7 +1,7 @@
 import { AutocompleteHandle, Props, OptionBase } from './constants';
 import { ClearIcon, ClearTextButton, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
-import { useHooks } from './hooks';
-import { defineEvents } from './events';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
 import { ForwardedRef, forwardRef } from 'react';
 
 
@@ -9,28 +9,29 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
   props: Props<Option>,
   ref: ForwardedRef<AutocompleteHandle>
 ) {
-  const state = useHooks(props, ref);
-  const events = defineEvents(state);
+  const inputs = useInputs(props, ref);
+  const outputs = useOutputs(inputs);
+  const { refs, state } = inputs;
   return (
     <Container
-      ref={state.refs.container}
+      ref={refs.container}
       children={
         <>
           <Input
-            ref={state.refs.floating.refs.setReference}
+            ref={refs.floating.refs.setReference}
             value={props.inputText}
-            onChange={events.onChangeInput}
-            onKeyDown={events.onKeyDownInput}
-            onKeyUp={events.onKeyUpInput}
-            onFocus={events.onFocusInput}
-            expanded={state.props.showOptions}
+            onChange={outputs.onChangeInput}
+            onKeyDown={outputs.onKeyDownInput}
+            onKeyUp={outputs.onKeyUpInput}
+            onFocus={outputs.onFocusInput}
+            expanded={props.showOptions}
             placeholder={props.inputPlaceholder}
             hasError={!!props.error}
             disabled={props.disabled}
           />
           <ClearTextButton
             showIf={!!props.inputText.trim() && !props.disabled}
-            onClick={events.onClickClearText}
+            onClick={outputs.onClickClearText}
             title="Clear text"
             children={<ClearIcon />}
           />
@@ -39,17 +40,17 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             children={props.error}
           />
           <Options
-            ref={state.refs.floating.refs.setFloating}
-            style={state.refs.floating.floatingStyles}
-            showIf={state.props.showOptions}
+            ref={refs.floating.refs.setFloating}
+            style={refs.floating.floatingStyles}
+            showIf={props.showOptions}
             children={
-              state.state.optionsFiltered.map(option => (
+              state.optionsFiltered.map(option => (
                 <OptionItem
                   key={option.value}
                   tabIndex={0}
-                  onKeyDown={events.onKeyDownOption}
-                  onKeyUp={e => events.onKeyUpOption(option.value, e)}
-                  onClick={() => events.onClickOption(option.value)}
+                  onKeyDown={outputs.onKeyDownOption}
+                  onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
+                  onClick={() => outputs.onClickOption(option.value)}
                   children={props.renderOption?.(option) || option.label}
                 />
               ))

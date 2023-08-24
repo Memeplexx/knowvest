@@ -11,7 +11,7 @@ import { Props } from './constants';
 
 
 
-export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
+export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const floating = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 

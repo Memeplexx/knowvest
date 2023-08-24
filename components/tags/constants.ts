@@ -1,7 +1,7 @@
 import { GroupId, SynonymId } from "@/server/dtos";
-import { useHooks } from "./hooks";
+import { useInputs } from "./inputs";
 
-export type State = ReturnType<typeof useHooks>;
+export type Inputs = ReturnType<typeof useInputs>;
 
 export const tagsPanelInitialState = {
   showConfigDialog: false,
