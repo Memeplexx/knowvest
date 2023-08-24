@@ -25,7 +25,6 @@ export const Modal = (
           />
         }
       />
-      
     </>
     , document.body);
 }

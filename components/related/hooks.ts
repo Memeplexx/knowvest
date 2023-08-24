@@ -24,13 +24,24 @@ export const useHooks = (props: Props) => {
         note: notes.findOrThrow(nn => nn.id === n[0].noteId),
         count: n.length,
       }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.count - a.count)
+      .map(n => ({
+        ...n,
+        matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
+      }));
   });
+
+  const noteCountString = derive(
+    queriedNotes
+  ).$with((queriedNotes) => {
+    return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
+  })
 
   return {
     ...props,
     appStore,
     queriedNotes: queriedNotes.$useState(),
+    noteCountString: noteCountString.$useState(),
   }
 
 };

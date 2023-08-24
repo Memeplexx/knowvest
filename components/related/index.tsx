@@ -18,7 +18,7 @@ export const Related = (
       $themeType='dark'
       actions={
         <NoteCount
-          children={`${state.queriedNotes.length} result${state.queriedNotes.length !== 1 && 's'}`}
+          children={state.noteCountString}
         />
       }
       body={
@@ -32,7 +32,7 @@ export const Related = (
                   <Header
                     children={
                       <>
-                        {note.count} match{note.count !== 1 && 'es'}
+                        {note.matches}
                         <Icon />
                       </>
                     }

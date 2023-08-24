@@ -4,9 +4,9 @@ import { State } from "./constants";
 
 export const useSimilarEvents = (state: State) => ({
   onSelectNote: async (noteId: NoteId) => {
-    const viewed = await trpc.note.view.mutate({ noteId });
-    state.appStore.activeNoteId.$set(viewed.id);
-    const tagIds = state.appStore.noteTags.$state.filter(nt => nt.noteId === viewed.id).map(nt => nt.tagId);
+    trpc.note.view.mutate({ noteId }).catch(console.error);
+    state.appStore.activeNoteId.$set(noteId);
+    const tagIds = state.appStore.noteTags.$state.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
     const synonymIds = state.appStore.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
     state.appStore.synonymIds.$set(synonymIds);
     state.onSelectNote(noteId);
