@@ -33,7 +33,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: superjson.serialize({
       tags: await prisma.tag.findMany({ where: { userId } }),
       notes: await prisma.note.findMany({ where: { userId }, orderBy: { dateViewed: 'desc' } }),
-      noteTags: await prisma.noteTag.findMany({ where: { note: { userId }, tag: { userId } } }),
+      noteTags: await prisma.noteTag.findMany({ where: { tag: { userId } } }),
       groups: await prisma.group.findMany({ where: { userId } }),
       synonymGroups: await prisma.synonymGroup.findMany({ where: { group: { userId } } }),
     })
