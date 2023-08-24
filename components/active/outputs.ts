@@ -3,6 +3,7 @@ import { useEventHandlerForDocument } from "@/utils/hooks";
 import { Inputs } from "./constants";
 import { MouseEvent } from "react";
 import { store } from "@/utils/store";
+import { transact } from "olik";
 
 
 export const useEvents = (inputs: Inputs) => {
@@ -10,9 +11,11 @@ export const useEvents = (inputs: Inputs) => {
   return {
     onClickCreateNote: async () => {
       const created = await trpc.note.create.mutate();
-      store.notes.$push(created);
-      store.activeNoteId.$set(created.id);
-      store.synonymIds.$clear();
+      transact(
+        () => store.notes.$push(created),
+        () => store.activeNoteId.$set(created.id),
+        () => store.synonymIds.$clear(),
+      )
     },
     onClickRemoveNote: async () => {
       store.activePanel.allowNotePersister.$set(false);
@@ -28,8 +31,10 @@ export const useEvents = (inputs: Inputs) => {
     },
     onClickDuplicateNote: async () => {
       const apiResponse = await trpc.note.duplicate.mutate({ noteId: store.activeNoteId.$state });
-      store.noteTags.$push(apiResponse.noteTagsCreated);
-      store.notes.$push(apiResponse.noteCreated);
+      transact(
+        () => store.noteTags.$push(apiResponse.noteTagsCreated),
+        () => store.notes.$push(apiResponse.noteCreated),
+      )
     },
     onClickCreateNewTagFromSelection: async () => {
       state.codeMirror!.dispatch({ selection: { anchor: state.codeMirror!.state.selection.ranges[0].anchor } });
@@ -53,17 +58,23 @@ export const useEvents = (inputs: Inputs) => {
       const selection = state.codeMirror!.state.doc.sliceString(from, to);
       const tagIds = store.tags.$state.filter(t => selection.toLowerCase().includes(t.text)).map(t => t.id);
       const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
-      store.synonymIds.$set(synonymIds);
-      store.activePanel.selection.$set('');
+      transact(
+        () => store.synonymIds.$set(synonymIds),
+        () => store.activePanel.selection.$set(''),
+      )
     },
     onClickSplitNoteFromSelection: async () => {
       const range = state.codeMirror!.state.selection.ranges[0];
       const apiResponse = await trpc.note.split.mutate({ ...range, splitFromNoteId: store.$state.activeNoteId });
-      store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.noteUpdated);
-      store.notes.$push(apiResponse.noteCreated);
-      store.noteTags.$push(apiResponse.noteTagsCreated);
-      store.noteTags.$filter.noteId.$in(apiResponse.noteTagsRemoved.map(nt => nt.noteId)).$and.tagId.$in(apiResponse.noteTagsRemoved.map(nt => nt.tagId)).$delete();
-      store.activePanel.selection.$set('');
+      const noteIds = apiResponse.noteTagsRemoved.map(nt => nt.noteId);
+      const tagIds = apiResponse.noteTagsRemoved.map(nt => nt.tagId);
+      transact(
+        () => store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.noteUpdated),
+        () => store.notes.$push(apiResponse.noteCreated),
+        () => store.noteTags.$push(apiResponse.noteTagsCreated),
+        () => store.noteTags.$filter.noteId.$in(noteIds).$and.tagId.$in(tagIds).$delete(),
+        () => store.activePanel.selection.$set(''),
+      )
       state.codeMirror?.dispatch({
         changes: {
           from: 0,
