@@ -9,6 +9,9 @@ export const useEvents = (state: State) => ({
     if (!state.props.show) {
       return;
     }
+    if ((event.target as HTMLElement).parentNode === null) { // element was removed from the DOM
+      return;
+    }
     if (ancestorMatches(event.target, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
       return;
     }
