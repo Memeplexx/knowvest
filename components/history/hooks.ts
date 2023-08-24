@@ -1,32 +1,26 @@
-import { Store, derive } from "olik";
+import { derive } from "olik";
 import { Props } from "./constants";
 import { formatDistanceToNow } from "date-fns";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Note } from "@/server/dtos";
-import { AppStoreState } from "@/utils/types";
-import { OlikContext } from "@/utils/pages/home/constants";
+import { store } from "@/utils/store";
 
 export const useHooks = (props: Props) => {
 
-  const appStore = useContext(OlikContext)!;
-
-  const notesSorted = useNotesSortedAndSliced(appStore);
+  const notesSorted = useNotesSortedAndSliced();
 
   const notes = useEmbellishNotesWithDates(notesSorted);
 
   return {
     ...props,
     notes,
-    appStore,
   };
 }
 
-const useNotesSortedAndSliced = (
-  appStore: Store<AppStoreState>,
-) => {
+const useNotesSortedAndSliced = () => {
   return derive(
-    appStore.notes,
-    appStore.activeNoteId,
+    store.notes,
+    store.activeNoteId,
   ).$with((notes, activeNoteId) => {
     return notes
       .filter(note => activeNoteId !== note.id)

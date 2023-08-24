@@ -2,34 +2,34 @@ import { State } from "./constants";
 
 export const useEvents = (state: State) => ({
   onClickHistoryToggle: () => {
-    state.store.$patch({
+    state.store.home.$patch({
       tagsExpanded: false,
       similarExpanded: false,
-      historyExpanded: !state.store.historyExpanded.$state,
+      historyExpanded: !state.store.home.historyExpanded.$state,
     });
   },
   onClickSimilarToggle: () => {
-    state.store.$patch({
+    state.store.home.$patch({
       tagsExpanded: false,
       historyExpanded: false,
-      similarExpanded: !state.store.similarExpanded.$state,
+      similarExpanded: !state.store.home.similarExpanded.$state,
     });
   },
   onClickTagsToggle: () => {
-    state.store.$patch({
+    state.store.home.$patch({
       historyExpanded: false,
       similarExpanded: false,
-      tagsExpanded: !state.store.tagsExpanded.$state,
+      tagsExpanded: !state.store.home.tagsExpanded.$state,
     });
   },
   onClickHeaderToggle: () => {
-    state.store.headerExpanded.$toggle();
+    state.store.home.headerExpanded.$toggle();
   },
   onClickRelatedNote: () => {
-    state.similarExpanded && state.store.similarExpanded.$set(false);
+    state.similarExpanded && state.store.home.similarExpanded.$set(false);
   },
   onClickHistoricalNote: () => {
-    state.historyExpanded && state.store.historyExpanded.$set(false);
+    state.historyExpanded && state.store.home.historyExpanded.$set(false);
   },
   onNotifyError: (message: string) => {
     state.set({

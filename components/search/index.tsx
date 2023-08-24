@@ -5,6 +5,7 @@ import { AutocompleteOptionType, Props } from './constants';
 import { useEvents } from './events';
 import { useHooks } from './hooks';
 import { AutocompleteOption, AutocompleteOptionStatus, AutocompleteOptionLabel, AutocompleteOptionLeft, Body, CategoryTitle, CategoryWrapper, LeftContent, Result, RightContent, Tag, TagsOuterWrapper, TagsWrapper, MainContent, TabsWrapper, TabTitle, TabButton } from './styles';
+import { store } from '@/utils/store';
 
 
 export const SearchDialog = forwardRef(function SearchDialog(
@@ -151,7 +152,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                         <Result
                           key={note.id}
                           note={note}
-                          synonymIds={state.store.selectedSynonymIds}
+                          synonymIds={store.search.selectedSynonymIds}
                           onClick={() => events.onClickResult(note.id)}
                         />
                       ))}

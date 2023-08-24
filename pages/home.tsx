@@ -2,7 +2,7 @@ import { Navbar } from '@/components/navbar';
 import { Snackbar } from '@/components/snackbar';
 import { UserId } from '@/server/dtos';
 import { prisma } from '@/server/routers/_app';
-import { HomeContext, OlikContext, ServerSideProps } from '@/utils/pages/home/constants';
+import { NotificationContext, ServerSideProps } from '@/utils/pages/home/constants';
 import { useEvents } from '@/utils/pages/home/events';
 import { useHooks } from '@/utils/pages/home/hooks';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
@@ -46,91 +46,86 @@ export default function Home(
   const state = useHooks(superjson.deserialize<ServerSideProps>(propsSerialized));
   const events = useEvents(state);
   return (
-    <OlikContext.Provider
-      value={state.appStore}
+    <NotificationContext.Provider
+      value={{
+        error: events.onNotifyError,
+        success: events.onNotifySuccess,
+        info: events.onNotifyInfo,
+      }}
       children={
-        <HomeContext.Provider
-          value={{
-            notifyError: events.onNotifyError,
-            notifySuccess: events.onNotifySuccess,
-            notifyInfo: events.onNotifyInfo,
-          }}
-          children={
-            <>
-              <Wrapper
-                children={
-                  <>
-                    <Head>
-                      <title
-                        children='Knowledge Harvest'
+        <>
+          <Wrapper
+            children={
+              <>
+                <Head>
+                  <title
+                    children='Knowledge Harvest'
+                  />
+                  <meta
+                    name="viewport"
+                    content="user-scalable=no, width=device-width, initial-scale=1.0"
+                  />
+                  <meta
+                    name="apple-mobile-web-app-capable"
+                    content="yes"
+                  />
+                </Head>
+                <Navbar
+                  $show={state.headerExpanded}
+                />
+                <BodyWrapper
+                  children={
+                    <>
+                      <HistoryPanel
+                        $expanded={state.historyExpanded}
+                        onSelectNote={events.onClickHistoricalNote}
                       />
-                      <meta
-                        name="viewport"
-                        content="user-scalable=no, width=device-width, initial-scale=1.0"
+                      <CenterPanel
+                        children={
+                          <>
+                            <ActivePanel />
+                            <TagsPanel
+                              $expanded={state.tagsExpanded}
+                            />
+                          </>
+                        }
                       />
-                      <meta
-                        name="apple-mobile-web-app-capable"
-                        content="yes"
+                      <RelatedPanel
+                        $expanded={state.similarExpanded}
+                        onSelectNote={events.onClickRelatedNote}
                       />
-                    </Head>
-                    <Navbar
-                      $show={state.headerExpanded}
-                    />
-                    <BodyWrapper
-                      children={
-                        <>
-                          <HistoryPanel
-                            $expanded={state.historyExpanded}
-                            onSelectNote={events.onClickHistoricalNote}
-                          />
-                          <CenterPanel
-                            children={
-                              <>
-                                <ActivePanel />
-                                <TagsPanel
-                                  $expanded={state.tagsExpanded}
-                                />
-                              </>
-                            }
-                          />
-                          <RelatedPanel
-                            $expanded={state.similarExpanded}
-                            onSelectNote={events.onClickRelatedNote}
-                          />
-                          <ExpandHistoryToggleButton
-                            selected={state.historyExpanded}
-                            onClick={events.onClickHistoryToggle}
-                            children={<RightIcon />}
-                          />
-                          <ExpandTagsToggleButton
-                            selected={state.tagsExpanded}
-                            onClick={events.onClickTagsToggle}
-                            children={<UpIcon />}
-                          />
-                          <ExpandHeaderToggleButton
-                            selected={!state.headerExpanded}
-                            onClick={events.onClickHeaderToggle}
-                            children={<DownIcon />}
-                          />
-                          <ExpandRelatedToggleButton
-                            selected={state.similarExpanded}
-                            onClick={events.onClickSimilarToggle}
-                            children={<LeftIcon />}
-                          />
-                        </>
-                      }
-                    />
-                  </>
-                }
-              />
-              <Snackbar
-                message={state.message}
-                status={state.status}
-                onMessageClear={events.onMessageClear}
-              />
-            </>
-          }
-        />
+                      <ExpandHistoryToggleButton
+                        selected={state.historyExpanded}
+                        onClick={events.onClickHistoryToggle}
+                        children={<RightIcon />}
+                      />
+                      <ExpandTagsToggleButton
+                        selected={state.tagsExpanded}
+                        onClick={events.onClickTagsToggle}
+                        children={<UpIcon />}
+                      />
+                      <ExpandHeaderToggleButton
+                        selected={!state.headerExpanded}
+                        onClick={events.onClickHeaderToggle}
+                        children={<DownIcon />}
+                      />
+                      <ExpandRelatedToggleButton
+                        selected={state.similarExpanded}
+                        onClick={events.onClickSimilarToggle}
+                        children={<LeftIcon />}
+                      />
+                    </>
+                  }
+                />
+              </>
+            }
+          />
+          <Snackbar
+            message={state.message}
+            status={state.status}
+            onMessageClear={events.onMessageClear}
+          />
+        </>
       }
     />
   );

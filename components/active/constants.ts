@@ -2,13 +2,11 @@ import { useHooks } from "./hooks";
 import { tags as t } from '@lezer/highlight';
 import { createTheme } from 'thememirror';
 
-export const initialState = {
-  active: {
-    selection: '',
-    allowNotePersister: true,
-    confirmDelete: false,
-    showOptions: false,
-  }
+export const activePanelInitialState = {
+  selection: '',
+  allowNotePersister: true,
+  confirmDelete: false,
+  showOptions: false,
 };
 
 export type State = ReturnType<typeof useHooks>;

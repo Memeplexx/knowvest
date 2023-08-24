@@ -6,6 +6,7 @@ import { Confirmation } from '../confirmation';
 import { Card } from '../card';
 import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, OptionText, PopupOptions, SettingsIcon } from '@/utils/styles';
 import { HTMLAttributes } from 'react';
+import { store } from '@/utils/store';
 
 
 
@@ -69,7 +70,7 @@ export const Active = (
               />
               <Confirmation
                 show={state.confirmDelete}
-                onClose={() => state.store.confirmDelete.$set(false)}
+                onClose={() => store.activePanel.confirmDelete.$set(false)}
                 onConfirm={events.onClickRemoveNote}
                 title='Delete note requested'
                 message='Are you sure you want to delete this note?'

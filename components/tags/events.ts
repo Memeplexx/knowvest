@@ -1,41 +1,42 @@
 import { GroupId, SynonymId } from "@/server/dtos";
 import { State } from "./constants";
+import { store } from "@/utils/store";
 
 
 export const useEvents = (state: State) => ({
   onClickSynonym: (synonymId: SynonymId) => {
-    if (state.appStore.$state.synonymIds.includes(synonymId)) {
-      state.appStore.synonymIds.$filter.$eq(synonymId).$delete();
+    if (store.$state.synonymIds.includes(synonymId)) {
+      store.synonymIds.$filter.$eq(synonymId).$delete();
     } else {
-      state.appStore.synonymIds.$push(synonymId);
+      store.synonymIds.$push(synonymId);
     }
   },
   onChangeAllGroupTagsSelected: (groupId: GroupId) => {
     const synonyms = state.groupsWithSynonyms
       .findOrThrow(g => g.groupId === groupId).synonyms;
     if (synonyms.some(s => s.selected)) {
-      state.appStore.synonymIds.$filter.$in(synonyms.map(s => s.id)).$delete();
+      store.synonymIds.$filter.$in(synonyms.map(s => s.id)).$delete();
     } else {
-      state.appStore.synonymIds.$push(synonyms.map(s => s.id));
+      store.synonymIds.$push(synonyms.map(s => s.id));
     }
   },
   onChangeAllActiveTagsSelected: () => {
     if (state.tagsForActiveNote.some(s => s.selected)) {
-      state.appStore.synonymIds.$filter.$in(state.tagsForActiveNote.map(s => s.synonymId)).$delete();
+      store.synonymIds.$filter.$in(state.tagsForActiveNote.map(s => s.synonymId)).$delete();
     } else {
-      state.appStore.synonymIds.$push(state.tagsForActiveNote.map(s => s.synonymId));
+      store.synonymIds.$push(state.tagsForActiveNote.map(s => s.synonymId));
     }
   },
   onShowDialog: () => {
-    state.store.showConfigDialog.$set(true);
+    store.tagsPanel.showConfigDialog.$set(true);
   },
   onHideDialog: () => {
-    state.store.showConfigDialog.$set(false);
+    store.tagsPanel.showConfigDialog.$set(false);
   },
   onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-    state.store.$patch({ hoveringGroupId, hoveringSynonymId });
+    store.tagsPanel.$patch({ hoveringGroupId, hoveringSynonymId });
   },
   onMouseOutGroupTag: () => {
-    state.store.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
+    store.tagsPanel.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
   },
 });

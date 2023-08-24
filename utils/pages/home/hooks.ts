@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik";
-import { useGlobalStore, useNestedStore } from "olik-react";
-import { ServerSideProps, initialState, initialTransientState } from "./constants";
+import { ServerSideProps, initialTransientState } from "./constants";
 import { NoteId } from "@/server/dtos";
 import { useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
+import { store } from "@/utils/store";
 
 export const useHooks = (props: ServerSideProps) => {
 
@@ -13,15 +13,18 @@ export const useHooks = (props: ServerSideProps) => {
 
   const activeNoteId = useRef(props.notes[0]?.id || 0 as NoteId).current;
   const selectedTagIds = useRef(props.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId)).current;
-  const appStore = useGlobalStore({
-    ...props,
-    activeNoteId,
-    synonymIds: props.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct(),
-  });
 
-  const { store, state } = useNestedStore(
-    initialState
-  ).usingAccessor(s => s.homeComponent);
+  const init = useRef(true);
+  if (init.current) {
+    store.$patch({
+      ...props,
+      activeNoteId,
+      synonymIds: props.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct(),
+    });
+    init.current = false;
+  }
+
+  const state = store.home.$useState();
 
   const transient = useRecord(
     initialTransientState
@@ -33,7 +36,6 @@ export const useHooks = (props: ServerSideProps) => {
 
   return {
     store,
-    appStore,
     ...transient,
     ...state,
   }

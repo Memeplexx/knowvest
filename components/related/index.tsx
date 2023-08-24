@@ -4,6 +4,7 @@ import { Header, Icon, NoteCount, Result, Wrapper } from './styles';
 import { Card } from '../card';
 import { Props } from './constants';
 import { usePropsWithoutFunctions } from '@/utils/functions';
+import { store } from '@/utils/store';
 
 
 export const Related = (
@@ -39,7 +40,7 @@ export const Related = (
                   />
                   <Result
                     note={note.note}
-                    synonymIds={state.appStore.synonymIds}
+                    synonymIds={store.synonymIds}
                   />
                 </>
               }

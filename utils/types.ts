@@ -1,6 +1,6 @@
+import { Group, Note, NoteTag, Synonym, SynonymGroup, Tag } from "@/server/dtos";
 import { AppRouter } from "@/server/routers/_app";
 import prismaClient from "@prisma/client";
-import { Group, Note, NoteId, NoteTag, Synonym, SynonymGroup, SynonymId, Tag } from "@/server/dtos";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { trpcReturningEntities } from "./trpc";
 
@@ -36,16 +36,6 @@ export type TrpcReturningDtos = {
 export type DecisionResult<X, H> = X extends (string | number | boolean | symbol | Record<string, unknown>) ? X : H;
 
 export type EventMap<T> = T extends 'click' ? MouseEvent : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<EventTarget> : never;
-
-export type AppStoreState = {
-  groups: Array<Group>,
-  synonymGroups: Array<SynonymGroup>,
-  noteTags: Array<NoteTag>,
-  notes: Array<Note>,
-  tags: Array<Tag>,
-  synonymIds: Array<SynonymId>,
-  activeNoteId: NoteId,
-}
 
 export type Keys =
   | 'Backspace'

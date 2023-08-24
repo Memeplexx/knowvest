@@ -1,18 +1,15 @@
 import { derive } from "olik";
 import { Props } from "./constants";
-import { useContext } from "react";
-import { OlikContext } from "@/utils/pages/home/constants";
+import { store } from "@/utils/store";
 
 export const useHooks = (props: Props) => {
 
-  const appStore = useContext(OlikContext)!;
-
   const queriedNotes = derive(
-    appStore.activeNoteId,
-    appStore.notes,
-    appStore.tags,
-    appStore.noteTags,
-    appStore.synonymIds,
+    store.activeNoteId,
+    store.notes,
+    store.tags,
+    store.noteTags,
+    store.synonymIds,
   ).$with((activeNoteId, notes, tags, noteTags, synonymIds) => {
     return synonymIds
       .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
@@ -39,7 +36,6 @@ export const useHooks = (props: Props) => {
 
   return {
     ...props,
-    appStore,
     queriedNotes: queriedNotes.$useState(),
     noteCountString: noteCountString.$useState(),
   }

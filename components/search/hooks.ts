@@ -1,21 +1,18 @@
-import { ForwardedRef, useCallback, useContext, useEffect, useMemo, useRef } from "react";
-import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
+import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
+import { AutocompleteOptionType, Props, dialogWidth } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
-import { useNestedStore } from "olik-react";
 import { derive } from "olik";
-import { OlikContext } from "@/utils/pages/home/constants";
+import { store } from "@/utils/store";
 
 export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const appStore = useContext(OlikContext)!;
-
-  const { store, state } = useNestedStore(initialState).usingAccessor(s => s.search);
+  const state = store.search.$useState();
 
   const allAutocompleteOptions = derive(
-    appStore.tags,
-    appStore.groups,
-    store.selectedSynonymIds,
-    store.selectedGroupIds,
+    store.tags,
+    store.groups,
+    store.search.selectedSynonymIds,
+    store.search.selectedGroupIds,
   ).$with((tags, groups, selectedSynonymIds, selectedGroupIds) => {
     return [
       ...tags
@@ -40,25 +37,25 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const autocompleteOptions = derive(
     allAutocompleteOptions,
-    store.autocompleteText,
+    store.search.autocompleteText,
   ).$with((allAutocompleteOptions, autocompleteText) => {
     return allAutocompleteOptions
       .filter(o => o.label.toLowerCase().includes(autocompleteText.toLowerCase()))
   });
 
   const selectedSynonymTags = derive(
-    store.selectedSynonymIds,
-    appStore.tags,
+    store.search.selectedSynonymIds,
+    store.tags,
   ).$with((selectedSynonymIds, tags) => {
     return selectedSynonymIds
       .map(synonymId => tags.filter(t => t.synonymId === synonymId))
   });
 
   const selectedGroupTags = derive(
-    store.selectedGroupIds,
-    appStore.groups,
-    appStore.synonymGroups,
-    appStore.tags,
+    store.search.selectedGroupIds,
+    store.groups,
+    store.synonymGroups,
+    store.tags,
   ).$with((selectedGroupIds, groups, synonymGroups, tags) => {
     return selectedGroupIds
       .map(groupId => ({
@@ -74,10 +71,10 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   const notesByTags = derive(
-    store.selectedSynonymIds,
-    appStore.noteTags,
-    appStore.notes,
-    appStore.tags,
+    store.search.selectedSynonymIds,
+    store.noteTags,
+    store.notes,
+    store.tags,
   ).$with((selectedSynonymIds, noteTags, notes, tags) => {
     const tagIds = tags
       .filter(t => selectedSynonymIds.includes(t.synonymId))
@@ -96,7 +93,7 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [state.showingTab, notesByTags]);
 
   const listener = useCallback(() => {
-    const state = store.$state;
+    const state = store.$state.search;
     const screenIsNarrow = window.innerWidth < dialogWidth;
     const payload = {
       showSearchPane: !screenIsNarrow || state.showingTab === 'search',
@@ -104,9 +101,9 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       screenIsNarrow,
     };
     if (payload.showSearchPane !== state.showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
-      store.$patch(payload);
+      store.search.$patch(payload);
     }
-  }, [store])
+  }, [])
   useEffect(() => {
     window.addEventListener('resize', listener);
     return () => window.removeEventListener('resize', listener)
@@ -127,6 +124,5 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     props,
     ...state,
     store,
-    appStore,
   }
 }

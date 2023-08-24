@@ -4,13 +4,9 @@ import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
-import { Store } from "olik";
-import { initialState } from "./constants";
-import { AppStoreState } from "@/utils/types";
+import { store } from "@/utils/store";
 
-export const createAutocompleteExtension = (
-  { appStore }: { appStore: Store<AppStoreState> },
-) => {
+export const createAutocompleteExtension = () => {
   return autocompletion({
     override: [
       (context: CompletionContext) => {
@@ -18,7 +14,7 @@ export const createAutocompleteExtension = (
         if (!context.explicit && !before) return null;
         return {
           from: before ? before.from : context.pos,
-          options: appStore.tags.$state.map(tag => ({ label: tag.text })),
+          options: store.tags.$state.map(tag => ({ label: tag.text })),
           validFor: /^\w*$/,
         };
       }
@@ -26,36 +22,31 @@ export const createAutocompleteExtension = (
   });
 }
 
-export const createNotePersisterExtension = (
-  { debounce, activeStore, appStore }:
-    { debounce: number, activeStore: Store<typeof initialState['active']>, appStore: Store<AppStoreState> }
-) => {
+export const createNotePersisterExtension = ({ debounce }: { debounce: number } ) => {
   let timestamp = Date.now();
-  let activeNoteIdRef = appStore.activeNoteId.$state;
+  let activeNoteIdRef = store.activeNoteId.$state;
   const updateNote = async (update: ViewUpdate) => {
-    if (appStore.activeNoteId.$state !== activeNoteIdRef) { return; }
+    if (store.activeNoteId.$state !== activeNoteIdRef) { return; }
     if (Date.now() - timestamp < debounce) { return; }
-    if (!activeStore.allowNotePersister.$state) { return; }
-    const apiResponse = await trpc.note.update.mutate({ noteId: appStore.activeNoteId.$state, text: update.state.doc.toString() });
-    appStore.notes.$find.id.$eq(appStore.activeNoteId.$state).$set(apiResponse.updatedNote);
+    if (!store.activePanel.allowNotePersister.$state) { return; }
+    const apiResponse = await trpc.note.update.mutate({ noteId: store.activeNoteId.$state, text: update.state.doc.toString() });
+    store.notes.$find.id.$eq(store.activeNoteId.$state).$set(apiResponse.updatedNote);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
-    if (!activeStore.allowNotePersister.$state) { return; }
+    if (!store.activePanel.allowNotePersister.$state) { return; }
     timestamp = Date.now();
     setTimeout(() => updateNote(update), debounce)
-    activeNoteIdRef = appStore.activeNoteId.$state;
+    activeNoteIdRef = store.activeNoteId.$state;
   });
 }
 
-export const noteTagsPersisterExtension = (
-  { appStore }: { appStore: Store<AppStoreState> },
-) => {
+export const noteTagsPersisterExtension = () => {
   let previousActiveNoteId = 0 as NoteId;
   let previousActiveNoteTagIds = new Array<TagId>();
-  const tagsWithRegexp = appStore.tags.$state
+  const tagsWithRegexp = store.tags.$state
     .map(tag => ({ ...tag, regexp: new RegExp(`\\b(${tag.text})\\b`, 'gi') }));
-  appStore.tags.$onChange(newTags => {
+    store.tags.$onChange(newTags => {
     const currentTagIds = tagsWithRegexp.map(t => t.id);
     newTags
       .filter(nt => !currentTagIds.includes(nt.id))
@@ -67,8 +58,8 @@ export const noteTagsPersisterExtension = (
   return EditorView.updateListener.of(async update => {
     if (!update.docChanged) { return; }
     const activeNoteText = update.state.doc.toString();
-    if (previousActiveNoteId !== appStore.activeNoteId.$state) {
-      previousActiveNoteId = appStore.activeNoteId.$state;
+    if (previousActiveNoteId !== store.activeNoteId.$state) {
+      previousActiveNoteId = store.activeNoteId.$state;
       previousActiveNoteTagIds = tagsWithRegexp
         .map(t => ({ tagId: t.id, items: [...activeNoteText.matchAll(t.regexp)] }))
         .flatMap(t => t.items.map(() => t.tagId))
@@ -85,18 +76,18 @@ export const noteTagsPersisterExtension = (
     previousActiveNoteTagIds = newActiveNoteTagIds;
     if (!uniqueTagsHaveChanged) {
       if (nonUniqueTagsHaveChanged) {
-        appStore.noteTags.$set(appStore.noteTags.$state.slice().reverse());  // forces re-rendering in history and similar panels
+        store.noteTags.$set(store.noteTags.$state.slice().reverse());  // forces re-rendering in history and similar panels
       }
       return;
     }
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
-    const noteTags = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: appStore.activeNoteId.$state });
-    appStore.noteTags.$filter.noteId.$eq(appStore.activeNoteId.$state).$delete();
-    appStore.noteTags.$push(noteTags);
+    const noteTags = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: store.activeNoteId.$state });
+    store.noteTags.$filter.noteId.$eq(store.activeNoteId.$state).$delete();
+    store.noteTags.$push(noteTags);
     const tagIds = noteTags.map(nt => nt.tagId);
-    const synonymIds = appStore.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
-    appStore.synonymIds.$set(synonymIds);
+    const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
+    store.synonymIds.$set(synonymIds);
   });
 }
 
@@ -139,10 +130,10 @@ export const createBulletPointPlugin = () => {
   });
 }
 
-export const createTextSelectorPlugin = (activeStore: Store<typeof initialState['active']>) => {
+export const createTextSelectorPlugin = () => {
   const updateSelection = (value: string) => {
-    if (activeStore.selection.$state === value) { return; }
-    activeStore.selection.$set(value);
+    if (store.activePanel.selection.$state === value) { return; }
+    store.activePanel.selection.$set(value);
   }
   return ViewPlugin.fromClass(class {
     decorations: DecorationSet;

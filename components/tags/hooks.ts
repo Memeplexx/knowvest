@@ -1,19 +1,15 @@
 import { useForwardedRef } from "@/utils/hooks";
+import { store } from "@/utils/store";
 import { derive } from "olik";
-import { useNestedStore } from "olik-react";
-import { ForwardedRef, useContext } from "react";
-import { initialState } from "./constants";
-import { OlikContext } from "@/utils/pages/home/constants";
+import { ForwardedRef } from "react";
 
 export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
 
-  const appStore = useContext(OlikContext)!;
-
-  const { store, state } = useNestedStore(initialState).usingAccessor(s => s.tagsPanel);
+  const state = store.tagsPanel.$useState();
 
   const tagIdsForActiveNote = derive(
-    appStore.activeNoteId,
-    appStore.noteTags,
+    store.activeNoteId,
+    store.noteTags,
   ).$with((activeNoteId, noteTags) => {
     return noteTags
       .filter(nt => nt.noteId === activeNoteId)
@@ -21,8 +17,8 @@ export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
   });
 
   const tagsForActiveNote = derive(
-    appStore.tags,
-    appStore.synonymIds,
+    store.tags,
+    store.synonymIds,
     tagIdsForActiveNote,
   ).$with((tags, synonymIds, tagIdsForActiveNote) => {
     return tagIdsForActiveNote
@@ -47,11 +43,11 @@ export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
   })
 
   const groupsWithSynonyms = derive(
-    appStore.groups,
-    appStore.noteTags,
-    appStore.synonymGroups,
-    appStore.tags,
-    appStore.synonymIds,
+    store.groups,
+    store.noteTags,
+    store.synonymGroups,
+    store.tags,
+    store.synonymIds,
     tagIdsForActiveNote,
   ).$with((groups, noteTags, synonymGroups, tags, synonymIds, tagIdsForActiveNote) => {
     return noteTags
@@ -85,7 +81,6 @@ export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
   });
 
   return {
-    store,
     ...state,
     groupsWithSynonyms: groupsWithSynonyms.$useState(),
     tagsForActiveNote: tagsForActiveNote.$useState(),
@@ -93,6 +88,5 @@ export const useHooks = (ref: ForwardedRef<HTMLElement>) => {
     allActiveTagsSelected: allActiveTagsSelected.$useState(),
     tagIdsForActiveNote: tagIdsForActiveNote.$useState(),
     containerRef: useForwardedRef(ref),
-    appStore,
   };
 };

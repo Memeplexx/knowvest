@@ -2,9 +2,9 @@ import { SynonymId, TagId } from '@/server/dtos';
 import { ChangeDesc, Range, StateEffect, StateField } from '@codemirror/state';
 import { Decoration, DecorationSet, EditorView } from '@codemirror/view';
 import { Readable, derive } from 'olik';
-import { ForwardedRef, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { ForwardedRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { EventMap } from './types';
-import { OlikContext } from './pages/home/constants';
+import { store } from './store';
 
 
 
@@ -82,12 +82,11 @@ export const useDebounce = <T>(value: T, delay: number, action: () => void) => {
 }
 
 export const useNoteTagsToTagHighlighter = (editorView: EditorView | null, synonymIds: Readable<SynonymId[]>) => {
-  const appStore = useContext(OlikContext)!;
   const noteTags = derive(
     synonymIds,
-    appStore.tags,
-    appStore.noteTags,
-    appStore.synonymGroups,
+    store.tags,
+    store.noteTags,
+    store.synonymGroups,
   ).$with((synonymIds, tags, noteTags, synonymGroups) => {
     const groupSynonymIds = synonymGroups
       .filter(sg => synonymIds.includes(sg.synonymId))
@@ -154,7 +153,7 @@ export const useNoteTagsToTagHighlighter = (editorView: EditorView | null, synon
   return useMemo(() => {
     const docString = editorView?.state.doc.toString() || '';
     const tagPositions = noteTags
-      .map(nt => appStore.tags.$state.findOrThrow(t => t.id === nt.tagId))
+      .map(nt => store.tags.$state.findOrThrow(t => t.id === nt.tagId))
       .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
         .map(m => m.index!)
         .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })));
@@ -169,7 +168,7 @@ export const useNoteTagsToTagHighlighter = (editorView: EditorView | null, synon
     }
     editorView?.dispatch({ effects });
     previousTagPositions.current = tagPositions;
-  }, [appStore, editorView, noteTags]);
+  }, [editorView, noteTags]);
 }
 
 export const useIsomorphicLayoutEffect =

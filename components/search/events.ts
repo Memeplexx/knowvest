@@ -3,6 +3,7 @@ import { State } from "./constants";
 import { onSelectGroup, onSelectSynonym } from "./functions";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { ancestorMatches } from "@/utils/functions";
+import { store } from "@/utils/store";
 
 export const useEvents = (state: State) => ({
   onClickDocument: useEventHandlerForDocument('click', event => {
@@ -16,7 +17,7 @@ export const useEvents = (state: State) => ({
       return;
     }
     if (state.showAutocompleteOptions) {
-      return state.store.showAutocompleteOptions.$set(false);
+      return store.search.showAutocompleteOptions.$set(false);
     }
     if (state.bodyRef.current?.contains(event.target as HTMLElement)) {
       return;
@@ -24,7 +25,7 @@ export const useEvents = (state: State) => ({
     state.props.onHide();
   }),
   onAutocompleteSelected: (value: string | null) => {
-    state.autocompleteText && state.store.autocompleteText.$set('');
+    state.autocompleteText && store.search.autocompleteText.$set('');
     const selection = state.autocompleteOptions.findOrThrow(o => o.value === value);
     if (selection.type === 'synonym') {
       onSelectSynonym(state, selection.id as SynonymId);
@@ -33,7 +34,7 @@ export const useEvents = (state: State) => ({
     }
   },
   onAutocompleteInputChange: (value: string) => {
-    state.store.autocompleteText.$set(value);
+    store.search.autocompleteText.$set(value);
   },
   onClickSelectedSynonym: (synonymId: SynonymId) => {
     onSelectSynonym(state, synonymId);
@@ -42,36 +43,36 @@ export const useEvents = (state: State) => ({
     onSelectGroup(state, groupId);
   },
   onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => {
-    state.store.hoveredSynonymId.$set(hoveredSynonymId);
+    store.search.hoveredSynonymId.$set(hoveredSynonymId);
   },
   onMouseOutSelectedSynonym: () => {
-    state.store.hoveredSynonymId.$set(null);
+    store.search.hoveredSynonymId.$set(null);
   },
   onClickResult: (noteId: NoteId) => {
-    state.appStore.activeNoteId.$set(noteId);
-    const tagIds = state.appStore.noteTags.$state.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
-    const synonymIds = state.appStore.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
-    state.appStore.synonymIds.$set(synonymIds);
+    store.activeNoteId.$set(noteId);
+    const tagIds = store.noteTags.$state.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
+    const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
+    store.synonymIds.$set(synonymIds);
     state.props.onHide();
   },
   onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {
-    state.store.showAutocompleteOptions.$set(showAutocompleteOptions);
+    store.search.showAutocompleteOptions.$set(showAutocompleteOptions);
   },
   onAutocompleteInputFocused: () => {
-    state.store.showAutocompleteOptions.$set(true);
+    store.search.showAutocompleteOptions.$set(true);
   },
   onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
     if (event.key !== 'Escape') { return; }
     if (state.showAutocompleteOptions) {
-      return state.store.showAutocompleteOptions.$set(false);
+      return store.search.showAutocompleteOptions.$set(false);
     }
     state.props.onHide();
   }),
   onClickTabButton: () => {
     if (state.showingTab === 'search') {
-      state.store.$patch({ showingTab: 'results', showSearchPane: false, showResultsPane: true })
+      store.search.$patch({ showingTab: 'results', showSearchPane: false, showResultsPane: true })
     } else if (state.showingTab === 'results') {
-      state.store.$patch({ showingTab: 'search', showSearchPane: true, showResultsPane: false })
+      store.search.$patch({ showingTab: 'search', showSearchPane: true, showResultsPane: false })
     }
   },
 })

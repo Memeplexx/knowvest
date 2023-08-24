@@ -4,6 +4,7 @@ import { defineEvents } from './events';
 import { Props } from './constants';
 import { usePropsWithoutFunctions } from '@/utils/functions';
 import { Header, Icon, Result, RightBorder, Wrapper } from './styles';
+import { store } from '@/utils/store';
 
 export const History = (
   props: Props
@@ -33,7 +34,7 @@ export const History = (
                   />
                   <Result
                     note={note}
-                    synonymIds={state.appStore.synonymIds}
+                    synonymIds={store.synonymIds}
                   />
                   <RightBorder
                   />

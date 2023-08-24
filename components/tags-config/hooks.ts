@@ -4,10 +4,10 @@ import { ForwardedRef, useContext, useRef } from 'react';
 import { decide } from '@/utils/functions';
 import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik';
-import { useNestedStore } from 'olik-react';
 import { AutocompleteHandle } from '../autocomplete/constants';
-import { Props, initialState } from './constants';
-import { HomeContext, OlikContext } from '@/utils/pages/home/constants';
+import { Props } from './constants';
+import { NotificationContext } from '@/utils/pages/home/constants';
+import { store } from '@/utils/store';
 
 
 
@@ -15,24 +15,22 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const floating = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 
-  const homeContext = useContext(HomeContext)!;
+  const notify = useContext(NotificationContext)!;
 
-  const appStore = useContext(OlikContext)!;
-
-  const { store, state } = useNestedStore(initialState).usingAccessor(s => s.config);
+  const state = store.config.$useState();
 
   const tagsInSynonymGroup = derive(
-    store.synonymId,
-    appStore.tags,
+    store.config.synonymId,
+    store.tags,
   ).$with((synonymId, tags) => {
     return tags.filter(t => t.synonymId === synonymId);
   });
 
   const tagsInCustomGroups = derive(
-    appStore.synonymGroups,
-    appStore.groups,
-    appStore.tags,
-    store.synonymId,
+    store.synonymGroups,
+    store.groups,
+    store.tags,
+    store.config.synonymId,
     tagsInSynonymGroup,
   ).$with((synonymGroups, groups, tags, synonymId, tagsInSynonymGroup) => {
     return [
@@ -63,7 +61,7 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   const tagSynonymGroupMap = derive(
-    appStore.tags,
+    store.tags,
   ).$with((tags) => {
     return tags
       .groupBy(tag => tag.synonymId)
@@ -71,9 +69,9 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   const autocompleteOptionsGroups = derive(
-    appStore.groups,
-    appStore.synonymGroups,
-    appStore.tags,
+    store.groups,
+    store.synonymGroups,
+    store.tags,
     tagsInCustomGroups,
   ).$with((groups, synonymGroups, tags, tagsInCustomGroups) => {
     return groups
@@ -88,10 +86,10 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   const autocompleteOptionsTags = derive(
-    appStore.tags,
-    appStore.synonymGroups,
-    store.groupId,
-    store.synonymId,
+    store.tags,
+    store.synonymGroups,
+    store.config.groupId,
+    store.config.synonymId,
     tagSynonymGroupMap,
   ).$with((tags, synonymGroups, groupId, synonymId, tagSynonymGroupMap) => {
     return tags
@@ -112,7 +110,7 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   const autocompleteOptions = derive(
-    store.autocompleteAction,
+    store.config.autocompleteAction,
     autocompleteOptionsGroups,
     autocompleteOptionsTags,
   ).$with((autocompleteAction, autocompleteOptionsGroups, autocompleteOptionsTags) => {
@@ -122,9 +120,9 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   const autocompleteTitle = derive(
-    store.groupSynonymId,
-    store.tagId,
-    store.groupId,
+    store.config.groupSynonymId,
+    store.config.tagId,
+    store.config.groupId,
   ).$with((groupSynonymId, tagId, groupId) => {
     return decide([
       {
@@ -147,8 +145,8 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   const selectedGroupSelectedSynonym = derive(
-    store.groupId,
-    store.groupSynonymId,
+    store.config.groupId,
+    store.config.groupSynonymId,
     tagsInCustomGroups,
   ).$with((groupId, groupSynonymId, tagsInCustomGroups) => {
     if (!groupId || !groupSynonymId) { return ''; }
@@ -162,16 +160,14 @@ export const useHooks = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     modalRef: useRef<HTMLDivElement>(null),
     autocompleteRef: useRef<AutocompleteHandle>(null),
     selectedTagRef: useRef<HTMLDivElement>(null),
-    activeNoteId: appStore.activeNoteId.$useState(),
+    activeNoteId: store.activeNoteId.$useState(),
     autocompleteOptions: autocompleteOptions.$useState(),
     tagsInCustomGroups: tagsInCustomGroups.$useState(),
     tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
     autocompleteTitle: autocompleteTitle.$useState(),
     selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
     autocompleteDisabled: !!state.groupSynonymId,
-    ...homeContext,
+    notify,
     ...state,
-    store,
-    appStore,
   };
 }
