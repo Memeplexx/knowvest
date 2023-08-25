@@ -1,7 +1,16 @@
 import { SettingsIcon as BaseSettingsIcon } from '@/utils/styles';
 import styled from 'styled-components';
 import { possible } from '../html';
+import { Card } from '../card';
 
+
+export const Wrapper = styled.div`
+  display: flex;
+`;
+
+export const CardWrapper = styled(Card)`
+  flex: 1;
+`;
 
 export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $last: boolean, $active: boolean }>`
   font-size: 12px;
@@ -56,4 +65,15 @@ export const TagSynonym = styled(possible.div)<{ selected: boolean }>`
   opacity: ${p => p.selected ? 1 : 0.6};
 `;
 
-export const SettingsIcon = styled(BaseSettingsIcon)``;
+export const SettingsIcon = styled(BaseSettingsIcon)`
+`;
+
+export const NoTagsPlaceholder = styled(possible.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+`;

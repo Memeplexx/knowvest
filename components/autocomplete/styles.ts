@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-import { IconButton } from '../card-header-button';
+import { ButtonIcon } from '../button-icon';
 import { possible } from '../html';
 import { CloseIcon } from '@/utils/styles';
 
 
-export const ClearTextButton = styled(IconButton)`
+export const ClearTextButton = styled(ButtonIcon)`
   position: absolute;
   right: 1px;
   top: 1px;

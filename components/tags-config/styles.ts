@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IconButton } from '../card-header-button';
+import { ButtonIcon } from '../button-icon';
 import { possible } from '../html';
 import { Button } from '../button';
 
@@ -14,7 +14,7 @@ export const BodyHeader = styled(possible.div)`
   min-height: 40px;
 `;
 
-export const SettingsButton = styled(IconButton) <{ selected: boolean, $show: boolean }>`
+export const SettingsButton = styled(ButtonIcon) <{ selected: boolean, $show: boolean }>`
   opacity: ${p => p.$show ? 1 : 0};
 `;
 

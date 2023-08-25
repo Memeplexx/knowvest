@@ -7,6 +7,7 @@ export const activePanelInitialState = {
   showOptions: false,
   loadingSelection: false,
   loadingNote: false,
+  editorHasText: false,
 };
 
 export type Inputs = ReturnType<typeof useInputs>;

@@ -27,7 +27,7 @@ import {
 import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
-import { createAutocompleteExtension, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin } from './shared';
+import { createAutocompleteExtension, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin, getEditorHasTextUpdater } from './shared';
 import { store } from '@/utils/store';
 
 
@@ -87,7 +87,7 @@ export const useCodeMirror = (editorDomElement: React.RefObject<HTMLDivElement>)
         createNoteTagsPersisterExtension(),
         createNotePersisterExtension({ debounce: 500 }),
         createTextSelectorPlugin(),
-        // myTheme,
+        getEditorHasTextUpdater(),
       ],
     });
   }, [editorDomElement]);

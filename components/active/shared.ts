@@ -188,6 +188,17 @@ export const createTextSelectorPlugin = () => {
   });
 }
 
+export const getEditorHasTextUpdater = () => {
+  return EditorView.updateListener.of(update => {
+    if (!update.docChanged) { return; }
+    if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
+      store.activePanel.editorHasText.$set(false);      
+    } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {
+      store.activePanel.editorHasText.$set(true);
+    }
+  });
+}
+
 // Atomic Ranges example
 // export const useBulletPointPlugin = () => {
 //   return React.useRef(

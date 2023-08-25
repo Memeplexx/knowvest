@@ -2,7 +2,7 @@ import Image from "next/image";
 import styled from "styled-components";
 import { possible } from "../html";
 import { SearchIcon as BaseSearchIcon } from "@/utils/styles";
-import { IconButton } from "../card-header-button";
+import { ButtonIcon } from "../button-icon";
 
 export const Wrapper = styled(possible.div)<{ $show: boolean }>`
   z-index: 2;
@@ -34,5 +34,5 @@ export const UserButton = styled.img`
   cursor: pointer;
 `;
 
-export const SearchButton = styled(IconButton)`
+export const SearchButton = styled(ButtonIcon)`
 `;

@@ -1,7 +1,7 @@
 import { useInputs } from './inputs';
 import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, Buttons, CardWrapper, Instruction, TextEditor, TextEditorWrapper, Wrapper } from './styles';
 import { useOutputs } from './outputs';
-import { IconButton } from '../card-header-button';
+import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
 import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, OptionText, PopupOptions, SettingsIcon, AddIcon, SplitIcon, FilterIcon } from '@/utils/styles';
 import { HTMLAttributes } from 'react';
@@ -28,13 +28,13 @@ export const Active = (
               <Buttons
                 children={
                   <>
-                    <IconButton
-                      showIf={!state.selection.trim().length}
+                    <ButtonIcon
+                      showIf={!!state.editorHasText}
                       onClick={outputs.onClickCreateNote}
                       title='Create a new note'
                       children={<CreateIcon />}
                     />
-                    <IconButton
+                    <ButtonIcon
                       children={<SettingsIcon />}
                       onClick={outputs.onClickSettingsButton}
                       ref={refs.floating.refs.setReference}

@@ -17,6 +17,7 @@ export const useOutputs = (inputs: Inputs) => {
         store.notes.$push(created);
         store.activeNoteId.$set(created.id);
         store.synonymIds.$clear();
+        store.activePanel.editorHasText.$set(false);
       })
       notify.success('New note created');
     },
