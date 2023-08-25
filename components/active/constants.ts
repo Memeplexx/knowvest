@@ -7,6 +7,8 @@ export const activePanelInitialState = {
   allowNotePersister: true,
   confirmDelete: false,
   showOptions: false,
+  loadingSelection: false,
+  loadingNote: false,
 };
 
 export type Inputs = ReturnType<typeof useInputs>;
@@ -23,10 +25,10 @@ export const codeMirrorTheme: Parameters<typeof createTheme>[0] = {
     gutterForeground: '#8a919966',
   },
   styles: [
-    {
-      tag: t.comment,
-      color: '#787b8099',
-    },
+    // {
+    //   tag: t.comment,
+    //   color: '#787b8099',
+    // },
     {
       tag: t.variableName,
       color: '#57abff',

@@ -151,12 +151,16 @@ html {
 
 .cm-highlight {
   color: #e987e9;
-  /* color: #96ff37; */
 }
 
 .ͼ1 .cm-line {
   padding: 0;
 }
+
+.ͼ2 .cm-content {
+  caret-color: white;
+}
+
 
 
 

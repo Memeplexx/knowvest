@@ -89,7 +89,7 @@ export const useCodeMirror = (editorDomElement: React.RefObject<HTMLDivElement>)
         createNoteTagsPersisterExtension(),
         createNotePersisterExtension({ debounce: 500 }),
         createTextSelectorPlugin(),
-        myTheme,
+        // myTheme,
       ],
     });
   }, [editorDomElement]);

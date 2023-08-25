@@ -6,20 +6,25 @@ import { store } from "@/utils/store";
 import { transact } from "olik";
 
 
-export const useEvents = (inputs: Inputs) => {
+export const useOutputs = (inputs: Inputs) => {
   const { refs, state, notify } = inputs;
   return {
     onClickCreateNote: async () => {
+      store.activePanel.loadingNote.$set(true);
       const created = await trpc.note.create.mutate();
-      transact(() => {
+      await transact(async () => {
+        store.activePanel.loadingNote.$set(false);
         store.notes.$push(created);
         store.activeNoteId.$set(created.id);
         store.synonymIds.$clear();
       })
+      notify.success('New note created');
     },
     onClickRemoveNote: async () => {
       store.activePanel.allowNotePersister.$set(false);
+      store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.delete.mutate({ noteId: store.$state.activeNoteId });
+      store.activePanel.loadingNote.$set(false);
       store.activePanel.confirmDelete.$set(false);
       store.noteTags.$filter.noteId.$in(apiResponse.noteTagsDeleted.map(nt => nt.noteId)).$delete();
       store.notes.$find.id.$eq(apiResponse.noteDeleted.id).$delete();
@@ -30,15 +35,18 @@ export const useEvents = (inputs: Inputs) => {
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
     },
     onClickDuplicateNote: async () => {
+      store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.duplicate.mutate({ noteId: store.$state.activeNoteId });
+      store.activePanel.loadingNote.$set(false);
       transact(() => {
         store.noteTags.$push(apiResponse.noteTagsCreated);
         store.notes.$push(apiResponse.noteCreated);
       })
     },
     onClickCreateNewTagFromSelection: async () => {
-      state.codeMirror!.dispatch({ selection: { anchor: state.codeMirror!.state.selection.ranges[0].anchor } });
+      store.activePanel.loadingSelection.$set(true);
       const apiResponse = await trpc.tag.createFromActiveNote.mutate({ tagText: state.selection });
+      store.activePanel.loadingSelection.$set(false);
       switch (apiResponse.status) {
         case 'BAD_REQUEST': return notify.error(apiResponse.fields.tagText);
         case 'CONFLICT': return notify.error(apiResponse.fields.tagText);
@@ -52,6 +60,7 @@ export const useEvents = (inputs: Inputs) => {
         store.synonymIds.$push(synonymId);
       }
       store.activePanel.selection.$set('');
+      state.codeMirror!.dispatch({ selection: { anchor: state.codeMirror!.state.selection.ranges[0].anchor } });
     },
     onClickFilterNotesFromSelection: () => {
       const { from, to } = state.codeMirror!.state.selection.ranges[0];
@@ -65,7 +74,9 @@ export const useEvents = (inputs: Inputs) => {
     },
     onClickSplitNoteFromSelection: async () => {
       const range = state.codeMirror!.state.selection.ranges[0];
+      store.activePanel.loadingSelection.$set(true);
       const apiResponse = await trpc.note.split.mutate({ ...range, splitFromNoteId: store.$state.activeNoteId });
+      store.activePanel.loadingSelection.$set(false);
       const noteIds = apiResponse.noteTagsRemoved.map(nt => nt.noteId);
       const tagIds = apiResponse.noteTagsRemoved.map(nt => nt.tagId);
       transact(() => {
