@@ -6,7 +6,7 @@ export default function Document() {
       <Head
         children={
           <>
-            <link rel="manifest" href="/manifest.json" />
+            <link rel="manifest" href="/manifest.webmanifest" />
             <link rel="apple-touch-icon" href="/icon.png" />
             <meta name="theme-color" content="#000" />
           </>
