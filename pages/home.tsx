@@ -27,6 +27,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     = await prisma.user.findFirst({ where: { email: user.email! } })
     || await prisma.user.create({ data: { email: user.email!, name: user.name!, image: user.image! } });
 
+  // Create users first note if it doesn't exist yet
+  if (!await prisma.note.findFirst({ where: { userId: userByEmail.id } })) {
+    await prisma.note.create({
+      data: {
+        userId: userByEmail.id,
+        text: '# Welcome to Knowledge Harvest! ## This is your first note. Remove this text to get started ❤️',
+        dateViewed: new Date(),
+      }
+    });
+  }
+
   // Return props using the user id to select the correct data
   const userId = userByEmail.id as UserId;
   return {

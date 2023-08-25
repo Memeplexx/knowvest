@@ -29,7 +29,7 @@ import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
 import { createTheme } from 'thememirror';
 import { codeMirrorTheme } from './constants';
-import { createAutocompleteExtension, createBulletPointPlugin, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin } from './shared';
+import { createAutocompleteExtension, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin } from './shared';
 import { store } from '@/utils/store';
 
 
@@ -87,7 +87,6 @@ export const useCodeMirror = (editorDomElement: React.RefObject<HTMLDivElement>)
         keymap.of([ ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap ]),
         createAutocompleteExtension(),
         createNoteTagsPersisterExtension(),
-        createBulletPointPlugin(),
         createNotePersisterExtension({ debounce: 500 }),
         createTextSelectorPlugin(),
         myTheme,
