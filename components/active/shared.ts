@@ -2,7 +2,7 @@ import { NoteId, TagId } from "@/server/dtos";
 import { trpc } from "@/utils/trpc";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
-import { Range } from "@codemirror/state";
+import { EditorState, Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { store } from "@/utils/store";
 
@@ -188,7 +188,7 @@ export const createTextSelectorPlugin = () => {
   });
 }
 
-export const getEditorHasTextUpdater = () => {
+export const createEditorHasTextUpdater = () => {
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
     if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
@@ -197,6 +197,15 @@ export const getEditorHasTextUpdater = () => {
       store.activePanel.editorHasText.$set(true);
     }
   });
+}
+
+export const createPasteListener = () => {
+  return EditorState.transactionFilter.of(tr => {
+    if (tr.isUserEvent('input.paste')) {
+      console.log('...', tr);
+    }
+    return tr;
+  })
 }
 
 // Atomic Ranges example

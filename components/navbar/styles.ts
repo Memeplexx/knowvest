@@ -27,9 +27,7 @@ export const RightContent = styled(possible.div)`
 export const SearchIcon = styled(BaseSearchIcon)`
 `;
 
-export const UserButton = styled.img`
-  width: 44px;
-  height: 44px;
+export const UserButton = styled(Image)`
   border-radius: 50%;
   cursor: pointer;
 `;

@@ -103,7 +103,7 @@ export const RelatedPanel = styled(Related) <{ $expanded: boolean }>`
 export const Wrapper = styled.div`
   min-height: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   ${p => p.theme.fontFamily.default.style};

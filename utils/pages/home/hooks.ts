@@ -16,10 +16,13 @@ export const useHooks = (props: ServerSideProps) => {
 
   const init = useRef(true);
   if (init.current) {
-    store.$patch({
+    store.$patchDeep({
       ...props,
       activeNoteId,
       synonymIds: props.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct(),
+      activePanel: {
+        editorHasText: !!props.notes[0]?.text || false,
+      }
     });
     init.current = false;
   }

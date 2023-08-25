@@ -34,6 +34,8 @@ export const Navbar = (props: Props) => {
                     onClick={outputs.onClickSearchButton}
                   />
                   <UserButton
+                    width={44}
+                    height={44}
                     src={state.session?.user?.image ?? ''}
                     alt='user image'
                     ref={refs.floating.refs.setReference}
