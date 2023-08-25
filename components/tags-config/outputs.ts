@@ -74,12 +74,13 @@ export const useOutputs = (inputs: Inputs) => {
       if (state.groupId === groupId && state.groupSynonymId === groupSynonymId) {
         return store.config.groupSynonymId.$set(null);
       }
+      const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
       store.config.$patch({
         tagId: null,
         groupId,
         groupSynonymId,
         autocompleteText: '',
-        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name.$state,
+        focusedGroupNameInputText,
       });
     },
     onClickRemoveTagFromSynonyms: async () => {
@@ -98,9 +99,14 @@ export const useOutputs = (inputs: Inputs) => {
       if (!state.groupSynonymId) { return; }
       const response = await trpc.group.removeSynonym.mutate({ groupId: state.groupId!, synonymId: state.groupSynonymId });
       transact(() => {
-        response.deletedGroup && store.groups.$find.id.$eq(response.deletedGroup.id).$delete();
-        store.synonymGroups.$filter.groupId.$eq(response.deletedSynonymGroup.groupId).$and.synonymId.$eq(response.deletedSynonymGroup.synonymId).$delete();
-        store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null });
+        response.deletedGroup && store.groups
+          .$find.id.$eq(response.deletedGroup.id)
+          .$delete();
+        store.synonymGroups
+          .$filter.groupId.$eq(response.deletedSynonymGroup.groupId).$and.synonymId.$eq(response.deletedSynonymGroup.synonymId)
+          .$delete();
+        store.config
+          .$patch({ tagId: null, groupId: null, groupSynonymId: null });
       })
       notify.success('Tag-Synonym removed from group');
     },
@@ -162,12 +168,15 @@ export const useOutputs = (inputs: Inputs) => {
       focusAutocompleteInput(inputs);
     },
     onClickUpdateGroupSynonym: () => {
-      if (!state.groupId || !state.groupSynonymId) { throw new Error(); }
-      const selectedSynonymId = store.synonymGroups.$find.groupId.$eq(state.groupId).$and.synonymId.$eq(state.groupSynonymId).synonymId.$state;
+      const { groupId, groupSynonymId } = state;
+      if (!groupId || !groupSynonymId) { throw new Error(); }
+      const synonymId = store.$state.synonymGroups
+        .findOrThrow(sg => sg.groupId === groupId && sg.synonymId === groupSynonymId)
+        .synonymId;
       store.config.$patch({
         tagId: null,
         groupId: null,
-        synonymId: selectedSynonymId,
+        synonymId,
         groupSynonymId: null,
         autocompleteAction: 'addSynonymsToActiveSynonyms',
       });
@@ -275,11 +284,12 @@ export const useOutputs = (inputs: Inputs) => {
       if (state.groupId === groupId && state.modal) {
         return store.config.modal.$set(null);
       }
+      const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
       store.config.$patch({
         modal: 'groupOptions',
         groupId,
         tagId: null,
-        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name.$state,
+        focusedGroupNameInputText,
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
