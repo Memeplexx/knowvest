@@ -14,7 +14,7 @@ export const createAutocompleteExtension = () => {
         if (!context.explicit && !before) return null;
         return {
           from: before ? before.from : context.pos,
-          options: store.tags.$state.map(tag => ({ label: tag.text })),
+          options: store.$state.tags.map(tag => ({ label: tag.text })),
           validFor: /^\w*$/,
         };
       }
@@ -24,27 +24,27 @@ export const createAutocompleteExtension = () => {
 
 export const createNotePersisterExtension = ({ debounce }: { debounce: number } ) => {
   let timestamp = Date.now();
-  let activeNoteIdRef = store.activeNoteId.$state;
+  let activeNoteIdRef = store.$state.activeNoteId;
   const updateNote = async (update: ViewUpdate) => {
-    if (store.activeNoteId.$state !== activeNoteIdRef) { return; }
+    if (store.$state.activeNoteId !== activeNoteIdRef) { return; }
     if (Date.now() - timestamp < debounce) { return; }
-    if (!store.activePanel.allowNotePersister.$state) { return; }
-    const apiResponse = await trpc.note.update.mutate({ noteId: store.activeNoteId.$state, text: update.state.doc.toString() });
-    store.notes.$find.id.$eq(store.activeNoteId.$state).$set(apiResponse.updatedNote);
+    if (!store.$state.activePanel.allowNotePersister) { return; }
+    const apiResponse = await trpc.note.update.mutate({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
+    store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.updatedNote);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
-    if (!store.activePanel.allowNotePersister.$state) { return; }
+    if (!store.$state.activePanel.allowNotePersister) { return; }
     timestamp = Date.now();
     setTimeout(() => updateNote(update), debounce)
-    activeNoteIdRef = store.activeNoteId.$state;
+    activeNoteIdRef = store.$state.activeNoteId;
   });
 }
 
 export const noteTagsPersisterExtension = () => {
   let previousActiveNoteId = 0 as NoteId;
   let previousActiveNoteTagIds = new Array<TagId>();
-  const tagsWithRegexp = store.tags.$state
+  const tagsWithRegexp = store.$state.tags
     .map(tag => ({ ...tag, regexp: new RegExp(`\\b(${tag.text})\\b`, 'gi') }));
     store.tags.$onChange(newTags => {
     const currentTagIds = tagsWithRegexp.map(t => t.id);
@@ -58,8 +58,8 @@ export const noteTagsPersisterExtension = () => {
   return EditorView.updateListener.of(async update => {
     if (!update.docChanged) { return; }
     const activeNoteText = update.state.doc.toString();
-    if (previousActiveNoteId !== store.activeNoteId.$state) {
-      previousActiveNoteId = store.activeNoteId.$state;
+    if (previousActiveNoteId !== store.$state.activeNoteId) {
+      previousActiveNoteId = store.$state.activeNoteId;
       previousActiveNoteTagIds = tagsWithRegexp
         .map(t => ({ tagId: t.id, items: [...activeNoteText.matchAll(t.regexp)] }))
         .flatMap(t => t.items.map(() => t.tagId))
@@ -76,16 +76,16 @@ export const noteTagsPersisterExtension = () => {
     previousActiveNoteTagIds = newActiveNoteTagIds;
     if (!uniqueTagsHaveChanged) {
       if (nonUniqueTagsHaveChanged) {
-        store.noteTags.$set(store.noteTags.$state.slice().reverse());  // forces re-rendering in history and similar panels
+        store.noteTags.$set(store.$state.noteTags.slice().reverse());  // forces re-rendering in history and similar panels
       }
       return;
     }
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
-    const noteTags = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: store.activeNoteId.$state });
-    store.noteTags.$filter.noteId.$eq(store.activeNoteId.$state).$delete();
-    store.noteTags.$push(noteTags);
-    const tagIds = noteTags.map(nt => nt.tagId);
+    const apiResponse = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
+    store.noteTags.$filter.noteId.$eq(store.$state.activeNoteId).$delete();
+    store.noteTags.$push(apiResponse.noteTags);
+    const tagIds = apiResponse.noteTags.map(nt => nt.tagId);
     const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
     store.synonymIds.$set(synonymIds);
   });
@@ -132,7 +132,7 @@ export const createBulletPointPlugin = () => {
 
 export const createTextSelectorPlugin = () => {
   const updateSelection = (value: string) => {
-    if (store.activePanel.selection.$state === value) { return; }
+    if (store.$state.activePanel.selection === value) { return; }
     store.activePanel.selection.$set(value);
   }
   return ViewPlugin.fromClass(class {

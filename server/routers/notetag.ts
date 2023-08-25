@@ -31,7 +31,8 @@ export const noteTagRouter = router({
       if (removeTagIds.length) {
         await prisma.noteTag.deleteMany({ where: { noteId, tagId: { in: removeTagIds } } });
       }
-      return await prisma.noteTag.findMany({ where: { noteId } });
+      const noteTags = await prisma.noteTag.findMany({ where: { noteId } });
+      return { status: 'NOTE TAGS UPDATED', noteTags };
     }),
 });
 

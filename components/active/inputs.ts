@@ -70,7 +70,7 @@ export const useCodeMirror = (editorDomElement: React.RefObject<HTMLDivElement>)
     if (!editorDomElement.current) { return; }
     if (editorRef.current) { editorRef.current.destroy(); }
     editorRef.current = new EditorView({
-      doc: store.notes.$find.id.$eq(store.activeNoteId.$state).text.$state,
+      doc: store.$state.notes.find(n => n.id === store.$state.activeNoteId)?.text,
       parent: editorDomElement.current!,
       extensions: [
         history(),
@@ -108,7 +108,7 @@ export const useActiveNoteIdToCodeMirrorUpdater = (
       changes: {
         from: 0,
         to: codeMirror.state.doc.length,
-        insert: store.notes.$find.id.$eq(store.activeNoteId.$state).$state.text || '',
+        insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
       },
     });
     // reset selection if there is one

@@ -52,9 +52,8 @@ export const useOutputs = (inputs: Inputs) => {
       store.search.hoveredSynonymId.$set(null);
     },
     onClickResult: (noteId: NoteId) => {
-      const { noteTags, tags } = store.$state;
-      const tagIds = noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
-      const synonymIds = tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
+      const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
+      const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
       transact(() => {
         store.activeNoteId.$set(noteId);
         store.synonymIds.$set(synonymIds);

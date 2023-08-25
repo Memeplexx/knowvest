@@ -19,18 +19,18 @@ export const useEvents = (inputs: Inputs) => {
     },
     onClickRemoveNote: async () => {
       store.activePanel.allowNotePersister.$set(false);
-      const apiResponse = await trpc.note.delete.mutate({ noteId: store.activeNoteId.$state });
+      const apiResponse = await trpc.note.delete.mutate({ noteId: store.$state.activeNoteId });
       store.activePanel.confirmDelete.$set(false);
       store.noteTags.$filter.noteId.$in(apiResponse.noteTagsDeleted.map(nt => nt.noteId)).$delete();
       store.notes.$find.id.$eq(apiResponse.noteDeleted.id).$delete();
-      const newNoteId = store.notes.$state.slice().sort((a, b) => b.dateViewed!.toString().localeCompare(a.dateViewed!.toString()))[0].id!;
+      const newNoteId = store.$state.notes.slice().sort((a, b) => b.dateViewed!.toString().localeCompare(a.dateViewed!.toString()))[0].id!;
       store.activeNoteId.$set(newNoteId);
-      const tagIds = store.noteTags.$state.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
+      const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
       store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
     },
     onClickDuplicateNote: async () => {
-      const apiResponse = await trpc.note.duplicate.mutate({ noteId: store.activeNoteId.$state });
+      const apiResponse = await trpc.note.duplicate.mutate({ noteId: store.$state.activeNoteId });
       transact(() => {
         store.noteTags.$push(apiResponse.noteTagsCreated);
         store.notes.$push(apiResponse.noteCreated);
@@ -43,7 +43,7 @@ export const useEvents = (inputs: Inputs) => {
         case 'BAD_REQUEST': return notify.error(apiResponse.fields.tagText);
         case 'CONFLICT': return notify.error(apiResponse.fields.tagText);
       }
-      if (!store.tags.$state.some(t => t.id === apiResponse.tag.id)) {
+      if (!store.$state.tags.some(t => t.id === apiResponse.tag.id)) {
         store.tags.$push(apiResponse.tag);
         store.noteTags.$push(apiResponse.noteTags);
       }
@@ -56,7 +56,7 @@ export const useEvents = (inputs: Inputs) => {
     onClickFilterNotesFromSelection: () => {
       const { from, to } = state.codeMirror!.state.selection.ranges[0];
       const selection = state.codeMirror!.state.doc.sliceString(from, to);
-      const tagIds = store.tags.$state.filter(t => selection.toLowerCase().includes(t.text)).map(t => t.id);
+      const tagIds = store.$state.tags.filter(t => selection.toLowerCase().includes(t.text)).map(t => t.id);
       const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
       transact(() => {
         store.synonymIds.$set(synonymIds);
@@ -79,7 +79,7 @@ export const useEvents = (inputs: Inputs) => {
         changes: {
           from: 0,
           to: state.codeMirror.state.doc.length,
-          insert: store.notes.$find.id.$eq(store.activeNoteId.$state).$state.text || '',
+          insert: store.$state.notes.find(n => n.id === store.$state.activeNoteId)?.text,
         },
       })
     },

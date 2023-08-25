@@ -31,7 +31,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.config.$patch({
         groupId,
         groupSynonymId: null,
-        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name.$state,
+        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
@@ -64,7 +64,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.config.$patch({
         tagId,
         groupId: null,
-        autocompleteText: store.tags.$find.id.$eq(tagId).text.$state,
+        autocompleteText: store.$state.tags.findOrThrow(t => t.id === tagId).text,
         groupSynonymId: null,
       });
       focusAutocompleteInput(inputs);
@@ -139,7 +139,7 @@ export const useOutputs = (inputs: Inputs) => {
       }
     },
     onAutocompleteInputCancel: () => {
-      const autocompleteText = !state.tagId ? '' : store.tags.$find.id.$eq(state.tagId).text.$state
+      const autocompleteText = !state.tagId ? '' : store.$state.tags.findOrThrow(t => t.id === state.tagId).text;
       store.config.autocompleteText.$set(autocompleteText);
       blurAutocompleteInput(inputs);
     },

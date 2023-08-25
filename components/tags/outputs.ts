@@ -16,17 +16,19 @@ export const useOutputs = (inputs: Inputs) => {
     onChangeAllGroupTagsSelected: (groupId: GroupId) => {
       const synonyms = state.groupsWithSynonyms
         .findOrThrow(g => g.groupId === groupId).synonyms;
+      const synonymIds = synonyms.map(s => s.id);
       if (synonyms.some(s => s.selected)) {
-        store.synonymIds.$filter.$in(synonyms.map(s => s.id)).$delete();
+        store.synonymIds.$filter.$in(synonymIds).$delete();
       } else {
-        store.synonymIds.$push(synonyms.map(s => s.id));
+        store.synonymIds.$push(synonymIds);
       }
     },
     onChangeAllActiveTagsSelected: () => {
+      const synonymIds = state.tagsForActiveNote.map(s => s.synonymId);
       if (state.tagsForActiveNote.some(s => s.selected)) {
-        store.synonymIds.$filter.$in(state.tagsForActiveNote.map(s => s.synonymId)).$delete();
+        store.synonymIds.$filter.$in(synonymIds).$delete();
       } else {
-        store.synonymIds.$push(state.tagsForActiveNote.map(s => s.synonymId));
+        store.synonymIds.$push(synonymIds);
       }
     },
     onShowDialog: () => {
