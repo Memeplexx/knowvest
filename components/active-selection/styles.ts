@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { possible } from "../html";
 
-export const ListItem = styled.div`
+export const ActiveSelectionListItem = styled.div`
   display: flex;
   gap: 4px;
   font-size: 13px;
@@ -31,7 +31,7 @@ export const Container = styled(possible.div)`
   }
 `;
 
-export const Instructions = styled(possible.div)`
+export const ActiveSelectionInstructions = styled(possible.div)`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -45,7 +45,7 @@ export const Instructions = styled(possible.div)`
 export const Instruction = styled(possible.div)`
 `;
 
-export const TagName = styled.div`
+export const ActiveSelectionTagName = styled.div`
   font-weight: 600;
   font-size: 14px;
   text-align: end;

@@ -1,6 +1,6 @@
 import { usePropsWithoutFunctions } from '@/utils/functions';
 import { Props } from './constants';
-import { Container, Instruction, Instructions, ListItem, TagName } from './styles';
+import { Container, Instruction, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName } from './styles';
 import { AddIcon, FilterIcon, SplitIcon } from '@/utils/styles';
 
 
@@ -13,13 +13,13 @@ export const ActiveSelection = (
       {...usePropsWithoutFunctions(props)}
       children={
         <>
-          <TagName
+          <ActiveSelectionTagName
             children={'"' + props.selection + '"'}
           />
-          <Instructions
+          <ActiveSelectionInstructions
             children={
               <>
-                <ListItem
+                <ActiveSelectionListItem
                   onClick={props.onClickCreateNewTag}
                   children={
                     <>
@@ -30,7 +30,7 @@ export const ActiveSelection = (
                     </>
                   }
                 />
-                <ListItem
+                <ActiveSelectionListItem
                   onClick={props.onClickSplitNote}
                   children={
                     <>
@@ -41,7 +41,7 @@ export const ActiveSelection = (
                     </>
                   }
                 />
-                <ListItem
+                <ActiveSelectionListItem
                   onClick={props.onClickFilterNotes}
                   children={
                     <>
