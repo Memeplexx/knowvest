@@ -86,10 +86,10 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   })
 
   const tabTitleText = useMemo(() => {
-    return state.showingTab === 'search' ? 'Showing Search Pane' : 'Showing Results Pane';
+    return state.showingTab === 'search' ? 'Search' : 'Results';
   }, [state.showingTab]);
   const tabButtonText = useMemo(() => {
-    return state.showingTab === 'search' ? `View Results (${notesByTags.$state.length})` : 'View Search Pane';
+    return state.showingTab === 'search' ? `Results (${notesByTags.$state.length})` : 'Search';
   }, [state.showingTab, notesByTags]);
 
   const listener = useCallback(() => {
