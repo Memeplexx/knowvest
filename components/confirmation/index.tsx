@@ -36,6 +36,7 @@ export const Confirmation = (
                       onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={() => state.set({ selection: 'cancel' })}
                       children={props.cancelText || 'Cancel'}
+                      aria-label='Cancel'
                     />
                     <ConfirmButton
                       selected={state.selection === 'confirm'}
@@ -43,6 +44,7 @@ export const Confirmation = (
                       onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={() => state.set({ selection: 'confirm' })}
                       children={props.confirmText || 'Confirm'}
+                      aria-label='Confirm'
                     />
                   </>
                 }

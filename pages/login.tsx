@@ -40,6 +40,7 @@ export default function Login({ providers }: InferGetServerSidePropsType<typeof 
                   key={provider.name}
                   onClick={() => signIn(provider.id)}
                   children={provider.name}
+                  aria-label={`Sign in with ${provider.name}`}
                 />
               ))}
             </>

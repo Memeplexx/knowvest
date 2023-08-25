@@ -37,10 +37,12 @@ export const SearchDialog = forwardRef(function SearchDialog(
                           <TabButton
                             children={state.tabButtonText}
                             onClick={outputs.onClickTabButton}
+                            aria-label={state.tabButtonText}
                           />
                           <CloseButton
                             children={<CloseIcon />}
                             onClick={outputs.onClickCloseButton}
+                            aria-label='Close'
                           />
                         </>
                       }

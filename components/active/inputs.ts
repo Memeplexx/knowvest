@@ -27,7 +27,7 @@ import {
 import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
-import { createAutocompleteExtension, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin, createEditorHasTextUpdater, createPasteListener } from './shared';
+import { createAutocompleteExtension, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin, createEditorHasTextUpdater, createPasteListener, createSentenceCapitalizer } from './shared';
 import { store } from '@/utils/store';
 
 
@@ -82,13 +82,15 @@ export const useCodeMirror = (editorDomElement: React.RefObject<HTMLDivElement>)
         crosshairCursor(),
         markdown({ codeLanguages: languages }),
         EditorView.lineWrapping,
-        keymap.of([ ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap ]),
+        EditorView.contentAttributes.of({ spellcheck: "on"/*, autocapitalize: "on" - doesn't work as I expected! */ }),
+        keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
         createAutocompleteExtension(),
         createNoteTagsPersisterExtension(),
         createNotePersisterExtension({ debounce: 500 }),
         createTextSelectorPlugin(),
         createEditorHasTextUpdater(),
         createPasteListener(),
+        createSentenceCapitalizer(),
       ],
     });
   }, [editorDomElement]);

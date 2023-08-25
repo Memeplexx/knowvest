@@ -109,21 +109,25 @@ export default function Home(
                         selected={state.historyExpanded}
                         onClick={events.onClickHistoryToggle}
                         children={<RightIcon />}
+                        aria-label='Expand History'
                       />
                       <ExpandTagsToggleButton
                         selected={state.tagsExpanded}
                         onClick={events.onClickTagsToggle}
                         children={<UpIcon />}
+                        aria-label='Expand Tags'
                       />
                       <ExpandHeaderToggleButton
                         selected={!state.headerExpanded}
                         onClick={events.onClickHeaderToggle}
                         children={<DownIcon />}
+                        aria-label='Expand Header'
                       />
                       <ExpandRelatedToggleButton
                         selected={state.similarExpanded}
                         onClick={events.onClickSimilarToggle}
                         children={<LeftIcon />}
+                        aria-label='Expand Related'
                       />
                     </>
                   }

@@ -199,10 +199,17 @@ export const createEditorHasTextUpdater = () => {
   });
 }
 
+export const createSentenceCapitalizer = () => {
+  return EditorState.transactionFilter.of(tr => {
+    return [tr, {
+    }]
+  });
+}
+
 export const createPasteListener = () => {
   return EditorState.transactionFilter.of(tr => {
     if (tr.isUserEvent('input.paste')) {
-      console.log('...', tr);
+      //
     }
     return tr;
   })

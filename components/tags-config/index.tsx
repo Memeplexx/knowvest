@@ -106,6 +106,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                   selected={state.modal === 'synonymOptions'}
                                   $show={!state.groupId}
                                   ref={state.modal === 'synonymOptions' ? refs.floating.refs.setReference : null}
+                                  aria-label='Settings'
                                 />
                               </>
                             }
@@ -190,6 +191,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                     selected={state.modal === 'groupOptions'}
                                     $show={state.groupId === group.group.id}
                                     ref={state.groupId === group.group.id && state.modal === 'groupOptions' ? refs.floating.refs.setReference : null}
+                                    aria-label='Settings'
                                   />
                                 </>
                               }
@@ -262,6 +264,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                     onClick={outputs.onClickStartOver}
                     showIf={!!state.synonymId}
                     children='Start over'
+                    aria-label="Start over"
                   />
                 }
               />

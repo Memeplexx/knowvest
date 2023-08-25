@@ -44,6 +44,7 @@ export const Tags = forwardRef(function Tags(
                 showIf={!!state.tagsForActiveNote.length}
                 children={<SettingsIcon />}
                 onClick={outputs.onShowDialog}
+                aria-label='Settings'
               />
             }
             body={
@@ -121,6 +122,7 @@ export const Tags = forwardRef(function Tags(
                           <Button
                             children='Configure tags'
                             onClick={outputs.onShowDialog}
+                            aria-label="Configure tags"
                           />
                         </>
                       }

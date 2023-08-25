@@ -32,12 +32,14 @@ export const Active = (
                       showIf={!!state.editorHasText}
                       onClick={outputs.onClickCreateNote}
                       title='Create a new note'
+                      aria-label='Create note'
                       children={<CreateIcon />}
                     />
                     <ButtonIcon
                       children={<SettingsIcon />}
                       onClick={outputs.onClickSettingsButton}
                       ref={refs.floating.refs.setReference}
+                      aria-label='Settings'
                     />
                     <PopupOptions
                       showIf={state.showOptions}

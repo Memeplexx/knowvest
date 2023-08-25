@@ -48,6 +48,7 @@ export default function Index() {
                 <LoginButton
                   onClick={events.onClickSignIn}
                   children="sign in"
+                  aria-label='Sign in'
                 />
               </>
             }

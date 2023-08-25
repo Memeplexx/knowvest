@@ -32,6 +32,7 @@ export const Navbar = (props: Props) => {
                   <SearchButton
                     children={<SearchIcon />}
                     onClick={outputs.onClickSearchButton}
+                    aria-label='Search'
                   />
                   <UserButton
                     width={44}

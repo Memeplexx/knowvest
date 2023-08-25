@@ -33,6 +33,7 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             showIf={!!props.inputText.trim() && !props.disabled}
             onClick={outputs.onClickClearText}
             title="Clear text"
+            aria-label='Clear text'
             children={<ClearIcon />}
           />
           <ErrorMsg
