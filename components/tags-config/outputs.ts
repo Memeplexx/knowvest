@@ -25,7 +25,7 @@ import { Inputs } from './constants';
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { state, notify, refs } = inputs;
+  const { state, notify, refs, props } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       store.config.$patch({
@@ -300,6 +300,9 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onShowAutocompleteOptionsChange: (showAutocompleteOptions: boolean) => {
       store.config.showAutocompleteOptions.$set(showAutocompleteOptions)
+    },
+    onClickCloseButton: () => {
+      props.onHide();
     },
   };
 }

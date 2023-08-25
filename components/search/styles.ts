@@ -3,6 +3,7 @@ import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";
 import { Button } from "../button";
 import { dialogWidth, tabsHeight } from "./constants";
+import { ButtonIcon } from "../button-icon";
 
 export const Body = styled(possible.div)`
   width: ${dialogWidth}px;
@@ -42,7 +43,16 @@ export const TabTitle = styled(possible.div)`
   padding-left: 16px;
 `;
 
+export const TabsButtons = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-right: 16px;
+`;
+
 export const TabButton = styled(Button)`
+`;
+
+export const CloseButton = styled(ButtonIcon)`
 `;
 
 export const LeftContent = styled(possible.div)`

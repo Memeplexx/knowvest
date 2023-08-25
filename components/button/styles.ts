@@ -13,6 +13,7 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
   transition: all 0.2s cubic-bezier(0,.73,.44,1);
   background-color: ${p => p.selected ? '#000' : 'transparent'};
   display: flex;
+  align-items: center;
   color: #ffb1fc;
   :hover {
     transform: scale(1.2);
@@ -26,16 +27,8 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
 
   --border-size: 1px;
   --border-angle: 0turn;
-  background-image: conic-gradient(
-      from var(--border-angle),
-      #213,
-      #112 50%,
-      #213
-    ),
-    conic-gradient(from var(--border-angle), transparent 20%, #08f, #f03);
-  background-size: calc(100% - (var(--border-size) * 2))
-      calc(100% - (var(--border-size) * 2)),
-    cover;
+  background-image: conic-gradient(from var(--border-angle), #213, #112 50%, #213), conic-gradient(from var(--border-angle), transparent 20%, #08f, #f03);
+  background-size: calc(100% - (var(--border-size) * 2)) calc(100% - (var(--border-size) * 2)), cover;
   background-position: center center;
   background-repeat: no-repeat;
   animation: bg-spin 3s linear infinite;

@@ -4,6 +4,10 @@ import { possible } from '../html';
 import { Button } from '../button';
 
 
+
+export const CloseButton = styled(ButtonIcon)`
+`;
+
 export const BodyHeader = styled(possible.div)`
   font-size: 14px;
   display: flex;

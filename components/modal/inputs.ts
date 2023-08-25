@@ -5,7 +5,7 @@ import { Props, animationDuration } from "./constants";
 export const useInputs = (props: Props) => {
 
   const [showInternal, setShowInternal] = useState(props.show);
-  
+
   const backdrop = useRef<HTMLDivElement>(null);
 
   const isClosingRef = useRef(false);
@@ -16,8 +16,8 @@ export const useInputs = (props: Props) => {
   });
 
   const foregroundAnimations = useSpring({
-    opacity: props.show ? 1 : 0, 
-    transform: `scale(${props.show ? 1 : 1.4})`, 
+    opacity: props.show ? 1 : 0,
+    transform: `scale(${props.show ? 1 : 1.4})`,
     filter: `blur(${props.show ? 0 : 20}px)`,
     config: { duration: animationDuration },
   });

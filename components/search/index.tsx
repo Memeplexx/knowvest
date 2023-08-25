@@ -4,8 +4,9 @@ import { Modal } from '../modal';
 import { AutocompleteOptionType, Props } from './constants';
 import { useOutputs } from './outputs';
 import { useInputs } from './inputs';
-import { AutocompleteOption, AutocompleteOptionStatus, AutocompleteOptionLabel, AutocompleteOptionLeft, Body, CategoryTitle, CategoryWrapper, LeftContent, Result, RightContent, Tag, TagsOuterWrapper, TagsWrapper, MainContent, TabsWrapper, TabTitle, TabButton } from './styles';
+import { AutocompleteOption, AutocompleteOptionStatus, AutocompleteOptionLabel, AutocompleteOptionLeft, Body, CategoryTitle, CategoryWrapper, LeftContent, Result, RightContent, Tag, TagsOuterWrapper, TagsWrapper, MainContent, TabsWrapper, TabTitle, TabButton, CloseButton, TabsButtons } from './styles';
 import { store } from '@/utils/store';
+import { CloseIcon } from '@/utils/styles';
 
 
 export const SearchDialog = forwardRef(function SearchDialog(
@@ -30,9 +31,19 @@ export const SearchDialog = forwardRef(function SearchDialog(
                     <TabTitle
                       children={state.tabTitleText}
                     />
-                    <TabButton
-                      children={state.tabButtonText}
-                      onClick={outputs.onClickTabButton}
+                    <TabsButtons
+                      children={
+                        <>
+                          <TabButton
+                            children={state.tabButtonText}
+                            onClick={outputs.onClickTabButton}
+                          />
+                          <CloseButton
+                            children={<CloseIcon />}
+                            onClick={outputs.onClickCloseButton}
+                          />
+                        </>
+                      }
                     />
                   </>
                 }

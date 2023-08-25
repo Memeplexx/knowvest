@@ -53,3 +53,4 @@ const useLogoutUserIfSessionExpired = () => {
     }
   }, [router, session.status]);
 }
+

@@ -80,5 +80,8 @@ export const useOutputs = (inputs: Inputs) => {
         store.search.$patch({ showingTab: 'search', showSearchPane: true, showResultsPane: false })
       }
     },
+    onClickCloseButton: () => {
+      props.onHide();
+    },
   };
 }

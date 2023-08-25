@@ -11,6 +11,7 @@ import {
   Body,
   BodyGroup,
   BodyHeader,
+  CloseButton,
   CustomGroupNameInput,
   Footer,
   FooterButton,
@@ -21,7 +22,7 @@ import {
 } from './styles';
 import { Confirmation } from '../confirmation';
 import { AutocompleteOptionType, Props } from './constants';
-import { PopupOption, PopupOptions, SettingsIcon } from '@/utils/styles';
+import { CloseIcon, PopupOption, PopupOptions, SettingsIcon } from '@/utils/styles';
 
 
 export const TagsConfig = forwardRef(function TagsConfig(
@@ -46,7 +47,17 @@ export const TagsConfig = forwardRef(function TagsConfig(
                       children={
                         <>
                           <BodyHeader
-                            children={state.autocompleteTitle}
+                            children={
+                              <>
+                                <div
+                                  children={state.autocompleteTitle}
+                                />
+                                <CloseButton
+                                  children={<CloseIcon />}
+                                  onClick={outputs.onClickCloseButton}
+                                />
+                              </>
+                            }
                           />
                           <Autocomplete<AutocompleteOptionType>
                             ref={refs.autocomplete}
