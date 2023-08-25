@@ -27,8 +27,6 @@ import {
 import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
-import { createTheme } from 'thememirror';
-import { codeMirrorTheme } from './constants';
 import { createAutocompleteExtension, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createTextSelectorPlugin } from './shared';
 import { store } from '@/utils/store';
 
@@ -120,5 +118,3 @@ export const useActiveNoteIdToCodeMirrorUpdater = (
   }
   activeNoteIdRef.current = activeNoteId;
 }
-
-const myTheme = createTheme(codeMirrorTheme);
