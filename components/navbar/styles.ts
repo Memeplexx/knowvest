@@ -14,6 +14,7 @@ export const Wrapper = styled(possible.div)<{ $show: boolean }>`
   margin-top: ${p => p.$show ? '0' : '-70px'};
   justify-content: space-between;
   gap: 12px;
+  height: 52px;
 `;
 
 export const ImageLogo = styled(Image)`

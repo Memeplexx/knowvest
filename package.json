@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "dev:ts": "yarn dev & yarn ts:watch",
@@ -31,6 +32,7 @@
     "@codemirror/view": "^6.10.0",
     "@floating-ui/react": "^0.25.1",
     "@lezer/highlight": "^1.1.4",
+    "@next/bundle-analyzer": "^13.4.19",
     "@prisma/client": "^4.13.0",
     "@trpc/client": "^10.24.0",
     "@trpc/next": "^10.24.0",

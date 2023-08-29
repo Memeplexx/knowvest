@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 
 const withPWA = require('next-pwa')({
   dest: 'public',
@@ -7,7 +11,7 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV === 'development',
 })
 
-module.exports = withPWA({
+module.exports = withBundleAnalyzer(withPWA({
   reactStrictMode: true,
   compiler: {
     styledComponents: true,
@@ -28,12 +32,12 @@ module.exports = withPWA({
       },
     ],
   },
-  webpack: (
-    config,
-    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
-  ) => {
-    // config.devtool = 'source-map';
-    // config.devtool = 'eval-cheap-module-source-map';
-    return config
-  },
-})
+  // webpack: (
+  //   config,
+  //   { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  // ) => {
+  //   // config.devtool = 'source-map';
+  //   // config.devtool = 'eval-cheap-module-source-map';
+  //   return config
+  // },
+}))
