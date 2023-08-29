@@ -20,7 +20,7 @@ export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $
   padding: 0 8px;
   transition: all 0.2s;
   background-color: ${p => p.selected ? '#FFF' : 'rgba(255,255,255,0.1)'};
-  color: ${p => p.$active ? '#ff00ff': p.selected ? '#000' : '#FFF'};
+  color: ${p => p.$active ? '#940093': p.selected ? '#000' : '#FFF'};
   font-weight: ${p => p.$active ? 'bold': 'none'};
   z-index: ${p => p.selected ? 1 : 0};
   cursor: pointer;

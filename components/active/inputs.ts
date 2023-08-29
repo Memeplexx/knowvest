@@ -1,5 +1,5 @@
 import { NotificationContext } from '@/utils/pages/home/constants';
-import { useNoteTagsToTagHighlighter } from '@/utils/hooks';
+import { useAddAriaAttributeToCodeMirror, useNoteTagsToTagHighlighter } from '@/utils/hooks';
 import {
   closeBrackets,
   closeBracketsKeymap,
@@ -43,6 +43,8 @@ export const useInputs = () => {
   const editor = useRef<HTMLDivElement>(null);
 
   const codeMirror = useCodeMirror(editor);
+
+  useAddAriaAttributeToCodeMirror({ noteId: store.$state.activeNoteId, editorDomElement: editor });
 
   useNoteTagsToTagHighlighter(codeMirror, store.synonymIds);
 

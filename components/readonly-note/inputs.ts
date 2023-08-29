@@ -1,5 +1,5 @@
 import { Note } from '@/server/dtos';
-import { useIsomorphicLayoutEffect, useNoteTagsToTagHighlighter } from '@/utils/hooks';
+import { useAddAriaAttributeToCodeMirror, useIsomorphicLayoutEffect, useNoteTagsToTagHighlighter } from '@/utils/hooks';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -16,6 +16,8 @@ export const useInputs = (props: Props) => {
   const codeMirror = useCodeMirror(editorDomElement, props.note);
 
   useNoteTagsToTagHighlighter(codeMirror, props.synonymIds);
+
+  useAddAriaAttributeToCodeMirror({ noteId: props.note.id, editorDomElement });
 
   return {
     refs: { editor: editorDomElement },

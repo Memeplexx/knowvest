@@ -1,8 +1,8 @@
-import { SynonymId, TagId } from '@/server/dtos';
+import { NoteId, SynonymId, TagId } from '@/server/dtos';
 import { ChangeDesc, Range, StateEffect, StateField } from '@codemirror/state';
 import { Decoration, DecorationSet, EditorView } from '@codemirror/view';
 import { Readable, derive } from 'olik';
-import { type ForwardedRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { type ForwardedRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { EventMap } from './types';
 import { store } from './store';
 
@@ -213,4 +213,10 @@ export const useRefs = (items: unknown[]) => {
     itemsRef.current = itemsRef.current.slice(0, items.length);
   }, [items]);
   return itemsRef;
+}
+
+export const useAddAriaAttributeToCodeMirror = ({ noteId, editorDomElement }: { noteId: NoteId, editorDomElement: RefObject<HTMLDivElement> }) => {
+  useEffect(() => {
+    (editorDomElement.current?.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
+  }, [editorDomElement, noteId]);
 }
