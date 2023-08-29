@@ -1,6 +1,6 @@
 import { NoteId } from "@/server/dtos";
 import { useInputs } from "./inputs";
-import { HTMLAttributes } from 'react';
+import { type HTMLAttributes } from 'react';
 
 export type Props = {
   onSelectNote: (noteId: NoteId) => void;

@@ -1,4 +1,4 @@
-import { HTMLAttributes, forwardRef, ForwardedRef, Fragment } from 'react';
+import { type HTMLAttributes, forwardRef, type ForwardedRef, Fragment } from 'react';
 
 import { ButtonIcon } from '../button-icon';
 import {

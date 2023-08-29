@@ -4,7 +4,7 @@ import { useOutputs } from './outputs';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
 import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, OptionText, PopupOptions, SettingsIcon, AddIcon, SplitIcon, FilterIcon } from '@/utils/styles';
-import { HTMLAttributes } from 'react';
+import { type HTMLAttributes } from 'react';
 import { store } from '@/utils/store';
 import { Loader } from '../loader';
 

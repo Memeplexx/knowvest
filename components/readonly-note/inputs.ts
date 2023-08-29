@@ -5,7 +5,7 @@ import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { languages } from '@codemirror/language-data';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { RefObject, useRef, useState } from 'react';
+import { type RefObject, useRef, useState } from 'react';
 import { Props } from './constants';
 
 

@@ -2,7 +2,7 @@ import { SynonymId, TagId } from '@/server/dtos';
 import { ChangeDesc, Range, StateEffect, StateField } from '@codemirror/state';
 import { Decoration, DecorationSet, EditorView } from '@codemirror/view';
 import { Readable, derive } from 'olik';
-import { ForwardedRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { type ForwardedRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { EventMap } from './types';
 import { store } from './store';
 

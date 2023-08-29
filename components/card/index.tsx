@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef } from 'react';
+import { type ForwardedRef, forwardRef } from 'react';
 import { Body, Header, Wrapper } from './styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';

@@ -18,7 +18,7 @@ import {
 import { GroupId, SynonymId, TagId } from '@/server/dtos';
 import { trpc } from '@/utils/trpc';
 import { transact } from 'olik';
-import { ChangeEvent, MouseEvent } from 'react';
+import { type ChangeEvent, type MouseEvent } from 'react';
 import { TypedKeyboardEvent } from '@/utils/types';
 import { store } from '@/utils/store';
 import { Inputs } from './constants';

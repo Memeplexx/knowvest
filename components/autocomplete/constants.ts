@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useInputs } from './inputs';
 
 export type OptionBase = { value: number | string | null, label: string };

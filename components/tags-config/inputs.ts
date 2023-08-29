@@ -1,5 +1,5 @@
 import { useForwardedRef } from '@/utils/hooks';
-import { ForwardedRef, useContext, useRef } from 'react';
+import { type ForwardedRef, useContext, useRef } from 'react';
 
 import { decide } from '@/utils/functions';
 import { useFloating } from '@floating-ui/react';

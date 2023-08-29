@@ -1,4 +1,4 @@
-import { forwardRef, ForwardedRef } from 'react';
+import { forwardRef, type ForwardedRef } from 'react';
 
 import { Autocomplete } from '../autocomplete';
 import { Modal } from '../modal';

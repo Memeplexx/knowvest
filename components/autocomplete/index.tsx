@@ -2,7 +2,7 @@ import { AutocompleteHandle, Props, OptionBase } from './constants';
 import { ClearIcon, ClearTextButton, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ForwardedRef, forwardRef } from 'react';
+import { type ForwardedRef, forwardRef } from 'react';
 
 
 export const Autocomplete = forwardRef(function Autocomplete<Option extends OptionBase>(
