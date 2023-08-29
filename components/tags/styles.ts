@@ -27,16 +27,16 @@ export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $
   ${p => p.$first ? 'border-top-left-radius: 10px; border-bottom-left-radius: 10px;' : ''}
   ${p => p.$last ? 'border-top-right-radius: 10px; border-bottom-right-radius: 10px;' : ''}
   margin-right: ${p => p.$last ? '12px' : '0'};
-  :hover {
+  &:hover {
     background-color: rgba(255, 255, 255, 0.6);
     z-index: 1;
   }
 `;
 
-export const ActiveHeaderTag = styled(Tag).attrs({ $first: true, $last: true, $active: false })`
+export const ActiveHeaderTag = styled(Tag)`
 `;
 
-export const GroupHeaderTag = styled(Tag).attrs({ $first: true, $last: true, $active: false })`
+export const GroupHeaderTag = styled(Tag)`
 `;
 
 export const TagsWrapper = styled.div`

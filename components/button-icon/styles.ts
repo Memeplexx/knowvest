@@ -5,7 +5,6 @@ import { possible } from "../html";
 export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
   cursor: pointer;
   transition: 0.2s all;
-  background: #121212;
   width: 40px;
   height: 40px;
   padding: 6px;
@@ -19,12 +18,12 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
     width: auto;
     height: auto;
   }
-  :hover {
+  &:hover {
     transform: scale(1);
     background-color: ${p => p.selected ? '#000' : '#313131'};
     filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
   }
-  :active {
+  &:active {
     transform: scale(0.8);
   }
 `;

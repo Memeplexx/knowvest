@@ -25,7 +25,7 @@ export const Container = styled.div<{ disabled?: boolean }>`
   cursor: ${p => p.disabled ? 'not-allowed' : 'auto'};
 `;
 
-export const Input = styled.input<{ expanded: boolean, hasError: boolean }>`
+export const Input = styled.input<{ $hasError: boolean }>`
   flex: 1;
   outline: none;
   border: 0.5px solid #CCC;
@@ -33,7 +33,7 @@ export const Input = styled.input<{ expanded: boolean, hasError: boolean }>`
   padding-right: 24px;
   color: #FFF;
   z-index: 1;
-  :hover {
+  &:hover {
     background-color: rgba(255,255,255,0.2);
   }
   :focus {
@@ -42,7 +42,7 @@ export const Input = styled.input<{ expanded: boolean, hasError: boolean }>`
   ::placeholder {
     opacity: 0.4;
   }
-  border-color: ${props => props.hasError ? '#F00' : '#CCC'};
+  border-color: ${props => props.$hasError ? '#F00' : '#CCC'};
   cursor: text;
 `;
 
@@ -71,7 +71,7 @@ export const OptionItem = styled(possible.button)`
   font-size: 12px;
   font-weight: 400;
   cursor: pointer;
-  :hover {
+  &:hover {
     background-color: #272727;
     color: #FFF;
   }

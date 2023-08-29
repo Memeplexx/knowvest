@@ -25,7 +25,7 @@ export const SettingsButton = styled(ButtonIcon) <{ selected: boolean, $show: bo
 export const CustomGroupNameInput = styled.input`
   flex: 1;
   padding: 4px 8px;
-  :hover {
+  &:hover {
     background-color: rgba(0,0,0,0.2);
   }
   :focus {
@@ -42,7 +42,7 @@ export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
   padding: 24px;
   margin: 0 -24px;
   pointer-events: all;
-  :hover {
+  &:hover {
     ${SettingsButton} {
       opacity: 1;
     }
@@ -101,7 +101,7 @@ export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $
   ${p => p.$first ? 'border-top-left-radius: 10px; border-bottom-left-radius: 10px;' : ''}
   ${p => p.$last ? 'border-top-right-radius: 10px; border-bottom-right-radius: 10px;' : ''}
   margin-right: ${p => p.$last ? '12px' : '0'};
-  :hover {
+  &:hover {
     background-color: rgba(255, 255, 255, 0.6);
     z-index: 1;
   }

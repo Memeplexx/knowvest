@@ -44,7 +44,7 @@ export const ActiveSelectionListItem = styled.div`
   font-size: 13px;
   cursor: pointer;
   color: rgba(255,255,255,0.6);
-  :hover {
+  &:hover {
     color: #FFF;
   }
 `;
@@ -63,7 +63,7 @@ export const ActiveSelection = styled(possible.div)`
   user-select: none;
   user-select: none;
   position: relative;
-  :hover {
+  &:hover {
     background-color: #040404;
     box-shadow: 0px 0px 16px 0px rgba(0,0,0,1);
   }

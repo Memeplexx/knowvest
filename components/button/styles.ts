@@ -15,12 +15,12 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
   display: flex;
   align-items: center;
   color: #ffb1fc;
-  :hover {
+  &:hover {
     transform: scale(1.2);
     background-color: ${p => p.selected ? '#000' : '#313131'};
     filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
   }
-  :active {
+  &:active {
     transform: scale(1);
   }
 

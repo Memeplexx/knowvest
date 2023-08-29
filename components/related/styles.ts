@@ -30,7 +30,7 @@ export const Wrapper = styled(possible.div)`
   position: relative;
   margin: 0 -16px;
   padding: 16px;
-  :hover {
+  &:hover {
     background-image: linear-gradient(to right,#212121,#2a2929);
     z-index: 2;
     ${Header}, ${Icon} {

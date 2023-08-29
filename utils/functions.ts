@@ -1,12 +1,6 @@
 import { DecisionResult } from "./types";
 
 
-export const usePropsWithoutFunctions = <P extends object>(props: P) => {
-  return (Object.keys(props) as Array<keyof P>)
-    .filter(key => typeof (props[key]) !== 'function')
-    .reduce((prev, curr) => ({ ...prev, [curr]: props[curr] }), {});
-}
-
 /**
  * A construct for expressing conditional logic with the following advantages over conventional approaches:
  * * Unlike 'if' and 'ternary' statements, this is more readable when there are a lot of conditions.

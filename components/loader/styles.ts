@@ -1,6 +1,7 @@
 import styled from "styled-components"
+import { possible } from "../html";
 
-export const Container = styled.div<{ showIf: boolean }>`
+export const Container = styled(possible.div)`
   transition: all 0.4s;
   opacity: ${({ showIf }) => showIf ? 1 : 0};
   display: flex;

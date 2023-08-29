@@ -3,7 +3,6 @@ import { useOutputs } from './outputs';
 import { Header, Icon, NoteCount, Result, Wrapper } from './styles';
 import { Card } from '../card';
 import { Props } from './constants';
-import { usePropsWithoutFunctions } from '@/utils/functions';
 import { store } from '@/utils/store';
 
 
@@ -13,9 +12,11 @@ export const Related = (
   const inputs = useInputs(props);
   const outputs = useOutputs(inputs);
   const { state } = inputs;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { onSelectNote, ...remainingProps } = props;
   return (
     <Card
-      {...usePropsWithoutFunctions(props)}
+      {...remainingProps}
       title='Related'
       $themeType='dark'
       actions={

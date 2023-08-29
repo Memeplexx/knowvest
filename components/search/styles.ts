@@ -152,7 +152,7 @@ export const Result = styled(ReadonlyNote)`
   cursor: pointer;
   margin: 0 -16px;
   padding: 16px;
-  :hover {
+  &:hover {
     background-color: rgba(0,0,0,0.4);
   }
 `;

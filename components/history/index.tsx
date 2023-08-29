@@ -2,7 +2,6 @@ import { Card } from '../card';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { Props } from './constants';
-import { usePropsWithoutFunctions } from '@/utils/functions';
 import { Header, Icon, Result, RightBorder, Wrapper } from './styles';
 import { store } from '@/utils/store';
 
@@ -12,9 +11,11 @@ export const History = (
   const inputs = useInputs(props);
   const events = useOutputs(inputs);
   const { state } = inputs;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { onSelectNote, ...remainingProps } = props;
   return (
     <Card
-      {...usePropsWithoutFunctions(props)}
+      {...remainingProps}
       title='Recent'
       $themeType='dark'
       body={

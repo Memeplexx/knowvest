@@ -74,13 +74,13 @@ export const styles = {
   animation: {
     bounceOnClick: css`
       transition: 0.2s all;
-      :active {
+      &:active {
         transform: scale(0.8);
       }
     `,
     expandOnHover: css`
       transition: 0.2s all;
-      :hover {
+      &:hover {
         transform: scale(1.3);
       }
     `
@@ -111,7 +111,7 @@ export const PopupOption = styled(possible.button)`
   transition: transform 0.4s cubic-bezier(0,.73,.44,1);
   transform: scale(1);
   padding: 8px;
-  :hover {
+  &:hover {
     transform: scale(1.05);
     background-color: #323232;
     cursor: pointer;

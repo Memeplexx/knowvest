@@ -24,9 +24,8 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             onKeyDown={outputs.onKeyDownInput}
             onKeyUp={outputs.onKeyUpInput}
             onFocus={outputs.onFocusInput}
-            expanded={props.showOptions}
             placeholder={props.inputPlaceholder}
-            hasError={!!props.error}
+            $hasError={!!props.error}
             disabled={props.disabled}
           />
           <ClearTextButton

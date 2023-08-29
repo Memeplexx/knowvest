@@ -59,6 +59,9 @@ export const Tags = forwardRef(function Tags(
                             selected={state.allActiveTagsSelected}
                             onClick={outputs.onChangeAllActiveTagsSelected}
                             children='Active'
+                            $first={true}
+                            $last={true}
+                            $active={false}
                           />
                           <TagsWrapper
                             children={
@@ -92,6 +95,9 @@ export const Tags = forwardRef(function Tags(
                               selected={!!state.allGroupTagsSelected.get(group.groupId)}
                               onClick={() => outputs.onChangeAllGroupTagsSelected(group.groupId)}
                               children={`Group: ${group.groupName}`}
+                              $first={true}
+                              $last={true}
+                              $active={false}
                             />
                             <TagsWrapper
                               children={group.synonyms.map(synonym => (
