@@ -4,7 +4,7 @@ import { possible } from "../html";
 import { SearchIcon as BaseSearchIcon } from "@/utils/styles";
 import { ButtonIcon } from "../button-icon";
 
-export const Wrapper = styled(possible.div)<{ $show: boolean }>`
+export const Wrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;
   display: flex;
   align-items: center;

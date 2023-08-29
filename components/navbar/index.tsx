@@ -16,7 +16,7 @@ export const Navbar = (props: Props) => {
         onHide={outputs.onHideDialog}
       />
       <Wrapper
-        $show={props.$show}
+        $show={props.showIf}
         children={
           <>
             <ImageLogo
