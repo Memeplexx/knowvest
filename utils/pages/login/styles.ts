@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url(images/landing-backdrop.png);
+  background-image: url(images/backdrop-red.svg);
   background-size: cover;
   display: flex;
   justify-content: center;

@@ -1,6 +1,6 @@
 import { signIn, signOut } from "next-auth/react"
 
-export const useEvents = () => ({
+export const useOutputs = () => ({
   onClickSignIn: async () => {
     await signIn();
   },

@@ -107,7 +107,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   ${p => p.theme.fontFamily.default.style};
-  background-image: url(images/landing-backdrop-monochrome.png);
+  background-image: url(images/backdrop-mono.svg);
   color: white;
 `;
 

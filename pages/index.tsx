@@ -1,10 +1,9 @@
 import { CenterContent, Divider, LoginButton, Title, Wrapper } from '@/utils/pages/landing/styles'
-import { useEvents } from '@/utils/pages/landing/events';
+import { useOutputs } from '@/utils/pages/landing/outputs';
 import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { Snackbar } from '@/components/snackbar';
+import { useInputs } from '@/utils/pages/landing/inputs';
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -23,17 +22,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default function Index() {
-  const events = useEvents();
-
-  const [message, setMessage] = useState('');
-  const router = useRouter();
-
-  useEffect(() => {
-    if (router.query['session-expired']) {
-      setMessage('Your session expired. Please sign in again');
-    }
-  }, [router.query]);
-
+  const inputs = useInputs();
+  const outputs = useOutputs();
   return (
     <>
       <Wrapper
@@ -46,7 +36,7 @@ export default function Index() {
                 />
                 <Divider />
                 <LoginButton
-                  onClick={events.onClickSignIn}
+                  onClick={outputs.onClickSignIn}
                   children="sign in"
                   aria-label='Sign in'
                 />
@@ -56,9 +46,9 @@ export default function Index() {
         }
       />
       <Snackbar
-        message={message}
+        message={inputs.message}
         status='error'
-        onMessageClear={() => setMessage('')}
+        onMessageClear={() => inputs.setMessage('')}
       />
     </>
   )

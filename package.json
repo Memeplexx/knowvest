@@ -59,6 +59,7 @@
     "react-icons": "^4.8.0",
     "react-spring": "^9.7.1",
     "setimmediate": "^1.0.5",
+    "sharp": "^0.32.5",
     "stacktrace-js": "^2.0.2",
     "styled-components": "5.3.8",
     "styled-system": "^5.1.5",
