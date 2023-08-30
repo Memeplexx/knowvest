@@ -186,3 +186,16 @@ body {
 ::-webkit-scrollbar-thumb {
   background-color: rgb(49, 49, 49)!important;
 }
+
+
+
+
+
+
+input,
+textarea,
+button,
+select,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
