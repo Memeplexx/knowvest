@@ -17,11 +17,11 @@ export const Popup = styled.div`
   ${p => p.theme.fontFamily.default.style};
 `;
 
-export const Message = styled.div<{ count: number, index: number, animation: number, gap: number, status: snackbarStatus }>`
-  transition: ${p => p.animation}ms all;
+export const Message = styled.div<{ $index: number, $animation: number, $gap: number, $status: snackbarStatus, $showIf: boolean }>`
+  transition: ${p => p.$animation}ms all;
   position: absolute;
-  transform: translateY(-${p => !p.showIf ? 0 : ((p.index + 1) * p.gap)}px) translateX(-50%);
-  background-color: ${p => snackbarStatuses[p.status].color};
+  transform: translateY(-${p => !p.$showIf ? 0 : ((p.$index + 1) * p.$gap)}px) translateX(-50%);
+  background-color: ${p => snackbarStatuses[p.$status].color};
   z-index: 1;
   color: #FFF;
   padding: 8px;

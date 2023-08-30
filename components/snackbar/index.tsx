@@ -19,12 +19,11 @@ export const Snackbar = function Snackbar(
             state.messages.map(m => (
               <Message
                 key={m.ts}
-                count={state.count}
-                showIf={m.show}
-                index={m.index}
-                animation={props.animationDuration}
-                gap={props.stackGap}
-                status={props.status}
+                $showIf={m.show}
+                $index={m.index}
+                $animation={props.animationDuration}
+                $gap={props.stackGap}
+                $status={props.status}
                 children={
                   <>
                     {snackbarStatuses[props.status].icon()}

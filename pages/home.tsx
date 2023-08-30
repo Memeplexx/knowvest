@@ -11,7 +11,6 @@ import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import superjson from 'superjson';
 import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TagsPanel, Wrapper } from '@/utils/pages/home/styles';
-import StyledComponentsRegistry from '@/utils/registry';
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -74,12 +73,8 @@ export default function Home(
                     children='Knowledge Harvest'
                   />
                 </Head>
-                <StyledComponentsRegistry
-                  children={
-                    <Navbar
-                      showIf={state.headerExpanded}
-                    />
-                  }
+                <Navbar
+                  showIf={state.headerExpanded}
                 />
 
                 <BodyWrapper

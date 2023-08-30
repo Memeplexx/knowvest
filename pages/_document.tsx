@@ -1,4 +1,3 @@
-import StyledComponentsRegistry from '@/utils/registry'
 import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document() {
@@ -35,10 +34,8 @@ export default function Document() {
         }
       />
       <body>
-        <StyledComponentsRegistry>
           <Main />
-        </StyledComponentsRegistry>
-        <NextScript />
+          <NextScript />
       </body>
     </Html>
   )
