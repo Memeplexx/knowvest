@@ -10,7 +10,7 @@ export const useInputs = () => {
 
   const floating = useFloating<HTMLButtonElement>({ placement: 'bottom-end' });
 
-  const mayDeleteNote = derive(store.notes).$with(notes => !!notes.length);
+  const mayDeleteNote = derive(store.notes).$with(notes => notes.length > 1);
 
   const state = store.activePanel.$useState();
 
