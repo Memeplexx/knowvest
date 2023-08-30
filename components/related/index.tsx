@@ -23,7 +23,6 @@ export const Related = (
     <Card
       {...remainingProps}
       title='Related'
-      $themeType='dark'
       actions={
         <NoteCount
           children={state.noteCountString}

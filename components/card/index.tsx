@@ -14,7 +14,6 @@ export const Card = forwardRef(function Card(
   return (
     <Wrapper
       {...props}
-      $themeType={props.$themeType}
       children={
         <>
           {(props.title || props.actions) && (

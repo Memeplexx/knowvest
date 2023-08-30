@@ -37,7 +37,6 @@ export const Tags = forwardRef(function Tags(
           <CardWrapper
             {...props}
             title='Tags for active note'
-            $themeType='light'
             ref={refs.container}
             actions={
               <ButtonIcon

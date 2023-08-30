@@ -3,16 +3,15 @@ import { possible } from "../html";
 import { mobileBreakPoint } from "@/utils/styles";
 
 
-export const Wrapper = styled(possible.div)<{ $themeType: 'light' | 'dark' }>`
+export const Wrapper = styled(possible.div)`
   min-height: 0;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background-color: #141414;
+  background-image: linear-gradient(to right,#030303a6,#191818d9);
   @media (min-width: ${mobileBreakPoint}) {
     animation: 1s ease-out 0s 1 scale-up;
-    background-color: rgba(0,0,0,0.${p => p.$themeType === 'dark' ? 6 : 8});
     @keyframes scale-up {
       0% {
         opacity: 0;
@@ -51,6 +50,7 @@ export const Body = styled(possible.div)`
   overflow-y: auto;
   padding: 16px;
   padding-top: 0;
+  overflow-x: hidden;
   > :first-child {
     margin-top: 70px;
   }

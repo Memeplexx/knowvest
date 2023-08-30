@@ -21,7 +21,6 @@ export const History = (
     <Card
       {...remainingProps}
       title='Recent'
-      $themeType='dark'
       body={
         <HistoryItems
           onSelectNote={events.onSelectNote}

@@ -29,7 +29,6 @@ export const Active = (
         <>
           <CardWrapper
             title="Active"
-            $themeType='light'
             actions={
               <Buttons
                 children={
