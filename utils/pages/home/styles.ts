@@ -110,8 +110,10 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   ${p => p.theme.fontFamily.default.style};
-  background-image: url(images/backdrop-mono.svg);
   color: white;
+  @media (min-width: ${mobileBreakPoint}) {
+    background-image: url(images/backdrop-mono.svg);
+  }
 `;
 
 export const BodyWrapper = styled.div`
