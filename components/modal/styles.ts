@@ -46,5 +46,8 @@ export const Foreground = styled(animated.div)`
     transition-timing-function: cubic-bezier(0,1.08,.57,.96);
     filter: drop-shadow(0px 0px 38px #000);
   }
+  @media (max-width: ${mobileBreakPoint}) {
+    border: 1px solid #4b4b4b;
+  }
 `;
 
