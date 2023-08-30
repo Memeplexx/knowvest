@@ -41,6 +41,7 @@ export const Navbar = (props: Props) => {
                     alt='user image'
                     ref={refs.floating.refs.setReference}
                     onClick={outputs.onClickUserButton}
+                    priority={true}
                   />
                   <PopupOptions
                     showIf={state.showOptions}
