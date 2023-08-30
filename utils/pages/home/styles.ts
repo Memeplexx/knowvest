@@ -114,6 +114,9 @@ export const Wrapper = styled.div`
   @media (min-width: ${mobileBreakPoint}) {
     background-image: url(images/backdrop-mono.svg);
   }
+  @media (max-width: ${mobileBreakPoint}) {
+    background-color: black;
+  }
 `;
 
 export const BodyWrapper = styled.div`

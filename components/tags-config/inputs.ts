@@ -127,19 +127,19 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     return decide([
       {
         when: () => !!tagId,
-        then: () => 'Type to update the selected Tag',
+        then: () => 'Update selected Tag',
       },
       {
         when: () => !!groupSynonymId,
-        then: () => 'Type to search for a Tag to add to the active Group',
+        then: () => 'Search for Tag to add to active Group',
       },
       {
         when: () => !!groupId,
-        then: () => 'Type to search for a Tag to add to the selected Group',
+        then: () => 'Search for Tag to add to selected Group',
       },
       {
         when: () => true,
-        then: () => 'Type to search for a Tag to update, or create a new Tag',
+        then: () => 'Search for Tag or create a new Tag',
       },
     ])
   });

@@ -49,7 +49,8 @@ export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
     }
   }
   @media (max-width: ${mobileBreakPoint}) {
-    margin: 0 -8px;
+    margin: 0;
+    padding: 8px;
   }
 `;
 
@@ -82,6 +83,9 @@ export const Footer = styled(possible.div)`
   display: flex;
   flex-direction: column;
   place-items: end;
+  @media (max-width: 540px) {
+    padding: 8px;
+  }
 `;
 
 export const TagGroup = styled(possible.div)`
