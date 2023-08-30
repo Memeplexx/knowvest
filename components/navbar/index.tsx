@@ -4,6 +4,7 @@ import { useOutputs } from './outputs';
 import { PopupOption, PopupOptions } from '@/utils/styles';
 import { SearchDialog } from '../search';
 import { Props } from './constants';
+import Farm from '../../public/images/farm.svg';
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
@@ -22,7 +23,7 @@ export const Navbar = (props: Props) => {
             <ImageLogo
               width={44}
               height={44}
-              src="/images/farm.svg"
+              src={Farm}
               alt='logo'
               priority={true}
             />

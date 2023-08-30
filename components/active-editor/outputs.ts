@@ -25,6 +25,7 @@ export const useOutputs = (inputs: Inputs) => {
       }
       store.activePanel.selection.$set('');
       state.codeMirror!.dispatch({ selection: { anchor: state.codeMirror!.state.selection.ranges[0].anchor } });
+      notify.success(`Tag "${apiResponse.tag.text}" created`);
     },
     onClickFilterNotesFromSelection: () => {
       const { from, to } = state.codeMirror!.state.selection.ranges[0];
@@ -35,6 +36,7 @@ export const useOutputs = (inputs: Inputs) => {
         store.synonymIds.$set(synonymIds);
         store.activePanel.selection.$set('');
       })
+      notify.success(`Filtered notes by "${selection}"`);
     },
     onClickSplitNoteFromSelection: async () => {
       const range = state.codeMirror!.state.selection.ranges[0];
@@ -57,6 +59,7 @@ export const useOutputs = (inputs: Inputs) => {
           insert: store.$state.notes.find(n => n.id === store.$state.activeNoteId)?.text,
         },
       })
+      notify.success(`Note split`);
     },
     onClickTextEditorWrapper: () => {
       refs.editor.current?.focus();
