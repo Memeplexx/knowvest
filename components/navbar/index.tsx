@@ -22,7 +22,7 @@ export const Navbar = (props: Props) => {
             <ImageLogo
               width={44}
               height={44}
-              src="/images/farm.png"
+              src="/images/farm.svg"
               alt='logo'
               priority={true}
             />

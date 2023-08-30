@@ -57,6 +57,23 @@ export default class MyDocument extends Document {
                 name="description"
                 content="Knowledge Harvest is a note taking app that helps you organize your thoughts and ideas."
               />
+              <link
+                rel="icon"
+                href="/images/farm.svg"
+                sizes="any"
+              />
+              <link
+                rel="icon"
+                href="/images/farm.svg?<generated>"
+                type="image/<generated>"
+                sizes="<generated>"
+              />
+              <link
+                rel="apple-touch-icon"
+                href="/images/farm.svg?<generated>"
+                type="image/<generated>"
+                sizes="<generated>"
+              />
             </>
           }
         />
