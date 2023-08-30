@@ -111,12 +111,12 @@ export const Wrapper = styled.div`
   flex-direction: column;
   ${p => p.theme.fontFamily.default.style};
   color: white;
-  @media (min-width: ${mobileBreakPoint}) {
+  /* @media (min-width: ${mobileBreakPoint}) {
     background-image: url(images/backdrop-mono.svg);
   }
-  @media (max-width: ${mobileBreakPoint}) {
+  @media (max-width: ${mobileBreakPoint}) { */
     background-color: black;
-  }
+  /* } */
 `;
 
 export const BodyWrapper = styled.div`

@@ -40,32 +40,17 @@ export const Wrapper = styled.div`
     transform-origin: bottom right;
     transition: all 0.1s;
   }
-  ${Result} {
-    transform: scale(1.0);
-    transform-origin: left;
-    transition: all 0.2s;
-  }
-  &:nth-child(odd) {
-    background-image: linear-gradient(to right,#212121c2,#3533332e);
-  }
-  &:nth-child(even) {
-    background-image: linear-gradient(to right,#1a1a1a4a,#13131336);
-  }
+  background: black;
   &:hover {
     border-top: 1px solid #2b2b2b;
     border-bottom: 1px solid #000000;
     z-index: 2;
-    filter: drop-shadow(4px 4px 8px #000);
     ${Header}, ${Icon} {
       color: #fff;
     }
     ${Header} {
-      transform: scale(1.2) translateY(-10px);
-      background-image: linear-gradient(to top,rgba(0,0,0,0.1),rgba(0,0,0,0.3));
+      transform: scale(1.1) translateY(-10px);
       font-weight: 400;
-    }
-    ${Result} {
-      transform: scale(1.1);
     }
   }
 `;
