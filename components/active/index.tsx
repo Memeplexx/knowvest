@@ -1,13 +1,19 @@
 import { useInputs } from './inputs';
-import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, Buttons, CardWrapper, Instruction, TextEditor, TextEditorWrapper, Wrapper } from './styles';
+import { Buttons, CardWrapper, Wrapper } from './styles';
 import { useOutputs } from './outputs';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
-import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, OptionText, PopupOptions, SettingsIcon, AddIcon, SplitIcon, FilterIcon } from '@/utils/styles';
+import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, OptionText, PopupOptions, SettingsIcon } from '@/utils/styles';
 import { type HTMLAttributes } from 'react';
 import { store } from '@/utils/store';
 import { Loader } from '../loader';
+import dynamic from 'next/dynamic';
+import LoaderSkeleton from '../loader-skeleton';
 
+const ActiveEditor = dynamic(() => import('../active-editor'), {
+  ssr: false,
+  loading: () => <LoaderSkeleton count={5} />,
+});
 
 
 export const Active = (
@@ -87,69 +93,7 @@ export const Active = (
               />
             }
             body={
-              <TextEditorWrapper
-                onClick={outputs.onClickTextEditorWrapper}
-                children={
-                  <>
-                    <TextEditor
-                      ref={refs.editor}
-                      onBlur={outputs.onBlurTextEditor}
-                    />
-                    <ActiveSelection
-                      showIf={!!state.selection}
-                      children={
-                        <>
-                          <ActiveSelectionTagName
-                            children={'"' + state.selection + '"'}
-                          />
-                          <ActiveSelectionInstructions
-                            children={
-                              <>
-                                <ActiveSelectionListItem
-                                  onClick={outputs.onClickCreateNewTagFromSelection}
-                                  children={
-                                    <>
-                                      <AddIcon />
-                                      <Instruction
-                                        children='Create a new tag out of selection'
-                                      />
-                                    </>
-                                  }
-                                />
-                                <ActiveSelectionListItem
-                                  onClick={outputs.onClickSplitNoteFromSelection}
-                                  children={
-                                    <>
-                                      <SplitIcon />
-                                      <Instruction
-                                        children='Move selection out into a new note'
-                                      />
-                                    </>
-                                  }
-                                />
-                                <ActiveSelectionListItem
-                                  onClick={outputs.onClickFilterNotesFromSelection}
-                                  children={
-                                    <>
-                                      <FilterIcon />
-                                      <Instruction
-                                        children='Filter notes similar to selection'
-                                      />
-                                    </>
-                                  }
-                                />
-                              </>
-                            }
-                          />
-                          <Loader
-                            showIf={state.loadingSelection}
-                          />
-                        </>
-                      }
-                    />
-                  </>
-                }
-              />
+              <ActiveEditor />
             }
           />
           <Loader
@@ -159,6 +103,4 @@ export const Active = (
       }
     />
   )
-};
-
-
+}

@@ -1,10 +1,15 @@
+import dynamic from 'next/dynamic';
+import { Card } from '../card';
+import LoaderSkeleton from '../loader-skeleton';
+import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Header, Icon, NoteCount, Result, Wrapper } from './styles';
-import { Card } from '../card';
-import { Props } from './constants';
-import { store } from '@/utils/store';
+import { NoteCount } from './styles';
 
+const RelatedItems = dynamic(() => import('../related-items'), {
+  ssr: false,
+  loading: () => <LoaderSkeleton count={15} />,
+});
 
 export const Related = (
   props: Props
@@ -25,31 +30,10 @@ export const Related = (
         />
       }
       body={
-        <>
-          {state.queriedNotes.map(note => (
-            <Wrapper
-              key={note.note.id}
-              onClick={() => outputs.onSelectNote(note.note.id)}
-              children={
-                <>
-                  <Header
-                    children={
-                      <>
-                        {note.matches}
-                        <Icon />
-                      </>
-                    }
-                  />
-                  <Result
-                    note={note.note}
-                    synonymIds={store.synonymIds}
-                  />
-                </>
-              }
-            />
-          ))}
-        </>
+        <RelatedItems
+          onSelectNote={outputs.onSelectNote}
+        />
       }
     />
   )
-};
+}

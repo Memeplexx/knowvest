@@ -9,7 +9,7 @@ const gap = '8px';
 
 
 
-const BaseToggleButton = styled(IconButton)<{ selected?: boolean }>`
+const BaseToggleButton = styled(IconButton) <{ selected?: boolean }>`
   width: 24px;
   height: 24px;
   position: fixed;

@@ -5,12 +5,12 @@ import { prisma } from '@/server/routers/_app';
 import { NotificationContext, ServerSideProps } from '@/utils/pages/home/constants';
 import { useEvents } from '@/utils/pages/home/events';
 import { useHooks } from '@/utils/pages/home/hooks';
+import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TagsPanel, Wrapper } from '@/utils/pages/home/styles';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import superjson from 'superjson';
-import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TagsPanel, Wrapper } from '@/utils/pages/home/styles';
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
