@@ -44,7 +44,6 @@ export const Header = styled(possible.div)`
   font-weight: 400;
   font-size: 19px;
   letter-spacing: 4px;
-  background-image: linear-gradient(to right,#191919,#252525);
 `;
 
 export const Body = styled(possible.div)`
