@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { ButtonIcon } from '../button-icon';
 import { possible } from '../html';
 import { Button } from '../button';
+import { mobileBreakPoint } from '@/utils/styles';
 
 
 
@@ -47,6 +48,9 @@ export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
       opacity: 1;
     }
   }
+  @media (max-width: ${mobileBreakPoint}) {
+    margin: 0 -8px;
+  }
 `;
 
 export const FooterButton = styled(Button)`
@@ -62,7 +66,7 @@ export const ModalContent = styled(possible.div)`
   gap: 16px;
   @media (max-width: 540px) {
     max-width: 100%;
-    padding: 8px;
+    padding: 0;
   }
 `;
 

@@ -59,6 +59,7 @@ const useHeaderExpander = () => {
       }
     }
     window.addEventListener('resize', listener)
+    return () => window.removeEventListener('resize', listener);
   }, []);
 }
 
