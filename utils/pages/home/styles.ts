@@ -18,6 +18,7 @@ const BaseToggleButton = styled(IconButton) <{ selected?: boolean }>`
   color: ${p => p.selected ? '#000' : '#FFF'};
   transition: 0.4s transform;
   border-radius: 50%;
+  border: 1px solid #4d4d4d;
   @media (min-width: ${mobileBreakPoint}) {
     display: none;
   }
@@ -121,6 +122,8 @@ export const BodyWrapper = styled.div`
   gap: ${gap};
   flex: 1;
   height: auto;
-  margin: ${gap};
   position: relative;
+  @media (min-width: ${mobileBreakPoint}) {
+    margin: ${gap};
+  }
 `;

@@ -9,7 +9,7 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
   display: flex;
   align-items: center;
   padding: 8px;
-  padding-bottom: 0;
+  /* padding-bottom: 0; */
   transition: 0.2s all;
   margin-top: ${p => p.$show ? '0' : '-52px'};
   justify-content: space-between;

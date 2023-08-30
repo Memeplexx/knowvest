@@ -37,21 +37,29 @@ export const useHooks = (props: ServerSideProps) => {
     connectOlikDevtoolsToStore({ trace: true });
   }, []);
 
-  // useEffect(() => {
-  //   new PerformanceObserver((entryList) => {
-  //     for (const entry of entryList.getEntriesByName('first-contentful-paint')) {
-  //       console.log('FCP candidate:', entry.startTime, entry);
-  //     }
-  //   }).observe({ type: 'paint', buffered: true });
-  // }, []);
+  useLcpAnalyser();
 
-  usePerformanceAnalyser();
+  useHeaderExpander();
 
   return {
     store,
     ...transient,
     ...state,
   }
+}
+
+const useHeaderExpander = () => {
+  useEffect(() => {
+    const listener = () => {
+      const { headerExpanded } = store.$state.home;
+      if (window.innerWidth < 1000 && !headerExpanded) {
+        store.home.headerExpanded.$set(true);
+      } else if (window.innerWidth >= 1000 && headerExpanded) {
+        store.home.headerExpanded.$set(false);
+      }
+    }
+    window.addEventListener('resize', listener)
+  }, []);
 }
 
 const useLogoutUserIfSessionExpired = () => {
@@ -64,7 +72,7 @@ const useLogoutUserIfSessionExpired = () => {
   }, [router, session.status]);
 }
 
-const usePerformanceAnalyser = () => {
+const useLcpAnalyser = () => {
   useEffect(() => {
     const LCP_SUB_PARTS = [
       'Time to first byte',
