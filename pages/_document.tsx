@@ -33,6 +33,9 @@ export default class MyDocument extends Document {
         <Head
           children={
             <>
+              <title
+                children='Knowledge Harvest'
+              />
               <link
                 rel="manifest"
                 href="/manifest.webmanifest"
