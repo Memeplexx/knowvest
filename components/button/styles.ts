@@ -3,7 +3,7 @@ import { possible } from "../html";
 import { mobileBreakPoint } from "@/utils/styles";
 
 
-export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
+export const Wrapper = styled(possible.button)<{ selected?: boolean, highlighted: boolean }>`
   cursor: pointer;
   background: #121212;
   padding: 8px 16px;
@@ -25,24 +25,23 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
       transform: scale(1);
     }
   }
-
-
-  --border-size: 1px;
-  --border-angle: 0turn;
-  background-image: conic-gradient(from var(--border-angle), #213, #112 50%, #213), conic-gradient(from var(--border-angle), transparent 20%, #08f, #f03);
-  background-size: calc(100% - (var(--border-size) * 2)) calc(100% - (var(--border-size) * 2)), cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  animation: bg-spin 3s linear infinite;
-  @keyframes bg-spin {
-    to {
-      --border-angle: 1turn;
+  ${p => p.highlighted && `
+    --border-size: 1px;
+    --border-angle: 0turn;
+    background-image: conic-gradient(from var(--border-angle), #213, #112 50%, #213), conic-gradient(from var(--border-angle), transparent 20%, #08f, #f03);
+    background-size: calc(100% - (var(--border-size) * 2)) calc(100% - (var(--border-size) * 2)), cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    animation: bg-spin 3s linear infinite;
+    @keyframes bg-spin {
+      to {
+        --border-angle: 1turn;
+      }
     }
-  }
-  @property --border-angle {
-    syntax: "<angle>";
-    inherits: true;
-    initial-value: 0turn;
-  }
-
+    @property --border-angle {
+      syntax: "<angle>";
+      inherits: true;
+      initial-value: 0turn;
+    }
+  `}
 `;

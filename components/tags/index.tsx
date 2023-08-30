@@ -129,6 +129,7 @@ export const Tags = forwardRef(function Tags(
                             children='Configure tags'
                             onClick={outputs.onShowDialog}
                             aria-label="Configure tags"
+                            highlighted={true}
                           />
                         </>
                       }

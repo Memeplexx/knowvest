@@ -38,6 +38,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                             children={state.tabButtonText}
                             onClick={outputs.onClickTabButton}
                             aria-label={state.tabButtonText}
+                            highlighted={false}
                           />
                           <CloseButton
                             children={<CloseIcon />}

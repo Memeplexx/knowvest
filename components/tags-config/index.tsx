@@ -264,7 +264,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
                     onClick={outputs.onClickStartOver}
                     showIf={!!state.synonymId}
                     children='Start over'
-                    aria-label="Start over"
+                    aria-label='Start over'
+                    highlighted={true}
                   />
                 }
               />

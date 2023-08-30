@@ -1,5 +1,6 @@
 import { ButtonHTMLAttributes } from "react";
 
 export type Props = {
-  selected?: boolean
+  selected?: boolean;
+  highlighted: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;

@@ -32,6 +32,7 @@ export const Confirmation = (
                   <>
                     <CancelButton
                       selected={state.selection === 'cancel'}
+                      highlighted={false}
                       onMouseUp={outputs.onClickCancel}
                       onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={() => state.set({ selection: 'cancel' })}
@@ -40,6 +41,7 @@ export const Confirmation = (
                     />
                     <ConfirmButton
                       selected={state.selection === 'confirm'}
+                      highlighted={false}
                       onMouseUp={outputs.onClickConfirm}
                       onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={() => state.set({ selection: 'confirm' })}
