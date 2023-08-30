@@ -1,27 +1,29 @@
 import styled from "styled-components";
 import { possible } from "../html";
+import { mobileBreakPoint } from "@/utils/styles";
 
 
 export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
   cursor: pointer;
-  transition: 0.2s all;
   background: #121212;
   padding: 8px 16px;
   opacity: ${p => p.disabled ? 0.5 : 1};
   pointer-events: ${p => p.disabled ? 'none' : 'auto'};
-  transform: scale(1);
-  transition: all 0.2s cubic-bezier(0,.73,.44,1);
   background-color: ${p => p.selected ? '#000' : 'transparent'};
   display: flex;
   align-items: center;
   color: #ffb1fc;
-  &:hover {
-    transform: scale(1.2);
-    background-color: ${p => p.selected ? '#000' : '#313131'};
-    filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
-  }
-  &:active {
+  @media (min-width: ${mobileBreakPoint}) {
     transform: scale(1);
+    transition: all 0.2s cubic-bezier(0,.73,.44,1);
+    &:hover {
+      transform: scale(1.2);
+      background-color: ${p => p.selected ? '#000' : '#313131'};
+      filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
+    }
+    &:active {
+      transform: scale(1);
+    }
   }
 
 
