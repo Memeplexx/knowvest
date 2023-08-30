@@ -70,7 +70,6 @@ export default function Home(
                 <Navbar
                   showIf={state.headerExpanded}
                 />
-
                 <BodyWrapper
                   children={
                     <>

@@ -10,8 +10,8 @@ const gap = '8px';
 
 
 const BaseToggleButton = styled(IconButton) <{ selected?: boolean }>`
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   position: fixed;
   z-index: 3;
   background-color: ${p => p.selected ? '#FFF' : '#000'};
@@ -81,10 +81,12 @@ export const HistoryPanel = styled(History) <{ $expanded: boolean }>`
 export const CenterPanel = styled.div`
   display: flex;
   flex-direction: column;
-  row-gap: ${gap};
   min-height: 0;
   z-index: 1;
   position: relative;
+  @media (min-width: ${mobileBreakPoint}) {
+    row-gap: ${gap};
+  }
 `;
 
 export const RelatedPanel = styled(Related) <{ $expanded: boolean }>`

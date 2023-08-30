@@ -11,7 +11,7 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
   padding: 8px;
   padding-bottom: 0;
   transition: 0.2s all;
-  margin-top: ${p => p.$show ? '0' : '-70px'};
+  margin-top: ${p => p.$show ? '0' : '-52px'};
   justify-content: space-between;
   gap: 12px;
   height: 52px;
