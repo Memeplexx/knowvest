@@ -1,4 +1,6 @@
-import '@/styles/globals.css'
+import '@/styles/reset.css';
+import '@/styles/application.css';
+import '@/styles/codemirror.css';
 import { SessionProvider } from "next-auth/react"
 import { ThemeProvider } from "styled-components";
 import { theme } from '@/utils/styles';

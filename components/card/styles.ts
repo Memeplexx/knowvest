@@ -12,7 +12,7 @@ export const Wrapper = styled(possible.div)<{ $themeType: 'light' | 'dark' }>`
   background-color: #141414;
   @media (min-width: ${mobileBreakPoint}) {
     animation: 1s ease-out 0s 1 scale-up;
-    background-color: rgba(0,0,0,0.${p => p.$themeType === 'dark' ? 4 : 6});
+    background-color: rgba(0,0,0,0.${p => p.$themeType === 'dark' ? 6 : 8});
     @keyframes scale-up {
       0% {
         opacity: 0;
