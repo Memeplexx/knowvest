@@ -9,10 +9,9 @@ export const Wrapper = styled(possible.div)`
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(to right,#030303,#191818);
+  background-image: linear-gradient(to right, #242020, #191919);
   @media (min-width: ${mobileBreakPoint}) {
     animation: 1s ease-out 0s 1 scale-up;
-    background-image: linear-gradient(to right,#030303a6,#191818d9);
     @keyframes scale-up {
       0% {
         opacity: 0;

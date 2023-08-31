@@ -31,23 +31,18 @@ export const Wrapper = styled.div`
   position: relative;
   margin: 0 -16px;
   padding: 16px;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
   transition: all 0.2s;
-  ${Header} {
-    transform: scale(1.0);
-    transform-origin: bottom right;
-    transition: all 0.1s;
-  }
+  transition: all 0.4s;
+  background-image: linear-gradient(to right, #242020, #191919);
+  border: 1px solid transparent;
   &:hover {
-    border-top: 1px solid #2b2b2b;
-    border-bottom: 1px solid #000000;
+    background-image: linear-gradient(to right,#252525,#2d2d2d);
+    border: 1px solid #3c3c3c;
     z-index: 2;
     ${Header}, ${Icon} {
       color: #fff;
     }
     ${Header} {
-      transform: scale(1.1) translateY(-10px);
       font-weight: 400;
     }
   }

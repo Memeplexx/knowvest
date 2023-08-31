@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styled from "styled-components";
 import { possible } from "../html";
-import { SearchIcon as BaseSearchIcon, mobileBreakPoint } from "@/utils/styles";
+import { SearchIcon as BaseSearchIcon } from "@/utils/styles";
 import { ButtonIcon } from "../button-icon";
 
 export const Wrapper = styled.div<{ $show?: boolean }>`
@@ -13,9 +13,7 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
   margin-top: ${p => p.$show ? '0' : '-60px'};
   justify-content: space-between;
   gap: 12px;
-  @media (min-width: ${mobileBreakPoint}) {
-    padding-bottom: 0;
-  }
+  background-image: linear-gradient(to right, #131313, #212121);
 `;
 
 export const ImageLogo = styled(Image)`
