@@ -13,6 +13,7 @@ const withPWA = require('next-pwa')({
 
 module.exports = withBundleAnalyzer(withPWA({
   reactStrictMode: true,
+  productionBrowserSourceMaps: true,
   compiler: {
     styledComponents: true,
   },
