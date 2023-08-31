@@ -1,7 +1,7 @@
 import { TRPCLink, createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import type { AppRouter } from '../server/routers/_app';
 import superjson from 'superjson';
-import { TrpcReturningDtos } from './types';
+import { type TrpcReturningDtos } from './types';
 import { observable } from '@trpc/server/observable';
 
 

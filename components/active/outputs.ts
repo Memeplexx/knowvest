@@ -1,7 +1,7 @@
 import { trpc } from "@/utils/trpc";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { Inputs } from "./constants";
-import { MouseEvent } from "react";
+import { type MouseEvent } from "react";
 import { store } from "@/utils/store";
 import { transact } from "olik";
 

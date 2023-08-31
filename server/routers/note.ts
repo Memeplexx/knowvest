@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { procedure, router } from '../trpc';
 import { prisma } from './_app';
-import { NoteTag, ZodNoteId } from '../dtos';
+import { NoteTagDTO, ZodNoteId } from '../dtos';
 import { TRPCError } from '@trpc/server';
 import { listTagsWithTagText } from './shared';
 
@@ -103,7 +103,7 @@ export const noteRouter = router({
       const noteUpdated = await prisma.note.update({ where: { id: splitFromNoteId }, data: { text: `${note.text.slice(0, from)}${note.text.slice(to)}`, dateUpdated: now, dateViewed: now } });
       const tagsUpdatedForExistingNote = await listTagsWithTagText({ userId, noteText: noteUpdated.text });
       const tagIdsUpdatedForExistingNote = tagsUpdatedForExistingNote.map(tag => tag.id);
-      const noteTagsForExistingNote = await prisma.noteTag.findMany({ where: { noteId: splitFromNoteId } }) as NoteTag[];
+      const noteTagsForExistingNote = await prisma.noteTag.findMany({ where: { noteId: splitFromNoteId } }) as NoteTagDTO[];
       const tagIdsToBeUnassignedFromExistingNote = noteTagsForExistingNote.map(noteTag => noteTag.tagId).filter(id => !tagIdsUpdatedForExistingNote.includes(id));
       const noteTagsRemoved = await prisma.$transaction(tagIdsToBeUnassignedFromExistingNote.map(tagId => prisma.noteTag.delete({ where: { noteId_tagId: { noteId: splitFromNoteId, tagId } } })));
 

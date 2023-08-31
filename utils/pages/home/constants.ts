@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { useHooks } from "./hooks";
-import { Group, Note, NoteTag, SynonymGroup, Tag } from "@/server/dtos";
+import { GroupDTO, NoteDTO, NoteTagDTO, SynonymGroupDTO, TagDTO } from "@/server/dtos";
 import { snackbarStatus } from "@/components/snackbar/constants";
 
 export const homeInitialState = {
@@ -11,11 +11,11 @@ export const homeInitialState = {
 };
 
 export type ServerSideProps = {
-  tags: Tag[],
-  notes: Note[],
-  noteTags: NoteTag[],
-  groups: Group[],
-  synonymGroups: SynonymGroup[],
+  tags: TagDTO[],
+  notes: NoteDTO[],
+  noteTags: NoteTagDTO[],
+  groups: GroupDTO[],
+  synonymGroups: SynonymGroupDTO[],
 }
 
 export type State = ReturnType<typeof useHooks>;

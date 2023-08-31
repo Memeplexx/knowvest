@@ -2,7 +2,7 @@ import { derive } from "olik";
 import { Props } from "./constants";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
-import { Note } from "@/server/dtos";
+import { NoteDTO } from "@/server/dtos";
 import { store } from "@/utils/store";
 
 export const useInputs = (props: Props) => {
@@ -32,9 +32,9 @@ const useNotesSortedAndSliced = () => {
 }
 
 const useEmbellishNotesWithDates = (
-  notesSorted: Note[]
+  notesSorted: NoteDTO[]
 ) => {
-  const [notes, setNotes] = useState<(Note & { date: string })[]>([]);
+  const [notes, setNotes] = useState<(NoteDTO & { date: string })[]>([]);
   useEffect(() => {
     setNotes(notesSorted.map(note => ({
       ...note,

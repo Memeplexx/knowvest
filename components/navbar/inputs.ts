@@ -1,6 +1,6 @@
 import { store } from "@/utils/store";
-import { useFloating } from "@floating-ui/react"
-import { useSession } from "next-auth/react"
+import { useFloating } from "@floating-ui/react";
+import { useSession } from "next-auth/react";
 
 export const useInputs = () => {
 

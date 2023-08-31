@@ -1,6 +1,6 @@
-import { Group, Note, NoteTag, Synonym, SynonymGroup, Tag } from "@/server/dtos";
+import { GroupDTO, NoteDTO, NoteTagDTO, SynonymDTO, SynonymGroupDTO, TagDTO } from "@/server/dtos";
 import { AppRouter } from "@/server/routers/_app";
-import prismaClient from "@prisma/client";
+import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym } from "@prisma/client";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { trpcReturningEntities } from "./trpc";
 
@@ -12,12 +12,12 @@ export type RouterOutput = inferRouterOutputs<AppRouter>;
 export type OrderBy = 'dateCreated' | 'dateUpdated' | 'dateViewed';
 
 export type EntityToDto<T>
-  = T extends prismaClient.Note ? Note
-  : T extends prismaClient.Tag ? Tag
-  : T extends prismaClient.NoteTag ? NoteTag
-  : T extends prismaClient.Group ? Group
-  : T extends prismaClient.SynonymGroup ? SynonymGroup
-  : T extends prismaClient.Synonym ? Synonym
+  = T extends Note ? NoteDTO
+  : T extends Tag ? TagDTO
+  : T extends NoteTag ? NoteTagDTO
+  : T extends Group ? GroupDTO
+  : T extends SynonymGroup ? SynonymGroupDTO
+  : T extends Synonym ? SynonymDTO
   : T extends Array<infer E> ? Array<EntityToDto<E>>
   : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
   : T

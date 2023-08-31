@@ -1,4 +1,4 @@
-import { Note } from '@/server/dtos';
+import { NoteDTO } from '@/server/dtos';
 import { useAddAriaAttributeToCodeMirror, useIsomorphicLayoutEffect, useNoteTagsToTagHighlighter } from '@/utils/hooks';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
@@ -27,7 +27,7 @@ export const useInputs = (props: Props) => {
 
 const useCodeMirror = (
   editorDomElement: RefObject<HTMLDivElement>,
-  note: Note,
+  note: NoteDTO,
 ) => {
   const editorRef = useRef<EditorView | null>(null);
   const [, setNum] = useState(0);

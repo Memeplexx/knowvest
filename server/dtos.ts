@@ -1,6 +1,6 @@
-import prismaClient from "@prisma/client";
+import { type Group, type Note, type Tag, type NoteTag, type SynonymGroup, type Synonym, type User } from "@prisma/client";
 import { Brand } from "olik";
-import { ZodNumberDef, ZodType, z } from 'zod';
+import { z, type ZodNumberDef, type ZodType } from 'zod';
 
 export type NoteId = Brand<number, 'NoteId'>;
 export type TagId = Brand<number, 'TagId'>;
@@ -8,34 +8,34 @@ export type GroupId = Brand<number, 'GroupId'>;
 export type SynonymId = Brand<number, 'SynonymId'>;
 export type UserId = Brand<number, 'UserId'>;
 
-export interface Note extends prismaClient.Note {
+export interface NoteDTO extends Note {
   id: NoteId;
 }
 
-export interface Tag extends prismaClient.Tag {
+export interface TagDTO extends Tag {
   id: TagId;
   synonymId: SynonymId;
 }
 
-export interface NoteTag extends prismaClient.NoteTag {
+export interface NoteTagDTO extends NoteTag {
   noteId: NoteId;
   tagId: TagId;
 }
 
-export interface Group extends prismaClient.Group {
+export interface GroupDTO extends Group {
   id: GroupId;
 }
 
-export interface SynonymGroup extends prismaClient.SynonymGroup {
+export interface SynonymGroupDTO extends SynonymGroup {
   groupId: GroupId;
   synonymId: SynonymId;
 }
 
-export interface Synonym extends prismaClient.Synonym {
+export interface SynonymDTO extends Synonym {
   id: SynonymId;
 }
 
-export interface User extends prismaClient.User {
+export interface UserDTO extends User {
   id: UserId;
 }
 
