@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { animated } from "react-spring";
-import { mobileBreakPoint } from "@/utils/styles";
+import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 
 
 export const Background = styled(animated.div)`
@@ -37,7 +37,7 @@ export const Foreground = styled(animated.div)`
   pointer-events: all;
   display: flex;
   flex-direction: column;
-  ${p => p.theme.fontFamily.default.style};
+  ${defaultFontFamily.style};
   background-image: linear-gradient(to right,#212121,#312c2c);
   max-width: calc(100% - 16px);
   max-height: calc(100% - 16px);

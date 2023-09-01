@@ -1,3 +1,4 @@
+import { defaultFontFamily } from "@/utils/styles";
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
@@ -9,7 +10,7 @@ export const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   letter-spacing: 4px;
-  ${p => p.theme.fontFamily.default.style};
+  ${defaultFontFamily.style};
 `;
 
 export const Title = styled.h1`

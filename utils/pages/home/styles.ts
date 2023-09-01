@@ -2,7 +2,7 @@ import { Active } from "@/components/active";
 import { History } from "@/components/history";
 import { Related } from "@/components/related";
 import { Tags } from "@/components/tags";
-import { IconButton, mobileBreakPoint } from "@/utils/styles";
+import { IconButton, defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
 
 const gap = '8px';
@@ -109,14 +109,9 @@ export const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  ${p => p.theme.fontFamily.default.style};
+  ${defaultFontFamily.style};
   color: white;
-  /* @media (min-width: ${mobileBreakPoint}) {
-    background-image: url(images/backdrop-mono.svg);
-  }
-  @media (max-width: ${mobileBreakPoint}) { */
-    background-color: black;
-  /* } */
+  background-color: black;
 `;
 
 export const BodyWrapper = styled.div`

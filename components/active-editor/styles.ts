@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { possible } from "../html";
+import { monoFontFamily } from "@/utils/styles";
 
 
 
@@ -7,15 +8,15 @@ export const TextEditorWrapper = styled(possible.div)`
   flex: 1;
   overflow: auto;
   flex-basis: 0;
-  font-weight: ${p => p.theme.fontWeight.textEditor};
+  font-weight: 300;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
 
 export const TextEditor = styled(possible.div)`
-  ${p => p.theme.fontFamily.mono.style};
-  font-size: ${p => p.theme.fontSize.sm};
+  ${monoFontFamily.style};
+  font-size: 12px;
   color: lightgray;
 `;
 

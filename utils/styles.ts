@@ -1,56 +1,19 @@
 import styled, { css } from "styled-components";
-import { Source_Code_Pro, Alegreya, Montserrat } from 'next/font/google';
+import { Source_Code_Pro, Montserrat } from 'next/font/google';
 import { possible } from "@/components/html";
 import { CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
 import { AiFillTag } from "react-icons/ai";
 import { MdClear, MdKeyboardArrowDown, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardArrowUp } from "react-icons/md";
 
-const defaultFontFamily = Montserrat({
+export const defaultFontFamily = Montserrat({
   subsets: ['latin'],
   display: 'swap',
 })
 
-const monoFontFamily = Source_Code_Pro({
+export const monoFontFamily = Source_Code_Pro({
   subsets: ['latin'],
   display: 'swap',
 })
-
-const tempFontFamily = Alegreya({
-  subsets: ['latin'],
-  display: 'swap',
-})
-
-export const theme = {
-  color: {
-    darkGrey: '#18181B',
-    // accent: '#96ff37',
-    accent: 'magenta',
-    primary: '#FFF',
-    editorTags: '#e191e1',
-  },
-  fontSize: {
-    sm: '12px',
-    md: '14px',
-    lg: '16px',
-    xxl: '22px',
-  },
-  borderRadius: {
-    medium: '16px',
-  },
-  dimension: {
-    small: '16px',
-    medium: '32px',
-  },
-  fontFamily: {
-    default: defaultFontFamily,
-    // mono: monoFontFamily,
-    mono: defaultFontFamily,
-    // temp: tempFontFamily,
-  },
-  fontWeight: {
-    textEditor: 300,
-  }
-} as const;
 
 export const styles = {
   color: {
