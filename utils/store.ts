@@ -7,6 +7,7 @@ import { homeInitialState } from "./pages/home/constants";
 import { searchInitialState } from "@/components/search/constants";
 import { navBarInitialState } from "@/components/navbar/constants";
 
+
 export const store = createStore({
   activeNoteId: 0 as NoteId,
   groups: new Array<GroupDTO>(),
