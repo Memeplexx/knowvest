@@ -1,5 +1,4 @@
-import { autoUpdate, flip, size } from '@floating-ui/dom';
-import { UseFloatingOptions } from '@floating-ui/react';
+import { UseFloatingOptions, flip, size, autoUpdate } from '@floating-ui/react';
 
 export const OrderTypes = {
   Created: 'dateCreated',
