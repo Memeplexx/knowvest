@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { useHooks } from "./hooks";
+import { useInputs } from "./inputs";
 import { GroupDTO, NoteDTO, NoteTagDTO, SynonymGroupDTO, TagDTO } from "@/server/dtos";
 import { snackbarStatus } from "@/components/snackbar/constants";
 
@@ -18,7 +18,7 @@ export type ServerSideProps = {
   synonymGroups: SynonymGroupDTO[],
 }
 
-export type State = ReturnType<typeof useHooks>;
+export type State = ReturnType<typeof useInputs>;
 
 interface NotificationContextType {
   error: (message: string) => void;

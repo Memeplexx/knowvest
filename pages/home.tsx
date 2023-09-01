@@ -3,8 +3,8 @@ import { Snackbar } from '@/components/snackbar';
 import { UserId } from '@/server/dtos';
 import { prisma } from '@/server/routers/_app';
 import { NotificationContext, ServerSideProps } from '@/utils/pages/home/constants';
-import { useEvents } from '@/utils/pages/home/events';
-import { useHooks } from '@/utils/pages/home/hooks';
+import { useOutputs } from '@/utils/pages/home/outputs';
+import { useInputs } from '@/utils/pages/home/inputs';
 import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TagsPanel, Wrapper } from '@/utils/pages/home/styles';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
 import { GetServerSidePropsContext } from 'next';
@@ -53,14 +53,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function Home(
   propsSerialized: Parameters<typeof superjson.deserialize>[0],
 ) {
-  const state = useHooks(superjson.deserialize<ServerSideProps>(propsSerialized));
-  const events = useEvents(state);
+  const inputs = useInputs(superjson.deserialize<ServerSideProps>(propsSerialized));
+  const outputs = useOutputs(inputs);
   return (
     <NotificationContext.Provider
       value={{
-        error: events.onNotifyError,
-        success: events.onNotifySuccess,
-        info: events.onNotifyInfo,
+        error: outputs.onNotifyError,
+        success: outputs.onNotifySuccess,
+        info: outputs.onNotifyInfo,
       }}
       children={
         <>
@@ -68,50 +68,50 @@ export default function Home(
             children={
               <>
                 <Navbar
-                  showIf={!state.headerExpanded}
+                  showIf={!inputs.headerExpanded}
                 />
                 <BodyWrapper
                   children={
                     <>
                       <HistoryPanel
-                        $expanded={state.historyExpanded}
-                        onSelectNote={events.onClickHistoricalNote}
+                        $expanded={inputs.historyExpanded}
+                        onSelectNote={outputs.onClickHistoricalNote}
                       />
                       <CenterPanel
                         children={
                           <>
                             <ActivePanel />
                             <TagsPanel
-                              $expanded={state.tagsExpanded}
+                              $expanded={inputs.tagsExpanded}
                             />
                           </>
                         }
                       />
                       <RelatedPanel
-                        $expanded={state.similarExpanded}
-                        onSelectNote={events.onClickRelatedNote}
+                        $expanded={inputs.similarExpanded}
+                        onSelectNote={outputs.onClickRelatedNote}
                       />
                       <ExpandHistoryToggleButton
-                        selected={state.historyExpanded}
-                        onClick={events.onClickHistoryToggle}
+                        selected={inputs.historyExpanded}
+                        onClick={outputs.onClickHistoryToggle}
                         children={<RightIcon />}
                         aria-label='Expand History'
                       />
                       <ExpandTagsToggleButton
-                        selected={state.tagsExpanded}
-                        onClick={events.onClickTagsToggle}
+                        selected={inputs.tagsExpanded}
+                        onClick={outputs.onClickTagsToggle}
                         children={<UpIcon />}
                         aria-label='Expand Tags'
                       />
                       <ExpandHeaderToggleButton
-                        selected={!state.headerExpanded}
-                        onClick={events.onClickHeaderToggle}
+                        selected={!inputs.headerExpanded}
+                        onClick={outputs.onClickHeaderToggle}
                         children={<DownIcon />}
                         aria-label='Expand Header'
                       />
                       <ExpandRelatedToggleButton
-                        selected={state.similarExpanded}
-                        onClick={events.onClickSimilarToggle}
+                        selected={inputs.similarExpanded}
+                        onClick={outputs.onClickSimilarToggle}
                         children={<LeftIcon />}
                         aria-label='Expand Related'
                       />
@@ -122,9 +122,9 @@ export default function Home(
             }
           />
           <Snackbar
-            message={state.message}
-            status={state.status}
-            onMessageClear={events.onMessageClear}
+            message={inputs.message}
+            status={inputs.status}
+            onMessageClear={outputs.onMessageClear}
           />
         </>
       }

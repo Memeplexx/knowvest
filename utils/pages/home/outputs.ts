@@ -1,6 +1,6 @@
 import { State } from "./constants";
 
-export const useEvents = (state: State) => ({
+export const useOutputs = (state: State) => ({
   onClickHistoryToggle: () => {
     state.store.home.$patch({
       tagsExpanded: false,

@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import { store } from "@/utils/store";
 
-export const useHooks = (props: ServerSideProps) => {
+export const useInputs = (props: ServerSideProps) => {
 
   useLogoutUserIfSessionExpired();
 
