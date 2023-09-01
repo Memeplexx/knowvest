@@ -152,5 +152,5 @@ const useLcpAnalyser = () => {
         }))
       );
     }).observe({ type: 'largest-contentful-paint', buffered: true });
-  })
+  }, [])
 }
