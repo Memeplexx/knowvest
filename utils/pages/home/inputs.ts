@@ -37,7 +37,7 @@ export const useInputs = (props: ServerSideProps) => {
     connectOlikDevtoolsToStore({ trace: true });
   }, []);
 
-  useLcpAnalyser();
+  // useLcpAnalyser();
 
   useHeaderExpander();
 
@@ -74,6 +74,7 @@ const useLogoutUserIfSessionExpired = () => {
   }, [router, session.status]);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useLcpAnalyser = () => {
   useEffect(() => {
     const LCP_SUB_PARTS = [

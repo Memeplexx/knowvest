@@ -53,12 +53,6 @@ dependencies:
   '@trpc/server':
     specifier: ^10.24.0
     version: 10.38.1
-  '@types/react':
-    specifier: 18.2.0
-    version: 18.2.0
-  '@types/react-dom':
-    specifier: 18.2.1
-    version: 18.2.1
   '@vercel/analytics':
     specifier: ^1.0.2
     version: 1.0.2
@@ -77,9 +71,6 @@ dependencies:
   eslint-config-next:
     specifier: 13.3.4
     version: 13.3.4(eslint@8.39.0)(typescript@5.2.2)
-  keyboard-event-key-type:
-    specifier: ^1.5.0
-    version: 1.5.0
   next:
     specifier: 13.3.4
     version: 13.3.4(@babel/core@7.22.11)(react-dom@18.2.0)(react@18.2.0)
@@ -128,9 +119,6 @@ dependencies:
   superjson:
     specifier: ^1.12.3
     version: 1.13.1
-  thememirror:
-    specifier: ^2.0.1
-    version: 2.0.1(@codemirror/language@6.9.0)(@codemirror/state@6.2.1)(@codemirror/view@6.17.1)
   zod:
     specifier: ^3.21.4
     version: 3.22.2
@@ -148,6 +136,12 @@ devDependencies:
   '@types/node':
     specifier: ^20.2.5
     version: 20.5.7
+  '@types/react':
+    specifier: 18.2.0
+    version: 18.2.0
+  '@types/react-dom':
+    specifier: 18.2.1
+    version: 18.2.1
   '@types/styled-components':
     specifier: ^5.1.26
     version: 5.1.26
@@ -3319,7 +3313,7 @@ packages:
     resolution: {integrity: sha512-8QZEV9+Kwy7tXFmjJrp3XUKQSs9LTnE0KnoUb0YCguWBiNW0Yfb2iBMYZ08WPg35IR6P3Z0s00B15SwZnO26+w==}
     dependencies:
       '@types/react': 18.2.0
-    dev: false
+    dev: true
 
   /@types/react-reconciler@0.26.7:
     resolution: {integrity: sha512-mBDYl8x+oyPX/VBb3E638N0B7xG+SPk/EAMcVPeexqus/5aTpTphQi0curhhshOqRrc9t6OPoJfEUkbymse/lQ==}
@@ -6439,10 +6433,6 @@ packages:
       object.values: 1.1.7
     dev: false
 
-  /keyboard-event-key-type@1.5.0:
-    resolution: {integrity: sha512-d/yMrq4BREH4isBf/Tj8aQqxP+zudhsfeA91nRVllvkxvGsM5IJVgCiQtZQ+qhM1mpZY3kAjoneUIXRvdABEWw==}
-    dev: false
-
   /keyv@4.5.3:
     resolution: {integrity: sha512-QCiSav9WaX1PgETJ+SpNnx2PRRapJ/oRSXM4VO5OGYGSjrxbKPVFVhB3l2OCbLCk329N8qyAtsJjSjvVBWzEug==}
     dependencies:
@@ -8888,18 +8878,6 @@ packages:
 
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
-
-  /thememirror@2.0.1(@codemirror/language@6.9.0)(@codemirror/state@6.2.1)(@codemirror/view@6.17.1):
-    resolution: {integrity: sha512-d5i6FVvWWPkwrm4cHLI3t9AT1OrkAt7Ig8dtdYSofgF7C/eiyNuq6zQzSTusWTde3jpW9WLvA9J/fzNKMUsd0w==}
-    peerDependencies:
-      '@codemirror/language': ^6.0.0
-      '@codemirror/state': ^6.0.0
-      '@codemirror/view': ^6.0.0
-    dependencies:
-      '@codemirror/language': 6.9.0
-      '@codemirror/state': 6.2.1
-      '@codemirror/view': 6.17.1
-    dev: false
 
   /three@0.156.0:
     resolution: {integrity: sha512-r6meetGWDk3aYjDRh6NpKuUkzoPlI3yldDQe2SkwCcqTTB5NZn7vKQBUXyMExvlwZShaLmvAbsVWaFzp1rkk3A==}
