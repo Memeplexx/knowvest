@@ -9,7 +9,15 @@ const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = { count:
   }
   return (
     <div
-      style={{width: '100%', height: '100%', opacity: show ? 1 : 0, transition: 'opacity 0.5s', position: 'absolute', zIndex: 3}}
+      style={{
+        width: '100%', 
+        height: '100%', 
+        opacity: show ? 1 : 0, 
+        pointerEvents: show ? 'all' : 'none',
+        transition: 'opacity 0.5s', 
+        position: 'absolute', 
+        zIndex: 3
+      }}
       children={rows.map(key => (
         <ContentLoader
           uniqueKey={`loader-${key}`}
