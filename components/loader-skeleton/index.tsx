@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import ContentLoader from 'react-content-loader'
 
-const LoaderSkeleton = (props: { count: number } = { count: 10 }) => {
+const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = { count: 10, isVisible: true }) => {
   const rows = new Array(props.count).fill(null).map((_, i) => i);
+  const [show, setShow] = useState(props.isVisible);
+  if (show && !props.isVisible) {
+    setTimeout(() => setShow(false), 500);
+  }
   return (
     <div
-      style={{width: '100%', height: '100%'}}
+      style={{width: '100%', height: '100%', opacity: show ? 1 : 0, transition: 'opacity 0.5s', position: 'absolute', zIndex: 3}}
       children={rows.map(key => (
         <ContentLoader
           uniqueKey={`loader-${key}`}
-          {...props}
           key={key}
           height={40}
           backgroundColor={`rgba(255, 255, 255, ${(1 - (key / props.count)) / 2})`}

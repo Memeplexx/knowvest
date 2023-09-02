@@ -1,27 +1,23 @@
-import { useInputs } from './inputs';
-import { Buttons, CardWrapper, Wrapper } from './styles';
-import { useOutputs } from './outputs';
+import { store } from '@/utils/store';
+import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, PopupOptions, SettingsIcon } from '@/utils/styles';
+import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
-import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, OptionText, PopupOptions, SettingsIcon } from '@/utils/styles';
-import { type HTMLAttributes } from 'react';
-import { store } from '@/utils/store';
 import { Loader } from '../loader';
-import dynamic from 'next/dynamic';
 import LoaderSkeleton from '../loader-skeleton';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
+import { Buttons, CardWrapper, Wrapper } from './styles';
 
 
-const ActiveEditor = dynamic(() => import('../active-editor'), {
-  ssr: false,
-  loading: () => <LoaderSkeleton count={5} />,
-});
+
 
 export const Active = (
   props: HTMLAttributes<HTMLDivElement>
 ) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { state, refs } = inputs;
+  const { state, refs, ActiveEditor } = inputs;
   return (
     <Wrapper
       {...props}
@@ -92,7 +88,13 @@ export const Active = (
               />
             }
             body={
-              <ActiveEditor />
+              <>
+                <ActiveEditor />
+                <LoaderSkeleton
+                  count={5}
+                  isVisible={state.loadingEditor}
+                />
+              </>
             }
           />
           <Loader

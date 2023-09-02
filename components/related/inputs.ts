@@ -1,7 +1,8 @@
 import { derive } from "olik";
 import { Props } from "./constants";
 import { store } from "@/utils/store";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 
 export const useInputs = (props: Props) => {
 
@@ -40,14 +41,21 @@ export const useInputs = (props: Props) => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
   })
 
+  const [loadingRelatedNotes, setLoadingRelatedNotes] = useState(true);
+  const RelatedNotes = useMemo(() => {
+    return dynamic(() => import('../related-items').finally(() => setLoadingRelatedNotes(false)));
+  }, []);
+
   return {
     props,
     state: {
       ...state,
+      loadingRelatedNotes,
       initialized,
       queriedNotes: queriedNotes.$useState(),
       noteCountString: noteCountString.$useState(),
-    }
+    },
+    RelatedNotes,
   }
 
 };
