@@ -10,11 +10,11 @@ import { Loader } from '../loader';
 import dynamic from 'next/dynamic';
 import LoaderSkeleton from '../loader-skeleton';
 
+
 const ActiveEditor = dynamic(() => import('../active-editor'), {
   ssr: false,
   loading: () => <LoaderSkeleton count={5} />,
 });
-
 
 export const Active = (
   props: HTMLAttributes<HTMLDivElement>
@@ -41,10 +41,10 @@ export const Active = (
                       children={<CreateIcon />}
                     />
                     <ButtonIcon
-                      children={<SettingsIcon />}
                       onClick={outputs.onClickSettingsButton}
                       ref={refs.floating.refs.setReference}
                       aria-label='Settings'
+                      children={<SettingsIcon />}
                     />
                     <PopupOptions
                       showIf={state.showOptions}
