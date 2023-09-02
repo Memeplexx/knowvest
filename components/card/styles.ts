@@ -39,10 +39,11 @@ export const Header = styled(possible.div)`
   right: 0;
   left: 0;
   height: 67px;
-  z-index: 1;
+  z-index: 4;
   font-weight: 400;
   font-size: 19px;
   letter-spacing: 4px;
+  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const Body = styled(possible.div)`

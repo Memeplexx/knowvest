@@ -6,6 +6,8 @@ import { GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagD
 import { homeInitialState } from "./pages/home/constants";
 import { searchInitialState } from "@/components/search/constants";
 import { navBarInitialState } from "@/components/navbar/constants";
+import { historyInitialState } from "@/components/history/constants";
+import { relatedInitialState } from "@/components/related/constants";
 
 
 export const store = createStore({
@@ -20,6 +22,8 @@ export const store = createStore({
   config: configInitialState,
   tagsPanel: tagsPanelInitialState,
   activePanel: activePanelInitialState,
+  historyPanel: historyInitialState,
+  relatedPanel: relatedInitialState,
   search: searchInitialState,
   navBar: navBarInitialState,
 })

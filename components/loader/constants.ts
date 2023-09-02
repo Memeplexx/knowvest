@@ -1,4 +1,5 @@
 export type Props = {
-  showIf: boolean;
+  showIf?: boolean;
+  show: boolean;
   className?: string;
 }

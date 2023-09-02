@@ -1,9 +1,11 @@
 import styled from "styled-components"
 import { possible } from "../html";
 
-export const Container = styled(possible.div)`
+export const Container = styled(possible.div)<{ $showIf: boolean }>`
   transition: all 0.4s;
-  opacity: ${({ showIf }) => showIf ? 1 : 0};
+  opacity: ${({ $showIf }) => $showIf ? 1 : 0};
+  pointer-events: ${({ $showIf }) => $showIf ? 'all' : 'none'};
+  cursor: not-allowed;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,8 +15,7 @@ export const Container = styled(possible.div)`
   bottom: 0;
   left: 0;
   background-color: rgba(255,255,255,0.4);
-  cursor: not-allowed;
-  pointer-events: ${p => p.showIf ? 'all' : 'none'};
+  z-index: 5;
 `;
 
 export const Spinner = styled.div`

@@ -96,7 +96,7 @@ export const Active = (
             }
           />
           <Loader
-            showIf={state.loadingNote}
+            show={state.loadingNote}
           />
         </>
       }

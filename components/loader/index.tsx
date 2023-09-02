@@ -6,6 +6,7 @@ export const Loader = (props: Props) => {
     <Container 
       className={props.className}
       showIf={props.showIf}
+      $showIf={props.show}
       children={
         <Spinner
         />

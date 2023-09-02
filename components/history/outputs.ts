@@ -8,7 +8,6 @@ export const useOutputs = (inputs: Inputs) => {
   const { props } = inputs;
   return {
     onSelectNote: async (noteId: NoteId) => {
-      trpc.note.view.mutate({ noteId }).catch(console.error);
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
       const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
       transact(() => {
@@ -16,6 +15,9 @@ export const useOutputs = (inputs: Inputs) => {
         store.synonymIds.$set(synonymIds);
       })
       props.onSelectNote(noteId);
+      store.historyPanel.loadingNotes.$set(true);
+      await trpc.note.view.mutate({ noteId });
+      store.historyPanel.loadingNotes.$set(false);
     }
   };
 }

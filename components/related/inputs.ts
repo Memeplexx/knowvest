@@ -1,8 +1,14 @@
 import { derive } from "olik";
 import { Props } from "./constants";
 import { store } from "@/utils/store";
+import { useEffect, useState } from "react";
 
 export const useInputs = (props: Props) => {
+
+  const state = store.relatedPanel.$useState();
+
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => setInitialized(true), [])
 
   const queriedNotes = derive(
     store.activeNoteId,
@@ -37,6 +43,8 @@ export const useInputs = (props: Props) => {
   return {
     props,
     state: {
+      ...state,
+      initialized,
       queriedNotes: queriedNotes.$useState(),
       noteCountString: noteCountString.$useState(),
     }

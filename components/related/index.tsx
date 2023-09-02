@@ -4,7 +4,7 @@ import LoaderSkeleton from '../loader-skeleton';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { NoteCount } from './styles';
+import { Loading, NoteCount } from './styles';
 
 const RelatedItems = dynamic(() => import('../related-items'), {
   ssr: false,
@@ -29,9 +29,15 @@ export const Related = (
         />
       }
       body={
-        <RelatedItems
-          onSelectNote={outputs.onSelectNote}
-        />
+        <>
+          <RelatedItems
+            onSelectNote={outputs.onSelectNote}
+          />
+          <Loading
+            showIf={state.initialized}
+            show={state.loadingNotes}
+          />
+        </>
       }
     />
   )

@@ -43,9 +43,9 @@ export const useInputs = () => {
 
   useAddAriaAttributeToCodeMirror({ noteId: store.$state.activeNoteId, editorDomElement: editor });
 
-  useNoteTagsToTagHighlighter(codeMirror, store.synonymIds);
-
   useActiveNoteIdToCodeMirrorUpdater(codeMirror);
+
+  useNoteTagsToTagHighlighter(codeMirror, store.synonymIds);
 
   return {
     refs: {

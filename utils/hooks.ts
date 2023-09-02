@@ -98,9 +98,14 @@ export const useNoteTagsToTagHighlighter = (editorView: EditorView | null, synon
   }).$useState();
 
   const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
-    const from = change.mapPos(range.from);
-    const to = change.mapPos(range.to);
-    return from < to ? { from, to } : undefined
+    try {
+      const from = change.mapPos(range.from);
+      const to = change.mapPos(range.to);
+      return from < to ? { from, to } : undefined
+    } catch (e) {
+      // can happen when the active note is changed
+      return;
+    }
   }
   const addHighlight = useRef(StateEffect.define<{ from: number, to: number }>({ map: mapRange }));
   const removeHighlight = useRef(StateEffect.define<{ from: number, to: number }>({ map: mapRange }));

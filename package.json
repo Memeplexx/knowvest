@@ -8,7 +8,7 @@
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
-    "dev:ts": "yarn dev & yarn ts:watch",
+    "dev:ts": "rm public/sw.js & npm run dev & npm run ts:watch",
     "ts": "tsc --noEmit --incremental",
     "ts:watch": "yarn ts --watch",
     "migrate:local": "npx prisma migrate dev --skip-seed",
