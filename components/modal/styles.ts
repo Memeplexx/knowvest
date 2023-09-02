@@ -12,7 +12,7 @@ export const Background = styled(animated.div)`
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 3;
+  z-index: 4;
   background-color: rgba(0, 0, 0, 0.1);
   @media (min-width: ${mobileBreakPoint}) {
     filter: drop-shadow(0px 0px 15px #000);
@@ -29,7 +29,7 @@ export const ForegroundWrapper = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
 `;
 
