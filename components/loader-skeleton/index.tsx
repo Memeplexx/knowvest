@@ -16,7 +16,8 @@ const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = { count:
         pointerEvents: show ? 'all' : 'none',
         transition: 'opacity 0.5s', 
         position: 'absolute', 
-        zIndex: 3
+        zIndex: 3,
+        marginTop: 67,
       }}
       children={rows.map(key => (
         <ContentLoader

@@ -68,7 +68,7 @@ export default function Home(
             children={
               <>
                 <Navbar
-                  showIf={!inputs.headerExpanded}
+                  showIf={!inputs.headerContracted}
                 />
                 <BodyWrapper
                   children={
@@ -104,7 +104,7 @@ export default function Home(
                         aria-label='Expand Tags'
                       />
                       <ExpandHeaderToggleButton
-                        selected={!inputs.headerExpanded}
+                        selected={inputs.headerContracted}
                         onClick={outputs.onClickHeaderToggle}
                         children={<DownIcon />}
                         aria-label='Expand Header'

@@ -23,7 +23,7 @@ export const useOutputs = (state: State) => ({
     });
   },
   onClickHeaderToggle: () => {
-    state.store.home.headerExpanded.$toggle();
+    state.store.home.headerContracted.$toggle();
   },
   onClickRelatedNote: () => {
     state.similarExpanded && state.store.home.similarExpanded.$set(false);

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik";
 import { ServerSideProps, initialTransientState } from "./constants";
 import { NoteId } from "@/server/dtos";
-import { useRecord } from "@/utils/hooks";
+import { useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import { store } from "@/utils/store";
@@ -49,13 +49,13 @@ export const useInputs = (props: ServerSideProps) => {
 }
 
 const useHeaderExpander = () => {
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const listener = () => {
-      const { headerExpanded } = store.$state.home;
-      if (window.innerWidth < 1000 && !headerExpanded) {
-        store.home.headerExpanded.$set(true);
-      } else if (window.innerWidth >= 1000 && headerExpanded) {
-        store.home.headerExpanded.$set(false);
+      const { headerContracted } = store.$state.home;
+      if (window.innerWidth >= 1000 && headerContracted) {
+        store.home.headerContracted.$set(false);
+      } else if (window.innerWidth < 1000 && !headerContracted) {
+        store.home.headerContracted.$set(true);
       }
     }
     listener();
