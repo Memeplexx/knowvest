@@ -75,7 +75,7 @@ export const OptionItem = styled(possible.button)`
     background-color: #272727;
     color: #FFF;
   }
-  :focus {
+  &:focus {
     background-color: #272727;
     outline: none;
     background-color: #323232;
