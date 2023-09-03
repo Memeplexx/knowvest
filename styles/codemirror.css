@@ -22,7 +22,11 @@
 }
 
 .cm-highlight {
-  color: #e987e9;
+  background-color: #b100b159;
+  border-radius: 7px;
+  padding: 0 4px;
+  font-weight: 500;
+  color: #FFF;
 }
 
 .ͼ1 .cm-line {

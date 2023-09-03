@@ -19,9 +19,10 @@ export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $
   align-items: center;
   padding: 0 8px;
   transition: all 0.2s;
-  border: 1px solid ${p => p.selected ? '#e987e9' : 'transparent'};
-  color: ${p => p.$active ? '#e987e9': '#FFF'};
-  font-weight: bold;
+  ${p => p.selected && `
+    background-color: #b100b159;
+    font-weight: 500;
+  `}
   z-index: ${p => p.selected ? 1 : 0};
   cursor: pointer;
   ${p => p.$first ? 'border-top-left-radius: 10px; border-bottom-left-radius: 10px;' : ''}
