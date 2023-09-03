@@ -18,6 +18,7 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
       children={
         <>
           <Input
+            type='text'
             ref={refs.floating.refs.setReference}
             value={props.inputText}
             onChange={outputs.onChangeInput}
@@ -46,11 +47,12 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             children={
               state.optionsFiltered.map(option => (
                 <OptionItem
+                  type='button'
                   key={option.value}
                   tabIndex={0}
                   onKeyDown={outputs.onKeyDownOption}
                   onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
-                  onClick={() => outputs.onClickOption(option.value)}
+                  onClick={e => outputs.onClickOption(option.value, e)}
                   children={props.renderOption?.(option) || option.label}
                 />
               ))

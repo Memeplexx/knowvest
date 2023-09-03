@@ -200,7 +200,6 @@ export const useOutputs = (inputs: Inputs) => {
       store.config.modal.$set('confirmDeleteGroup');
     },
     onAutocompleteSelected: async (id: TagId | GroupId | null) => {
-      store.config.showAutocompleteOptions.$set(false);
       if (state.autocompleteAction === 'addActiveSynonymsToAGroup') {
         await onAutocompleteSelectedWhileAddActiveSynonymsToGroup(inputs, id as GroupId);
       } else if (state.autocompleteAction === 'addSynonymsToActiveSynonyms') {
@@ -215,6 +214,7 @@ export const useOutputs = (inputs: Inputs) => {
       focusAutocompleteInput(inputs);
     },
     onClickDocument: useEventHandlerForDocument('click', event => {
+      if (event.detail === 0) { return; } // Events with a detail of 0 come from enter presses of autocomplete option. (https://github.com/facebook/react/issues/3907#issuecomment-363948471)
       doCancel(inputs, event.target);
     }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {

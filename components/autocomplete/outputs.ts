@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent } from "react";
+import { ChangeEvent, KeyboardEvent, MouseEvent } from "react";
 import { OptionBase, Inputs } from "./constants";
 import { TypedKeyboardEvent } from "@/utils/types";
 
@@ -8,8 +8,10 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
     onFocusInput: () => {
       props.onInputFocused();
     },
-    onClickOption: (value: Option['value']) => {
+    onClickOption: (value: Option['value'], event: MouseEvent) => {
+      if (event.detail === 0) { return; } /* handled by onKeyUpInput */
       props.onValueChange(value);
+      props.onShowOptionsChange(false);
     },
     onChangeInput: (event: ChangeEvent<HTMLInputElement>) => {
       props.onInputTextChange(event.target.value.toLowerCase());
@@ -30,6 +32,7 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
         } else {
           props.onInputEnterKeyUp?.();
         }
+        props.onShowOptionsChange(false);
       }
     },
     onKeyDownOption: (event: KeyboardEvent<HTMLElement>) => {
