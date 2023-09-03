@@ -1,5 +1,5 @@
 import { Card } from '../card';
-import LoaderSkeleton from '../loader-skeleton';
+import { LoaderSkeleton } from '../loader-skeleton';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -21,7 +21,7 @@ export const History = (
           <HistoricalNotes
             onSelectNote={events.onSelectNote}
           />
-          <LoaderSkeleton 
+          <LoaderSkeleton
             count={15}
             isVisible={state.loadingHistoricalNotes}
           />

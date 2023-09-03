@@ -1,5 +1,5 @@
 import { Card } from '../card';
-import LoaderSkeleton from '../loader-skeleton';
+import { LoaderSkeleton } from '../loader-skeleton';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -29,7 +29,7 @@ export const Related = (
           <RelatedNotes
             onSelectNote={outputs.onSelectNote}
           />
-          <LoaderSkeleton 
+          <LoaderSkeleton
             count={15}
             isVisible={state.loadingRelatedNotes}
           />

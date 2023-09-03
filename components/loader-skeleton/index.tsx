@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ContentLoader from 'react-content-loader'
 
-const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = { count: 10, isVisible: true }) => {
+export const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = { count: 10, isVisible: true }) => {
   const rows = new Array(props.count).fill(null).map((_, i) => i);
   const [show, setShow] = useState(props.isVisible);
   if (show && !props.isVisible) {
@@ -37,5 +37,3 @@ const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = { count:
     />
   )
 }
-
-export default LoaderSkeleton;

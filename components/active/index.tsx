@@ -4,7 +4,7 @@ import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
 import { Loader } from '../loader';
-import LoaderSkeleton from '../loader-skeleton';
+import { LoaderSkeleton } from '../loader-skeleton';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { Buttons, CardWrapper, Wrapper } from './styles';

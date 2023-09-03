@@ -10,7 +10,7 @@ export const Wrapper = styled(possible.div)`
   position: relative;
   overflow: hidden;
   background-image: linear-gradient(to right, #242020, #191919);
-  @media (min-width: ${mobileBreakPoint}) {
+  /* @media (min-width: ${mobileBreakPoint}) {
     animation: 1s ease-out 0s 1 scale-up;
     @keyframes scale-up {
       0% {
@@ -22,7 +22,7 @@ export const Wrapper = styled(possible.div)`
         transform: scale(1);
       }
     }
-  }
+  } */
 `;
 
 export const Header = styled(possible.div)`

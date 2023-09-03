@@ -67,8 +67,8 @@ export const TagsPanel = styled(Tags) <{ $expanded: boolean }>`
 `;
 
 export const HistoryPanel = styled(History) <{ $expanded: boolean }>`
-  transition: transform 0.2s ease-out;
   @media (max-width: ${mobileBreakPoint}) {
+    transition: transform 0.2s ease-out;
     z-index: 2;
     position: absolute;
     left: 0;
@@ -91,8 +91,8 @@ export const CenterPanel = styled.div`
 `;
 
 export const RelatedPanel = styled(Related) <{ $expanded: boolean }>`
-  transition: transform 0.2s ease-out;
   @media (max-width: ${mobileBreakPoint}) {
+    transition: transform 0.2s ease-out;
     z-index: 1;
     position: absolute;
     left: 0;
