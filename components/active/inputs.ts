@@ -15,11 +15,6 @@ export const useInputs = () => {
 
   const state = store.activePanel.$useState();
 
-  // const ActiveEditor = dynamic(() => import('../active-editor'), {
-  //   ssr: false,
-  //   loading: () => <LoaderSkeleton count={5} />,
-  // });
-
   const [loadingEditor, setLoadingEditor] = useState(true);
   const ActiveEditor = useMemo(() => {
     return dynamic(() => import('../active-editor').finally(() => setLoadingEditor(false)));
