@@ -22,7 +22,7 @@ export const createAutocompleteExtension = () => {
   });
 }
 
-export const createNotePersisterExtension = ({ debounce }: { debounce: number } ) => {
+export const createNotePersisterExtension = ({ debounce }: { debounce: number }) => {
   let timestamp = Date.now();
   let activeNoteIdRef = store.$state.activeNoteId;
   const updateNote = async (update: ViewUpdate) => {
@@ -48,7 +48,7 @@ export const noteTagsPersisterExtension = () => {
   let previousActiveNoteTagIds = new Array<TagId>();
   const tagsWithRegexp = store.$state.tags
     .map(tag => ({ ...tag, regexp: new RegExp(`\\b(${tag.text})\\b`, 'gi') }));
-    store.tags.$onChange(newTags => {
+  store.tags.$onChange(newTags => {
     const currentTagIds = tagsWithRegexp.map(t => t.id);
     newTags
       .filter(nt => !currentTagIds.includes(nt.id))
@@ -57,8 +57,10 @@ export const noteTagsPersisterExtension = () => {
         tagsWithRegexp.push({ ...nt, regexp });
       });
   });
+  let initializing = true;
   return EditorView.updateListener.of(async update => {
-    if (!update.docChanged) { return; }
+    if (!initializing && !update.docChanged) { return; }
+    initializing = false;
     const activeNoteText = update.state.doc.toString();
     if (previousActiveNoteId !== store.$state.activeNoteId) {
       previousActiveNoteId = store.$state.activeNoteId;
@@ -194,7 +196,7 @@ export const createEditorHasTextUpdater = () => {
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
     if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
-      store.activePanel.editorHasText.$set(false);      
+      store.activePanel.editorHasText.$set(false);
     } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {
       store.activePanel.editorHasText.$set(true);
     }

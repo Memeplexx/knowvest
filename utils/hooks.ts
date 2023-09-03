@@ -162,12 +162,21 @@ export const useNoteTagsToTagHighlighter = (editorView: EditorView | null, synon
       .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
         .map(m => m.index!)
         .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })));
+
     const effects: StateEffect<unknown>[] = [
       ...previousTagPositions.current
         .filter(tp => !tagPositions.some(t => t.tagId === tp.tagId && t.from === tp.from && t.to === tp.to))
-        .map(t => removeHighlight.current.of(t)),
-      ...tagPositions.map(thing => addHighlight.current.of(thing)),
+        .distinct(t => t.tagId + ' ' + t.from)
+        .map(t => removeHighlight.current.of({ 
+          ...t, 
+          // if user deletes last character and char is inside tag, we will get an out of bounds error. This prevents that
+          to: Math.min(t.to, editorView?.state.doc.length || Number.MAX_VALUE)
+        })),
+      ...tagPositions
+        .distinct(t => t.tagId + ' ' + t.from)
+        .map(t => addHighlight.current.of(t)),
     ];
+
     if (!editorView?.state.field(highlightedRanges.current, false)) {
       effects.push(StateEffect.appendConfig.of([highlightedRanges.current]));
     }
