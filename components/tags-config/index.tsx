@@ -265,6 +265,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                     showIf={!!state.synonymId}
                     children='Start over'
                     aria-label='Start over'
+                    title='Manage a new tag'
                     highlighted={true}
                   />
                 }

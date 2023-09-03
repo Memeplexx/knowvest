@@ -36,7 +36,7 @@ export const Tags = forwardRef(function Tags(
         children={
           <CardWrapper
             {...props}
-            title='Tags for active note'
+            title='Tags'
             ref={refs.container}
             actions={
               <ButtonIcon
