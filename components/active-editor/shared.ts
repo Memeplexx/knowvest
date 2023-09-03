@@ -30,7 +30,9 @@ export const createNotePersisterExtension = ({ debounce }: { debounce: number } 
     if (Date.now() - timestamp < debounce) { return; }
     if (!store.$state.activePanel.allowNotePersister) { return; }
     const apiResponse = await trpc.note.update.mutate({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
-    store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.updatedNote);
+    if (store.$state.notes.some(n => n.id === store.$state.activeNoteId)) { // do this check because sometimes we have issues if the user switches notes too quickly
+      store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.updatedNote);
+    }
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
