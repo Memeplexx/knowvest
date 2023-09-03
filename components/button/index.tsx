@@ -8,6 +8,7 @@ export const Button = forwardRef(function Button(
 ) {
   return (
     <Wrapper
+      showIf={props.showIf}
       $highlighted={props.highlighted}
       ref={ref}
       children={props.children}
