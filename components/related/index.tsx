@@ -3,7 +3,7 @@ import LoaderSkeleton from '../loader-skeleton';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Loading, NoteCount } from './styles';
+import { NoteCount } from './styles';
 
 
 
@@ -32,10 +32,6 @@ export const Related = (
           <LoaderSkeleton 
             count={15}
             isVisible={state.loadingRelatedNotes}
-          />
-          <Loading
-            showIf={state.initialized}
-            show={state.loadingNotes}
           />
         </>
       }

@@ -6,8 +6,6 @@ import dynamic from "next/dynamic";
 
 export const useInputs = (props: Props) => {
 
-  const state = store.relatedPanel.$useState();
-
   const [initialized, setInitialized] = useState(false);
   useEffect(() => setInitialized(true), [])
 
@@ -49,7 +47,6 @@ export const useInputs = (props: Props) => {
   return {
     props,
     state: {
-      ...state,
       loadingRelatedNotes,
       initialized,
       queriedNotes: queriedNotes.$useState(),

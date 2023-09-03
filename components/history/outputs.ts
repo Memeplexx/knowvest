@@ -13,11 +13,10 @@ export const useOutputs = (inputs: Inputs) => {
       transact(() => {
         store.activeNoteId.$set(noteId);
         store.synonymIds.$set(synonymIds);
+        store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       })
       props.onSelectNote(noteId);
-      store.historyPanel.loadingNotes.$set(true);
       await trpc.note.view.mutate({ noteId });
-      store.historyPanel.loadingNotes.$set(false);
     }
   };
 }

@@ -3,7 +3,6 @@ import LoaderSkeleton from '../loader-skeleton';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Loading } from './styles';
 
 export const History = (
   props: Props
@@ -25,10 +24,6 @@ export const History = (
           <LoaderSkeleton 
             count={15}
             isVisible={state.loadingHistoricalNotes}
-          />
-          <Loading
-            showIf={state.initialized}
-            show={state.loadingNotes}
           />
         </>
       }
