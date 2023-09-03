@@ -16,6 +16,7 @@ import {
   Footer,
   FooterButton,
   ModalContent,
+  PageTitle,
   SettingsButton,
   Tag,
   TagGroup,
@@ -49,8 +50,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
                           <BodyHeader
                             children={
                               <>
-                                <div
-                                  children={state.autocompleteTitle}
+                                <PageTitle
+                                  children={state.pageTitle}
                                 />
                                 <CloseButton
                                   children={<CloseIcon />}

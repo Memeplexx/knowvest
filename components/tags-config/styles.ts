@@ -54,6 +54,9 @@ export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
   }
 `;
 
+export const PageTitle = styled.div`
+`;
+
 export const FooterButton = styled(Button)`
 `;
 

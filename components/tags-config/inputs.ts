@@ -160,7 +160,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       autocompleteOptions: autocompleteOptions.$useState(),
       tagsInCustomGroups: tagsInCustomGroups.$useState(),
       tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
-      autocompleteTitle: autocompleteTitle.$useState(),
+      pageTitle: autocompleteTitle.$useState(),
       selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
       autocompleteDisabled: !!state.groupSynonymId,
     },
