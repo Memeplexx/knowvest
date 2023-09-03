@@ -56,4 +56,5 @@ export const RightBorder = styled(possible.div)`
   background-color: #6f6f6f;
   top: 40px;
   bottom: -9px;
+  z-index: 4;
 `;
