@@ -1,10 +1,10 @@
 import { NoteId, TagId } from "@/server/dtos";
+import { store } from "@/utils/store";
 import { trpc } from "@/utils/trpc";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range } from "@codemirror/state";
-import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
-import { store } from "@/utils/store";
+import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 
 export const createAutocompleteExtension = () => {
   return autocompletion({
@@ -88,45 +88,6 @@ export const noteTagsPersisterExtension = () => {
     const tagIds = apiResponse.noteTags.map(nt => nt.tagId);
     const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
     store.synonymIds.$set(synonymIds);
-  });
-}
-
-export const createBulletPointPlugin = () => {
-  return ViewPlugin.fromClass(class {
-    decorations: DecorationSet;
-    constructor(view: EditorView) {
-      this.decorations = this.getDecorations(view)
-    }
-    update(update: ViewUpdate) {
-      if (update.docChanged || update.viewportChanged) {
-        this.decorations = this.getDecorations(update.view)
-      }
-    }
-    private getDecorations(view: EditorView) {
-      const widgets = [] as Range<Decoration>[]
-      for (const { from, to } of view.visibleRanges) {
-        syntaxTree(view.state).iterate({
-          from, to,
-          enter: (node) => {
-            if (node.name === 'ListMark') {
-              const deco = Decoration.replace({
-                widget: new class extends WidgetType {
-                  toDOM() {
-                    const wrap = document.createElement("span")
-                    wrap.innerHTML = '•';
-                    return wrap
-                  }
-                }(),
-              })
-              widgets.push(deco.range(node.from, node.to));
-            }
-          },
-        })
-      }
-      return Decoration.set(widgets)
-    }
-  }, {
-    decorations: v => v.decorations,
   });
 }
 

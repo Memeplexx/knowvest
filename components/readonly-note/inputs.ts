@@ -1,5 +1,5 @@
 import { NoteDTO } from '@/server/dtos';
-import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
+import { addAriaAttributeToCodeMirror, createBulletPointPlugin, highlightTagsInEditor } from '@/utils/functions';
 import { useIsomorphicLayoutEffect } from '@/utils/hooks';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
@@ -38,6 +38,7 @@ export const instantiateCodeMirror = ({ editor, note }: { editor: HTMLDivElement
       markdown({ codeLanguages: languages }),
       EditorState.readOnly.of(true),
       EditorView.lineWrapping,
+      createBulletPointPlugin(),
     ],
   });
 }

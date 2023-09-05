@@ -1,5 +1,5 @@
 import { NoteId } from '@/server/dtos';
-import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
+import { addAriaAttributeToCodeMirror, createBulletPointPlugin, highlightTagsInEditor } from '@/utils/functions';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { store } from '@/utils/store';
 import {
@@ -10,7 +10,6 @@ import {
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
 import {
-  HighlightStyle,
   bracketMatching,
   defaultHighlightStyle,
   foldKeymap,
@@ -26,7 +25,6 @@ import {
   keymap,
   rectangularSelection
 } from '@codemirror/view';
-import { Tag, tags } from '@lezer/highlight';
 import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
 import { createAutocompleteExtension, createEditorHasTextUpdater, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createPasteListener, createSentenceCapitalizer, createTextSelectorPlugin } from './shared';
@@ -48,6 +46,7 @@ export const useInputs = () => {
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current! });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds });
     addAriaAttributeToCodeMirror({ editor: editor.current!, noteId: store.$state.activeNoteId });
+
   }, []);
 
   return {
@@ -63,14 +62,7 @@ export const useInputs = () => {
   };
 }
 
-const myTag = Tag.define();
 
-const myHighlightStyle = HighlightStyle.define([
-  { tag: tags.comment, color: "#16A004", fontStyle: "italic" },
-  { tag: tags.emphasis, color: "#66D9EF", fontStyle: "italic" },
-  { tag: tags.strong, color: "#66D9EF", fontStyle: "bold" },
-  { tag: myTag, color: "#FF0000", fontStyle: "bold" },
-]);
 
 export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) => {
   return new EditorView({
@@ -81,12 +73,11 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       dropCursor(),
       indentOnInput(),
       syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+      markdown({ codeLanguages: languages }),
       bracketMatching(),
       closeBrackets(),
       rectangularSelection(),
       crosshairCursor(),
-      markdown({ codeLanguages: languages }),
-      syntaxHighlighting(myHighlightStyle),
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({ spellcheck: "on"/*, autocapitalize: "on" - doesn't work as expected! */ }),
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
@@ -97,6 +88,7 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       createEditorHasTextUpdater(),
       createPasteListener(),
       createSentenceCapitalizer(),
+      createBulletPointPlugin(),
     ],
   });
 }

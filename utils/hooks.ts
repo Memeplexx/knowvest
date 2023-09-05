@@ -1,10 +1,5 @@
-import { NoteId, SynonymId, TagId } from '@/server/dtos';
-import { ChangeDesc, Range, StateEffect, StateField } from '@codemirror/state';
-import { Decoration, DecorationSet, EditorView } from '@codemirror/view';
-import { Readable, derive } from 'olik';
-import { type ForwardedRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
 import { EventMap } from './types';
-import { store } from './store';
 
 
 
@@ -81,110 +76,6 @@ export const useDebounce = <T>(value: T, delay: number, action: () => void) => {
   }, delay)
 }
 
-export const useNoteTagsToTagHighlighter = (editorView: EditorView | null, synonymIds: Readable<SynonymId[]>) => {
-  const noteTags = derive(
-    synonymIds,
-    store.tags,
-    store.noteTags,
-    store.synonymGroups,
-  ).$with((synonymIds, tags, noteTags, synonymGroups) => {
-    const groupSynonymIds = synonymGroups
-      .filter(sg => synonymIds.includes(sg.synonymId))
-      .distinct();
-    return [...synonymIds, ...groupSynonymIds]
-      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
-      .distinct(t => t.id)
-      .flatMap(t => noteTags.filter(nt => nt.tagId === t.id));
-  }).$useState();
-
-  const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
-    try {
-      const from = change.mapPos(range.from);
-      const to = change.mapPos(range.to);
-      return from < to ? { from, to } : undefined
-    } catch (e) {
-      // can happen when the active note is changed
-      return;
-    }
-  }
-  const addHighlight = useRef(StateEffect.define<{ from: number, to: number }>({ map: mapRange }));
-  const removeHighlight = useRef(StateEffect.define<{ from: number, to: number }>({ map: mapRange }));
-  const highlight = useRef(Decoration.mark({
-    attributes: {
-      class: 'cm-highlight',
-    }
-  }));
-  const highlightedRanges = useRef(StateField.define({
-    create: () => Decoration.none,
-    update: (ranges, tr) => {
-      ranges = ranges.map(tr.changes)
-      for (const e of tr.effects) {
-        if (e.is(addHighlight.current)) {
-          ranges = addRange(ranges, e.value);
-        } else if (e.is(removeHighlight.current)) {
-          ranges = cutRange(ranges, e.value);
-        }
-      }
-      return ranges
-    },
-    provide: field => EditorView.decorations.from(field)
-  }));
-  const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
-    const leftover: Range<Decoration>[] = []
-    ranges.between(r.from, r.to, (from, to, deco) => {
-      if (from < r.from) leftover.push(deco.range(from, r.from))
-      if (to > r.to) leftover.push(deco.range(r.to, to))
-    })
-    return ranges.update({
-      filterFrom: r.from,
-      filterTo: r.to,
-      filter: () => false,
-      add: leftover
-    })
-  }
-  const addRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
-    ranges.between(r.from, r.to, (from, to) => {
-      if (from < r.from) r = { from, to: r.to }
-      if (to > r.to) r = { from: r.from, to }
-    })
-    return ranges.update({
-      filterFrom: r.from,
-      filterTo: r.to,
-      filter: () => false,
-      add: [highlight.current.range(r.from, r.to)]
-    })
-  }
-  const previousTagPositions = useRef<{ from: number; to: number; tagId: TagId; }[]>([]);
-  return useMemo(() => {
-    const docString = editorView?.state.doc.toString() || '';
-    const tagPositions = noteTags
-      .map(nt => store.tags.$state.findOrThrow(t => t.id === nt.tagId))
-      .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
-        .map(m => m.index!)
-        .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })));
-
-    const effects: StateEffect<unknown>[] = [
-      ...previousTagPositions.current
-        .filter(tp => !tagPositions.some(t => t.tagId === tp.tagId && t.from === tp.from && t.to === tp.to))
-        .distinct(t => t.tagId + ' ' + t.from)
-        .map(t => removeHighlight.current.of({ 
-          ...t, 
-          // if user deletes last character and char is inside tag, we will get an out of bounds error. This prevents that
-          to: Math.min(t.to, editorView?.state.doc.length || Number.MAX_VALUE)
-        })),
-      ...tagPositions
-        .distinct(t => t.tagId + ' ' + t.from)
-        .map(t => addHighlight.current.of(t)),
-    ];
-
-    if (!editorView?.state.field(highlightedRanges.current, false)) {
-      effects.push(StateEffect.appendConfig.of([highlightedRanges.current]));
-    }
-    editorView?.dispatch({ effects });
-    previousTagPositions.current = tagPositions;
-  }, [editorView, noteTags]);
-}
-
 export const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
@@ -219,18 +110,4 @@ export const usePropsWithDefaults = <P extends Record<string, unknown>, I extend
   // one or more props have changed.
   Object.assign(outRef.current, incomingProps);
   return outRef.current as I & D;
-}
-
-export const useRefs = (items: unknown[]) => {
-  const itemsRef = useRef<Array<HTMLDivElement | null>>([]);
-  useEffect(() => {
-    itemsRef.current = itemsRef.current.slice(0, items.length);
-  }, [items]);
-  return itemsRef;
-}
-
-export const useAddAriaAttributeToCodeMirror = ({ noteId, editorDomElement }: { noteId: NoteId, editorDomElement: RefObject<HTMLDivElement> }) => {
-  useEffect(() => {
-    (editorDomElement.current?.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
-  }, [editorDomElement, noteId]);
 }

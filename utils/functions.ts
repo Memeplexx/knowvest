@@ -3,7 +3,7 @@ import { DecisionResult } from "./types";
 import { Readable, derive } from "olik";
 import { NoteId, NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
-import { Decoration, DecorationSet } from "@codemirror/view";
+import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, WidgetType } from "@codemirror/view";
 import { store } from "./store";
 
 
@@ -188,4 +188,31 @@ export const highlightTagsInEditor = ({ editorView, synonymIds }: { editorView: 
 
 export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteId, editor: HTMLDivElement }) => {
   (editor.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
+}
+
+export const createBulletPointPlugin = () => {
+  const decorator = new MatchDecorator({
+    regexp: /\*/g,
+    decoration: () => Decoration.replace({
+      widget: new (class extends WidgetType {
+        toDOM() {
+          const wrap = document.createElement("span");
+          wrap.innerHTML = '•';
+          return wrap;
+        }
+      })()
+    }),
+  });
+  
+  return ViewPlugin.define(
+    (view) => ({
+      decorations: decorator.createDeco(view),
+      update(u) {
+        this.decorations = decorator.updateDeco(u, this.decorations);
+      }
+    }),
+    {
+      decorations: (v) => v.decorations
+    }
+  );
 }
