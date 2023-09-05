@@ -68,3 +68,29 @@
 .ͼm {
   color: #da6303;
 }
+
+.cm-widgetBuffer {
+  display: none;
+}
+
+.cm-code-block-top {
+  background-color: black; 
+  display: inline-block; 
+  width: 100%; 
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.cm-code-block-bottom {
+  background-color: black; 
+  display: inline-block; 
+  width: 100%; 
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.cm-code-block-middle {
+  background-color: black; 
+  display: inline-block; 
+  width: 100%; 
+}

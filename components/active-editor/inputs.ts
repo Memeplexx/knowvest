@@ -1,5 +1,5 @@
 import { NoteId } from '@/server/dtos';
-import { addAriaAttributeToCodeMirror, createBulletPointPlugin, highlightTagsInEditor } from '@/utils/functions';
+import { addAriaAttributeToCodeMirror, createBulletPointPlugin, createInlineNotePlugin, createNoteBlockPlugin, highlightTagsInEditor } from '@/utils/functions';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { store } from '@/utils/store';
 import {
@@ -46,7 +46,6 @@ export const useInputs = () => {
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current! });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds });
     addAriaAttributeToCodeMirror({ editor: editor.current!, noteId: store.$state.activeNoteId });
-
   }, []);
 
   return {
@@ -61,8 +60,6 @@ export const useInputs = () => {
     notify: useContext(NotificationContext)!,
   };
 }
-
-
 
 export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) => {
   return new EditorView({
@@ -89,6 +86,8 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       createPasteListener(),
       createSentenceCapitalizer(),
       createBulletPointPlugin(),
+      createInlineNotePlugin(),
+      createNoteBlockPlugin(),
     ],
   });
 }

@@ -2,8 +2,8 @@ import { EditorView } from "codemirror";
 import { DecisionResult } from "./types";
 import { Readable, derive } from "olik";
 import { NoteId, NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
-import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
-import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, WidgetType } from "@codemirror/view";
+import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
+import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { store } from "./store";
 
 
@@ -203,7 +203,7 @@ export const createBulletPointPlugin = () => {
       })()
     }),
   });
-  
+
   return ViewPlugin.define(
     (view) => ({
       decorations: decorator.createDeco(view),
@@ -216,3 +216,73 @@ export const createBulletPointPlugin = () => {
     }
   );
 }
+
+export const createInlineNotePlugin = () => {
+  const decorator = new MatchDecorator({
+    regexp: /`[^`]+`/gm,
+    decoration: (x) => Decoration.replace({
+      widget: new (class extends WidgetType {
+        toDOM() {
+          const wrap = document.createElement("span");
+          wrap.style.backgroundColor = 'black';
+          wrap.innerHTML = x[0].substring(1, x[0].length - 2);
+          return wrap;
+        }
+      })()
+    }),
+  });
+
+  return ViewPlugin.define(
+    (view) => ({
+      decorations: decorator.createDeco(view),
+      update(u) {
+        this.decorations = decorator.updateDeco(u, this.decorations);
+      }
+    }),
+    {
+      decorations: (v) => v.decorations
+    }
+  );
+}
+
+export const createNoteBlockPlugin = () => {
+
+  return ViewPlugin.fromClass(class BlockquotePlugin {
+    decorations: DecorationSet = Decoration.none;
+
+    constructor(view: EditorView) {
+      this.buildDeco(view);
+    }
+
+    update(update: ViewUpdate) {
+      this.buildDeco(update.view);
+    }
+
+    buildDeco(view: EditorView) {
+      const builder = new RangeSetBuilder<Decoration>();
+      let codeBlockOpened = false;
+      view.viewportLineBlocks.forEach(line => {
+        const text = view.state.doc.lineAt(line.from).text;
+        const isStartOfCodeBlock = /```.*/g.test(text);
+        if (isStartOfCodeBlock && !codeBlockOpened) {
+          codeBlockOpened = true;
+          builder.add(line.from, line.to, Decoration.mark({ class: 'cm-code-block-top' }));
+        } else if (codeBlockOpened) {
+          const isEndOfCodeBlock = /```/g.test(text);
+          if (isEndOfCodeBlock) {
+            builder.add(line.from, line.to, Decoration.mark({ class: 'cm-code-block-bottom' }));
+            codeBlockOpened = false;
+          } else if (!text.trim().length) {
+            builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-middle' }));
+          } else {
+            builder.add(line.from, line.to, Decoration.mark({ class: 'cm-code-block-middle' }));
+          }
+        }
+      });
+      this.decorations = builder.finish();
+    }
+  }, {
+    decorations: (v) => v.decorations
+  });
+}
+
