@@ -25,7 +25,8 @@ export const Navbar = (props: Props) => {
               height={44}
               src={Farm}
               alt='logo'
-              priority={true}
+              placeholder="blur"
+              blurDataURL={'/images/farm.svg'}
             />
             <RightContent
               children={
