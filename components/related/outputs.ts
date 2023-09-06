@@ -5,7 +5,7 @@ import { store } from "@/utils/store";
 import { transact } from "olik";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { props } = inputs;
+  const { props, refs } = inputs;
   return {
     onSelectNote: async (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
@@ -17,6 +17,7 @@ export const useOutputs = (inputs: Inputs) => {
       })
       props.onSelectNote(noteId);
       await trpc.note.view.mutate({ noteId });
+      refs.card.current!.scrollToTop();
     }
   };
 }

@@ -12,12 +12,13 @@ export const Related = (
 ) => {
   const inputs = useInputs(props);
   const outputs = useOutputs(inputs);
-  const { state, RelatedNotes } = inputs;
+  const { state, RelatedNotes, refs } = inputs;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { onSelectNote, ...remainingProps } = props;
   return (
     <Card
       {...remainingProps}
+      ref={refs.card}
       title='Related'
       actions={
         <NoteCount

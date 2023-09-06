@@ -21,11 +21,12 @@ import { Button } from '../button';
 
 export const Tags = forwardRef(function Tags(
   props: HTMLAttributes<HTMLDivElement>,
-  ref: ForwardedRef<HTMLElement>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ref: ForwardedRef<HTMLElement>,
 ) {
-  const inputs = useInputs(ref);
+  const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { state, refs } = inputs;
+  const { state } = inputs;
   return (
     <>
       <TagsConfig
@@ -37,7 +38,6 @@ export const Tags = forwardRef(function Tags(
           <CardWrapper
             {...props}
             title='Tags'
-            ref={refs.container}
             actions={
               <ButtonIcon
                 showIf={!!state.tagsForActiveNote.length}

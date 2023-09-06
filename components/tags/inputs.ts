@@ -1,9 +1,7 @@
-import { useForwardedRef } from "@/utils/hooks";
 import { store } from "@/utils/store";
 import { derive } from "olik";
-import { ForwardedRef } from "react";
 
-export const useInputs = (ref: ForwardedRef<HTMLElement>) => {
+export const useInputs = () => {
 
   const state = store.tagsPanel.$useState();
 
@@ -89,8 +87,5 @@ export const useInputs = (ref: ForwardedRef<HTMLElement>) => {
       allActiveTagsSelected: allActiveTagsSelected.$useState(),
       tagIdsForActiveNote: tagIdsForActiveNote.$useState(),
     },
-    refs: {
-      container: useForwardedRef(ref),
-    }
   };
 };

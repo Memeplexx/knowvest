@@ -7,4 +7,8 @@ export type CardProps = {
   body: JSX.Element,
 } & HTMLAttributes<HTMLElement>;
 
+export type CardHandle = {
+  scrollToTop: () => void;
+};
+
 export type Inputs = ReturnType<typeof useInputs>;
