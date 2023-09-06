@@ -6,10 +6,11 @@ export const Button = forwardRef(function Button(
   props: Props,
   ref?: ForwardedRef<HTMLButtonElement>
 ) {
+  const { highlighted, ...remainingProps } = props;
   return (
     <Wrapper
-      showIf={props.showIf}
-      $highlighted={props.highlighted}
+      {...remainingProps}
+      $highlighted={highlighted}
       ref={ref}
       children={props.children}
     />
