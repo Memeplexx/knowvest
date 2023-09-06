@@ -10,11 +10,9 @@ export const History = (
   const inputs = useInputs(props);
   const events = useOutputs(inputs);
   const { state, HistoricalNotes, refs } = inputs;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { onSelectNote, ...remainingProps } = props;
   return (
     <Card
-      {...remainingProps}
+      className={props.className}
       ref={refs.card}
       title='Recent'
       body={
