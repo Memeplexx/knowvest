@@ -246,43 +246,46 @@ export const createInlineNotePlugin = () => {
 }
 
 export const createNoteBlockPlugin = () => {
-
-  return ViewPlugin.fromClass(class BlockquotePlugin {
-    decorations: DecorationSet = Decoration.none;
-
-    constructor(view: EditorView) {
-      this.buildDeco(view);
-    }
-
-    update(update: ViewUpdate) {
-      this.buildDeco(update.view);
-    }
-
-    buildDeco(view: EditorView) {
-      const builder = new RangeSetBuilder<Decoration>();
-      let codeBlockOpened = false;
-      view.viewportLineBlocks.forEach(line => {
-        const text = view.state.doc.lineAt(line.from).text;
+  function codeBlockDeco(view: EditorView) {
+    const builder = new RangeSetBuilder<Decoration>()
+    let codeBlockOpened = false;
+    for (const { from, to } of view.visibleRanges) {
+      for (let pos = from; pos <= to;) {
+        const line = view.state.doc.lineAt(pos)
+        const text = line.text;
         const isStartOfCodeBlock = /```.*/g.test(text);
         if (isStartOfCodeBlock && !codeBlockOpened) {
           codeBlockOpened = true;
-          builder.add(line.from, line.to, Decoration.mark({ class: 'cm-code-block-top' }));
+          builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-top' }));
         } else if (codeBlockOpened) {
           const isEndOfCodeBlock = /```/g.test(text);
           if (isEndOfCodeBlock) {
-            builder.add(line.from, line.to, Decoration.mark({ class: 'cm-code-block-bottom' }));
+            builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-bottom' }));
             codeBlockOpened = false;
-          } else if (!text.trim().length) {
-            builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-middle' }));
           } else {
-            builder.add(line.from, line.to, Decoration.mark({ class: 'cm-code-block-middle' }));
+            builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-middle' }));
           }
         }
-      });
-      this.decorations = builder.finish();
+        pos = line.to + 1;
+      }
     }
-  }, {
-    decorations: (v) => v.decorations
-  });
-}
+    return builder.finish()
+  }
 
+  return ViewPlugin.fromClass(class {
+    decorations: DecorationSet
+
+    constructor(view: EditorView) {
+      this.decorations = codeBlockDeco(view)
+    }
+
+    update(update: ViewUpdate) {
+      if (update.docChanged || update.viewportChanged) {
+        this.decorations = codeBlockDeco(update.view);
+      }
+    }
+  }, 
+  {
+    decorations: v => v.decorations
+  })
+}
