@@ -54,6 +54,7 @@ export const ExpandHeaderToggleButton = styled(BaseToggleButton)`
 
 export const ActivePanel = styled(Active)`
   flex: 1;
+  min-height: 50vh;
 `;
 
 export const TagsPanel = styled(Tags) <{ $expanded: boolean }>`

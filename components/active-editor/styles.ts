@@ -6,7 +6,6 @@ import { monoFontFamily } from "@/utils/styles";
 
 export const TextEditorWrapper = styled(possible.div)`
   flex: 1;
-  overflow: auto;
   flex-basis: 0;
   font-weight: 300;
   display: flex;
