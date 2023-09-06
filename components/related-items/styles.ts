@@ -2,7 +2,7 @@ import { AiOutlineLink } from "react-icons/ai";
 import styled from "styled-components";
 import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";
-
+import { WiCloudyWindy } from "react-icons/wi";
 
 export const Header = styled(possible.div)`
   display: flex;
@@ -46,4 +46,18 @@ export const Wrapper = styled.div`
       font-weight: 400;
     }
   }
+`;
+
+export const NoResults = styled(possible.div)`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: grey;
+`;
+
+export const NoResultsIcon = styled(WiCloudyWindy)`
+  width: 64px;
+  height: auto;
 `;

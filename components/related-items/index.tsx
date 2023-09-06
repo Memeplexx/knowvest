@@ -1,7 +1,7 @@
 import { store } from '@/utils/store';
 import { Props } from './constants';
 import { useInputs } from './inputs';
-import { Header, Icon, Result, Wrapper } from './styles';
+import { Header, Icon, NoResults, NoResultsIcon, Result, Wrapper } from './styles';
 
 
 export default function Related(
@@ -33,6 +33,15 @@ export default function Related(
           }
         />
       ))}
+      <NoResults
+        showIf={state.queriedNotes.length === 0}
+        children={
+          <>
+            <NoResultsIcon />
+            no related notes
+          </>
+        }
+      />
     </>
   )
 }

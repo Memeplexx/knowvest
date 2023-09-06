@@ -123,7 +123,7 @@ export const Tags = forwardRef(function Tags(
                       showIf={!state.tagsForActiveNote.length}
                       children={
                         <>
-                          No tags associated with this note
+                          No tags associated with active note
                           <Button
                             children='Configure tags'
                             onClick={outputs.onShowDialog}
