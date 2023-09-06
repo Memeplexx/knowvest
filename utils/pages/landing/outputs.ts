@@ -1,10 +1,12 @@
-import { signIn, signOut } from "next-auth/react"
+import { signIn } from "next-auth/react";
+import { Inputs } from "./constants";
 
-export const useOutputs = () => ({
-  onClickSignIn: async () => {
-    await signIn();
-  },
-  onClickSignOut: async () => {
-    await signOut();
-  },
-});
+export const useOutputs = (inputs: Inputs) => {
+  const { state } = inputs;
+  return {
+    onClickSignIn: async () => {
+      state.set({ showLoader: true });
+      await signIn();
+    },
+  };
+};

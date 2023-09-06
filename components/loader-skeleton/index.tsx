@@ -12,7 +12,7 @@ export const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = {
       style={{
         width: '100%', 
         height: '100%', 
-        opacity: show ? 1 : 0, 
+        opacity: show ? 0.4 : 0, 
         pointerEvents: show ? 'all' : 'none',
         transition: 'opacity 0.5s', 
         position: 'absolute', 

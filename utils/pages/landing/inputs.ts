@@ -1,16 +1,23 @@
+import { useRecord } from "@/utils/hooks";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export const useInputs = () => {
-  const [message, setMessage] = useState('');
+
+  const state = useRecord({
+    message: '',
+    showLoader: false,
+  })
+
   const router = useRouter();
+
   useEffect(() => {
     if (router.query['session-expired']) {
-      setMessage('Your session expired. Please sign in again');
+      state.set({ message: 'Your session expired. Please sign in again' });
     }
-  }, [router.query]);
+  }, [router.query, state]);
+
   return {
-    message,
-    setMessage,
+    state,
   }
 }

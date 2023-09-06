@@ -4,6 +4,7 @@ import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next';
 import { Snackbar } from '@/components/snackbar';
 import { useInputs } from '@/utils/pages/landing/inputs';
+import { Loader } from '@/components/loader';
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -23,7 +24,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function Index() {
   const inputs = useInputs();
-  const outputs = useOutputs();
+  const outputs = useOutputs(inputs);
+  const { state } = inputs;
   return (
     <>
       <Wrapper
@@ -45,10 +47,13 @@ export default function Index() {
           />
         }
       />
+      <Loader 
+        show={state.showLoader}
+      />
       <Snackbar
-        message={inputs.message}
+        message={state.message}
         status='error'
-        onMessageClear={() => inputs.setMessage('')}
+        onMessageClear={() => state.set({ message: '' })}
       />
     </>
   )

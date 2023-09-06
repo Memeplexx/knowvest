@@ -1,4 +1,4 @@
-import { defaultFontFamily } from "@/utils/styles";
+import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
@@ -41,7 +41,16 @@ export const ProviderButton = styled.button`
   cursor: pointer;
   transform: scale(1);
   transition: all 0.4s;
-  :hover {
-    background-color: rgba(0,0,0,0.2);
+  @media (min-width: ${mobileBreakPoint}) {
+    transform: scale(1);
+    transition: all 0.2s cubic-bezier(0,.73,.44,1);
+    &:hover {
+      transform: scale(1.2);
+      background-color: rgba(0,0,0,0.2);
+      filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
+    }
+    &:active {
+      transform: scale(1);
+    }
   }
 `;

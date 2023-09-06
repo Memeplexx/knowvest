@@ -1,8 +1,11 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
-import { getProviders, signIn } from "next-auth/react";
-import { CenterContent, Divider, ProviderButton, SubTitle, Title, Wrapper } from "@/utils/pages/landing/styles";
+import { getProviders } from "next-auth/react";
+import { CenterContent, Divider, ProviderButton, SubTitle, Title, Wrapper } from "@/utils/pages/login/styles";
+import { useInputs } from "@/utils/pages/login/inputs";
+import { useOutputs } from "@/utils/pages/login/outputs";
+import { Loader } from "@/components/loader";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -22,31 +25,39 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default function Login({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const inputs = useInputs();
+  const outputs = useOutputs(inputs);
+  const { state } = inputs;
   return (
-    <Wrapper
-      children={
-        <CenterContent
-          children={
-            <>
-              <Title
-                children="know-vest"
-              />
-              <SubTitle
-                children="sign in options"
-              />
-              <Divider />
-              {Object.values(providers).map(provider => (
-                <ProviderButton
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  children={provider.name}
-                  aria-label={`Sign in with ${provider.name}`}
+    <>
+      <Wrapper
+        children={
+          <CenterContent
+            children={
+              <>
+                <Title
+                  children="know-vest"
                 />
-              ))}
-            </>
-          }
-        />
-      }
-    />
+                <SubTitle
+                  children="sign in options"
+                />
+                <Divider />
+                {Object.values(providers).map(provider => (
+                  <ProviderButton
+                    key={provider.name}
+                    onClick={() => outputs.onClickSignIn(provider.id)}
+                    children={provider.name}
+                    aria-label={`Sign in with ${provider.name}`}
+                  />
+                ))}
+              </>
+            }
+          />
+        }
+      />
+      <Loader
+        show={state.showLoader}
+      />
+    </>
   )
 }
