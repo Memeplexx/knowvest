@@ -12,19 +12,19 @@ import { Props } from './constants';
 
 export const useInputs = (props: Props) => {
 
-  const editorDomElement = useRef<HTMLDivElement>(null);
+  const editor = useRef<HTMLDivElement>(null);
 
   const codeMirror = useRef<EditorView | null>(null);
 
   useIsomorphicLayoutEffect(() => {
     if (codeMirror.current) { return; /* defend against re-render when React strictMode is set to true */ }
-    codeMirror.current = instantiateCodeMirror({ editor: editorDomElement.current!, note: props.note });
+    codeMirror.current = instantiateCodeMirror({ editor: editor.current!, note: props.note });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: props.synonymIds });
-    addAriaAttributeToCodeMirror({ editor: editorDomElement.current!, noteId: props.note.id });
+    addAriaAttributeToCodeMirror({ editor: editor.current!, noteId: props.note.id });
   }, []);
 
   return {
-    refs: { editor: editorDomElement },
+    refs: { editor },
     props,
   }
 }

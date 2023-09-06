@@ -192,18 +192,17 @@ export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteI
 
 export const createBulletPointPlugin = () => {
   const decorator = new MatchDecorator({
-    regexp: /\*/g,
+    regexp: /\*\s/g,
     decoration: () => Decoration.replace({
       widget: new (class extends WidgetType {
         toDOM() {
           const wrap = document.createElement("span");
-          wrap.innerHTML = '•';
+          wrap.innerHTML = '• ';
           return wrap;
         }
       })()
     }),
   });
-
   return ViewPlugin.define(
     (view) => ({
       decorations: decorator.createDeco(view),

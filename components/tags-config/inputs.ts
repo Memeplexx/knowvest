@@ -76,13 +76,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   ).$with((groups, synonymGroups, tags, tagsInCustomGroups) => {
     return groups
       .filter(group => !tagsInCustomGroups.some(t => t.group.id === group.id))
-      .map(group => {
-        return {
-          value: group.id,
-          label: group.name,
-          synonyms: synonymGroups.filter(sg => sg.groupId === group.id).flatMap(sg => tags.filter(t => t.synonymId === sg.synonymId)),
-        };
-      });
+      .map(group => ({
+        value: group.id,
+        label: group.name,
+        synonyms: synonymGroups.filter(sg => sg.groupId === group.id).flatMap(sg => tags.filter(t => t.synonymId === sg.synonymId)),
+      }));
   });
 
   const autocompleteOptionsTags = derive(

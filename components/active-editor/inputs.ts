@@ -94,20 +94,20 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
 
 export const updateEditorWhenActiveIdChanges = ({ codeMirror }: { codeMirror: EditorView }) => {
   const changeListener = (activeNoteId: NoteId) => {
-    // update document text
-    codeMirror.dispatch({
-      changes: {
-        from: 0,
-        to: codeMirror.state.doc.length,
-        insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text,
+    codeMirror.dispatch(
+      {
+        changes: {
+          from: 0,
+          to: codeMirror.state.doc.length,
+          insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text,
+        },
       },
-    });
-    // reset selection if there is one
-    codeMirror.dispatch({
-      selection: {
-        anchor: codeMirror.state.doc.length
-      }
-    });
+      {
+        selection: {
+          anchor: codeMirror.state.doc.length
+        }
+      },
+    );
     codeMirror.focus();
   };
   changeListener(store.$state.activeNoteId);
