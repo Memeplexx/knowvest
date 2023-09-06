@@ -7,11 +7,9 @@ export default function ReadonlyNote(
 ) {
   const inputs = useInputs(props);
   const { refs } = inputs;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { note, synonymIds, ...remainingProps } = props;
   return (
     <Wrapper
-      {...remainingProps}
+      className={props.className}
       ref={refs.editor}
     />
   );
