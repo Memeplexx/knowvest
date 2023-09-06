@@ -79,6 +79,8 @@
   width: 100%; 
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  padding: 8px 8px 0 8px!important;
+  margin-top: 8px;
 }
 
 .cm-code-block-bottom {
@@ -87,10 +89,13 @@
   width: 100%; 
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
+  padding: 0 8px 8px 8px!important;
+  margin-bottom: 8px;
 }
 
 .cm-code-block-middle {
   background-color: black; 
   display: inline-block; 
   width: 100%; 
+  padding: 0 8px!important;
 }

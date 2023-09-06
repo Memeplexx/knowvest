@@ -8,7 +8,7 @@ import Farm from '../../public/images/farm.svg';
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
-  const outputs = useOutputs();
+  const outputs = useOutputs(inputs);
   const { state, refs } = inputs;
   return (
     <>
