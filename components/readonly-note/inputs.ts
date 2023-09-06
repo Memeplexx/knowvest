@@ -1,5 +1,5 @@
 import { NoteDTO } from '@/server/dtos';
-import { addAriaAttributeToCodeMirror, bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin } from '@/utils/functions';
+import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
 import { useIsomorphicLayoutEffect } from '@/utils/hooks';
 import { oneDark } from '@/utils/codemirror-theme';
 import { markdown } from '@codemirror/lang-markdown';
@@ -9,6 +9,7 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useRef } from 'react';
 import { Props } from './constants';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin } from '@/utils/codemirror-extensions';
 
 
 export const useInputs = (props: Props) => {

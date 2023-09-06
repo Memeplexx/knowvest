@@ -164,54 +164,14 @@ export const createEditorHasTextUpdater = () => {
   });
 }
 
-export const createSentenceCapitalizer = () => {
-  return EditorState.transactionFilter.of(tr => {
-    return [tr, {
-    }]
-  });
-}
+export const sentenceCapitalizer = EditorState.transactionFilter.of(tr => {
+  return [tr, {
+  }]
+})
 
-export const createPasteListener = () => {
-  return EditorState.transactionFilter.of(tr => {
-    if (tr.isUserEvent('input.paste')) {
-      //
-    }
-    return tr;
-  })
-}
-
-// Atomic Ranges example
-// export const useBulletPointPlugin = () => {
-//   return React.useRef(
-//     ViewPlugin.fromClass(class {
-//       placeholders: DecorationSet;
-//       placeholderMatcher = new MatchDecorator({
-//         regexp: /^\*\s\w/g,
-//         decoration: match => Decoration.replace({
-//           widget: new class extends WidgetType {
-//             constructor(readonly match: string) {
-//               super();
-//             }
-//             toDOM() {
-//               // console.log(this.match);
-//               let wrap = document.createElement('span');
-//               wrap.innerHTML = '• ';
-//               return wrap
-//             }
-//           }(match[1])
-//         })
-//       })
-//       constructor(view: EditorView) {
-//         this.placeholders = this.placeholderMatcher.createDeco(view)
-//       }
-//       update(update: ViewUpdate) {
-//         this.placeholders = this.placeholderMatcher.updateDeco(update, this.placeholders)
-//       }
-//     }, {
-//       decorations: instance => instance.placeholders,
-//       provide: plugin => EditorView.atomicRanges.of(view => {
-//         return view.plugin(plugin)?.placeholders || Decoration.none
-//       })
-//     })
-//   ).current;
-// }
+export const pasteListener = EditorState.transactionFilter.of(tr => {
+  if (tr.isUserEvent('input.paste')) {
+    //
+  }
+  return tr;
+})

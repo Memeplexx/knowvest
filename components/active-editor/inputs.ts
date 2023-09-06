@@ -1,6 +1,6 @@
 import { NoteId } from '@/server/dtos';
 import { oneDark } from '@/utils/codemirror-theme';
-import { addAriaAttributeToCodeMirror, bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin } from '@/utils/functions';
+import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { store } from '@/utils/store';
 import {
@@ -28,7 +28,8 @@ import {
 } from '@codemirror/view';
 import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
-import { createAutocompleteExtension, createEditorHasTextUpdater, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, createPasteListener, createSentenceCapitalizer, createTextSelectorPlugin } from './shared';
+import { createAutocompleteExtension, createEditorHasTextUpdater, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, sentenceCapitalizer, createTextSelectorPlugin, pasteListener } from './shared';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin } from '@/utils/codemirror-extensions';
 
 
 export const useInputs = () => {
@@ -84,8 +85,8 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       createNotePersisterExtension({ debounce: 500 }),
       createTextSelectorPlugin(),
       createEditorHasTextUpdater(),
-      createPasteListener(),
-      createSentenceCapitalizer(),
+      pasteListener,
+      sentenceCapitalizer,
       bulletPointPlugin,
       inlineNotePlugin,
       noteBlockPlugin,
