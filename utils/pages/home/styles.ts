@@ -5,7 +5,7 @@ import { Tags } from "@/components/tags";
 import { IconButton, defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
 
-const gap = '8px';
+const gap = '4px';
 
 
 

@@ -38,37 +38,6 @@
   caret-color: white;
 }
 
-
-/* language directive ('ts' / 'python' / etc) */
-.ͼc {
-  color: #93919f;
-}
-
-/* typescript 'const' */
-.ͼb {
-  color: #9747a3;
-}
-
-/* typescript variable name */
-.ͼg {
-  color: #6262ff;
-}
-
-/* backtick color */
-.ͼ5 {
-  color: #879687;
-}
-
-/* typescript number */
-.ͼd {
-  color: #1cae74;
-}
-
-/* python comment */
-.ͼm {
-  color: #da6303;
-}
-
 .cm-widgetBuffer {
   display: none;
 }

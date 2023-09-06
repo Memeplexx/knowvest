@@ -1,9 +1,9 @@
-import styled, { css } from "styled-components";
-import { Source_Code_Pro, Montserrat } from 'next/font/google';
 import { possible } from "@/components/html";
-import { CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
+import { Montserrat, Source_Code_Pro } from 'next/font/google';
 import { AiFillTag } from "react-icons/ai";
+import { CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
 import { MdClear, MdKeyboardArrowDown, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardArrowUp } from "react-icons/md";
+import styled, { css } from "styled-components";
 
 export const defaultFontFamily = Montserrat({
   subsets: ['latin'],
@@ -141,3 +141,4 @@ export const IconButton = styled(possible.button)`
 `;
 
 export const mobileBreakPoint = '1000px';
+

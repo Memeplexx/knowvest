@@ -1,6 +1,7 @@
 import { NoteDTO } from '@/server/dtos';
 import { addAriaAttributeToCodeMirror, createBulletPointPlugin, createNoteBlockPlugin, highlightTagsInEditor } from '@/utils/functions';
 import { useIsomorphicLayoutEffect } from '@/utils/hooks';
+import { oneDark } from '@/utils/pages/codemirror-theme';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -40,6 +41,7 @@ export const instantiateCodeMirror = ({ editor, note }: { editor: HTMLDivElement
       EditorView.lineWrapping,
       createBulletPointPlugin(),
       createNoteBlockPlugin(),
+      oneDark,
     ],
   });
 }
