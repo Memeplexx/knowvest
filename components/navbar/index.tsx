@@ -44,24 +44,24 @@ export const Navbar = (props: Props) => {
                     onClick={outputs.onClickUserButton}
                     priority={true}
                   />
-                  <PopupOptions
-                    showIf={state.showOptions}
-                    ref={state.showOptions ? refs.floating.refs.setFloating : null}
-                    style={refs.floating.floatingStyles}
-                    children={
-                      <>
-                        <PopupOption
-                          children='Sign Out'
-                          onClick={outputs.onClickSignOut}
-                        />
-                        <PopupOption
-                          children='Settings'
-                        />
-                      </>
-                    }
-                  />
                 </>
               }
+            />
+          </>
+        }
+      />
+      <PopupOptions
+        showIf={state.showOptions}
+        ref={state.showOptions ? refs.floating.refs.setFloating : null}
+        style={refs.floating.floatingStyles}
+        children={
+          <>
+            <PopupOption
+              children='Sign Out'
+              onClick={outputs.onClickSignOut}
+            />
+            <PopupOption
+              children='Settings'
             />
           </>
         }

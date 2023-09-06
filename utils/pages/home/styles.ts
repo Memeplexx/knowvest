@@ -19,8 +19,11 @@ const BaseToggleButton = styled(IconButton) <{ selected?: boolean }>`
   transition: 0.4s transform;
   border-radius: 50%;
   border: 1px solid #4d4d4d;
+  &:not(:hover) {
+    opacity: 0.3;
+  }
   @media (min-width: ${mobileBreakPoint}) {
-    display: none;
+    display: none!important;
   }
 `;
 

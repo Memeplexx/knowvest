@@ -59,7 +59,7 @@ export const PopupOptions = styled(possible.div)`
   color: #FFF;
   border: 0.5px solid #4b4b4b;
   max-width: 400px;
-  z-index: 1;
+  z-index: 5;
 `;
 
 export const PopupOption = styled(possible.button)`
