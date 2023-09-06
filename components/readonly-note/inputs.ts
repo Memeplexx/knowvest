@@ -1,7 +1,7 @@
 import { NoteDTO } from '@/server/dtos';
-import { addAriaAttributeToCodeMirror, createBulletPointPlugin, createNoteBlockPlugin, highlightTagsInEditor } from '@/utils/functions';
+import { addAriaAttributeToCodeMirror, bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin } from '@/utils/functions';
 import { useIsomorphicLayoutEffect } from '@/utils/hooks';
-import { oneDark } from '@/utils/pages/codemirror-theme';
+import { oneDark } from '@/utils/codemirror-theme';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -39,8 +39,9 @@ export const instantiateCodeMirror = ({ editor, note }: { editor: HTMLDivElement
       markdown({ codeLanguages: languages }),
       EditorState.readOnly.of(true),
       EditorView.lineWrapping,
-      createBulletPointPlugin(),
-      createNoteBlockPlugin(),
+      bulletPointPlugin,
+      inlineNotePlugin,
+      noteBlockPlugin,
       oneDark,
     ],
   });

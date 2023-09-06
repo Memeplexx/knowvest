@@ -62,6 +62,7 @@ export const useOutputs = (inputs: Inputs) => {
       notify.success(`Note split`);
     },
     onClickTextEditorWrapper: () => {
+      store.activePanel.selection.$set('');
       refs.editor.current?.focus();
     },
     onBlurTextEditor: () => {

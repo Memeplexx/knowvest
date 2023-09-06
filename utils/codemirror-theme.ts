@@ -108,7 +108,24 @@ export const oneDarkTheme = EditorView.theme({
       backgroundColor: highlightBackground,
       color: ivory
     }
-  }
+  },
+  ".cm-note-inline": {
+    backgroundColor: "rgba(0,0,0,0.3)",
+    padding: '4px',
+    borderRadius: '4px',
+  },
+  ".cm-note-multiline": {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    padding: '4px',
+  },
+  ".cm-note-multiline.top": {
+    borderTopLeftRadius: '4px',
+    borderTopRightRadius: '4px',
+  },
+  ".cm-note-multiline.bottom": {
+    borderBottomLeftRadius: '4px',
+    borderBottomRightRadius: '4px',
+  },
 }, { dark: true })
 
 /// The highlighting style for code in the One Dark theme.

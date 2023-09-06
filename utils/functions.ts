@@ -190,8 +190,9 @@ export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteI
   (editor.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
 }
 
-export const createBulletPointPlugin = () => {
-  const decorator = new MatchDecorator({
+export const bulletPointPlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  decorator = new MatchDecorator({
     regexp: /\*\s/g,
     decoration: () => Decoration.replace({
       widget: new (class extends WidgetType {
@@ -203,49 +204,51 @@ export const createBulletPointPlugin = () => {
       })()
     }),
   });
-  return ViewPlugin.define(
-    (view) => ({
-      decorations: decorator.createDeco(view),
-      update(u) {
-        this.decorations = decorator.updateDeco(u, this.decorations);
-      }
-    }),
-    {
-      decorations: (v) => v.decorations
-    }
-  );
-}
+  constructor(view: EditorView) {
+    this.decorations = this.decorator.createDeco(view);
+  }
 
-export const createInlineNotePlugin = () => {
-  const decorator = new MatchDecorator({
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = this.decorator.updateDeco(update, this.decorations);
+    }
+  }
+}, {
+  decorations: v => v.decorations
+});
+
+export const inlineNotePlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  decorator = new MatchDecorator({
     regexp: /`[^`]+`/gm,
     decoration: (x) => Decoration.replace({
       widget: new (class extends WidgetType {
         toDOM() {
           const wrap = document.createElement("span");
-          wrap.style.backgroundColor = 'black';
-          wrap.innerHTML = x[0].substring(1, x[0].length - 2);
+          wrap.className = 'cm-note-inline';
+          wrap.innerHTML = x[0].substring(1, x[0].length - 1);
           return wrap;
         }
       })()
     }),
   });
+  constructor(view: EditorView) {
+    this.decorations = this.decorator.createDeco(view);
+  }
 
-  return ViewPlugin.define(
-    (view) => ({
-      decorations: decorator.createDeco(view),
-      update(u) {
-        this.decorations = decorator.updateDeco(u, this.decorations);
-      }
-    }),
-    {
-      decorations: (v) => v.decorations
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = this.decorator.updateDeco(update, this.decorations);
     }
-  );
-}
+  }
+}, {
+  decorations: v => v.decorations
+});
 
-export const createNoteBlockPlugin = () => {
-  function codeBlockDeco(view: EditorView) {
+
+export const noteBlockPlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  codeBlockDeco(view: EditorView) {
     const builder = new RangeSetBuilder<Decoration>()
     let codeBlockOpened = false;
     for (const { from, to } of view.visibleRanges) {
@@ -255,14 +258,14 @@ export const createNoteBlockPlugin = () => {
         const isStartOfCodeBlock = /```.*/g.test(text);
         if (isStartOfCodeBlock && !codeBlockOpened) {
           codeBlockOpened = true;
-          builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-top' }));
+          builder.add(line.from, line.from, Decoration.line({ class: 'cm-note-multiline top' }));
         } else if (codeBlockOpened) {
           const isEndOfCodeBlock = /```/g.test(text);
           if (isEndOfCodeBlock) {
-            builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-bottom' }));
+            builder.add(line.from, line.from, Decoration.line({ class: 'cm-note-multiline bottom' }));
             codeBlockOpened = false;
           } else {
-            builder.add(line.from, line.from, Decoration.line({ class: 'cm-code-block-middle' }));
+            builder.add(line.from, line.from, Decoration.line({ class: 'cm-note-multiline' }));
           }
         }
         pos = line.to + 1;
@@ -271,20 +274,16 @@ export const createNoteBlockPlugin = () => {
     return builder.finish()
   }
 
-  return ViewPlugin.fromClass(class {
-    decorations: DecorationSet
+  constructor(view: EditorView) {
+    this.decorations = this.codeBlockDeco(view)
+  }
 
-    constructor(view: EditorView) {
-      this.decorations = codeBlockDeco(view)
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = this.codeBlockDeco(update.view);
     }
-
-    update(update: ViewUpdate) {
-      if (update.docChanged || update.viewportChanged) {
-        this.decorations = codeBlockDeco(update.view);
-      }
-    }
-  }, 
-  {
-    decorations: v => v.decorations
-  })
-}
+  }
+}, 
+{
+  decorations: v => v.decorations
+});

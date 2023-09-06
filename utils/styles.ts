@@ -15,42 +15,6 @@ export const monoFontFamily = Source_Code_Pro({
   display: 'swap',
 })
 
-export const styles = {
-  color: {
-    accent: '#96ff37',
-    // accent: 'magenta',
-    primary: '#FFF',
-  },
-  fontSize: {
-    sm: css`
-      font-size: 12px
-    `
-  },
-  backgroundColor: {
-    darkGrey: css`
-      background-color: #18181B;
-    `,
-    grey: css`
-      background-color: #323232;
-    `
-  },
-  animation: {
-    bounceOnClick: css`
-      transition: 0.2s all;
-      &:active {
-        transform: scale(0.8);
-      }
-    `,
-    expandOnHover: css`
-      transition: 0.2s all;
-      &:hover {
-        transform: scale(1.3);
-      }
-    `
-  },
-} as const;
-
-
 export const PopupOptions = styled(possible.div)`
   display: flex;
   flex-direction: column;
