@@ -1,4 +1,5 @@
 import { NoteId } from '@/server/dtos';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin } from '@/utils/codemirror-extensions';
 import { oneDark } from '@/utils/codemirror-theme';
 import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
 import { NotificationContext } from '@/utils/pages/home/constants';
@@ -28,8 +29,7 @@ import {
 } from '@codemirror/view';
 import { derive } from 'olik';
 import { useContext, useEffect, useRef } from 'react';
-import { createAutocompleteExtension, createEditorHasTextUpdater, createNotePersisterExtension, noteTagsPersisterExtension as createNoteTagsPersisterExtension, sentenceCapitalizer, createTextSelectorPlugin, pasteListener } from './shared';
-import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin } from '@/utils/codemirror-extensions';
+import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 
 
 export const useInputs = () => {
@@ -80,13 +80,12 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({ spellcheck: "on", autocapitalize: "on" }),
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
-      createAutocompleteExtension(),
-      createNoteTagsPersisterExtension(),
+      autocompleteExtension,
+      noteTagsPersisterExtension(),
       createNotePersisterExtension({ debounce: 500 }),
-      createTextSelectorPlugin(),
-      createEditorHasTextUpdater(),
+      textSelectorPlugin,
+      editorHasTextUpdater,
       pasteListener,
-      sentenceCapitalizer,
       bulletPointPlugin,
       inlineNotePlugin,
       noteBlockPlugin,

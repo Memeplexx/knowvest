@@ -6,21 +6,19 @@ import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 
-export const createAutocompleteExtension = () => {
-  return autocompletion({
-    override: [
-      (context: CompletionContext) => {
-        const before = context.matchBefore(/\w+/)
-        if (!context.explicit && !before) return null;
-        return {
-          from: before ? before.from : context.pos,
-          options: store.$state.tags.map(tag => ({ label: tag.text })),
-          validFor: /^\w*$/,
-        };
-      }
-    ]
-  });
-}
+export const autocompleteExtension = autocompletion({
+  override: [
+    (context: CompletionContext) => {
+      const before = context.matchBefore(/\w+/)
+      if (!context.explicit && !before) return null;
+      return {
+        from: before ? before.from : context.pos,
+        options: store.$state.tags.map(tag => ({ label: tag.text })),
+        validFor: /^\w*$/,
+      };
+    }
+  ]
+});
 
 export const createNotePersisterExtension = ({ debounce }: { debounce: number }) => {
   let timestamp = Date.now();
@@ -95,79 +93,71 @@ export const noteTagsPersisterExtension = () => {
   });
 }
 
-export const createTextSelectorPlugin = () => {
-  const updateSelection = (value: string) => {
+export const textSelectorPlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  
+  constructor(view: EditorView) {
+    this.decorations = this.getDecorations(view)
+  }
+  updateSelection = (value: string) => {
     if (store.$state.activePanel.selection === value) { return; }
     store.activePanel.selection.$set(value);
   }
-  return ViewPlugin.fromClass(class {
-    decorations: DecorationSet;
-    constructor(view: EditorView) {
-      this.decorations = this.getDecorations(view)
+  update(update: ViewUpdate) {
+    if (!update.selectionSet) { return; }
+    this.decorations = this.getDecorations(update.view)
+  }
+  private getDecorations(view: EditorView) {
+    const widgets = [] as Range<Decoration>[];
+    for (const range of view.visibleRanges) {
+      syntaxTree(view.state).iterate({
+        from: range.from,
+        to: range.to,
+        enter: (node) => {
+          if (node.type.name !== 'Document') { return; }
+          const documentText = view.state.doc.toString();
+          if (view.state.selection.main.from === view.state.selection.main.to) {
+            this.updateSelection('');
+            return;
+          }
+          const regexForAnyNumberAndAnyLetter = /\W/;
+          let from = view.state.selection.main.from;
+          const startChar = documentText[from];
+          if (regexForAnyNumberAndAnyLetter.test(startChar)) {
+            while (regexForAnyNumberAndAnyLetter.test(documentText[from]) && from < documentText.length - 1) { from++; }
+          } else {
+            while (!regexForAnyNumberAndAnyLetter.test(documentText[from - 1]) && from > 0) { from--; }
+          }
+          let to = view.state.selection.main.to;
+          const endChar = documentText[to - 1];
+          if (regexForAnyNumberAndAnyLetter.test(endChar)) {
+            while (regexForAnyNumberAndAnyLetter.test(documentText[to]) && to > 0) { to--; }
+          } else {
+            while (!regexForAnyNumberAndAnyLetter.test(documentText[to]) && to < documentText.length) { to++; }
+          }
+          const selection = view.state.sliceDoc(from, to).toLowerCase();
+          if (!selection.trim().length) {
+            this.updateSelection('');
+            return;
+          }
+          this.updateSelection(selection);
+        },
+      })
     }
-    update(update: ViewUpdate) {
-      if (!update.selectionSet) { return; }
-      this.decorations = this.getDecorations(update.view)
-    }
-    private getDecorations(view: EditorView) {
-      const widgets = [] as Range<Decoration>[];
-      for (const range of view.visibleRanges) {
-        syntaxTree(view.state).iterate({
-          from: range.from,
-          to: range.to,
-          enter: (node) => {
-            if (node.type.name !== 'Document') { return; }
-            const documentText = view.state.doc.toString();
-            if (view.state.selection.main.from === view.state.selection.main.to) {
-              updateSelection('');
-              return;
-            }
-            const regexForAnyNumberAndAnyLetter = /\W/;
-            let from = view.state.selection.main.from;
-            const startChar = documentText[from];
-            if (regexForAnyNumberAndAnyLetter.test(startChar)) {
-              while (regexForAnyNumberAndAnyLetter.test(documentText[from]) && from < documentText.length - 1) { from++; }
-            } else {
-              while (!regexForAnyNumberAndAnyLetter.test(documentText[from - 1]) && from > 0) { from--; }
-            }
-            let to = view.state.selection.main.to;
-            const endChar = documentText[to - 1];
-            if (regexForAnyNumberAndAnyLetter.test(endChar)) {
-              while (regexForAnyNumberAndAnyLetter.test(documentText[to]) && to > 0) { to--; }
-            } else {
-              while (!regexForAnyNumberAndAnyLetter.test(documentText[to]) && to < documentText.length) { to++; }
-            }
-            const selection = view.state.sliceDoc(from, to).toLowerCase();
-            if (!selection.trim().length) {
-              updateSelection('');
-              return;
-            }
-            updateSelection(selection);
-          },
-        })
-      }
-      return Decoration.set(widgets);
-    }
-  }, {
-    decorations: v => v.decorations,
-  });
-}
+    return Decoration.set(widgets);
+  }
+}, {
+  decorations: v => v.decorations,
+});
 
-export const createEditorHasTextUpdater = () => {
-  return EditorView.updateListener.of(update => {
-    if (!update.docChanged) { return; }
-    if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
-      store.activePanel.editorHasText.$set(false);
-    } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {
-      store.activePanel.editorHasText.$set(true);
-    }
-  });
-}
-
-export const sentenceCapitalizer = EditorState.transactionFilter.of(tr => {
-  return [tr, {
-  }]
-})
+export const editorHasTextUpdater = EditorView.updateListener.of(update => {
+  if (!update.docChanged) { return; }
+  if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
+    store.activePanel.editorHasText.$set(false);
+  } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {
+    store.activePanel.editorHasText.$set(true);
+  }
+});
 
 export const pasteListener = EditorState.transactionFilter.of(tr => {
   if (tr.isUserEvent('input.paste')) {
