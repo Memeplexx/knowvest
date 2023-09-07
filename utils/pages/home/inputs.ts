@@ -34,7 +34,9 @@ export const useInputs = (props: ServerSideProps) => {
   )
 
   useEffect(() => {
-    connectOlikDevtoolsToStore({ trace: true });
+    if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      connectOlikDevtoolsToStore({ trace: true });
+    }
   }, []);
 
   // useLcpAnalyser();
