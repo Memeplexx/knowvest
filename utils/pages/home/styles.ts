@@ -67,6 +67,7 @@ export const TagsPanel = styled(Tags) <{ $expanded: boolean }>`
     bottom: 0;
     top: 0;
     transform: translateY(${p => p.$expanded ? '0' : `calc(100% + ${gap})`});
+    z-index: ${p => p.$expanded ? 4 : 0};
   }
 `;
 
