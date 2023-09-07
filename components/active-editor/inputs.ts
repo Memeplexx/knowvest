@@ -78,7 +78,7 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       rectangularSelection(),
       crosshairCursor(),
       EditorView.lineWrapping,
-      EditorView.contentAttributes.of({ spellcheck: "on"/*, autocapitalize: "on" - doesn't work as expected! */ }),
+      EditorView.contentAttributes.of({ spellcheck: "on", autocapitalize: "on"/*, autocapitalize: "on" - doesn't work as expected! */ }),
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
       createAutocompleteExtension(),
       createNoteTagsPersisterExtension(),
