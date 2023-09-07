@@ -95,7 +95,68 @@ export const noteBlockPlugin = ViewPlugin.fromClass(class {
       this.decorations = this.codeBlockDeco(update.view);
     }
   }
-},
-  {
-    decorations: v => v.decorations
-  });
+}, {
+  decorations: v => v.decorations
+});
+
+
+export const titleFormatPlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  headingDeco(view: EditorView) {
+    const builder = new RangeSetBuilder<Decoration>()
+    for (const { from, to } of view.visibleRanges) {
+      for (let pos = from; pos <= to;) {
+        const line = view.state.doc.lineAt(pos)
+        const text = line.text;
+        const isHeading = /^#{1,6}\s.*/g.test(text);
+        if (isHeading) {
+          const anchorPos = view.state.selection.ranges[0].anchor;
+          const isFocusedOnLine = anchorPos >= line.from && anchorPos <= line.to;
+          const hashCount = text.match(/^#{1,6}/g)![0].length;
+          const className = `cm-h${hashCount}`;
+          const posCopy = pos;
+          if (!isFocusedOnLine) {
+            builder.add(line.from, line.to, Decoration.replace({
+              widget: new (class extends WidgetType {
+                toDOM() {
+                  const wrap = document.createElement("span");
+                  const hashCount = text.match(/^#{1,6}/g)![0].length;
+                  wrap.className = className;
+                  text.substring(hashCount + 1).split('').forEach((char, i) => {
+                    const span = document.createElement("span");
+                    span.innerHTML = char;
+                    wrap.appendChild(span);
+                    span.addEventListener('click', () => {
+                      view.dispatch({
+                        selection: {
+                          anchor: posCopy + i + hashCount + 1,
+                        }
+                      })
+                    })
+                  })
+                  return wrap;
+                }
+              })(),
+            }));
+          } else {
+            builder.add(line.from, line.to, Decoration.mark({attributes: {class: className}}));
+          }
+        }
+        pos = line.to + 1;
+      }
+    }
+    return builder.finish()
+  }
+
+  constructor(view: EditorView) {
+    this.decorations = this.headingDeco(view)
+  }
+
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged || update.selectionSet) {
+      this.decorations = this.headingDeco(update.view);
+    }
+  }
+}, {
+  decorations: v => v.decorations,
+});

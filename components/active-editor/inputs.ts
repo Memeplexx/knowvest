@@ -1,5 +1,5 @@
 import { NoteId } from '@/server/dtos';
-import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin } from '@/utils/codemirror-extensions';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
 import { oneDark } from '@/utils/codemirror-theme';
 import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
 import { NotificationContext } from '@/utils/pages/home/constants';
@@ -89,6 +89,7 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       bulletPointPlugin,
       inlineNotePlugin,
       noteBlockPlugin,
+      titleFormatPlugin,
       oneDark,
     ],
   });

@@ -135,6 +135,24 @@ export const oneDarkTheme = EditorView.theme({
     borderBottomLeftRadius: '4px',
     borderBottomRightRadius: '4px',
   },
+  ".cm-h1": {
+    fontSize: '3em',
+  },
+  ".cm-h2": {
+    fontSize: '2.5em',
+  },
+  ".cm-h3": {
+    fontSize: '2em',
+  },
+  ".cm-h4": {
+    fontSize: '1.8em',
+  },
+  ".cm-h5": {
+    fontSize: '1.5em',
+  },
+  ".cm-h6": {
+    fontSize: '1.2em',
+  },
 }, { dark: true })
 
 /// The highlighting style for code in the One Dark theme.
