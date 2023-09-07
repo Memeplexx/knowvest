@@ -9,7 +9,7 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useRef } from 'react';
 import { Props } from './constants';
-import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin } from '@/utils/codemirror-extensions';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
 
 
 export const useInputs = (props: Props) => {
@@ -43,6 +43,7 @@ export const instantiateCodeMirror = ({ editor, note }: { editor: HTMLDivElement
       bulletPointPlugin,
       inlineNotePlugin,
       noteBlockPlugin,
+      titleFormatPlugin,
       oneDark,
     ],
   });
