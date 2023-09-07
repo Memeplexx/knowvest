@@ -14,7 +14,7 @@ export default function App({
   augmentOlikForReact() // invoke before initializing store
   useEffect(() => {
     import('fastclick')
-      .then(({ default: attachFastClick }) => attachFastClick(document.body))
+      .then(({ default: FastClick }) => (FastClick as unknown as { attach: (arg: HTMLElement) => void }).attach(document.body))
       .catch(console.error);
   }, []);
   return (
