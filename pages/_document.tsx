@@ -50,7 +50,7 @@ export default class MyDocument extends Document {
               />
               <meta
                 name="viewport"
-                content="user-scalable=no, width=device-width, initial-scale=1.0"
+                content="user-scalable=no, width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1"
               />
               <meta
                 name="apple-mobile-web-app-capable"
