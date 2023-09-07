@@ -13,7 +13,7 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighte
   display: flex;
   align-items: center;
   color: #ffb1fc;
-  @media (min-width: ${mobileBreakPoint}) {
+  /* @media (min-width: ${mobileBreakPoint}) { */
     transform: scale(1);
     transition: all 0.2s cubic-bezier(0,.73,.44,1);
     &:hover {
@@ -24,7 +24,7 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighte
     &:active {
       transform: scale(1);
     }
-  }
+  /* } */
   ${p => p.$highlighted && `
     --border-size: 1px;
     --border-angle: 0turn;
