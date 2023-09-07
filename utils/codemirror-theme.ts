@@ -115,6 +115,9 @@ export const oneDarkTheme = EditorView.theme({
     padding: '0 4px',
     color: '#FFF',
   },
+  ".cm-highlight >*": {
+    color: '#FFF!important',
+  },
   ".cm-note-inline": {
     backgroundColor: "rgba(0,0,0,0.3)",
     padding: '4px',

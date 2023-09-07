@@ -81,15 +81,22 @@ export const useIsomorphicLayoutEffect =
 
 export const useRecord = <T extends object>(initializeState: T) => {
   const [state, oldSetState] = useState(initializeState);
-  type NewSetStateAction<T> = Partial<T> | ((prevState: T) => Partial<T>);
-  const set = useCallback((arg: NewSetStateAction<T>) => {
+  const stateBefore = useRef(state);
+  stateBefore.current = state;
+  const set = useCallback((arg: Partial<T> | ((prevState: T) => Partial<T>)) => {
     if (typeof (arg) === 'function') {
       oldSetState(s => ({ ...s, ...arg(s) }));
-    } else[
-      oldSetState(s => ({ ...s, ...arg }))
-    ]
+    } else {
+      oldSetState(s => ({ ...s, ...arg }));
+    }
   }, []);
-  return { ...state, set } as const;
+  const resultRef = useRef({ ...state, set });
+  Object.assign(resultRef.current, state);
+  if (stateBefore.current !== state) {
+    return { ...state, set } as const;
+  } else {
+    return resultRef.current;
+  }
 }
 
 export const usePropsWithDefaults = <P extends Record<string, unknown>, I extends P, D extends P>(incomingProps: I, defaultProps: D) => {

@@ -24,8 +24,8 @@ export const LoaderSkeleton = (props: { count: number, isVisible?: boolean } = {
           uniqueKey={`loader-${key}`}
           key={key}
           height={40}
-          backgroundColor={`rgba(255, 255, 255, ${(1 - (key / props.count)) / 2})`}
-          foregroundColor={`rgba(255, 255, 255, ${1 - (key / props.count)})`}
+          backgroundColor={`rgba(100, 100, 100, ${(1 - (key / props.count)) / 2})`}
+          foregroundColor={`rgba(100, 100, 100, ${1 - (key / props.count)})`}
           animate={true}
           style={{ width: '100%' }}
         >
