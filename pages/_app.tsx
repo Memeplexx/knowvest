@@ -5,7 +5,6 @@ import type { AppProps } from "next/app"
 import type { Session } from "next-auth"
 import { augmentOlikForReact } from 'olik-react'
 import '@/utils/array';
-import attachFastClick from 'fastclick';
 import { useEffect } from 'react';
 
 export default function App({
@@ -14,7 +13,9 @@ export default function App({
 }: AppProps<{ session: Session }>) {
   augmentOlikForReact() // invoke before initializing store
   useEffect(() => {
-    attachFastClick(document.body);
+    import('fastclick')
+      .then(({ default: attachFastClick }) => attachFastClick(document.body))
+      .catch(console.error);
   }, []);
   return (
     <SessionProvider session={session} >
