@@ -16,7 +16,7 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
     width: auto;
     height: auto;
   }
-  /* @media (min-width: ${mobileBreakPoint}) { */
+  @media (min-width: ${mobileBreakPoint}) {
     transform: scale(0.65);
     transition: all 0.2s cubic-bezier(0,.73,.44,1);
     &:hover {
@@ -27,5 +27,5 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
     &:active {
       transform: scale(0.8);
     }
-  /* } */
+  }
 `;

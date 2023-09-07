@@ -52,7 +52,7 @@ export const LoginButton = styled.button`
   cursor: pointer;
   transform: scale(1);
   transition: all 0.4s;
-  /* @media (min-width: ${mobileBreakPoint}) { */
+  @media (min-width: ${mobileBreakPoint}) {
     transform: scale(1);
     transition: all 0.2s cubic-bezier(0,.73,.44,1);
     &:hover {
@@ -63,5 +63,5 @@ export const LoginButton = styled.button`
     &:active {
       transform: scale(1);
     }
-  /* } */
+  }
 `;
