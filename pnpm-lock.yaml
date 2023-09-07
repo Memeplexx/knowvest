@@ -53,6 +53,9 @@ dependencies:
   '@trpc/server':
     specifier: ^10.24.0
     version: 10.38.1
+  '@types/fastclick':
+    specifier: ^1.0.30
+    version: 1.0.30
   '@vercel/analytics':
     specifier: ^1.0.2
     version: 1.0.2
@@ -71,6 +74,9 @@ dependencies:
   eslint-config-next:
     specifier: 13.3.4
     version: 13.3.4(eslint@8.39.0)(typescript@5.2.2)
+  fastclick:
+    specifier: ^1.0.6
+    version: 1.0.6
   next:
     specifier: 13.3.4
     version: 13.3.4(@babel/core@7.22.11)(react-dom@18.2.0)(react@18.2.0)
@@ -3255,6 +3261,10 @@ packages:
   /@types/estree@1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
 
+  /@types/fastclick@1.0.30:
+    resolution: {integrity: sha512-koRHqVkngVb7FjAXWSCEelG9UONKL/NbcqbcSjt3Dw5lnEDXSDjviK7g6Zx9Tn87NFmPu3N0j7UHJUhyI27g+Q==}
+    dev: false
+
   /@types/glob@7.2.0:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
@@ -5387,6 +5397,10 @@ packages:
     hasBin: true
     dependencies:
       strnum: 1.0.5
+    dev: false
+
+  /fastclick@1.0.6:
+    resolution: {integrity: sha512-cXyDBT4g0uWl/Xe75QspBDAgAWQ0lkPi/zgp6YFEUHj6WV6VIZl7R6TiDZhdOVU3W4ehp/8tG61Jev1jit+ztQ==}
     dev: false
 
   /fastq@1.15.0:

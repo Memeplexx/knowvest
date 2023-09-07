@@ -2,6 +2,7 @@ import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/do
 import { ServerStyleSheet } from "styled-components";
 import { Analytics } from '@vercel/analytics/react';
 
+
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
     const sheet = new ServerStyleSheet();
@@ -27,6 +28,7 @@ export default class MyDocument extends Document {
       sheet.seal();
     }
   }
+  
   render() {
     return (
       <Html lang="en">

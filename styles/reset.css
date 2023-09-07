@@ -111,6 +111,7 @@ a {
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Remove 300ms delay on mobile devices */
 *
 {
 	touch-action: manipulation;		/* IE11+ */
