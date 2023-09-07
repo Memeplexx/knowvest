@@ -110,37 +110,8 @@ export const titleFormatPlugin = ViewPlugin.fromClass(class {
         const text = line.text;
         const isHeading = /^#{1,6}\s.*/g.test(text);
         if (isHeading) {
-          const anchorPos = view.state.selection.ranges[0].anchor;
-          const isFocusedOnLine = anchorPos >= line.from && anchorPos <= line.to;
           const hashCount = text.match(/^#{1,6}/g)![0].length;
-          const className = `cm-h${hashCount}`;
-          const posCopy = pos;
-          if (!isFocusedOnLine) {
-            builder.add(line.from, line.to, Decoration.replace({
-              widget: new (class extends WidgetType {
-                toDOM() {
-                  const wrap = document.createElement("span");
-                  const hashCount = text.match(/^#{1,6}/g)![0].length;
-                  wrap.className = className;
-                  text.substring(hashCount + 1).split('').forEach((char, i) => {
-                    const span = document.createElement("span");
-                    span.innerHTML = char;
-                    wrap.appendChild(span);
-                    span.addEventListener('click', () => {
-                      view.dispatch({
-                        selection: {
-                          anchor: posCopy + i + hashCount + 1,
-                        }
-                      })
-                    })
-                  })
-                  return wrap;
-                }
-              })(),
-            }));
-          } else {
-            builder.add(line.from, line.to, Decoration.mark({attributes: {class: className}}));
-          }
+          builder.add(line.from, line.to, Decoration.mark({ attributes: { class: `cm-h${hashCount}` } }));
         }
         pos = line.to + 1;
       }

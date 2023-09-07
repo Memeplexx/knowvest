@@ -114,6 +114,7 @@ export const oneDarkTheme = EditorView.theme({
     borderRadius: "10px",
     padding: '0 4px',
     color: '#FFF',
+    display: 'inline-block',
   },
   ".cm-highlight >*": {
     color: '#FFF!important',
