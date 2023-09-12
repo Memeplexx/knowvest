@@ -13,7 +13,7 @@
   "editor.gotoLocation.multipleTypeDefinitions": "peek",
   "editor.gotoLocation.multipleDefinitions": "goto", 
   "editor.gotoLocation.multipleDeclarations": "peek", 
-  "editor.gotoLocation.multipleImplementations": "peek", 
+  "editor.gotoLocation.multipleImplementations": "goto", 
   "editor.gotoLocation.multipleReferences": "peek",
   "typescript.referencesCodeLens.enabled": true,
 }

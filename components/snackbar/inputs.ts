@@ -16,7 +16,7 @@ export const useInputs = (incomingProps: Props) => {
   useEffect(() => {
     if (!props.message) { return; }
     const ts = Date.now();
-    setState(messages => [...messages, { text: props.message, ts, show: false }]);
+    setState(messages => [...(messages.length > props.maxCount ? messages.slice(messages.length - props.maxCount) : messages), { text: props.message, ts, show: false }]);
     setTimeout(() => setState(messages => messages.map(message => message.ts === ts ? { ...message, show: true } : message))); // setTimeout for animation to work
     setTimeout(() => {
       setState(messages => messages.map(message => message.ts === ts ? { ...message, show: false } : message));

@@ -15,6 +15,7 @@ export type Props = {
   stackGap?: number,
   displayDuration?: number,
   animationDuration?: number,
+  maxCount?: number,
   renderMessage?: (message: string) => ReactNode,
   onMessageClear: () => void,
 };
@@ -23,6 +24,7 @@ export const defaultProps = {
   displayDuration: 3000,
   animationDuration: 200,
   stackGap: 80,
+  maxCount: 5,
   message: '',
   status: 'info',
 } satisfies Partial<Props>;
