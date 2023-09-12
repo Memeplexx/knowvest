@@ -17,23 +17,21 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
       props.onInputTextChange(event.target.value.toLowerCase());
     },
     onKeyDownInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'ArrowDown') {
-        if (!state.options.length) { return true; }
-        (refs.options.current?.firstChild as HTMLElement)?.focus();
-        event.preventDefault(); // prevents undesirable scrolling behavior
-      }
+      if (event.key !== 'ArrowDown') { return; }
+      if (!state.options.length) { return true; }
+      (refs.options.current?.firstChild as HTMLElement)?.focus();
+      event.preventDefault(); // prevents undesirable scrolling behavior
     },
     onKeyUpInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter') {
-        refs.container.current?.blur();
-        const selectedOption = state.options.find(o => o.label.toLowerCase() === refs.input.current!.value.toLowerCase());
-        if (selectedOption) {
-          props.onValueChange(selectedOption.value);
-        } else {
-          props.onInputEnterKeyUp?.();
-        }
-        props.onShowOptionsChange(false);
+      if (event.key !== 'Enter') { return; }
+      refs.container.current?.blur();
+      const selectedOption = state.options.find(o => o.label.toLowerCase() === refs.input.current!.value.toLowerCase());
+      if (selectedOption) {
+        props.onValueChange(selectedOption.value);
+      } else {
+        props.onInputEnterKeyUp?.();
       }
+      props.onShowOptionsChange(false);
     },
     onKeyDownOption: (event: KeyboardEvent<HTMLElement>) => {
       if (event.key === 'ArrowDown') {
@@ -51,9 +49,8 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
       }
     },
     onKeyUpOption: (value: Option['value'], event: KeyboardEvent<HTMLElement>) => {
-      if (event.key === 'Enter') {
-        props.onValueChange(value);
-      }
+      if (event.key !== 'Enter') { return; }
+      props.onValueChange(value);
     },
     onClickClearText: () => {
       props.onInputTextChange('');
