@@ -10,7 +10,7 @@ export default function HistoryItems(
   const { state } = inputs;
   return (
     <>
-      {state.notes.map(note => (
+      {state.map(note => (
         <Wrapper
           key={note.id}
           onClick={() => props.onSelectNote(note.id)}

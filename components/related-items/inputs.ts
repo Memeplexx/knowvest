@@ -28,18 +28,9 @@ export const useInputs = (props: Props) => {
       }));
   });
 
-  const noteCountString = derive(
-    queriedNotes
-  ).$with((queriedNotes) => {
-    return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
-  })
-
   return {
     props,
-    state: {
-      queriedNotes: queriedNotes.$useState(),
-      noteCountString: noteCountString.$useState(),
-    }
+    state: queriedNotes.$useState()
   }
 
 };

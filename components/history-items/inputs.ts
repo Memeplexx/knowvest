@@ -13,9 +13,7 @@ export const useInputs = (props: Props) => {
 
   return {
     props,
-    state: {
-      notes,
-    }
+    state: notes
   };
 }
 

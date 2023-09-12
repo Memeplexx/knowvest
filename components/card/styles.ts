@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { possible } from "../html";
-import { mobileBreakPoint } from "@/utils/styles";
 
 
 export const Wrapper = styled(possible.div)`
@@ -10,19 +9,6 @@ export const Wrapper = styled(possible.div)`
   position: relative;
   overflow: hidden;
   background-image: linear-gradient(to right, #242020, #191919);
-  /* @media (min-width: ${mobileBreakPoint}) {
-    animation: 1s ease-out 0s 1 scale-up;
-    @keyframes scale-up {
-      0% {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-  } */
 `;
 
 export const Header = styled(possible.div)`

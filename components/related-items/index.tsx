@@ -11,7 +11,7 @@ export default function Related(
   const { state } = inputs;
   return (
     <>
-      {state.queriedNotes.map(note => (
+      {state.map(note => (
         <Wrapper
           key={note.note.id}
           onClick={() => props.onSelectNote(note.note.id)}
@@ -34,7 +34,7 @@ export default function Related(
         />
       ))}
       <NoResults
-        showIf={state.queriedNotes.length === 0}
+        showIf={state.length === 0}
         children={
           <>
             <NoResultsIcon />

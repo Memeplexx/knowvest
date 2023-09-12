@@ -1,14 +1,11 @@
 import { derive } from "olik";
 import { Props } from "./constants";
 import { store } from "@/utils/store";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { CardHandle } from "../card/constants";
 
 export const useInputs = (props: Props) => {
-
-  const [initialized, setInitialized] = useState(false);
-  useEffect(() => setInitialized(true), [])
 
   const queriedNotes = derive(
     store.activeNoteId,
@@ -52,7 +49,6 @@ export const useInputs = (props: Props) => {
     },
     state: {
       loadingRelatedNotes,
-      initialized,
       queriedNotes: queriedNotes.$useState(),
       noteCountString: noteCountString.$useState(),
     },
