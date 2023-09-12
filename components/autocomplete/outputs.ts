@@ -18,7 +18,7 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
     },
     onKeyDownInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'ArrowDown') {
-        if (!state.optionsFiltered.length) { return true; }
+        if (!state.options.length) { return true; }
         (refs.options.current?.firstChild as HTMLElement)?.focus();
         event.preventDefault(); // prevents undesirable scrolling behavior
       }
@@ -26,7 +26,7 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
     onKeyUpInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
         refs.container.current?.blur();
-        const selectedOption = state.optionsFiltered.find(o => o.label.toLowerCase() === refs.input.current!.value.toLowerCase());
+        const selectedOption = state.options.find(o => o.label.toLowerCase() === refs.input.current!.value.toLowerCase());
         if (selectedOption) {
           props.onValueChange(selectedOption.value);
         } else {
@@ -38,7 +38,7 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
     onKeyDownOption: (event: KeyboardEvent<HTMLElement>) => {
       if (event.key === 'ArrowDown') {
         event.preventDefault(); // prevents undesirable scrolling behavior
-        if (!state.optionsFiltered.length) { return true; }
+        if (!state.options.length) { return true; }
         (document.activeElement?.nextElementSibling as HTMLElement)?.focus();
       } else if (event.key === 'ArrowUp') {
         event.preventDefault(); // prevents undesirable scrolling behavior

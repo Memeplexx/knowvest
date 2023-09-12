@@ -12,7 +12,7 @@ export const useInputs = <Option extends OptionBase>(
 
   const input = floating.refs.domReference;
 
-  const options = floating.refs.floating;
+  const optionsPopup = floating.refs.floating;
 
   const container = useForwardedRef(useRef<HTMLDivElement | null>(null));
 
@@ -20,11 +20,11 @@ export const useInputs = <Option extends OptionBase>(
     return props.options.sort((a, b) => a.label.localeCompare(b.label));
   }, [props.options]);
 
-  const optionsFiltered = useMemo(() => {
+  const options = useMemo(() => {
     return optionsSorted.filter(o => !props.inputText || o.label.toLowerCase().includes(props.inputText.toLowerCase()));
   }, [optionsSorted, props.inputText]);
 
-  const optionsPopupExpanded = !!props.showOptions && !!optionsFiltered.length;
+  const optionsPopupExpanded = !!props.showOptions && !!options.length;
 
   useImperativeHandle<AutocompleteHandle, AutocompleteHandle>(forwardedRef, () => ({
     focusInput: () => input.current!.focus(),
@@ -37,11 +37,11 @@ export const useInputs = <Option extends OptionBase>(
       input,
       container,
       floating,
-      options,
+      options: optionsPopup,
     },
     state: {
       optionsPopupExpanded,
-      optionsFiltered,
+      options,
     }
   }
 }

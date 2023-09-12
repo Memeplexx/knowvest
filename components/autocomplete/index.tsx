@@ -45,7 +45,7 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             style={refs.floating.floatingStyles}
             showIf={props.showOptions}
             children={
-              state.optionsFiltered.map(option => (
+              state.options.map(option => (
                 <OptionItem
                   type='button'
                   key={option.value}

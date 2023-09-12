@@ -12,22 +12,23 @@ export type snackbarStatus = keyof typeof snackbarStatuses;
 export type Props = {
   message: string,
   status: snackbarStatus,
-  duration?: number,
   stackGap?: number,
+  displayDuration?: number,
   animationDuration?: number,
   renderMessage?: (message: string) => ReactNode,
   onMessageClear: () => void,
 };
 
 export const defaultProps = {
-  duration: 3000,
+  displayDuration: 3000,
   animationDuration: 200,
   stackGap: 80,
   message: '',
   status: 'info',
 } satisfies Partial<Props>;
 
-export const initialState = {
-  messages: new Array<{ text: string, ts: number, show: boolean }>(),
+export type Message = {
+  text: string,
+  ts: number,
+  show: boolean
 };
-

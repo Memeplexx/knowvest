@@ -16,18 +16,18 @@ export const Snackbar = function Snackbar(
           ref={refs.floating.refs.setFloating}
           style={refs.floating.floatingStyles}
           children={
-            state.messages.map((m, i) => (
+            state.map((message, index) => (
               <Message
-                key={m.ts}
-                $showIf={m.show}
-                $index={i}
+                key={message.ts}
+                $showIf={message.show}
+                $index={index}
                 $animation={props.animationDuration}
                 $gap={props.stackGap}
                 $status={props.status}
                 children={
                   <>
                     {snackbarStatuses[props.status].icon()}
-                    {props.renderMessage ? props.renderMessage(m.text) : m.text}
+                    {props.renderMessage ? props.renderMessage(message.text) : message.text}
                   </>
                 }
               />
