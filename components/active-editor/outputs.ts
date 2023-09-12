@@ -1,7 +1,6 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
 import { store } from "@/utils/store";
-import { transact } from "olik";
 
 
 export const useOutputs = (inputs: Inputs) => {
@@ -30,12 +29,9 @@ export const useOutputs = (inputs: Inputs) => {
     onClickFilterNotesFromSelection: () => {
       const { from, to } = state.codeMirror!.state.selection.ranges[0];
       const selection = state.codeMirror!.state.doc.sliceString(from, to);
-      const tagIds = store.$state.tags.filter(t => selection.toLowerCase().includes(t.text)).map(t => t.id);
-      const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
-      transact(() => {
-        store.synonymIds.$set(synonymIds);
-        store.activePanel.selection.$set('');
-      })
+      const synonymIds = store.$state.tags.filter(t => selection.toLowerCase().includes(t.text)).map(t => t.synonymId);
+      store.synonymIds.$set(synonymIds);
+      store.activePanel.selection.$set('');
       notify.success(`Filtered notes by "${selection}"`);
     },
     onClickSplitNoteFromSelection: async () => {
@@ -45,13 +41,11 @@ export const useOutputs = (inputs: Inputs) => {
       store.activePanel.loadingSelection.$set(false);
       const noteIds = apiResponse.noteTagsRemoved.map(nt => nt.noteId);
       const tagIds = apiResponse.noteTagsRemoved.map(nt => nt.tagId);
-      transact(() => {
-        store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.noteUpdated);
-        store.notes.$push(apiResponse.noteCreated);
-        store.noteTags.$push(apiResponse.noteTagsCreated);
-        store.noteTags.$filter.noteId.$in(noteIds).$and.tagId.$in(tagIds).$delete();
-        store.activePanel.selection.$set('');
-      })
+      store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.noteUpdated);
+      store.notes.$push(apiResponse.noteCreated);
+      store.noteTags.$push(apiResponse.noteTagsCreated);
+      store.noteTags.$filter.noteId.$in(noteIds).$and.tagId.$in(tagIds).$delete();
+      store.activePanel.selection.$set('');
       state.codeMirror?.dispatch({
         changes: {
           from: 0,

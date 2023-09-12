@@ -22,17 +22,21 @@ export const useOutputs = (inputs: Inputs) => {
       notify.success('New note created');
     },
     onClickRemoveNote: async () => {
-      store.activePanel.allowNotePersister.$set(false);
-      store.activePanel.loadingNote.$set(true);
+      transact(() => {
+        store.activePanel.allowNotePersister.$set(false);
+        store.activePanel.loadingNote.$set(true);
+      })
       const apiResponse = await trpc.note.delete.mutate({ noteId: store.$state.activeNoteId });
-      store.activePanel.loadingNote.$set(false);
-      store.activePanel.confirmDelete.$set(false);
-      store.noteTags.$filter.noteId.$in(apiResponse.noteTagsDeleted.map(nt => nt.noteId)).$delete();
-      store.notes.$find.id.$eq(apiResponse.noteDeleted.id).$delete();
-      const newNoteId = store.$state.notes.slice().sort((a, b) => b.dateViewed!.toString().localeCompare(a.dateViewed!.toString()))[0].id!;
-      store.activeNoteId.$set(newNoteId);
-      const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
-      store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))
+      transact(() => {
+        store.activePanel.loadingNote.$set(false);
+        store.activePanel.confirmDelete.$set(false);
+        store.noteTags.$filter.noteId.$in(apiResponse.noteTagsDeleted.map(nt => nt.noteId)).$delete();
+        store.notes.$find.id.$eq(apiResponse.noteDeleted.id).$delete();
+        const newNoteId = store.$state.notes.slice().sort((a, b) => b.dateViewed!.toString().localeCompare(a.dateViewed!.toString()))[0].id!;
+        store.activeNoteId.$set(newNoteId);
+        const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
+        store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))
+      })
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
     },
     onClickDuplicateNote: async () => {
