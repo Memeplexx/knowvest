@@ -16,11 +16,11 @@ export const Snackbar = function Snackbar(
           ref={refs.floating.refs.setFloating}
           style={refs.floating.floatingStyles}
           children={
-            state.messages.map(m => (
+            state.messages.map((m, i) => (
               <Message
                 key={m.ts}
                 $showIf={m.show}
-                $index={m.index}
+                $index={i}
                 $animation={props.animationDuration}
                 $gap={props.stackGap}
                 $status={props.status}

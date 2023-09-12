@@ -80,19 +80,20 @@ export const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 export const useRecord = <T extends object>(initializeState: T) => {
-  const [state, oldSetState] = useState(initializeState);
-  const stateBefore = useRef(state);
-  stateBefore.current = state;
+  const [state, setState] = useState(initializeState);
+  const stateChanged = useRef(false);
   const set = useCallback((arg: Partial<T> | ((prevState: T) => Partial<T>)) => {
+    stateChanged.current = true;
     if (typeof (arg) === 'function') {
-      oldSetState(s => ({ ...s, ...arg(s) }));
+      setState({ ...resultRef.current, ...arg(resultRef.current) });
     } else {
-      oldSetState(s => ({ ...s, ...arg }));
+      setState({ ...resultRef.current, ...arg });
     }
   }, []);
   const resultRef = useRef({ ...state, set });
   Object.assign(resultRef.current, state);
-  if (stateBefore.current !== state) {
+  if (stateChanged.current) {
+    stateChanged.current = false;
     return { ...state, set } as const;
   } else {
     return resultRef.current;

@@ -28,7 +28,6 @@ export const defaultProps = {
 } satisfies Partial<Props>;
 
 export const initialState = {
-  messages: new Array<{ text: string, ts: number, show: boolean, index: number }>(),
-  count: 0,
+  messages: new Array<{ text: string, ts: number, show: boolean }>(),
 };
 
