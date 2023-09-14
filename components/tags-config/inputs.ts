@@ -18,8 +18,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const state = store.config.$useState();
 
-  const selectedTag = useRef<HTMLDivElement>(null)
-
   const tagsInSynonymGroup = derive(
     store.config.synonymId,
     store.tags,
@@ -34,7 +32,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
         first: index === 0,
         last: index === array.length - 1,
         selected: tag.id === tagId,
-        ref: tag.id === state.tagId ? selectedTag : null,
       }));
   });
 
@@ -43,71 +40,35 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     store.groups,
     store.tags,
     tagsInSynonymGroup,
-    store.config.groupId,
     store.config.synonymId,
-    store.config.groupSynonymId,
-    store.config.hoveringGroupId,
-    store.config.hoveringSynonymId,
-    store.config.modal,
-    store.config.focusedGroupNameInputText,
-  ).$with((synonymGroups, groups, tags, tagsInSynonymGroup, groupId, synonymId, groupSynonymId, hoveringGroupId, hoveringSynonymId, modal, focusedGroupNameInputText) => {
+  ).$with((synonymGroups, groups, tags, tagsInSynonymGroup, synonymId) => {
     return [
       ...synonymGroups
         .filter(synonymGroup => synonymGroup.synonymId === synonymId)
-        .map(synonymGroup => {
-          const group = groups.findOrThrow(g => g.id === synonymGroup.groupId);
-          return {
-            group,
-            synonyms: [
-              !synonymId
-                ? null
-                : {
-                  synonymId,
-                  tags: tagsInSynonymGroup,
-                },
-              ...synonymGroups
-                .filter(sg => sg.groupId === synonymGroup.groupId && sg.synonymId !== synonymId)
-                .map(sg => ({
-                  synonymId: sg.synonymId,
-                  tags: tags.filter(t => t.synonymId === sg.synonymId),
-                }))
-            ]
-              .filterTruthy()
-              .map((synonymGroup, index, array) => ({
-                ...synonymGroup,
-                first: index === 0,
-                last: index === array.length - 1,
-                tags: synonymGroup.tags.map((tag, index, array) => ({
-                  id: tag.id,
-                  ref: groupId === group.id && groupSynonymId === synonymId ? selectedTag : null,
-                  text: tag.text,
-                  first: index === 0,
-                  last: index === array.length - 1,
-                  selected: (hoveringGroupId === group.id && hoveringSynonymId === synonymGroup.synonymId)
-                    || (groupId === group.id && groupSynonymId === synonymGroup.synonymId)
-                })),
+        .map(synonymGroup => ({
+          group: groups.findOrThrow(g => g.id === synonymGroup.groupId),
+          synonyms: [
+            !synonymId
+              ? null
+              : {
+                synonymId,
+                tags: tagsInSynonymGroup,
+              },
+            ...synonymGroups
+              .filter(sg => sg.groupId === synonymGroup.groupId && sg.synonymId !== synonymId)
+              .map(sg => ({
+                synonymId: sg.synonymId,
+                tags: tags.filter(t => t.synonymId === sg.synonymId),
               }))
-          };
-        }),
+          ].filterTruthy()
+        })),
       ...groups
         .filter(g => !synonymGroups.some(sg => sg.groupId === g.id))
         .map(group => ({
           group,
           synonyms: [],
         })),
-    ].map(group => ({
-      ...group,
-      group: {
-        id: group.group.id,
-        active: groupId === group.group.id,
-        canRemoveSelection: !!groupSynonymId && group.synonyms.length > 1,
-        canUpdateSelection: !!groupSynonymId && groupSynonymId !== synonymId,
-        inputText: groupId === group.group.id ? focusedGroupNameInputText : group.group.name,
-        settingsRef: groupId === group.group.id && modal === 'groupOptions' ? floating.refs.setReference : null,
-        showOptions: groupId === group.group.id && modal === 'groupOptions',
-        popupRef: groupId === group.group.id && modal === 'groupOptions' ? floating.refs.setFloating : null,
-      }
-    }))
+    ]
   });
 
   const tagSynonymGroupMap = derive(
@@ -207,23 +168,18 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   return {
     state: {
       ...state,
+      pageTitle: autocompleteTitle.$useState(),
       activeNoteId: store.activeNoteId.$useState(),
       autocompleteOptions: autocompleteOptions.$useState(),
       tagsInCustomGroups: tagsInCustomGroups.$useState(),
       tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
-      pageTitle: autocompleteTitle.$useState(),
       selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
-      autocompleteDisabled: !!state.groupSynonymId,
-      showSynonymOptions: state.modal === 'synonymOptions',
-      confirmDeleteTag: state.modal === 'confirmDeleteTag',
-      confirmDeleteGroup: state.modal === 'confirmDeleteGroup',
-      showGroupOptions: state.modal === 'groupOptions',
-      allowRemoveSelectionFromSynonyms: !!state.tagId && tagsInSynonymGroup.$state.length > 1,
     },
     refs: {
       floating,
       modal: useRef<HTMLDivElement>(null),
       autocomplete: useRef<AutocompleteHandle>(null),
+      selectedTag: useRef<HTMLDivElement>(null),
       settingsButton: state.modal === 'synonymOptions' ? floating.refs.setReference : null,
       synonymOptions: state.modal === 'synonymOptions' ? floating.refs.setFloating : null,
     },

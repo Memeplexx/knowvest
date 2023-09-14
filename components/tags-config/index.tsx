@@ -72,7 +72,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             onInputFocused={outputs.onAutocompleteInputFocused}
                             showOptions={state.showAutocompleteOptions}
                             onShowOptionsChange={outputs.onShowAutocompleteOptionsChange}
-                            disabled={state.autocompleteDisabled}
+                            disabled={!!state.groupSynonymId}
                             renderOption={o => (
                               <AutocompleteOption
                                 children={
@@ -104,7 +104,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                 <SettingsButton
                                   children={<SettingsIcon />}
                                   onClick={outputs.onClickShowOptionsForSynonyms}
-                                  selected={state.showSynonymOptions}
+                                  selected={state.modal === 'synonymOptions'}
                                   $show={!state.groupId}
                                   ref={refs.settingsButton}
                                   aria-label='Settings'
@@ -117,7 +117,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                               <Tag
                                 key={tag.id}
                                 selected={tag.selected}
-                                ref={tag.ref}
+                                ref={tag.id === state.tagId ? refs.selectedTag : null}
                                 onClick={e => outputs.onClickTagSynonym(e, tag.id)}
                                 children={tag.text}
                                 $first={tag.first}
@@ -126,7 +126,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             )}
                           />
                           <PopupOptions
-                            showIf={state.showSynonymOptions}
+                            showIf={state.modal === 'synonymOptions'}
                             ref={refs.synonymOptions}
                             style={refs.floating.floatingStyles}
                             onClick={outputs.onClickHideOptionsForSynonyms}
@@ -141,7 +141,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                   children='Add these Synonyms to Group'
                                 />
                                 <PopupOption
-                                  showIf={state.allowRemoveSelectionFromSynonyms}
+                                  showIf={!!state.tagId && state.tagsInSynonymGroup.length > 1}
                                   onClick={outputs.onClickRemoveTagFromSynonyms}
                                   children='Remove selection from these Synonyms'
                                 />
@@ -159,7 +159,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             }
                           />
                           <Confirmation
-                            show={state.confirmDeleteTag}
+                            show={state.modal === 'confirmDeleteTag'}
                             onClose={outputs.onCancelConfirmation}
                             onConfirm={outputs.onClickConfirmDeleteTag}
                             title='Delete Tag Requested'
@@ -170,90 +170,93 @@ export const TagsConfig = forwardRef(function TagsConfig(
                       }
                     />
 
-                    {state.tagsInCustomGroups.map(group => (
-                      <BodyGroup
-                        key={group.group.id}
-                        $active={group.group.active}
-                        children={
-                          <>
-                            <BodyHeader
-                              children={
-                                <>
-                                  Group:
-                                  <CustomGroupNameInput
-                                    value={group.group.inputText}
-                                    onFocus={() => outputs.onCustomGroupNameFocus(group.group.id)}
-                                    onKeyUp={outputs.onCustomGroupNameKeyUp}
-                                    onChange={outputs.onCustomGroupNameChange}
-                                  />
-                                  <SettingsButton
-                                    children={<SettingsIcon />}
-                                    onClick={() => outputs.onClickShowOptionsForGroup(group.group.id)}
-                                    selected={state.showGroupOptions}
-                                    $show={group.group.active}
-                                    ref={group.group.settingsRef}
-                                    aria-label='Settings'
-                                  />
-                                </>
-                              }
-                            />
-                            <TagGroup
-                              children={group.synonyms.map(synonym => (
-                                synonym.tags.map(tag => (
-                                  <Tag
-                                    key={tag.id}
-                                    ref={tag.ref}
-                                    selected={tag.selected}
-                                    children={tag.text}
-                                    $first={tag.first}
-                                    $last={tag.last}
-                                    onClick={e => outputs.onClickGroupSynonym(e, group.group.id, synonym.synonymId)}
-                                    onMouseOver={() => outputs.onMouseOverGroupTag(group.group.id, synonym.synonymId)}
-                                    onMouseOut={outputs.onMouseOutGroupTag}
-                                  />
-                                ))
-                              ))}
-                            />
-                            <PopupOptions
-                              showIf={group.group.showOptions}
-                              ref={group.group.popupRef}
-                              style={refs.floating.floatingStyles}
-                              onClick={outputs.onClickHideOptionsForGroup}
-                              children={
-                                <>
-                                  <PopupOption
-                                    onClick={outputs.onClickAddSynonymToCustomGroup}
-                                    children='Add to this Group'
-                                  />
-                                  <PopupOption
-                                    showIf={group.group.canRemoveSelection}
-                                    onClick={outputs.onClickRemoveSynonymFromCustomGroup}
-                                    children='Remove selection from Group'
-                                  />
-                                  <PopupOption
-                                    showIf={group.group.canUpdateSelection}
-                                    onClick={outputs.onClickUpdateGroupSynonym}
-                                    children='Update selection'
-                                  />
-                                  <PopupOption
-                                    onClick={outputs.onClickDeleteGroup}
-                                    children='Delete this Group'
-                                  />
-                                </>
-                              }
-                            />
-                            <Confirmation
-                              show={state.confirmDeleteGroup}
-                              onClose={outputs.onCancelConfirmation}
-                              onConfirm={outputs.onClickConfirmDeleteGroup}
-                              title='Delete Group Requested'
-                              message='Are you sure you want to delete this group?'
-                              confirmText='Yes, Delete Group'
-                            />
-                          </>
-                        }
-                      />
-                    ))}
+                    {state.tagsInCustomGroups
+                      .map(e => ({ ...e, active: state.groupId === e.group.id }))
+                      .map(({ group, synonyms, active }) => (
+                        <BodyGroup
+                          key={group.id}
+                          $active={active}
+                          children={
+                            <>
+                              <BodyHeader
+                                children={
+                                  <>
+                                    Group:
+                                    <CustomGroupNameInput
+                                      value={active ? state.focusedGroupNameInputText : group.name}
+                                      onFocus={() => outputs.onCustomGroupNameFocus(group.id)}
+                                      onBlur={() => outputs.onCustomGroupNameBlur(group.id)}
+                                      onKeyUp={outputs.onCustomGroupNameKeyUp}
+                                      onChange={outputs.onCustomGroupNameChange}
+                                    />
+                                    <SettingsButton
+                                      children={<SettingsIcon />}
+                                      onClick={() => outputs.onClickShowOptionsForGroup(group.id)}
+                                      selected={state.modal === 'groupOptions'}
+                                      $show={active}
+                                      ref={active && state.modal === 'groupOptions' ? refs.floating.refs.setReference : null}
+                                      aria-label='Settings'
+                                    />
+                                  </>
+                                }
+                              />
+                              <TagGroup
+                                children={synonyms.map(({ synonymId, tags }) => (
+                                  tags.map((tag, index, array) => (
+                                    <Tag
+                                      key={tag.id}
+                                      ref={active && state.groupSynonymId === state.synonymId ? refs.selectedTag : null}
+                                      selected={(state.hoveringGroupId === group.id && state.hoveringSynonymId === synonymId) || (active && state.groupSynonymId === synonymId)}
+                                      children={tag.text}
+                                      $first={index === 0}
+                                      $last={index === array.length - 1}
+                                      onClick={e => outputs.onClickGroupSynonym(e, group.id, synonymId)}
+                                      onMouseOver={() => outputs.onMouseOverGroupTag(group.id, synonymId)}
+                                      onMouseOut={outputs.onMouseOutGroupTag}
+                                    />
+                                  ))
+                                ))}
+                              />
+                              <PopupOptions
+                                showIf={active && state.modal === 'groupOptions'}
+                                ref={active && state.modal === 'groupOptions' ? refs.floating.refs.setFloating : null}
+                                style={refs.floating.floatingStyles}
+                                onClick={outputs.onClickHideOptionsForGroup}
+                                children={
+                                  <>
+                                    <PopupOption
+                                      onClick={outputs.onClickAddSynonymToCustomGroup}
+                                      children='Add to this Group'
+                                    />
+                                    <PopupOption
+                                      showIf={!!state.groupSynonymId && synonyms.length > 1}
+                                      onClick={outputs.onClickRemoveSynonymFromCustomGroup}
+                                      children='Remove selection from Group'
+                                    />
+                                    <PopupOption
+                                      showIf={!!state.groupSynonymId && state.groupSynonymId !== state.synonymId}
+                                      onClick={outputs.onClickUpdateGroupSynonym}
+                                      children='Update selection'
+                                    />
+                                    <PopupOption
+                                      onClick={outputs.onClickDeleteGroup}
+                                      children='Delete this Group'
+                                    />
+                                  </>
+                                }
+                              />
+                              <Confirmation
+                                show={state.modal === 'confirmDeleteGroup'}
+                                onClose={outputs.onCancelConfirmation}
+                                onConfirm={outputs.onClickConfirmDeleteGroup}
+                                title='Delete Group Requested'
+                                message='Are you sure you want to delete this group?'
+                                confirmText='Yes, Delete Group'
+                              />
+                            </>
+                          }
+                        />
+                      ))}
                   </>
                 }
               />

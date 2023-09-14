@@ -34,6 +34,9 @@ export const useOutputs = (inputs: Inputs) => {
         focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
+    onCustomGroupNameBlur: (groupId: GroupId) => {
+      store.config.focusedGroupNameInputText.$set(store.$state.groups.findOrThrow(g => g.id === groupId).name);
+    },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
         await completeEditGroupName(inputs);
@@ -75,13 +78,6 @@ export const useOutputs = (inputs: Inputs) => {
         return store.config.groupSynonymId.$set(null);
       }
       const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
-      console.log({
-        tagId: null,
-        groupId,
-        groupSynonymId,
-        autocompleteText: '',
-        focusedGroupNameInputText,
-      })
       store.config.$patch({
         tagId: null,
         groupId,
