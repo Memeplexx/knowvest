@@ -75,6 +75,13 @@ export const useOutputs = (inputs: Inputs) => {
         return store.config.groupSynonymId.$set(null);
       }
       const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
+      console.log({
+        tagId: null,
+        groupId,
+        groupSynonymId,
+        autocompleteText: '',
+        focusedGroupNameInputText,
+      })
       store.config.$patch({
         tagId: null,
         groupId,

@@ -1,4 +1,3 @@
-import { useForwardedRef } from '@/utils/hooks';
 import { type ForwardedRef, useContext, useRef } from 'react';
 
 import { decide } from '@/utils/functions';
@@ -19,45 +18,96 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const state = store.config.$useState();
 
+  const selectedTag = useRef<HTMLDivElement>(null)
+
   const tagsInSynonymGroup = derive(
     store.config.synonymId,
     store.tags,
-  ).$with((synonymId, tags) => {
-    return tags.filter(t => t.synonymId === synonymId);
+    store.config.tagId,
+    store.config.autocompleteText,
+  ).$with((synonymId, tags, tagId, autocompleteText) => {
+    return tags
+      .filter(t => t.synonymId === synonymId)
+      .map((tag, index, array) => ({
+        id: tag.id,
+        text: tagId === tag.id || (!tagId && tagId === tag.id) ? autocompleteText : tag.text,
+        first: index === 0,
+        last: index === array.length - 1,
+        selected: tag.id === tagId,
+        ref: tag.id === state.tagId ? selectedTag : null,
+      }));
   });
 
   const tagsInCustomGroups = derive(
     store.synonymGroups,
     store.groups,
     store.tags,
-    store.config.synonymId,
     tagsInSynonymGroup,
-  ).$with((synonymGroups, groups, tags, synonymId, tagsInSynonymGroup) => {
+    store.config.groupId,
+    store.config.synonymId,
+    store.config.groupSynonymId,
+    store.config.hoveringGroupId,
+    store.config.hoveringSynonymId,
+    store.config.modal,
+    store.config.focusedGroupNameInputText,
+  ).$with((synonymGroups, groups, tags, tagsInSynonymGroup, groupId, synonymId, groupSynonymId, hoveringGroupId, hoveringSynonymId, modal, focusedGroupNameInputText) => {
     return [
       ...synonymGroups
         .filter(synonymGroup => synonymGroup.synonymId === synonymId)
-        .map(synonymGroup => ({
-          group: groups.findOrThrow(g => g.id === synonymGroup.groupId),
-          synonyms: [
-            !synonymId ? null : {
-              synonymId,
-              tags: tagsInSynonymGroup.map(t => t.text),
-            },
-            ...synonymGroups
-              .filter(sg => sg.groupId === synonymGroup.groupId && sg.synonymId !== synonymId)
-              .map(sg => ({
-                synonymId: sg.synonymId,
-                tags: tags.filter(t => t.synonymId === sg.synonymId).map(t => t.text),
+        .map(synonymGroup => {
+          const group = groups.findOrThrow(g => g.id === synonymGroup.groupId);
+          return {
+            group,
+            synonyms: [
+              !synonymId
+                ? null
+                : {
+                  synonymId,
+                  tags: tagsInSynonymGroup,
+                },
+              ...synonymGroups
+                .filter(sg => sg.groupId === synonymGroup.groupId && sg.synonymId !== synonymId)
+                .map(sg => ({
+                  synonymId: sg.synonymId,
+                  tags: tags.filter(t => t.synonymId === sg.synonymId),
+                }))
+            ]
+              .filterTruthy()
+              .map((synonymGroup, index, array) => ({
+                ...synonymGroup,
+                first: index === 0,
+                last: index === array.length - 1,
+                tags: synonymGroup.tags.map((tag, index, array) => ({
+                  id: tag.id,
+                  ref: groupId === group.id && groupSynonymId === synonymId ? selectedTag : null,
+                  text: tag.text,
+                  first: index === 0,
+                  last: index === array.length - 1,
+                  selected: (hoveringGroupId === group.id && hoveringSynonymId === synonymGroup.synonymId)
+                    || (groupId === group.id && groupSynonymId === synonymGroup.synonymId)
+                })),
               }))
-          ].filterTruthy()
-        })),
+          };
+        }),
       ...groups
         .filter(g => !synonymGroups.some(sg => sg.groupId === g.id))
         .map(group => ({
           group,
           synonyms: [],
         })),
-    ]
+    ].map(group => ({
+      ...group,
+      group: {
+        id: group.group.id,
+        active: groupId === group.group.id,
+        canRemoveSelection: !!groupSynonymId && group.synonyms.length > 1,
+        canUpdateSelection: !!groupSynonymId && groupSynonymId !== synonymId,
+        inputText: groupId === group.group.id ? focusedGroupNameInputText : group.group.name,
+        settingsRef: groupId === group.group.id && modal === 'groupOptions' ? floating.refs.setReference : null,
+        showOptions: groupId === group.group.id && modal === 'groupOptions',
+        popupRef: groupId === group.group.id && modal === 'groupOptions' ? floating.refs.setFloating : null,
+      }
+    }))
   });
 
   const tagSynonymGroupMap = derive(
@@ -112,9 +162,12 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     autocompleteOptionsGroups,
     autocompleteOptionsTags,
   ).$with((autocompleteAction, autocompleteOptionsGroups, autocompleteOptionsTags) => {
-    return autocompleteAction === 'addActiveSynonymsToAGroup'
+    return (autocompleteAction === 'addActiveSynonymsToAGroup'
       ? autocompleteOptionsGroups
-      : autocompleteOptionsTags;
+      : autocompleteOptionsTags).map(option => ({
+        ...option,
+        synonyms: option.synonyms.map(synonym => synonym.text).join(', '),
+      }));
   });
 
   const autocompleteTitle = derive(
@@ -161,13 +214,18 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       pageTitle: autocompleteTitle.$useState(),
       selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
       autocompleteDisabled: !!state.groupSynonymId,
+      showSynonymOptions: state.modal === 'synonymOptions',
+      confirmDeleteTag: state.modal === 'confirmDeleteTag',
+      confirmDeleteGroup: state.modal === 'confirmDeleteGroup',
+      showGroupOptions: state.modal === 'groupOptions',
+      allowRemoveSelectionFromSynonyms: !!state.tagId && tagsInSynonymGroup.$state.length > 1,
     },
     refs: {
       floating,
-      container: useForwardedRef(ref),
       modal: useRef<HTMLDivElement>(null),
       autocomplete: useRef<AutocompleteHandle>(null),
-      selectedTag: useRef<HTMLDivElement>(null),
+      settingsButton: state.modal === 'synonymOptions' ? floating.refs.setReference : null,
+      synonymOptions: state.modal === 'synonymOptions' ? floating.refs.setFloating : null,
     },
     notify,
     props,

@@ -1,4 +1,4 @@
-import { TagId, GroupId, SynonymId, TagDTO } from "@/server/dtos";
+import { TagId, GroupId, SynonymId } from "@/server/dtos";
 import { useInputs } from "./inputs";
 
 export const configInitialState = {
@@ -56,5 +56,5 @@ export type Inputs = ReturnType<typeof useInputs>;
 export type AutocompleteOptionType = {
   value: TagId | GroupId | null,
   label: string,
-  synonyms: TagDTO[],
+  synonyms: string,
 };

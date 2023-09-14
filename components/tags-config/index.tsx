@@ -81,7 +81,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                       children={o.label}
                                     />
                                     <AutocompleteOptionSynonyms
-                                      children={o.synonyms.filter(s => o.value !== s.id).map(s => s.text).join(' | ')}
+                                      children={o.synonyms}
                                     />
                                   </>
                                 }
@@ -104,30 +104,30 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                 <SettingsButton
                                   children={<SettingsIcon />}
                                   onClick={outputs.onClickShowOptionsForSynonyms}
-                                  selected={state.modal === 'synonymOptions'}
+                                  selected={state.showSynonymOptions}
                                   $show={!state.groupId}
-                                  ref={state.modal === 'synonymOptions' ? refs.floating.refs.setReference : null}
+                                  ref={refs.settingsButton}
                                   aria-label='Settings'
                                 />
                               </>
                             }
                           />
                           <TagGroup
-                            children={state.tagsInSynonymGroup.map((tag, i) =>
+                            children={state.tagsInSynonymGroup.map(tag =>
                               <Tag
                                 key={tag.id}
-                                selected={tag.id === state.tagId}
-                                ref={tag.id === state.tagId ? refs.selectedTag : null}
+                                selected={tag.selected}
+                                ref={tag.ref}
                                 onClick={e => outputs.onClickTagSynonym(e, tag.id)}
-                                children={state.tagId === tag.id || (!state.tagId && state.tagId === tag.id) ? state.autocompleteText : tag.text}
-                                $first={!i}
-                                $last={i === state.tagsInSynonymGroup.length - 1}
+                                children={tag.text}
+                                $first={tag.first}
+                                $last={tag.last}
                               />
                             )}
                           />
                           <PopupOptions
-                            showIf={state.modal === 'synonymOptions'}
-                            ref={state.modal === 'synonymOptions' ? refs.floating.refs.setFloating : null}
+                            showIf={state.showSynonymOptions}
+                            ref={refs.synonymOptions}
                             style={refs.floating.floatingStyles}
                             onClick={outputs.onClickHideOptionsForSynonyms}
                             children={
@@ -141,7 +141,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                   children='Add these Synonyms to Group'
                                 />
                                 <PopupOption
-                                  showIf={!!state.tagId && state.tagsInSynonymGroup.length > 1}
+                                  showIf={state.allowRemoveSelectionFromSynonyms}
                                   onClick={outputs.onClickRemoveTagFromSynonyms}
                                   children='Remove selection from these Synonyms'
                                 />
@@ -159,7 +159,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             }
                           />
                           <Confirmation
-                            show={state.modal === 'confirmDeleteTag'}
+                            show={state.confirmDeleteTag}
                             onClose={outputs.onCancelConfirmation}
                             onConfirm={outputs.onClickConfirmDeleteTag}
                             title='Delete Tag Requested'
@@ -173,7 +173,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                     {state.tagsInCustomGroups.map(group => (
                       <BodyGroup
                         key={group.group.id}
-                        $active={state.groupId === group.group.id}
+                        $active={group.group.active}
                         children={
                           <>
                             <BodyHeader
@@ -181,7 +181,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                 <>
                                   Group:
                                   <CustomGroupNameInput
-                                    value={state.groupId === group.group.id ? state.focusedGroupNameInputText : group.group.name}
+                                    value={group.group.inputText}
                                     onFocus={() => outputs.onCustomGroupNameFocus(group.group.id)}
                                     onKeyUp={outputs.onCustomGroupNameKeyUp}
                                     onChange={outputs.onCustomGroupNameChange}
@@ -189,9 +189,9 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                   <SettingsButton
                                     children={<SettingsIcon />}
                                     onClick={() => outputs.onClickShowOptionsForGroup(group.group.id)}
-                                    selected={state.modal === 'groupOptions'}
-                                    $show={state.groupId === group.group.id}
-                                    ref={state.groupId === group.group.id && state.modal === 'groupOptions' ? refs.floating.refs.setReference : null}
+                                    selected={state.showGroupOptions}
+                                    $show={group.group.active}
+                                    ref={group.group.settingsRef}
                                     aria-label='Settings'
                                   />
                                 </>
@@ -199,17 +199,15 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             />
                             <TagGroup
                               children={group.synonyms.map(synonym => (
-                                synonym.tags.map((tag, i) => (
+                                synonym.tags.map(tag => (
                                   <Tag
-                                    key={tag}
-                                    ref={state.groupId === group.group.id && state.groupSynonymId === synonym.synonymId ? refs.selectedTag : null}
-                                    selected={
-                                      (state.hoveringGroupId === group.group.id && state.hoveringSynonymId === synonym.synonymId) ||
-                                      (state.groupId === group.group.id && state.groupSynonymId === synonym.synonymId)}
+                                    key={tag.id}
+                                    ref={tag.ref}
+                                    selected={tag.selected}
+                                    children={tag.text}
+                                    $first={tag.first}
+                                    $last={tag.last}
                                     onClick={e => outputs.onClickGroupSynonym(e, group.group.id, synonym.synonymId)}
-                                    children={tag}
-                                    $first={!i}
-                                    $last={i === synonym.tags.length - 1}
                                     onMouseOver={() => outputs.onMouseOverGroupTag(group.group.id, synonym.synonymId)}
                                     onMouseOut={outputs.onMouseOutGroupTag}
                                   />
@@ -217,8 +215,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
                               ))}
                             />
                             <PopupOptions
-                              showIf={state.groupId === group.group.id && state.modal === 'groupOptions'}
-                              ref={state.groupId === group.group.id && state.modal === 'groupOptions' ? refs.floating.refs.setFloating : null}
+                              showIf={group.group.showOptions}
+                              ref={group.group.popupRef}
                               style={refs.floating.floatingStyles}
                               onClick={outputs.onClickHideOptionsForGroup}
                               children={
@@ -228,12 +226,12 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                     children='Add to this Group'
                                   />
                                   <PopupOption
-                                    showIf={!!state.groupSynonymId && group.synonyms.length > 1}
+                                    showIf={group.group.canRemoveSelection}
                                     onClick={outputs.onClickRemoveSynonymFromCustomGroup}
                                     children='Remove selection from Group'
                                   />
                                   <PopupOption
-                                    showIf={!!state.groupSynonymId && state.groupSynonymId !== state.synonymId}
+                                    showIf={group.group.canUpdateSelection}
                                     onClick={outputs.onClickUpdateGroupSynonym}
                                     children='Update selection'
                                   />
@@ -245,7 +243,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                               }
                             />
                             <Confirmation
-                              show={state.modal === 'confirmDeleteGroup'}
+                              show={state.confirmDeleteGroup}
                               onClose={outputs.onCancelConfirmation}
                               onConfirm={outputs.onClickConfirmDeleteGroup}
                               title='Delete Group Requested'
