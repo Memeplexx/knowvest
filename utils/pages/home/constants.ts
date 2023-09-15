@@ -7,7 +7,7 @@ export const homeInitialState = {
   historyExpanded: false,
   similarExpanded: false,
   tagsExpanded: false,
-  headerContracted: false,
+  headerExpanded: true,
 };
 
 export type ServerSideProps = {

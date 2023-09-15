@@ -52,11 +52,11 @@ const useInitializeStoreData = (props: ServerSideProps) => {
 const useHeaderExpander = () => {
   useIsomorphicLayoutEffect(() => {
     const listener = () => {
-      const { headerContracted } = store.$state.home;
+      const { headerExpanded: headerContracted } = store.$state.home;
       if (window.innerWidth >= 1000 && headerContracted) {
-        store.home.headerContracted.$set(false);
+        store.home.headerExpanded.$set(false);
       } else if (window.innerWidth < 1000 && !headerContracted) {
-        store.home.headerContracted.$set(true);
+        store.home.headerExpanded.$set(true);
       }
     }
     listener();
