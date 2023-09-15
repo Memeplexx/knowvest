@@ -10,9 +10,6 @@ export const useOutputs = (inputs: Inputs) => {
   const { state, refs, props } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
-      if (!props.show) {
-        return;
-      }
       if ((event.target as HTMLElement).parentNode === null) { // element was removed from the DOM
         return;
       }

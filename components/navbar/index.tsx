@@ -5,6 +5,7 @@ import { PopupOption, PopupOptions } from '@/utils/styles';
 import { SearchDialog } from '../search';
 import { Props } from './constants';
 import Farm from '../../public/images/farm.svg';
+import { Modal } from '../modal';
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
@@ -12,9 +13,14 @@ export const Navbar = (props: Props) => {
   const { state, refs } = inputs;
   return (
     <>
-      <SearchDialog
+      <Modal
         show={state.showDialog}
-        onHide={outputs.onHideDialog}
+        onCloseComplete={outputs.onHideDialog}
+        children={
+          <SearchDialog
+            onHide={outputs.onHideDialog}
+          />
+        }
       />
       <Wrapper
         $show={props.showIf}

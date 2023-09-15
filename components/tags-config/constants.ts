@@ -47,7 +47,6 @@ export const configInitialState = {
 };
 
 export type Props = {
-  show: boolean,
   onHide: () => void,
 };
 

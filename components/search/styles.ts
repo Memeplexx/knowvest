@@ -5,7 +5,7 @@ import { Button } from "../button";
 import { dialogWidth, tabsHeight } from "./constants";
 import { ButtonIcon } from "../button-icon";
 
-export const Body = styled(possible.div)`
+export const Container = styled(possible.div)`
   width: ${dialogWidth}px;
   height: 600px;
   max-height: 600px;

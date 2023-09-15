@@ -119,9 +119,6 @@ export const completeEditTag = async (inputs: Inputs) => {
 }
 export const doCancel = (inputs: Inputs, eventTarget: EventTarget | null) => {
   const { state, props, refs } = inputs;
-  if (!props.show) {
-    return;
-  }
   if (ancestorMatches(eventTarget, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
     return;
   }

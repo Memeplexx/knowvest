@@ -5,7 +5,6 @@ import { useInputs } from "./inputs";
 export type Inputs = ReturnType<typeof useInputs>;
 
 export type Props = {
-  show: boolean,
   onHide: () => void,
 };
 

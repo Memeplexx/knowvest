@@ -60,7 +60,7 @@ export const PageTitle = styled.div`
 export const FooterButton = styled(Button)`
 `;
 
-export const ModalContent = styled(possible.div)`
+export const Container = styled(possible.div)`
   padding: 0 24px 24px 24px;
   width: 540px;
   height: 800px;

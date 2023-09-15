@@ -17,6 +17,7 @@ import { TagsConfig } from '../tags-config';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { Button } from '../button';
+import { Modal } from '../modal';
 
 
 export const Tags = forwardRef(function Tags(
@@ -29,9 +30,14 @@ export const Tags = forwardRef(function Tags(
   const { state } = inputs;
   return (
     <>
-      <TagsConfig
+      <Modal
         show={state.showConfigDialog}
-        onHide={outputs.onHideDialog}
+        onCloseComplete={outputs.onHideDialog}
+        children={
+          <TagsConfig
+            onHide={outputs.onHideDialog}
+          />
+        }
       />
       <Wrapper
         children={
