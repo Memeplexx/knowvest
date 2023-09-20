@@ -253,8 +253,9 @@ export const useOutputs = (inputs: Inputs) => {
       const groupIds = apiResponse.deletedSynonymGroups.map(nt => nt.groupId);
       const synonymIds = apiResponse.deletedSynonymGroups.map(nt => nt.synonymId);
       const synonymId = state.tagsInSynonymGroup.length === 1 ? null : state.synonymId;
+      const lastTag = state.tagsInSynonymGroup.length === 1;
       transact(() => {
-        store.config.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null });
+        store.config.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : store.$state.config.autocompleteAction });
         store.tags.$find.id.$eq(apiResponse.tagDeleted.id).$delete();
         store.noteTags.$filter.tagId.$in(tagIds).$and.noteId.$in(noteIds).$delete();
         store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
