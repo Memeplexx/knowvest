@@ -20,7 +20,9 @@ export const useInputs = () => {
     tagIdsForActiveNote,
   ).$with((tags, synonymIds, tagIdsForActiveNote) => {
     return tagIdsForActiveNote
-      .map(tagId => tags.findOrThrow(t => t.id === tagId).synonymId)
+      .map(tagId => tags.find(t => t.id === tagId))
+      .map(tag => tag?.synonymId)
+      .filterTruthy()
       .distinct()
       .map(synonymId => tags.filter(t => t.synonymId === synonymId))
       .map(tags => ({

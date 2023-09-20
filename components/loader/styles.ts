@@ -3,8 +3,6 @@ import { possible } from "../html";
 
 export const Container = styled(possible.div)<{ $showIf: boolean }>`
   transition: all 0.4s;
-  opacity: ${({ $showIf }) => $showIf ? 1 : 0};
-  pointer-events: ${({ $showIf }) => $showIf ? 'all' : 'none'};
   cursor: not-allowed;
   display: flex;
   align-items: center;
@@ -16,6 +14,12 @@ export const Container = styled(possible.div)<{ $showIf: boolean }>`
   left: 0;
   background-color: rgba(255,255,255,0.4);
   z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  ${p => p.$showIf && `
+    opacity: 1;
+    pointer-events: all;
+  `}
 `;
 
 export const Spinner = styled.div`

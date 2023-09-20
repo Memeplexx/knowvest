@@ -21,8 +21,10 @@ export const ClearIcon = styled(CloseIcon)`
 export const Container = styled.div<{ disabled?: boolean }>`
   position: relative;
   display: flex;
-  pointer-events: ${p => p.disabled ? 'none' : 'auto'};
-  cursor: ${p => p.disabled ? 'not-allowed' : 'auto'};
+  ${p => p.disabled && `
+    pointer-events: none;
+    cursor: not-allowed;
+  `}
 `;
 
 export const Input = styled.input<{ $hasError: boolean }>`
@@ -33,6 +35,7 @@ export const Input = styled.input<{ $hasError: boolean }>`
   padding-right: 24px;
   color: #FFF;
   z-index: 1;
+  cursor: text;
   &:hover {
     background-color: rgba(255,255,255,0.2);
   }
@@ -42,16 +45,19 @@ export const Input = styled.input<{ $hasError: boolean }>`
   ::placeholder {
     opacity: 0.4;
   }
-  border-color: ${props => props.$hasError ? '#F00' : '#CCC'};
-  cursor: text;
+  ${p => p.$hasError && `
+    border-color: #F00;
+  `}
 `;
 
 export const ErrorMsg = styled(possible.div)`
   color: #F00;
   position: absolute;
   transition: 0.2s all;
-  bottom: ${p => p.showIf ? -22 : 0}px;
   font-size: 12px;
+  ${p => p.showIf && `
+    bottom: -22px;
+  `}
 `;
 
 export const Options = styled(possible.div)`

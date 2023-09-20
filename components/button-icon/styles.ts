@@ -8,14 +8,19 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
   width: 40px;
   height: 40px;
   padding: 6px;
-  opacity: ${p => p.disabled ? 0.5 : 1};
-  pointer-events: ${p => p.disabled ? 'none' : 'auto'};
-  background-color: ${p => p.selected ? '#000' : 'transparent'};
   display: flex;
+  background-color: transparent;
   svg {
     width: auto;
     height: auto;
   }
+  ${p => p.selected && `
+    pointer-events: none;
+    background-color: #000;
+  `}
+  ${p => p.selected && `
+    opacity: 0.5;
+  `}
   @media (min-width: ${mobileBreakPoint}) {
     transform: scale(0.65);
     transition: all 0.2s cubic-bezier(0,.73,.44,1);

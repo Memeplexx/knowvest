@@ -144,7 +144,8 @@ export const highlightTagsInEditor = ({ editorView, synonymIds }: { editorView: 
   const onChangeNoteTags = (noteTags: NoteTagDTO[]) => {
     const docString = editorView.state.doc.toString() || '';
     const tagPositions = noteTags
-      .map(nt => store.tags.$state.findOrThrow(t => t.id === nt.tagId))
+      .map(nt => store.tags.$state.find(t => t.id === nt.tagId))
+      .filterTruthy()
       .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
         .map(m => m.index!)
         .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })));

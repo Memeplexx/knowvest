@@ -57,7 +57,6 @@ export const ActiveSelectionInstructions = styled(possible.div)`
   svg {
     width: 18px;
     height: 18px;
-    
   }
 `;
 

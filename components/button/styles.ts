@@ -5,14 +5,18 @@ import { mobileBreakPoint } from "@/utils/styles";
 
 export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighted: boolean }>`
   cursor: pointer;
-  background: #121212;
   padding: 8px 16px;
-  opacity: ${p => p.disabled ? 0.5 : 1};
-  pointer-events: ${p => p.disabled ? 'none' : 'auto'};
-  background-color: ${p => p.selected ? '#000' : 'transparent'};
+  background-color: transparent;
   display: flex;
   align-items: center;
   color: #ffb1fc;
+  ${p => p.selected && `
+    background-color: #000;
+  `}
+  ${p => p.disabled && `
+    opacity: 0.5;
+    pointer-events: none;
+  `}
   @media (min-width: ${mobileBreakPoint}) {
     transform: scale(1);
     transition: all 0.2s cubic-bezier(0,.73,.44,1);

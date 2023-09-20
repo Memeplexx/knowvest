@@ -10,10 +10,13 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
   align-items: center;
   padding: 8px;
   transition: 0.2s all;
-  margin-top: ${p => p.$show ? '0' : '-60px'};
   justify-content: space-between;
   gap: 12px;
   background-image: linear-gradient(to right, #131313, #212121);
+  margin-top: -60px;
+  ${p => p.$show && `
+    margin-top: 0;
+  `}
 `;
 
 export const ImageLogo = styled(Image)`
