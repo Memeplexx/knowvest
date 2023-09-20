@@ -12,7 +12,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
       const created = await trpc.note.create.mutate();
-      await transact(async () => {
+      transact(() => {
         store.activePanel.loadingNote.$set(false);
         store.notes.$push(created);
         store.activeNoteId.$set(created.id);
