@@ -19,15 +19,21 @@ export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $
   align-items: center;
   padding: 0 8px;
   transition: all 0.2s;
+  cursor: pointer;
   ${p => p.selected && `
     background-color: #b100b159;
     font-weight: 500;
+    z-index: 1;
   `}
-  z-index: ${p => p.selected ? 1 : 0};
-  cursor: pointer;
-  ${p => p.$first ? 'border-top-left-radius: 10px; border-bottom-left-radius: 10px;' : ''}
-  ${p => p.$last ? 'border-top-right-radius: 10px; border-bottom-right-radius: 10px;' : ''}
-  margin-right: ${p => p.$last ? '12px' : '0'};
+  ${p => p.$first && `
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  `}
+  ${p => p.$last && `
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-right: 12px;
+  `}
   &:hover {
     background-color: rgba(255, 255, 255, 0.6);
     z-index: 1;

@@ -4,31 +4,31 @@ import { Props, animationDuration } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const [showInternal, setShowInternal] = useState(props.show);
+  const [showInternal, setShowInternal] = useState(props.showIf);
 
   const backdrop = useRef<HTMLDivElement>(null);
 
   const isClosingRef = useRef(false);
 
   const backgroundAnimations = useSpring({
-    opacity: props.show ? 1 : 0,
+    opacity: props.showIf ? 1 : 0,
     config: { duration: animationDuration },
   });
 
   const foregroundAnimations = useSpring({
-    opacity: props.show ? 1 : 0,
-    transform: `scale(${props.show ? 1 : 1.4})`,
-    filter: `blur(${props.show ? 0 : 20}px)`,
+    opacity: props.showIf ? 1 : 0,
+    transform: `scale(${props.showIf ? 1 : 1.4})`,
+    filter: `blur(${props.showIf ? 0 : 20}px)`,
     config: { duration: animationDuration },
   });
 
-  if (props.show && !showInternal) {
+  if (props.showIf && !showInternal) {
     setShowInternal(true);
-  } else if (!props.show && showInternal && !isClosingRef.current) {
+  } else if (!props.showIf && showInternal && !isClosingRef.current) {
     isClosingRef.current = true;
     setTimeout(() => {
       setShowInternal(false);
-      props.onCloseComplete?.();
+      props.onClose?.();
       isClosingRef.current = false;
     }, animationDuration);
   }

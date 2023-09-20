@@ -12,7 +12,7 @@ export const useOutputs = (inputs: Inputs) => {
     onMouseLeaveButton: () => {
       state.set({ selection: 'none' });
     },
-    onCloseComplete: () => {
+    onClose: () => {
       if (state.selection === 'confirm') {
         props.onConfirm?.();
       }

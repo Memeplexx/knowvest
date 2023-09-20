@@ -22,7 +22,7 @@ export const History = (
           />
           <LoaderSkeleton
             count={15}
-            isVisible={state.loadingHistoricalNotes}
+            isVisible={state.loading}
           />
         </>
       }

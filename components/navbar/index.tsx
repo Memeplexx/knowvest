@@ -14,8 +14,8 @@ export const Navbar = (props: Props) => {
   return (
     <>
       <Modal
-        show={state.showDialog}
-        onCloseComplete={outputs.onHideDialog}
+        showIf={state.showDialog}
+        onClose={outputs.onHideDialog}
         children={
           <SearchDialog
             onHide={outputs.onHideDialog}

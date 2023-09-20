@@ -141,11 +141,19 @@ export const Tag = styled(possible.button) <{ $hovered: boolean, $first?: boolea
   background-color: #000;
   color: #FFF;
   cursor: pointer;
-  background-color: ${p => p.$hovered ? '#FFF' : '#000'};
-  color: ${p => p.$hovered ? '#000' : '#FFF'};
-  ${p => p.$first ? 'border-top-left-radius: 10px; border-bottom-left-radius: 10px;' : ''}
-  ${p => p.$last ? 'border-top-right-radius: 10px; border-bottom-right-radius: 10px;' : ''}
-  margin-right: ${p => p.$last ? '12px' : '0'};
+  ${p => p.$hovered && `
+    background-color: #FFF;
+    color: #000;
+  `}
+  ${p => p.$first && `
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  `}
+  ${p => p.$last && `
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-right: 12px;
+  `}
 `;
 
 export const Result = styled(ReadonlyNote)`

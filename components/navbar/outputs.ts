@@ -20,7 +20,7 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickDocument: useEventHandlerForDocument('click', event => {
       if (refs.floating.elements.domReference === event.target) { return; }
-      store.navBar.showOptions.$set(false);
+      store.$state.navBar.showOptions && store.navBar.showOptions.$set(false);
     }),
   };
 }

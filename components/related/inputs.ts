@@ -37,9 +37,9 @@ export const useInputs = (props: Props) => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
   })
 
-  const [loadingRelatedNotes, setLoadingRelatedNotes] = useState(true);
+  const [loading, setLoading] = useState(true);
   const RelatedNotes = useMemo(() => {
-    return dynamic(() => import('../related-items').finally(() => setLoadingRelatedNotes(false)));
+    return dynamic(() => import('../related-items').finally(() => setLoading(false)));
   }, []);
 
   return {
@@ -48,7 +48,7 @@ export const useInputs = (props: Props) => {
       card: useRef<CardHandle>(null),
     },
     state: {
-      loadingRelatedNotes,
+      loading,
       queriedNotes: queriedNotes.$useState(),
       noteCountString: noteCountString.$useState(),
     },

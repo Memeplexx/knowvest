@@ -65,7 +65,7 @@ export default function ActiveEditor() {
                   }
                 />
                 <Loader
-                  show={state.loadingSelection}
+                  showIf={state.loadingSelection}
                 />
               </>
             }

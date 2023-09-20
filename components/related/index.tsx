@@ -30,7 +30,7 @@ export const Related = (
           />
           <LoaderSkeleton
             count={15}
-            isVisible={state.loadingRelatedNotes}
+            isVisible={state.loading}
           />
         </>
       }

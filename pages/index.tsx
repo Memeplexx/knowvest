@@ -48,7 +48,7 @@ export default function Index() {
         }
       />
       <Loader 
-        show={state.showLoader}
+        showIf={state.showLoader}
       />
       <Snackbar
         message={state.message}

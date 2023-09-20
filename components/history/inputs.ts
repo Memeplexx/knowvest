@@ -5,9 +5,9 @@ import { CardHandle } from "../card/constants";
 
 export const useInputs = (props: Props) => {
 
-  const [loadingHistoricalNotes, setLoadingHistoricalNotes] = useState(true);
+  const [loading, setLoading] = useState(true);
   const HistoricalNotes = useMemo(() => {
-    return dynamic(() => import('../history-items').finally(() => setLoadingHistoricalNotes(false)));
+    return dynamic(() => import('../history-items').finally(() => setLoading(false)));
   }, []);
 
   return {
@@ -16,7 +16,7 @@ export const useInputs = (props: Props) => {
       card: useRef<CardHandle>(null),
     },
     state: {
-      loadingHistoricalNotes,
+      loading,
     },
     HistoricalNotes,
   };

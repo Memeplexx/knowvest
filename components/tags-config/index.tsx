@@ -155,7 +155,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                         }
                       />
                       <Confirmation
-                        show={state.modal === 'confirmDeleteTag'}
+                        showIf={state.modal === 'confirmDeleteTag'}
                         onClose={outputs.onCancelConfirmation}
                         onConfirm={outputs.onClickConfirmDeleteTag}
                         title='Delete Tag Requested'
@@ -242,7 +242,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             }
                           />
                           <Confirmation
-                            show={state.modal === 'confirmDeleteGroup'}
+                            showIf={state.modal === 'confirmDeleteGroup'}
                             onClose={outputs.onCancelConfirmation}
                             onConfirm={outputs.onClickConfirmDeleteGroup}
                             title='Delete Group Requested'

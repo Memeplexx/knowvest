@@ -15,8 +15,8 @@ export const Confirmation = (
   return (
     <Modal
       onBackdropClick={outputs.onClickCancel}
-      onCloseComplete={outputs.onCloseComplete}
-      show={props.show}
+      onClose={outputs.onClose}
+      showIf={props.showIf}
       children={
         <DialogBody
           children={

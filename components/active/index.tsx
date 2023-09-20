@@ -77,7 +77,7 @@ export const Active = (
                       }
                     />
                     <Confirmation
-                      show={state.confirmDelete}
+                      showIf={state.confirmDelete}
                       onClose={() => store.activePanel.confirmDelete.$set(false)}
                       onConfirm={outputs.onClickRemoveNote}
                       title='Delete note requested'
@@ -98,7 +98,7 @@ export const Active = (
             }
           />
           <Loader
-            show={state.loadingNote}
+            showIf={state.loadingNote}
           />
         </>
       }

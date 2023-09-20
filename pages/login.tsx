@@ -56,7 +56,7 @@ export default function Login({ providers }: InferGetServerSidePropsType<typeof 
         }
       />
       <Loader
-        show={state.showLoader}
+        showIf={state.showLoader}
       />
     </>
   )

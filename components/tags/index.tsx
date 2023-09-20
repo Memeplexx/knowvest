@@ -31,8 +31,8 @@ export const Tags = forwardRef(function Tags(
   return (
     <>
       <Modal
-        show={state.showConfigDialog}
-        onCloseComplete={outputs.onHideDialog}
+        showIf={state.showConfigDialog}
+        onClose={outputs.onHideDialog}
         children={
           <TagsConfig
             onHide={outputs.onHideDialog}
