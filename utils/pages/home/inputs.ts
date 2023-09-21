@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { connectOlikDevtoolsToStore } from "olik";
+import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { ServerSideProps, initialTransientState } from "./constants";
 import { NoteId } from "@/server/dtos";
 import { useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";

@@ -2,7 +2,7 @@ import { type ForwardedRef, useContext, useRef } from 'react';
 
 import { decide } from '@/utils/functions';
 import { useFloating } from '@floating-ui/react';
-import { derive } from 'olik';
+import { derive } from 'olik/derive';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { store } from '@/utils/store';

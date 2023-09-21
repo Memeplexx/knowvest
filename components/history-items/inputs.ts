@@ -1,4 +1,4 @@
-import { derive } from "olik";
+import { derive } from "olik/derive";
 import { Props } from "./constants";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";

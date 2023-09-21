@@ -1,7 +1,7 @@
 import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutocompleteOptionType, Props, dialogWidth } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
-import { derive } from "olik";
+import { derive } from "olik/derive";
 import { store } from "@/utils/store";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {

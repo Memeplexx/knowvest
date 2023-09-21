@@ -27,7 +27,7 @@ import {
   keymap,
   rectangularSelection
 } from '@codemirror/view';
-import { derive } from 'olik';
+import { derive } from 'olik/derive';
 import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 

@@ -1,5 +1,5 @@
 import { store } from "@/utils/store";
-import { derive } from "olik";
+import { derive } from "olik/derive";
 
 export const useInputs = () => {
 

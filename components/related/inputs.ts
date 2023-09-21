@@ -1,4 +1,4 @@
-import { derive } from "olik";
+import { derive } from "olik/derive";
 import { Props } from "./constants";
 import { store } from "@/utils/store";
 import { useMemo, useRef, useState } from "react";

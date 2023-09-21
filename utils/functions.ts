@@ -2,9 +2,10 @@ import { NoteId, NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { Readable, derive } from "olik";
+import { Readable } from "olik";
 import { store } from "./store";
 import { DecisionResult } from "./types";
+import { derive } from "olik/derive";
 
 
 /**

@@ -2,7 +2,7 @@ import { NotificationContext } from '@/utils/pages/home/constants';
 import { store } from '@/utils/store';
 import { useFloating } from '@floating-ui/react';
 import dynamic from 'next/dynamic';
-import { derive } from 'olik';
+import { derive } from 'olik/derive';
 import { useContext, useMemo, useState } from 'react';
 
 
