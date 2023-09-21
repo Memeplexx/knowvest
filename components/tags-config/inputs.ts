@@ -162,7 +162,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     tagsInCustomGroups,
   ).$with((groupId, groupSynonymId, tagsInCustomGroups) => {
     if (!groupId || !groupSynonymId) { return ''; }
-    return tagsInCustomGroups.find(t => t.group.id === groupId)!.synonyms.find(s => s.synonymId === groupSynonymId)?.tags || '';
+    return tagsInCustomGroups.findOrThrow(t => t.group.id === groupId).synonyms.find(s => s.synonymId === groupSynonymId)?.tags || '';
   });
 
   return {

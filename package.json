@@ -46,7 +46,7 @@
     "next-auth": "^4.22.4",
     "next-pwa": "^5.6.0",
     "next-superjson": "^0.0.4",
-    "olik": "1.0.27",
+    "olik": "1.0.28",
     "olik-react": "1.0.9",
     "postcss": "8.4.23",
     "react": "18.2.0",
