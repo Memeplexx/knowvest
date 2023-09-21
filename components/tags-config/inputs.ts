@@ -18,8 +18,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const state = store.config.$useState();
 
-  console.log('???');
-
   const tagsInSynonymGroup = derive(
     store.config.synonymId,
     store.tags,
