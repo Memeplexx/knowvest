@@ -15,6 +15,7 @@ export interface NoteDTO extends Note {
 export interface TagDTO extends Tag {
   id: TagId;
   synonymId: SynonymId;
+  userId: UserId;
 }
 
 export interface NoteTagDTO extends NoteTag {

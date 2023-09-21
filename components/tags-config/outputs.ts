@@ -17,7 +17,6 @@ import {
 } from './shared';
 import { GroupId, SynonymId, TagId } from '@/server/dtos';
 import { trpc } from '@/utils/trpc';
-import { transact } from 'olik';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { TypedKeyboardEvent } from '@/utils/types';
 import { store } from '@/utils/store';
@@ -91,26 +90,22 @@ export const useOutputs = (inputs: Inputs) => {
       const apiResponse = await trpc.synonym.removeTagFromItsCurrentSynonym.mutate({ tagId: state.tagId });
       const groupIds = apiResponse.deletedSynonymGroups.map(nt => nt.groupId);
       const synonymIds = apiResponse.deletedSynonymGroups.map(nt => nt.synonymId);
-      transact(() => {
-        store.config.$patch({ tagId: null, autocompleteText: '' });
-        store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
-        store.tags.$find.id.$eq(apiResponse.tagUpdated.id).$set(apiResponse.tagUpdated);
-      })
+      store.config.$patch({ tagId: null, autocompleteText: '' });
+      store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
+      store.tags.$find.id.$eq(apiResponse.tagUpdated.id).$set(apiResponse.tagUpdated);
       notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
       if (!state.groupSynonymId) { return; }
       const response = await trpc.group.removeSynonym.mutate({ groupId: state.groupId!, synonymId: state.groupSynonymId });
-      transact(() => {
-        response.deletedGroup && store.groups
-          .$find.id.$eq(response.deletedGroup.id)
-          .$delete();
-        store.synonymGroups
-          .$filter.groupId.$eq(response.deletedSynonymGroup.groupId).$and.synonymId.$eq(response.deletedSynonymGroup.synonymId)
-          .$delete();
-        store.config
-          .$patch({ tagId: null, groupId: null, groupSynonymId: null });
-      })
+      response.deletedGroup && store.groups
+        .$find.id.$eq(response.deletedGroup.id)
+        .$delete();
+      store.synonymGroups
+        .$filter.groupId.$eq(response.deletedSynonymGroup.groupId).$and.synonymId.$eq(response.deletedSynonymGroup.synonymId)
+        .$delete();
+      store.config
+        .$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
     onClickDeleteTag: (event: MouseEvent) => {
@@ -254,21 +249,17 @@ export const useOutputs = (inputs: Inputs) => {
       const synonymIds = apiResponse.deletedSynonymGroups.map(nt => nt.synonymId);
       const synonymId = state.tagsInSynonymGroup.length === 1 ? null : state.synonymId;
       const lastTag = state.tagsInSynonymGroup.length === 1;
-      transact(() => {
-        store.config.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : store.$state.config.autocompleteAction });
-        store.tags.$find.id.$eq(apiResponse.tagDeleted.id).$delete();
-        store.noteTags.$filter.tagId.$in(tagIds).$and.noteId.$in(noteIds).$delete();
-        store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
-      })
+      store.config.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : store.$state.config.autocompleteAction });
+      store.tags.$find.id.$eq(apiResponse.tagDeleted.id).$delete();
+      store.noteTags.$filter.tagId.$in(tagIds).$and.noteId.$in(noteIds).$delete();
+      store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
       notify.success('Tag deleted');
     },
     onClickConfirmDeleteGroup: async () => {
       const response = await trpc.group.delete.mutate({ groupId: state.groupId! });
-      transact(() => {
-        store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-        store.synonymGroups.$filter.groupId.$eq(response.groupDeleted.id).$delete();
-        store.groups.$filter.id.$eq(response.groupDeleted.id).$delete();
-      })
+      store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
+      store.synonymGroups.$filter.groupId.$eq(response.groupDeleted.id).$delete();
+      store.groups.$filter.id.$eq(response.groupDeleted.id).$delete();
       notify.success('Group deleted');
     },
     onCancelConfirmation: () => {

@@ -4,7 +4,6 @@ import { onSelectGroup, onSelectSynonym } from "./shared";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { ancestorMatches } from "@/utils/functions";
 import { store } from "@/utils/store";
-import { transact } from "olik";
 
 export const useOutputs = (inputs: Inputs) => {
   const { state, refs, props } = inputs;
@@ -51,10 +50,8 @@ export const useOutputs = (inputs: Inputs) => {
     onClickResult: (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
       const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
-      transact(() => {
-        store.activeNoteId.$set(noteId);
-        store.synonymIds.$set(synonymIds);
-      })
+      store.activeNoteId.$set(noteId);
+      store.synonymIds.$set(synonymIds);
       props.onHide();
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {
