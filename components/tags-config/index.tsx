@@ -198,14 +198,14 @@ export const TagsConfig = forwardRef(function TagsConfig(
                           />
                           <TagGroup
                             children={synonyms.map(({ synonymId, tags }) => (
-                              tags.map((tag, index, array) => (
+                              tags.map(tag => (
                                 <Tag
                                   key={tag.id}
                                   ref={active && state.groupSynonymId === state.synonymId ? refs.selectedTag : null}
                                   selected={(state.hoveringGroupId === group.id && state.hoveringSynonymId === synonymId) || (active && state.groupSynonymId === synonymId)}
                                   children={tag.text}
-                                  $first={index === 0}
-                                  $last={index === array.length - 1}
+                                  $first={tag.first}
+                                  $last={tag.last}
                                   onClick={e => outputs.onClickGroupSynonym(e, group.id, synonymId)}
                                   onMouseOver={() => outputs.onMouseOverGroupTag(group.id, synonymId)}
                                   onMouseOut={outputs.onMouseOutGroupTag}

@@ -80,7 +80,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                     </>
                                   }
                                 />
-                                <div></div>
+                                <div/>
                               </>
                             }
                           />
@@ -102,14 +102,14 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                           key={tags[0].synonymId}
                                           children={
                                             <>
-                                              {tags.map((tag, i) =>
+                                              {tags.map(tag =>
                                                 <Tag
                                                   key={tag.id}
                                                   $hovered={tag.synonymId === state.hoveredSynonymId}
                                                   onClick={() => outputs.onClickSelectedSynonym(tag.synonymId)}
                                                   children={tag.text}
-                                                  $first={!i}
-                                                  $last={i === tags.length - 1}
+                                                  $first={tag.first}
+                                                  $last={tag.last}
                                                   onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
                                                   onMouseOut={outputs.onMouseOutSelectedSynonym}
                                                 />
@@ -133,14 +133,14 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                     />
                                     <TagsWrapper
                                       children={group.synonyms.map(synonym =>
-                                        synonym.tags.map((tag, i) => (
+                                        synonym.tags.map(tag => (
                                           <Tag
                                             key={tag.id}
                                             $hovered={tag.synonymId === state.hoveredSynonymId}
                                             onClick={() => outputs.onClickSelectedGroup(group.groupId)}
                                             children={tag.text}
-                                            $first={!i}
-                                            $last={i === synonym.tags.length - 1}
+                                            $first={tag.first}
+                                            $last={tag.last}
                                             onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
                                             onMouseOut={outputs.onMouseOutSelectedSynonym}
                                           />

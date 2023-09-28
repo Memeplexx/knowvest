@@ -48,7 +48,13 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     store.tags,
   ).$with((selectedSynonymIds, tags) => {
     return selectedSynonymIds
-      .map(synonymId => tags.filter(t => t.synonymId === synonymId))
+      .map(synonymId => tags
+        .filter(t => t.synonymId === synonymId)
+        .map((tag, index, array) => ({
+          ...tag,
+          first: index === 0,
+          last: index === array.length - 1,
+        })))
   });
 
   const selectedGroupTags = derive(
@@ -65,7 +71,13 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
           .filter(sg => sg.groupId === groupId)
           .map(sg => ({
             synonymId: sg.synonymId,
-            tags: tags.filter(t => t.synonymId === sg.synonymId),
+            tags: tags
+              .filter(t => t.synonymId === sg.synonymId)
+              .map((tags, index, array) => ({
+                ...tags,
+                first: index === 0,
+                last: index === array.length - 1,
+              })),
           }))
       }))
   });

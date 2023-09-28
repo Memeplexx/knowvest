@@ -73,15 +73,15 @@ export const Tags = forwardRef(function Tags(
                               state.tagsForActiveNote.map(synonyms => (
                                 <Fragment
                                   key={synonyms.synonymId}
-                                  children={synonyms.tags.map((t, i) => (
+                                  children={synonyms.tags.map(tag => (
                                     <Tag
-                                      key={t.id}
+                                      key={tag.id}
                                       selected={synonyms.selected}
-                                      $active={t.active}
-                                      $first={!i}
-                                      $last={i === synonyms.tags.length - 1}
-                                      children={t.text}
-                                      onClick={() => outputs.onClickSynonym(t.synonymId)}
+                                      $active={tag.active}
+                                      $first={tag.first}
+                                      $last={tag.last}
+                                      children={tag.text}
+                                      onClick={() => outputs.onClickSynonym(tag.synonymId)}
                                     />
                                   ))}
                                 />
@@ -106,14 +106,14 @@ export const Tags = forwardRef(function Tags(
                             />
                             <TagsWrapper
                               children={group.synonyms.map(synonym => (
-                                synonym.tags.map((tag, i) => (
+                                synonym.tags.map(tag => (
                                   <Tag
                                     key={tag.id}
                                     selected={(state.hoveringGroupId === group.groupId && state.hoveringSynonymId === synonym.id) || synonym.selected}
                                     onClick={() => outputs.onClickSynonym(synonym.id)}
                                     children={tag.text}
-                                    $first={!i}
-                                    $last={i === synonym.tags.length - 1}
+                                    $first={tag.first}
+                                    $last={tag.last}
                                     onMouseOver={() => outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
                                     onMouseOut={outputs.onMouseOutGroupTag}
                                     $active={tag.active}

@@ -28,9 +28,11 @@ export const useInputs = () => {
       .map(tags => ({
         synonymId: tags[0].synonymId,
         selected: synonymIds.includes(tags[0].synonymId),
-        tags: tags.map(tag => ({
+        tags: tags.map((tag, index, array) => ({
           ...tag,
           active: tagIdsForActiveNote.includes(tag.id),
+          first: index === 0,
+          last: index === array.length - 1,
         })),
       }))
   });
@@ -65,9 +67,11 @@ export const useInputs = () => {
             selected: synonymIds.includes(sg.synonymId),
             tags: tags
               .filter(t => t.synonymId === sg.synonymId)
-              .map(tag => ({
+              .map((tag, index, array) => ({
                 ...tag,
                 active: tagIdsForActiveNote.includes(tag.id),
+                first: index === 0,
+                last: index === array.length - 1,
               })),
           })),
       }));

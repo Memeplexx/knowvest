@@ -58,7 +58,13 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
               .filter(sg => sg.groupId === synonymGroup.groupId && sg.synonymId !== synonymId)
               .map(sg => ({
                 synonymId: sg.synonymId,
-                tags: tags.filter(t => t.synonymId === sg.synonymId),
+                tags: tags
+                  .filter(t => t.synonymId === sg.synonymId)
+                  .map((tag, index, array) => ({
+                    ...tag,
+                    first: index === 0,
+                    last: index === array.length - 1,
+                  })),
               }))
           ].filterTruthy()
         })),

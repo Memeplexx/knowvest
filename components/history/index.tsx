@@ -8,7 +8,7 @@ export const History = (
   props: Props
 ) => {
   const inputs = useInputs(props);
-  const events = useOutputs(inputs);
+  const outputs = useOutputs(inputs);
   const { state, HistoricalNotes, refs } = inputs;
   return (
     <Card
@@ -18,7 +18,7 @@ export const History = (
       body={
         <>
           <HistoricalNotes
-            onSelectNote={events.onSelectNote}
+            onSelectNote={outputs.onSelectNote}
           />
           <LoaderSkeleton
             count={15}
