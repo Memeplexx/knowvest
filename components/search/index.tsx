@@ -137,10 +137,10 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                           <Tag
                                             key={tag.id}
                                             $hovered={tag.synonymId === state.hoveredSynonymId}
-                                            onClick={() => outputs.onClickSelectedGroup(group.groupId)}
                                             children={tag.text}
                                             $first={tag.first}
                                             $last={tag.last}
+                                            onClick={() => outputs.onClickSelectedGroup(group.groupId)}
                                             onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
                                             onMouseOut={outputs.onMouseOutSelectedSynonym}
                                           />
