@@ -17,7 +17,6 @@ export const Header = styled(possible.div)`
   padding: 8px 16px;
   align-items: center;
   text-transform: uppercase;
-  letter-spacing: 2px;
   color: #ffffff;
   transition: box-shadow 0.4s;
   position: absolute;

@@ -24,6 +24,7 @@ export const PopupOptions = styled(possible.div)`
   border: 0.5px solid #4b4b4b;
   max-width: 400px;
   z-index: 5;
+  letter-spacing: 0;
 `;
 
 export const PopupOption = styled(possible.button)`
