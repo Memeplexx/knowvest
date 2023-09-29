@@ -1,10 +1,7 @@
-import { signOut } from "next-auth/react"
 import { store } from "@/utils/store";
-import { useEventHandlerForDocument } from "@/utils/hooks";
-import { Inputs } from "./constants";
+import { signOut } from "next-auth/react";
 
-export const useOutputs = (inputs: Inputs) => {
-  const { refs } = inputs;
+export const useOutputs = () => {
   return {
     onClickUserButton: () => {
       store.navBar.showOptions.$toggle()
@@ -18,9 +15,5 @@ export const useOutputs = (inputs: Inputs) => {
     onHideDialog: () => {
       store.navBar.showDialog.$set(false);
     },
-    onClickDocument: useEventHandlerForDocument('click', event => {
-      if (refs.floating.elements.domReference === event.target) { return; }
-      store.$state.navBar.showOptions && store.navBar.showOptions.$set(false);
-    }),
   };
 }

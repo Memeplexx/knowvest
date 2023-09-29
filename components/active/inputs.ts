@@ -1,6 +1,5 @@
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { store } from '@/utils/store';
-import { useFloating } from '@floating-ui/react';
 import dynamic from 'next/dynamic';
 import { derive } from 'olik/derive';
 import { useContext, useMemo, useState } from 'react';
@@ -8,8 +7,6 @@ import { useContext, useMemo, useState } from 'react';
 
 
 export const useInputs = () => {
-
-  const floating = useFloating<HTMLButtonElement>({ placement: 'bottom-end' });
 
   const mayDeleteNote = derive(store.notes).$with(notes => notes.length > 1);
 
@@ -21,9 +18,6 @@ export const useInputs = () => {
   }, []);
 
   return {
-    refs: {
-      floating,
-    },
     state: {
       ...state,
       loadingEditor,

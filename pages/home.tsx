@@ -68,7 +68,7 @@ export default function Home(
             children={
               <>
                 <Navbar
-                  showIf={!inputs.headerExpanded}
+                  showIf={inputs.headerExpanded}
                 />
                 <BodyWrapper
                   children={

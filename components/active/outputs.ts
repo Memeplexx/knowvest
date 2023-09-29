@@ -1,12 +1,10 @@
 import { trpc } from "@/utils/trpc";
-import { useEventHandlerForDocument } from "@/utils/hooks";
 import { Inputs } from "./constants";
-import { type MouseEvent } from "react";
 import { store } from "@/utils/store";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { refs, state, notify } = inputs;
+  const { notify } = inputs;
   return {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
@@ -38,16 +36,6 @@ export const useOutputs = (inputs: Inputs) => {
       store.activePanel.loadingNote.$set(false);
       store.noteTags.$push(apiResponse.noteTagsCreated);
       store.notes.$push(apiResponse.noteCreated);
-    },
-    onDocumentClick: useEventHandlerForDocument('click', event => {
-      if (state.confirmDelete) { return; }
-      if (refs.floating.elements.floating?.contains(event.target as Node)) { return; }
-      if (!state.showOptions) { return; }
-      store.activePanel.showOptions.$set(false);
-    }),
-    onClickSettingsButton: (event: MouseEvent) => {
-      event.stopPropagation();
-      store.activePanel.showOptions.$toggle();
     },
     onClickRequestDeleteNote: () => {
       store.activePanel.confirmDelete.$set(true);

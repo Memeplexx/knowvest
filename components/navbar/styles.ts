@@ -30,7 +30,19 @@ export const RightContent = styled(possible.div)`
 export const SearchIcon = styled(BaseSearchIcon)`
 `;
 
-export const UserButton = styled(Image)`
+export const UserButton = styled.button`
+  transform: scale(1);
+  transition: all 0.2s cubic-bezier(0,.73,.44,1);
+  &:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
+  }
+  &:active {
+    transform: scale(1);
+  }
+`;
+
+export const UserImage = styled(Image)`
   border-radius: 50%;
   cursor: pointer;
 `;

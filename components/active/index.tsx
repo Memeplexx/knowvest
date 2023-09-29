@@ -1,5 +1,5 @@
 import { store } from '@/utils/store';
-import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, PopupOptions, SettingsIcon } from '@/utils/styles';
+import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, SettingsIcon } from '@/utils/styles';
 import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
@@ -8,7 +8,7 @@ import { LoaderSkeleton } from '../loader-skeleton';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { CardWrapper, Wrapper } from './styles';
-
+import { Popup } from '../popup';
 
 
 
@@ -17,7 +17,7 @@ export const Active = (
 ) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { state, refs, ActiveEditor } = inputs;
+  const { state, ActiveEditor } = inputs;
   return (
     <Wrapper
       {...props}
@@ -27,17 +27,15 @@ export const Active = (
             title="Active"
             actions={
               <>
-                <ButtonIcon
-                  onClick={outputs.onClickSettingsButton}
-                  ref={refs.floating.refs.setReference}
-                  aria-label='Settings'
-                  children={<SettingsIcon />}
-                />
-                <PopupOptions
-                  showIf={state.showOptions}
-                  ref={refs.floating.refs.setFloating}
-                  style={refs.floating.floatingStyles}
-                  children={
+                <Popup
+                  trigger={props => (
+                    <ButtonIcon
+                      {...props}
+                      aria-label='Settings'
+                      children={<SettingsIcon />}
+                    />
+                  )}
+                  overlay={
                     <>
                       <PopupOption
                         onClick={outputs.onClickCreateNote}
@@ -79,6 +77,7 @@ export const Active = (
                     </>
                   }
                 />
+
                 <Confirmation
                   showIf={state.confirmDelete}
                   onClose={() => store.activePanel.confirmDelete.$set(false)}
