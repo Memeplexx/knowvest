@@ -3,26 +3,12 @@ import { animated } from "react-spring";
 import { defaultFontFamily } from "@/utils/styles";
 
 
-export const Background = styled(animated.div)`
-  background-color: transparent;
-  padding: 0;
-  border: none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 4;
-  background-color: rgba(0, 0, 0, 0.1);
-  filter: drop-shadow(0px 0px 15px #000);
-  backdrop-filter: blur(2px);
-`;
 
 export const Floating = styled.div`
   filter: drop-shadow(0px 0px 38px #000);
 `;
 
-export const ForegroundWrapper = styled.div`
+export const ForegroundWrapper = styled(animated.div)`
   position: fixed;
   top: 0;
   right: 0;
@@ -32,7 +18,9 @@ export const ForegroundWrapper = styled.div`
   justify-content: center;
   display: flex;
   z-index: 4;
-  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  filter: drop-shadow(0px 0px 15px #000);
+  backdrop-filter: blur(2px);
 `;
 
 export const Foreground = styled(animated.div)`

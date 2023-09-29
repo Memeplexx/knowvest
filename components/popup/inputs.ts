@@ -8,8 +8,6 @@ export const useInputs = (props: Props) => {
 
   const state = useRecord({ showInternal: false, show: false });
 
-  const backdrop = useRef<HTMLDivElement>(null);
-
   const isClosingRef = useRef(false);
 
   const backgroundAnimations = useSpring({
@@ -38,7 +36,6 @@ export const useInputs = (props: Props) => {
 
   return {
     refs: {
-      backdrop,
       floating,
     },
     state: {

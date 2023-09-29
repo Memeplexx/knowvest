@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { Background, Floating, Foreground, ForegroundWrapper } from './styles';
+import { Floating, Foreground, ForegroundWrapper } from './styles';
 import { useInputs } from './inputs';
 import { Props } from './constants';
 import { useOutputs } from './outputs';
@@ -18,18 +18,17 @@ export const Popup = (
         onClick: () => setTimeout(() => outputs.onClickTrigger(), 50),
       })}
       {
-        !state.showInternal ? <></> : createPortal(
-          <>
-            <Background
-              style={state.backgroundAnimations}
-              ref={refs.backdrop}
-              onClick={outputs.onClickBackdrop}
-            />
+        !state.showInternal
+          ? <></>
+          : createPortal(
             <ForegroundWrapper
+              style={state.backgroundAnimations}
+              onClick={outputs.onClickBackdrop}
               children={
                 <Floating
                   ref={refs.floating.refs.setFloating}
                   style={refs.floating.floatingStyles}
+                  onClick={e => e.stopPropagation()}
                   children={
                     <Foreground
                       style={state.foregroundAnimations}
@@ -39,8 +38,7 @@ export const Popup = (
                 />
               }
             />
-          </>
-          , document.body)
+            , document.body)
       }
     </>
   )
