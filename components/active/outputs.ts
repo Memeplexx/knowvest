@@ -40,5 +40,8 @@ export const useOutputs = (inputs: Inputs) => {
     onClickRequestDeleteNote: () => {
       store.activePanel.confirmDelete.$set(true);
     },
+    onHideDialog: () => {
+
+    },
   };
 }

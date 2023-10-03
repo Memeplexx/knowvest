@@ -115,7 +115,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   ${defaultFontFamily.style};
-  color: white;
+  /* color: white; */
   background-color: black;
 `;
 

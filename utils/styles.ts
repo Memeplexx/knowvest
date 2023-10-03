@@ -1,7 +1,7 @@
 import { possible } from "@/components/html";
 import { Montserrat, Source_Code_Pro } from 'next/font/google';
 import { AiFillTag } from "react-icons/ai";
-import { CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
+import { CiBeaker1, CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
 import { MdClear, MdKeyboardArrowDown, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardArrowUp } from "react-icons/md";
 import styled, { css } from "styled-components";
 
@@ -80,6 +80,8 @@ export const FilterIcon = styled(CiFilter)``;
 export const CloseIcon = styled(MdClear)``;
 
 export const SearchIcon = styled(CiSearch)``;
+
+export const TestIcon = styled(CiBeaker1)``;
 
 export const LeftIcon = styled(MdKeyboardArrowLeft)`
 ${resetIconDims}

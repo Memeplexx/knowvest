@@ -10,11 +10,11 @@ export const DialogBody = styled(possible.div)`
   padding: 32px;
 `;
 
-export const HeaderWrapper = styled(possible.div)`
+export const Header = styled(possible.div)`
   color: grey;
 `;
 
-export const MessageWrapper = styled(possible.div)`
+export const Message = styled(possible.div)`
   font-size: 18px;
 `;
 

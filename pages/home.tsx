@@ -1,12 +1,15 @@
+"use server"
+
 import { Navbar } from '@/components/navbar';
 import { Snackbar } from '@/components/snackbar';
 import { UserId } from '@/server/dtos';
 import { prisma } from '@/server/routers/_app';
 import { NotificationContext, ServerSideProps } from '@/utils/pages/home/constants';
-import { useOutputs } from '@/utils/pages/home/outputs';
 import { useInputs } from '@/utils/pages/home/inputs';
+import { useOutputs } from '@/utils/pages/home/outputs';
 import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TagsPanel, Wrapper } from '@/utils/pages/home/styles';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
+import { getCookies } from 'cookies-next';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import superjson from 'superjson';
@@ -39,7 +42,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   // Return props using the user id to select the correct data
   const userId = userByEmail.id as UserId;
-  return {
+  const result = {
     props: superjson.serialize({
       tags: await prisma.tag.findMany({ where: { userId } }),
       notes: await prisma.note.findMany({ where: { userId }, orderBy: { dateViewed: 'desc' } }),
@@ -48,6 +51,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       synonymGroups: await prisma.synonymGroup.findMany({ where: { group: { userId } } }),
     })
   };
+
+  console.log(getCookies());
+
+  return result;
 }
 
 export default function Home(

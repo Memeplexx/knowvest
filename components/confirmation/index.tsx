@@ -1,5 +1,5 @@
 import { Modal } from '../modal';
-import { CancelButton, ConfirmButton, DialogBody, ButtonWrapper, MessageWrapper, HeaderWrapper } from './styles';
+import { CancelButton, ConfirmButton, DialogBody, ButtonWrapper, Message, Header } from './styles';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -21,10 +21,10 @@ export const Confirmation = (
         <DialogBody
           children={
             <>
-              <HeaderWrapper
+              <Header
                 children={props.title || 'Confirm Action'}
               />
-              <MessageWrapper
+              <Message
                 children={props.message || 'Are you sure?'}
               />
               <ButtonWrapper

@@ -6,6 +6,8 @@ import { useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import { store } from "@/utils/store";
+import { getCookie, setCookie } from "cookies-next";
+
 
 export const useInputs = (props: ServerSideProps) => {
 
@@ -16,6 +18,8 @@ export const useInputs = (props: ServerSideProps) => {
   useInitializeOlikDevtools();
 
   useHeaderExpander();
+
+  useUpdateLocalStorage();
 
   return {
     store,
@@ -73,4 +77,9 @@ const useLogoutUserIfSessionExpired = () => {
       router.push('/?session-expired=true').catch(console.error);
     }
   }, [router, session.status]);
+}
+
+const useUpdateLocalStorage = () => {
+  console.log(getCookie('test'));
+  setCookie('test', 'one');
 }

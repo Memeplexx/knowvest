@@ -1,5 +1,5 @@
 import { store } from '@/utils/store';
-import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, SettingsIcon } from '@/utils/styles';
+import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, SettingsIcon, TestIcon } from '@/utils/styles';
 import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
@@ -9,6 +9,7 @@ import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { CardWrapper, Wrapper } from './styles';
 import { Popup } from '../popup';
+import Link from 'next/link';
 
 
 
@@ -74,6 +75,23 @@ export const Active = (
                           </>
                         }
                       />
+                      <Link
+                        href="/configure-test"
+                        children={
+                          <PopupOption
+                            disabled={!state.mayDeleteNote}
+                            children={
+                              <>
+                                <OptionText
+                                  children='Create memory test'
+                                />
+                                <TestIcon
+                                />
+                              </>
+                            }
+                          />
+                        }
+                      />
                     </>
                   }
                 />
@@ -85,6 +103,7 @@ export const Active = (
                   title='Delete note requested'
                   message='Are you sure you want to delete this note?'
                 />
+
               </>
             }
             body={
