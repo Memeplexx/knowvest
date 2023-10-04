@@ -1,10 +1,8 @@
-import { store } from '@/utils/store';
 import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, SettingsIcon, TestIcon } from '@/utils/styles';
 import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
 import { Loader } from '../loader';
-import { LoaderSkeleton } from '../loader-skeleton';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { CardWrapper, Wrapper } from './styles';
@@ -18,7 +16,7 @@ export const Active = (
 ) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { state, ActiveEditor } = inputs;
+  const { state, ActiveEditor, store } = inputs;
   return (
     <Wrapper
       {...props}
@@ -76,7 +74,7 @@ export const Active = (
                         }
                       />
                       <Link
-                        href="/configure-test"
+                        href={`/test-config/${state.activeNoteId}`}
                         children={
                           <PopupOption
                             disabled={!state.mayDeleteNote}
@@ -106,15 +104,8 @@ export const Active = (
 
               </>
             }
-            body={
-              <>
-                <ActiveEditor />
-                <LoaderSkeleton
-                  count={5}
-                  isVisible={state.loadingEditor}
-                />
-              </>
-            }
+            body={ActiveEditor ? <ActiveEditor /> : <></>}
+            loading={state.loadingEditor}
           />
           <Loader
             showIf={state.loadingNote}

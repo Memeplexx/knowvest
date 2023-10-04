@@ -1,10 +1,9 @@
 import { GroupId, SynonymId } from "@/server/dtos";
 import { Inputs } from "./constants";
-import { store } from "@/utils/store";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { state } = inputs;
+  const { state, store } = inputs;
   return {
     onClickSynonym: (synonymId: SynonymId) => {
       if (store.$state.synonymIds.includes(synonymId)) {

@@ -1,5 +1,4 @@
 import { Card } from '../card';
-import { LoaderSkeleton } from '../loader-skeleton';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -15,17 +14,8 @@ export const History = (
       className={props.className}
       ref={refs.card}
       title='Recent'
-      body={
-        <>
-          <HistoricalNotes
-            onSelectNote={outputs.onSelectNote}
-          />
-          <LoaderSkeleton
-            count={15}
-            isVisible={state.loading}
-          />
-        </>
-      }
+      body={HistoricalNotes ? <HistoricalNotes onSelectNote={outputs.onSelectNote} /> : <></>}
+      loading={state.loading}
     />
   )
 };

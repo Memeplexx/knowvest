@@ -110,3 +110,11 @@ export const usePropsWithDefaults = <P extends Record<string, unknown>, I extend
   Object.assign(outRef.current, incomingProps);
   return outRef.current as I & D;
 }
+
+export const useIsMounted = () => {
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    setTimeout(() => setInitialized(true));
+  }, []);
+  return initialized;
+}

@@ -1,10 +1,10 @@
 import { NoteId } from "@/server/dtos";
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
-import { store } from "@/utils/store";
+
 
 export const useOutputs = (inputs: Inputs) => {
-  const { props, refs } = inputs;
+  const { props, refs, store } = inputs;
   return {
     onSelectNote: async (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);

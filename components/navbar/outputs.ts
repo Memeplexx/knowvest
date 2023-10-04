@@ -1,7 +1,8 @@
-import { store } from "@/utils/store";
 import { signOut } from "next-auth/react";
+import { Inputs } from "./constants";
 
-export const useOutputs = () => {
+export const useOutputs = (inputs: Inputs) => {
+  const { store } = inputs;
   return {
     onClickUserButton: () => {
       store.navBar.showOptions.$toggle()

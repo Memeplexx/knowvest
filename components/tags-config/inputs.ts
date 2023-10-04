@@ -5,12 +5,14 @@ import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik/derive';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
-import { store } from '@/utils/store';
 import { Props } from './constants';
+import { StoreContext } from '@/utils/constants';
 
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
+
+  const store = useContext(StoreContext)!;
 
   const floating = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 
@@ -191,5 +193,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     },
     notify,
     props,
+    store,
   };
 }

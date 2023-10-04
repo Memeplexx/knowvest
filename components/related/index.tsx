@@ -1,5 +1,4 @@
 import { Card } from '../card';
-import { LoaderSkeleton } from '../loader-skeleton';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -23,17 +22,8 @@ export const Related = (
           children={state.noteCountString}
         />
       }
-      body={
-        <>
-          <RelatedNotes
-            onSelectNote={outputs.onSelectNote}
-          />
-          <LoaderSkeleton
-            count={15}
-            isVisible={state.loading}
-          />
-        </>
-      }
+      body={RelatedNotes ? <RelatedNotes onSelectNote={outputs.onSelectNote} /> : <></>}
+      loading={state.loading}
     />
   )
 }

@@ -10,7 +10,7 @@ import { ImageLogo, RightContent, SearchButton, SearchIcon, UserButton, UserImag
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
-  const outputs = useOutputs();
+  const outputs = useOutputs(inputs);
   const { state } = inputs;
   return (
     <>

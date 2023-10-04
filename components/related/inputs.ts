@@ -1,11 +1,14 @@
 import { derive } from "olik/derive";
 import { Props } from "./constants";
-import { store } from "@/utils/store";
-import { useMemo, useRef, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { CardHandle } from "../card/constants";
+import { StoreContext } from "@/utils/constants";
+import { useIsMounted } from "@/utils/hooks";
 
 export const useInputs = (props: Props) => {
+
+  const store = useContext(StoreContext)!;
 
   const queriedNotes = derive(
     store.activeNoteId,
@@ -37,13 +40,16 @@ export const useInputs = (props: Props) => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
   })
 
+  const isMounted = useIsMounted();
   const [loading, setLoading] = useState(true);
   const RelatedNotes = useMemo(() => {
+    if (!isMounted) { return null; }
     return dynamic(() => import('../related-items').finally(() => setLoading(false)));
-  }, []);
+  }, [isMounted]);
 
   return {
     props,
+    store,
     refs: {
       card: useRef<CardHandle>(null),
     },

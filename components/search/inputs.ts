@@ -1,10 +1,12 @@
-import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
+import { ForwardedRef, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { AutocompleteOptionType, Props, dialogWidth } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
 import { derive } from "olik/derive";
-import { store } from "@/utils/store";
+import { StoreContext } from "@/utils/constants";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
+
+  const store = useContext(StoreContext)!;
 
   const state = store.search.$useState();
 
@@ -115,7 +117,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     if (payload.showSearchPane !== state.showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
       store.search.$patch(payload);
     }
-  }, [])
+  }, [store])
   useEffect(() => {
     window.addEventListener('resize', listener);
     return () => window.removeEventListener('resize', listener)
@@ -125,6 +127,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [listener]);
 
   return {
+    store,
     refs: {
       autocomplete: useRef<AutocompleteHandle>(null),
       body: useRef<HTMLDivElement>(null),

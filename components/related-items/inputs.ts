@@ -1,8 +1,11 @@
 import { derive } from "olik/derive";
 import { Props } from "./constants";
-import { store } from "@/utils/store";
+import { useContext } from "react";
+import { StoreContext } from "@/utils/constants";
 
 export const useInputs = (props: Props) => {
+
+  const store = useContext(StoreContext)!;
 
   const queriedNotes = derive(
     store.activeNoteId,
@@ -30,6 +33,7 @@ export const useInputs = (props: Props) => {
 
   return {
     props,
+    store,
     state: queriedNotes.$useState()
   }
 

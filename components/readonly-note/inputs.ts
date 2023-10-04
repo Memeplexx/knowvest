@@ -7,12 +7,15 @@ import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { languages } from '@codemirror/language-data';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { Props } from './constants';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
+import { StoreContext } from '@/utils/constants';
 
 
 export const useInputs = (props: Props) => {
+
+  const store = useContext(StoreContext)!;
 
   const editor = useRef<HTMLDivElement>(null);
 
@@ -21,7 +24,7 @@ export const useInputs = (props: Props) => {
   useIsomorphicLayoutEffect(() => {
     if (codeMirror.current) { return; /* defend against re-render when React strictMode is set to true */ }
     codeMirror.current = instantiateCodeMirror({ editor: editor.current!, note: props.note });
-    highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: props.synonymIds });
+    highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: props.synonymIds, store });
     addAriaAttributeToCodeMirror({ editor: editor.current!, noteId: props.note.id });
   }, []);
 

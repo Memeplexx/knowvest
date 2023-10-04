@@ -1,9 +1,7 @@
-import { NoteId } from '@/server/dtos';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
 import { oneDark } from '@/utils/codemirror-theme';
 import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
 import { NotificationContext } from '@/utils/pages/home/constants';
-import { store } from '@/utils/store';
 import {
   closeBrackets,
   closeBracketsKeymap,
@@ -30,9 +28,13 @@ import {
 import { derive } from 'olik/derive';
 import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
+import { Store } from 'olik';
+import { AppState, StoreContext } from '@/utils/constants';
 
 
 export const useInputs = () => {
+
+  const store = useContext(StoreContext)!;
 
   const mayDeleteNote = derive(store.notes).$with(notes => !!notes.length);
 
@@ -44,13 +46,14 @@ export const useInputs = () => {
 
   useEffect(() => {
     if (codeMirror.current) { return; /* defend against re-render when React strictMode is set to true */ }
-    codeMirror.current = instantiateCodeMirror({ editor: editor.current! });
-    updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current! });
-    highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds });
+    codeMirror.current = instantiateCodeMirror({ editor: editor.current!, store });
+    updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
+    highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds, store });
     addAriaAttributeToCodeMirror({ editor: editor.current!, noteId: store.$state.activeNoteId });
-  }, []);
+  }, [store]);
 
   return {
+    store,
     refs: {
       editor,
     },
@@ -63,7 +66,7 @@ export const useInputs = () => {
   };
 }
 
-export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) => {
+export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: Store<AppState> }) => {
   return new EditorView({
     doc: '',
     parent: editor,
@@ -80,11 +83,11 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({ spellcheck: "on", autocapitalize: "on" }),
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
-      autocompleteExtension,
-      noteTagsPersisterExtension(),
-      createNotePersisterExtension({ debounce: 500 }),
-      textSelectorPlugin,
-      editorHasTextUpdater,
+      autocompleteExtension({ store }),
+      noteTagsPersisterExtension({ store }),
+      createNotePersisterExtension({ debounce: 500, store }),
+      textSelectorPlugin({ store }),
+      editorHasTextUpdater({ store }),
       pasteListener,
       bulletPointPlugin,
       inlineNotePlugin,
@@ -95,14 +98,14 @@ export const instantiateCodeMirror = ({ editor }: { editor: HTMLDivElement }) =>
   });
 }
 
-export const updateEditorWhenActiveIdChanges = ({ codeMirror }: { codeMirror: EditorView }) => {
-  const changeListener = (activeNoteId: NoteId) => {
+export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: Store<AppState>, codeMirror: EditorView }) => {
+  const changeListener = () => {
     codeMirror.dispatch(
       {
         changes: {
           from: 0,
           to: codeMirror.state.doc.length,
-          insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text,
+          insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
         },
       },
       {
@@ -113,7 +116,7 @@ export const updateEditorWhenActiveIdChanges = ({ codeMirror }: { codeMirror: Ed
     );
     codeMirror.focus();
   };
-  changeListener(store.$state.activeNoteId);
+  changeListener();
   store.activeNoteId.$onChange(changeListener);
 }
 

@@ -1,10 +1,9 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
-import { store } from "@/utils/store";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { refs, state, notify } = inputs;
+  const { refs, state, notify, store } = inputs;
   return {
     onClickCreateNewTagFromSelection: async () => {
       store.activePanel.loadingSelection.$set(true);

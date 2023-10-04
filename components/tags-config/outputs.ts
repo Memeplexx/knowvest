@@ -19,12 +19,11 @@ import { GroupId, SynonymId, TagId } from '@/server/dtos';
 import { trpc } from '@/utils/trpc';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { TypedKeyboardEvent } from '@/utils/types';
-import { store } from '@/utils/store';
 import { Inputs } from './constants';
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { state, notify, refs, props } = inputs;
+  const { state, notify, refs, props, store } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       store.config.$patch({
@@ -199,13 +198,13 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onAutocompleteSelected: async (id: TagId | GroupId | null) => {
       if (state.autocompleteAction === 'addActiveSynonymsToAGroup') {
-        await onAutocompleteSelectedWhileAddActiveSynonymsToGroup(inputs, id as GroupId);
+        await onAutocompleteSelectedWhileAddActiveSynonymsToGroup({ inputs, groupId: id as GroupId });
       } else if (state.autocompleteAction === 'addSynonymsToActiveSynonyms') {
-        await onAutocompleteSelectedWhileSynonymIsSelected(inputs, id as TagId);
+        await onAutocompleteSelectedWhileSynonymIsSelected({ inputs, tagId: id as TagId });
       } else if (state.autocompleteAction === 'addSynonymsToActiveGroup') {
-        await onAutocompleteSelectedWhileGroupIsSelected(inputs, id as TagId);
+        await onAutocompleteSelectedWhileGroupIsSelected({ inputs, tagId: id as TagId });
       } else {
-        await onAutocompleteSelectedWhileNothingIsSelected(inputs, id as TagId);
+        await onAutocompleteSelectedWhileNothingIsSelected({ inputs, tagId: id as TagId });
       }
     },
     onClickRenameTag: () => {

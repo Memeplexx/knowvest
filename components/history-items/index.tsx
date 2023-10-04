@@ -1,13 +1,12 @@
 import { useInputs } from './inputs';
 import { Props } from './constants';
 import { Header, Icon, Result, RightBorder, Wrapper } from './styles';
-import { store } from '@/utils/store';
 
 export default function HistoryItems(
   props: Props
 ) {
   const inputs = useInputs(props);
-  const { state } = inputs;
+  const { state, store } = inputs;
   return (
     <>
       {state.map(note => (

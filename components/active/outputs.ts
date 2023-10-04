@@ -1,10 +1,9 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
-import { store } from "@/utils/store";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { notify } = inputs;
+  const { notify, store } = inputs;
   return {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);

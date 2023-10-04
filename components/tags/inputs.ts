@@ -1,7 +1,10 @@
-import { store } from "@/utils/store";
+import { StoreContext } from "@/utils/constants";
 import { derive } from "olik/derive";
+import { useContext } from "react";
 
 export const useInputs = () => {
+
+  const store = useContext(StoreContext)!;
 
   const state = store.tagsPanel.$useState();
 
@@ -85,6 +88,7 @@ export const useInputs = () => {
   });
 
   return {
+    store,
     state: {
       ...state,
       groupsWithSynonyms: groupsWithSynonyms.$useState(),

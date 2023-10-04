@@ -5,6 +5,7 @@ export type CardProps = {
   title?: string,
   actions?: JSX.Element,
   body: JSX.Element,
+  loading?: boolean,
 } & HTMLAttributes<HTMLElement>;
 
 export type CardHandle = {

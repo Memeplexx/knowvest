@@ -1,4 +1,13 @@
+import { GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '@/server/dtos';
 import { UseFloatingOptions, flip, size, autoUpdate } from '@floating-ui/react';
+import { homeInitialState } from './pages/home/constants';
+import { configInitialState } from '@/components/tags-config/constants';
+import { tagsPanelInitialState } from '@/components/tags/constants';
+import { activePanelInitialState } from '@/components/active/constants';
+import { searchInitialState } from '@/components/search/constants';
+import { navBarInitialState } from '@/components/navbar/constants';
+import { createContext } from 'react';
+import { Store } from 'olik';
 
 export const OrderTypes = {
   Created: 'dateCreated',
@@ -21,3 +30,23 @@ export const floatingUiDefaultOptions = {
     })
   ]
 } as Partial<UseFloatingOptions>;
+
+export const initialAppState = {
+  activeNoteId: 0 as NoteId,
+  groups: new Array<GroupDTO>(),
+  synonymGroups: new Array<SynonymGroupDTO>(),
+  noteTags: new Array<NoteTagDTO>(),
+  notes: new Array<NoteDTO>(),
+  tags: new Array<TagDTO>(),
+  synonymIds: new Array<SynonymId>(),
+  home: homeInitialState,
+  config: configInitialState,
+  tagsPanel: tagsPanelInitialState,
+  activePanel: activePanelInitialState,
+  search: searchInitialState,
+  navBar: navBarInitialState,
+};
+
+export type AppState = typeof initialAppState;
+
+export const StoreContext = createContext<Store<AppState> | undefined>(undefined);

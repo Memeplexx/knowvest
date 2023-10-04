@@ -2,10 +2,11 @@ import { NoteId, NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { Readable } from "olik";
-import { store } from "./store";
+import { Readable, Store } from "olik";
 import { DecisionResult } from "./types";
 import { derive } from "olik/derive";
+import { AppState } from "./constants";
+
 
 
 /**
@@ -79,7 +80,7 @@ export function pipe(arg0: unknown, ...fns: Array<(arg: unknown) => unknown>) {
   return fns.reduce((prev, curr) => curr(prev), arg0);
 }
 
-export const highlightTagsInEditor = ({ editorView, synonymIds }: { editorView: EditorView, synonymIds: Readable<SynonymId[]> }) => {
+export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { editorView: EditorView, synonymIds: Readable<SynonymId[]>, store: Store<AppState> }) => {
 
   const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
     try {
@@ -191,4 +192,3 @@ export const highlightTagsInEditor = ({ editorView, synonymIds }: { editorView: 
 export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteId, editor: HTMLDivElement }) => {
   (editor.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
 }
-

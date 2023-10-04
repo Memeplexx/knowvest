@@ -4,7 +4,6 @@ import { AutocompleteOptionType, Props } from './constants';
 import { useOutputs } from './outputs';
 import { useInputs } from './inputs';
 import { AutocompleteOption, AutocompleteOptionStatus, AutocompleteOptionLabel, AutocompleteOptionLeft, Container, CategoryTitle, CategoryWrapper, LeftContent, Result, RightContent, Tag, TagsOuterWrapper, TagsWrapper, MainContent, TabsWrapper, TabTitle, TabButton, CloseButton, TabsButtons } from './styles';
-import { store } from '@/utils/store';
 import { CloseIcon } from '@/utils/styles';
 
 
@@ -14,7 +13,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
 ) {
   const inputs = useInputs(ref, props);
   const outputs = useOutputs(inputs);
-  const { state, refs } = inputs;
+  const { state, refs, store } = inputs;
   return (
     <Container
       ref={refs.body}

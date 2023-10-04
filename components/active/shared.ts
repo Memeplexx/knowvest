@@ -1,12 +1,13 @@
 import { NoteId, TagId } from "@/server/dtos";
-import { store } from "@/utils/store";
+import { AppState } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
+import { Store } from "olik";
 
-export const createAutocompleteExtension = () => {
+export const createAutocompleteExtension = (store: Store<AppState>) => {
   return autocompletion({
     override: [
       (context: CompletionContext) => {
@@ -22,7 +23,7 @@ export const createAutocompleteExtension = () => {
   });
 }
 
-export const createNotePersisterExtension = ({ debounce }: { debounce: number } ) => {
+export const createNotePersisterExtension = ({ debounce, store }: { debounce: number, store: Store<AppState> } ) => {
   let timestamp = Date.now();
   let activeNoteIdRef = store.$state.activeNoteId;
   const updateNote = async (update: ViewUpdate) => {
@@ -41,7 +42,7 @@ export const createNotePersisterExtension = ({ debounce }: { debounce: number } 
   });
 }
 
-export const noteTagsPersisterExtension = () => {
+export const noteTagsPersisterExtension = (store: Store<AppState>) => {
   let previousActiveNoteId = 0 as NoteId;
   let previousActiveNoteTagIds = new Array<TagId>();
   const tagsWithRegexp = store.$state.tags
@@ -91,7 +92,7 @@ export const noteTagsPersisterExtension = () => {
   });
 }
 
-export const createTextSelectorPlugin = () => {
+export const createTextSelectorPlugin = (store: Store<AppState>) => {
   const updateSelection = (value: string) => {
     if (store.$state.activePanel.selection === value) { return; }
     store.activePanel.selection.$set(value);
@@ -149,7 +150,7 @@ export const createTextSelectorPlugin = () => {
   });
 }
 
-export const createEditorHasTextUpdater = () => {
+export const createEditorHasTextUpdater = (store: Store<AppState>) => {
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
     if (store.$state.activePanel.editorHasText && !update.state.doc.length) {

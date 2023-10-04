@@ -3,6 +3,7 @@ import { useInputs } from "./inputs";
 import { GroupDTO, NoteDTO, NoteTagDTO, SynonymGroupDTO, TagDTO } from "@/server/dtos";
 import { snackbarStatus } from "@/components/snackbar/constants";
 
+
 export const homeInitialState = {
   historyExpanded: false,
   similarExpanded: false,

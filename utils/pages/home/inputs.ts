@@ -1,25 +1,24 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { ServerSideProps, initialTransientState } from "./constants";
 import { NoteId } from "@/server/dtos";
 import { useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { store } from "@/utils/store";
-import { getCookie, setCookie } from "cookies-next";
+import { StoreContext } from "@/utils/constants";
 
 
 export const useInputs = (props: ServerSideProps) => {
 
+  const store = useContext(StoreContext)!;
+
   useLogoutUserIfSessionExpired();
 
-  useInitializeStoreData(props);
+  useStoreStateInitializer(props);
 
   useInitializeOlikDevtools();
 
   useHeaderExpander();
-
-  useUpdateLocalStorage();
 
   return {
     store,
@@ -36,9 +35,11 @@ const useInitializeOlikDevtools = () => {
   }, []);
 }
 
-const useInitializeStoreData = (props: ServerSideProps) => {
-  const init = useRef(true);
-  if (init.current) {
+const useStoreStateInitializer = (props: ServerSideProps) => {
+  const init = useRef(false);
+  const store = useContext(StoreContext)!;
+  if (!init.current) {
+    init.current = true;
     const activeNoteId = props.notes[0]?.id || 0 as NoteId;
     const selectedTagIds = props.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
     store.$patchDeep({
@@ -49,11 +50,11 @@ const useInitializeStoreData = (props: ServerSideProps) => {
         editorHasText: !!props.notes[0]?.text || false,
       }
     });
-    init.current = false;
   }
 }
 
 const useHeaderExpander = () => {
+  const store = useContext(StoreContext)!;
   useIsomorphicLayoutEffect(() => {
     const listener = () => {
       const { headerExpanded: headerContracted } = store.$state.home;
@@ -77,9 +78,4 @@ const useLogoutUserIfSessionExpired = () => {
       router.push('/?session-expired=true').catch(console.error);
     }
   }, [router, session.status]);
-}
-
-const useUpdateLocalStorage = () => {
-  console.log(getCookie('test'));
-  setCookie('test', 'one');
 }

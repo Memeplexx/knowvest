@@ -3,10 +3,9 @@ import { Inputs } from "./constants";
 import { onSelectGroup, onSelectSynonym } from "./shared";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { ancestorMatches } from "@/utils/functions";
-import { store } from "@/utils/store";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { state, refs, props } = inputs;
+  const { state, refs, props, store } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
       if ((event.target as HTMLElement).parentNode === null) { // element was removed from the DOM
