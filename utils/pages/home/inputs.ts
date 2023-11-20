@@ -30,7 +30,7 @@ export const useInputs = (props: ServerSideProps) => {
 const useInitializeOlikDevtools = () => {
   useEffect(() => {
     if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      connectOlikDevtoolsToStore({ trace: true });
+      connectOlikDevtoolsToStore({ trace: false });
     }
   }, []);
 }
