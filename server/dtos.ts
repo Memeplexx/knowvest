@@ -1,4 +1,4 @@
-import { type Group, type Note, type Tag, type NoteTag, type SynonymGroup, type Synonym, type User } from "@prisma/client";
+import { type Group, type Note, type Tag, type NoteTag, type SynonymGroup, type Synonym, type User, Question } from "@prisma/client";
 import { Brand } from "olik";
 import { z, type ZodNumberDef, type ZodType } from 'zod';
 
@@ -38,6 +38,10 @@ export interface SynonymDTO extends Synonym {
 
 export interface UserDTO extends User {
   id: UserId;
+}
+
+export interface QuestionDTO extends Question {
+  noteId: NoteId;
 }
 
 export const ZodNoteId = z.number() as unknown as ZodType<NoteId, ZodNumberDef>;

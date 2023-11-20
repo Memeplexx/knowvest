@@ -1,32 +1,27 @@
-import { StoreContext, initialAppState } from "@/utils/constants";
 import { Container, Editor, Questions, Wrapper } from "@/utils/pages/test-config/styles";
-import { useContext, useEffect, useRef } from "react";
-import { useRouter } from 'next/router';
-import { NoteId } from "@/server/dtos";
 import { Navbar } from "@/components/navbar";
 import ActiveEditor from "@/components/active-editor";
+import { GetServerSidePropsContext } from "next/types";
+import { prisma } from "@/server/routers/_app";
+import superjson from 'superjson';
+import { useInputs } from "@/utils/pages/test-config/inputs";
+import { ServerSideProps } from "@/utils/pages/test-config/constants";
 
 
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const noteId = context.params!.noteId;
+  if (!noteId) { throw new Error(); }
+  return {
+    props: superjson.serialize({
+      questions: await prisma.question.findMany({ where: { noteId: +noteId } }),
+    })
+  };
+}
 
 export default function ConfigureTest(
+  propsSerialized: Parameters<typeof superjson.deserialize>[0],
 ) {
-  const store = useContext(StoreContext)!;
-  const router = useRouter();
-  const initialized = useRef(false);
-  if (!initialized.current) {
-    initialized.current = true;
-    if (router.query.noteId) {
-      const activeNoteId = +router.query.noteId as unknown as NoteId;
-      store.activeNoteId.$set(activeNoteId);
-    }
-  }
-
-  useEffect(() => {
-    if (!store.$state.notes.length) {
-      router.replace('/')
-    }
-  }, [])
-
+  const inputs = useInputs(superjson.deserialize<ServerSideProps>(propsSerialized));
   return (
     <Container
       children={
@@ -39,7 +34,7 @@ export default function ConfigureTest(
             children={
               <>
                 <Editor
-                  showIf={!!store.$state.notes.length}
+                  showIf={!!inputs.store.$state.notes.length}
                   title="Editor"
                   body={<ActiveEditor />}
                 />

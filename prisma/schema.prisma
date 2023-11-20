@@ -19,6 +19,7 @@ model Note {
   dateUpdated DateTime? @map("date_updated")
   dateViewed  DateTime? @map("date_viewed")
   noteTags    NoteTag[]
+
   @@map("note")
 }
 
@@ -26,6 +27,7 @@ model Synonym {
   id            Int            @id @default(autoincrement())
   tag           Tag[]
   synonymGroups SynonymGroup[]
+
   @@map("synonym")
 }
 
@@ -39,6 +41,7 @@ model Tag {
   dateCreated DateTime  @default(now()) @map("date_created")
   dateUpdated DateTime  @updatedAt @map("date_updated")
   noteTags    NoteTag[]
+
   @@map("tag")
 }
 
@@ -48,6 +51,7 @@ model Group {
   userId        Int            @map("user_id")
   user          User           @relation(fields: [userId], references: [id])
   synonymGroups SynonymGroup[]
+
   @@map("group")
 }
 
@@ -80,5 +84,16 @@ model User {
   Note  Note[]
   Tag   Tag[]
   Group Group[]
+
   @@map("user")
+}
+
+model Question {
+  id                  Int      @id @default(autoincrement())
+  text                String
+  noteId              Int      @map("note_id")
+  dateForNextQuestion DateTime @map("date_for_next_question")
+  intervalInHours     Int      @map("interval_in_hours")
+
+  @@map("question")
 }
