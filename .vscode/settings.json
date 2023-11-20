@@ -16,4 +16,6 @@
   "editor.gotoLocation.multipleImplementations": "goto", 
   "editor.gotoLocation.multipleReferences": "peek",
   "typescript.referencesCodeLens.enabled": true,
+  "highlight-matching-tag.highlightFromAttributes": true,
+  "highlight-matching-tag.styles.opening.full.highlight": "#000"
 }
