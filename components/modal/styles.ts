@@ -39,6 +39,7 @@ export const Foreground = styled(animated.div)`
   background-image: linear-gradient(to right,#212121,#312c2c);
   max-width: calc(100% - 16px);
   max-height: calc(100% - 16px);
+  border: 1px solid #3e3e3e;
   @media (min-width: ${mobileBreakPoint}) {
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0,1.08,.57,.96);

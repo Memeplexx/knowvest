@@ -6,6 +6,7 @@ import { noteTagRouter } from './notetag';
 import { tagRouter } from './tag';
 import { synonymRouter } from './synonym';
 import { groupRouter } from './group';
+import { flashCardRouter } from './flashcard';
 
 // TODO: consider https://github.com/prisma/prisma/issues/1983#issuecomment-620621213 to prevent hot-reloading causing too many connections
 export const prisma = new PrismaClient({
@@ -18,6 +19,7 @@ export const appRouter = router({
   noteTag: noteTagRouter,
   synonym: synonymRouter,
   group: groupRouter,
+  flashCard: flashCardRouter,
 });
 
 // export type definition of API

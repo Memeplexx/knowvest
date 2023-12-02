@@ -1,8 +1,9 @@
 import { NoteId } from "@/server/dtos";
 import { StoreContext } from "@/utils/constants";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { ServerSideProps } from "./constants";
+import { NotificationContext } from "../home/constants";
 
 export const useInputs = (props: ServerSideProps) => {
   const store = useContext(StoreContext)!;
@@ -13,6 +14,7 @@ export const useInputs = (props: ServerSideProps) => {
     if (router.query.noteId) {
       const activeNoteId = +router.query.noteId as unknown as NoteId;
       store.activeNoteId.$set(activeNoteId);
+      store.flashCards.$set(props.flashCards);
     }
   }
   useEffect(() => {
@@ -21,7 +23,9 @@ export const useInputs = (props: ServerSideProps) => {
     }
   }, [])
   return {
-    ...props,
+    flashCards: store.flashCards.$useState(),
+    confirmDeleteFlashCardId: store.flashCardPanel.confirmDeleteFlashCardId.$useState(),
+    notify: useContext(NotificationContext)!,
     store,
   }
 }

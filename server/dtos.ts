@@ -1,4 +1,4 @@
-import { type Group, type Note, type Tag, type NoteTag, type SynonymGroup, type Synonym, type User, Question } from "@prisma/client";
+import { type Group, type Note, type Tag, type NoteTag, type SynonymGroup, type Synonym, type User, type FlashCard } from "@prisma/client";
 import { Brand } from "olik";
 import { z, type ZodNumberDef, type ZodType } from 'zod';
 
@@ -7,6 +7,7 @@ export type TagId = Brand<number, 'TagId'>;
 export type GroupId = Brand<number, 'GroupId'>;
 export type SynonymId = Brand<number, 'SynonymId'>;
 export type UserId = Brand<number, 'UserId'>;
+export type FlashCardId = Brand<number, 'FlashCardId'>;
 
 export interface NoteDTO extends Note {
   id: NoteId;
@@ -40,7 +41,8 @@ export interface UserDTO extends User {
   id: UserId;
 }
 
-export interface QuestionDTO extends Question {
+export interface FlashCardDTO extends FlashCard {
+  id: FlashCardId;
   noteId: NoteId;
 }
 
@@ -49,3 +51,4 @@ export const ZodTagId = z.number() as unknown as ZodType<TagId, ZodNumberDef>;
 export const ZodGroupId = z.number() as unknown as ZodType<GroupId, ZodNumberDef>;
 export const ZodSynonymId = z.number() as unknown as ZodType<SynonymId, ZodNumberDef>;
 export const ZodUserId = z.number() as unknown as ZodType<UserId, ZodNumberDef>;
+export const ZodFlashCardId = z.number() as unknown as ZodType<FlashCardId, ZodNumberDef>;

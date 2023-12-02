@@ -1,6 +1,6 @@
-import { GroupDTO, NoteDTO, NoteTagDTO, SynonymDTO, SynonymGroupDTO, TagDTO } from "@/server/dtos";
+import { FlashCardDTO, GroupDTO, NoteDTO, NoteTagDTO, SynonymDTO, SynonymGroupDTO, TagDTO } from "@/server/dtos";
 import { AppRouter } from "@/server/routers/_app";
-import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym } from "@prisma/client";
+import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym, FlashCard } from "@prisma/client";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { trpcReturningEntities } from "./trpc";
 
@@ -13,6 +13,7 @@ export type OrderBy = 'dateCreated' | 'dateUpdated' | 'dateViewed';
 
 export type EntityToDto<T>
   = T extends Note ? NoteDTO
+  : T extends FlashCard ? FlashCardDTO
   : T extends Tag ? TagDTO
   : T extends NoteTag ? NoteTagDTO
   : T extends Group ? GroupDTO

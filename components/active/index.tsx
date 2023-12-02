@@ -74,14 +74,14 @@ export const Active = (
                         }
                       />
                       <Link
-                        href={`/test-config/${state.activeNoteId}`}
+                        href={`/flash-cards/${state.activeNoteId}`}
                         children={
                           <PopupOption
                             disabled={!state.mayDeleteNote}
                             children={
                               <>
                                 <OptionText
-                                  children='Create memory test'
+                                  children='Manage flash cards'
                                 />
                                 <TestIcon
                                 />

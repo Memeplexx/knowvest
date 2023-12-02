@@ -1,4 +1,4 @@
-import { GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '@/server/dtos';
+import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '@/server/dtos';
 import { UseFloatingOptions, flip, size, autoUpdate } from '@floating-ui/react';
 import { homeInitialState } from './pages/home/constants';
 import { configInitialState } from '@/components/tags-config/constants';
@@ -8,6 +8,7 @@ import { searchInitialState } from '@/components/search/constants';
 import { navBarInitialState } from '@/components/navbar/constants';
 import { createContext } from 'react';
 import { Store } from 'olik';
+import { flashCardInitialState } from './pages/flash_cards/constants';
 
 export const OrderTypes = {
   Created: 'dateCreated',
@@ -38,6 +39,7 @@ export const initialAppState = {
   noteTags: new Array<NoteTagDTO>(),
   notes: new Array<NoteDTO>(),
   tags: new Array<TagDTO>(),
+  flashCards: new Array<FlashCardDTO>(),
   synonymIds: new Array<SynonymId>(),
   home: homeInitialState,
   config: configInitialState,
@@ -45,6 +47,7 @@ export const initialAppState = {
   activePanel: activePanelInitialState,
   search: searchInitialState,
   navBar: navBarInitialState,
+  flashCardPanel: flashCardInitialState,
 };
 
 export type AppState = typeof initialAppState;

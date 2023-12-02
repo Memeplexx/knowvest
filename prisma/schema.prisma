@@ -88,12 +88,12 @@ model User {
   @@map("user")
 }
 
-model Question {
-  id                  Int      @id @default(autoincrement())
-  text                String
-  noteId              Int      @map("note_id")
-  dateForNextQuestion DateTime @map("date_for_next_question")
-  intervalInHours     Int      @map("interval_in_hours")
+model FlashCard {
+  id               Int      @id @default(autoincrement())
+  noteId           Int      @map("note_id")
+  text             String
+  nextQuestionDate DateTime @map("next_question_date")
+  cleanRunCount    Int      @map("clean_run_count")
 
-  @@map("question")
+  @@map("flash_card")
 }
