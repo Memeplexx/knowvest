@@ -1,4 +1,5 @@
 import { Card } from "@/components/card";
+import { possible } from "@/components/html";
 import { defaultFontFamily } from "@/utils/styles";
 import styled from "styled-components";
 
@@ -19,7 +20,7 @@ export const FlashCards = styled(Card)`
   flex: 1;
 `;
 
-export const FlashCardWrapper = styled.div`
+export const FlashCardWrapper = styled(possible.div)`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -45,4 +46,13 @@ export const Wrapper = styled.div`
   gap: 4px;
   margin: 4px;
   margin-top: 0;
+`;
+
+export const NoResults = styled(possible.div)`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: grey;
 `;

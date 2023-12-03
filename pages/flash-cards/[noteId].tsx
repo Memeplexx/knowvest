@@ -1,4 +1,4 @@
-import { Container, Editor, FlashCard, FlashCardText, FlashCardWrapper, FlashCards, Wrapper } from "@/utils/pages/flash_cards/styles";
+import { Container, Editor, FlashCard, FlashCardText, FlashCardWrapper, FlashCards, NoResults, Wrapper } from "@/utils/pages/flash_cards/styles";
 import { Navbar } from "@/components/navbar";
 import ActiveEditor from "@/components/active-editor";
 import { GetServerSidePropsContext } from "next/types";
@@ -10,6 +10,7 @@ import { ButtonIcon } from "@/components/button-icon";
 import { AddIcon, DeleteIcon } from "@/utils/styles";
 import { useOutputs } from "@/utils/pages/flash_cards/outputs";
 import { Confirmation } from "@/components/confirmation";
+import { NoResultsIcon } from "@/components/related-items/styles";
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -53,36 +54,48 @@ export default function ConfigureTest(
                     />
                   }
                   body={
-                    <FlashCardWrapper
-                      children={
-                        inputs.flashCards.map(flashCard => (
-                          <FlashCard
-                            key={flashCard.id}
-                            children={
-                              <>
-                                <FlashCardText
-                                  value={flashCard.text}
-                                  onChange={e => outputs.onChangeFlashCardText(flashCard.id, e.target.value)}
-                                  placeholder="Create a question to test yourself with..."
-                                  rows={4}
-                                />
-                                <ButtonIcon
-                                  children={<DeleteIcon />}
-                                  onClick={() => outputs.onClickRequestDeleteFlashCard(flashCard.id)}
-                                />
-                                <Confirmation
-                                  showIf={!!inputs.confirmDeleteFlashCardId}
-                                  onClose={() => inputs.store.flashCardPanel.confirmDeleteFlashCardId.$set(null)}
-                                  onConfirm={() => outputs.onClickRemoveFlashCard(flashCard.id)}
-                                  title='Delete note requested'
-                                  message='Are you sure you want to delete this flash card?'
-                                />
-                              </>
-                            }
-                          />
-                        ))
-                      }
-                    />
+                    <>
+                      <FlashCardWrapper
+                        showIf={!!inputs.flashCards.length}
+                        children={
+                          inputs.flashCards.map(flashCard => (
+                            <FlashCard
+                              key={flashCard.id}
+                              children={
+                                <>
+                                  <FlashCardText
+                                    value={flashCard.text}
+                                    onChange={e => outputs.onChangeFlashCardText(flashCard.id, e.target.value)}
+                                    placeholder="Create a question to test yourself with..."
+                                    rows={4}
+                                  />
+                                  <ButtonIcon
+                                    children={<DeleteIcon />}
+                                    onClick={() => outputs.onClickRequestDeleteFlashCard(flashCard.id)}
+                                  />
+                                  <Confirmation
+                                    showIf={!!inputs.confirmDeleteFlashCardId}
+                                    onClose={() => inputs.store.flashCardPanel.confirmDeleteFlashCardId.$set(null)}
+                                    onConfirm={() => outputs.onClickRemoveFlashCard(flashCard.id)}
+                                    title='Delete note requested'
+                                    message='Are you sure you want to delete this flash card?'
+                                  />
+                                </>
+                              }
+                            />
+                          ))
+                        }
+                      />
+                      <NoResults
+                        showIf={!inputs.flashCards.length}
+                        children={
+                          <>
+                            <NoResultsIcon />
+                            no related notes
+                          </>
+                        }
+                      />
+                    </>
                   }
                 />
               </>
