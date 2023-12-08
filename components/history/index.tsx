@@ -13,7 +13,7 @@ export const History = (
     <Card
       className={props.className}
       ref={refs.card}
-      title='Recent'
+      heading='Recent'
       body={HistoricalNotes ? <HistoricalNotes onSelectNote={outputs.onSelectNote} /> : <></>}
       loading={state.loading}
     />

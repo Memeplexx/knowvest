@@ -9,6 +9,21 @@ import { add } from 'date-fns';
 
 export const flashCardRouter = router({
 
+  listForNote: procedure
+    .input(z.object({
+      noteId: ZodNoteId,
+    }))
+    .query(async ({ ctx: { userId }, input: { noteId } }) => {
+        
+        // Validation
+        const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
+        if (!note) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
+  
+        // Logic
+        const flashCards = await prisma.flashCard.findMany({ where: { noteId } });
+        return { status: 'FLASH CARDS FOUND', flashCards };
+    }),
+
   create: procedure
     .input(z.object({
       noteId: ZodNoteId,

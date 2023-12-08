@@ -17,5 +17,11 @@
   "editor.gotoLocation.multipleReferences": "peek",
   "typescript.referencesCodeLens.enabled": true,
   "highlight-matching-tag.highlightFromAttributes": true,
-  "highlight-matching-tag.styles.opening.full.highlight": "#000"
+  "highlight-matching-tag.styles": {
+    "opening": {
+      "name": {
+        "underline": "yellow"
+      },
+    }
+  }
 }

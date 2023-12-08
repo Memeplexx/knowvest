@@ -11,4 +11,3 @@ export type ServerSideProps = {
 }
 
 export type State = ReturnType<typeof useInputs>;
-

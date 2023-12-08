@@ -1,9 +1,11 @@
 import { Active } from "@/components/active";
 import { History } from "@/components/history";
 import { Related } from "@/components/related";
-import { Tags } from "@/components/tags";
+import { Tabs } from "@/components/card-with-tabs";
 import { IconButton, defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
+import { Tags } from "@/components/tags";
+import { FlashCards } from "@/components/flash-cards";
 
 const gap = '4px';
 
@@ -54,11 +56,11 @@ export const ExpandHeaderToggleButton = styled(BaseToggleButton)`
 
 export const ActivePanel = styled(Active)`
   flex: 1;
-  min-height: 50vh;
 `;
 
-export const TagsPanel = styled(Tags) <{ $expanded: boolean }>`
+export const TabsPanel = styled(Tabs) <{ $expanded: boolean }>`
   transition: transform 0.2s ease-out;
+  flex: 1;
   @media (max-width: ${mobileBreakPoint}) {
     z-index: 2;
     position: absolute;
@@ -129,5 +131,8 @@ export const BodyWrapper = styled.div`
   position: relative;
   @media (min-width: ${mobileBreakPoint}) {
     margin: ${gap};
+  }
+  > * {
+    flex: 1;
   }
 `;

@@ -4,7 +4,6 @@ import { LoaderSkeleton } from "../loader-skeleton";
 
 
 export const Wrapper = styled(possible.div)`
-  min-height: 0;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -15,7 +14,6 @@ export const Wrapper = styled(possible.div)`
 export const Header = styled(possible.div)`
   display: flex;
   justify-content: space-between;
-  padding: 8px 16px;
   align-items: center;
   text-transform: uppercase;
   color: #ffffff;
@@ -30,6 +28,16 @@ export const Header = styled(possible.div)`
   font-size: 19px;
   letter-spacing: 4px;
   background-image: linear-gradient(to right, #242020, #191919);
+  padding: 16px;
+`;
+
+export const Heading = styled.div`
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+`;
+
+export const Actions = styled.div`
 `;
 
 export const Body = styled(possible.div)`

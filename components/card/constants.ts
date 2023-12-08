@@ -2,8 +2,8 @@ import { HTMLAttributes } from "react";
 import { useInputs } from "./inputs";
 
 export type CardProps = {
-  title?: string,
-  actions?: JSX.Element,
+  heading?: string | JSX.Element,
+  actions?: () => JSX.Element,
   body: JSX.Element,
   loading?: boolean,
 } & HTMLAttributes<HTMLElement>;

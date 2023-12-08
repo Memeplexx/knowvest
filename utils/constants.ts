@@ -8,7 +8,7 @@ import { searchInitialState } from '@/components/search/constants';
 import { navBarInitialState } from '@/components/navbar/constants';
 import { createContext } from 'react';
 import { Store } from 'olik';
-import { flashCardInitialState } from './pages/flash_cards/constants';
+import { flashCardInitialState } from '@/components/flash-cards/constants';
 
 export const OrderTypes = {
   Created: 'dateCreated',

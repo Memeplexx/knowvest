@@ -16,12 +16,12 @@ export const Related = (
     <Card
       className={props.className}
       ref={refs.card}
-      title='Related'
-      actions={
+      heading='Related'
+      actions={() => (
         <NoteCount
           children={state.noteCountString}
         />
-      }
+      )}
       body={RelatedNotes ? <RelatedNotes onSelectNote={outputs.onSelectNote} /> : <></>}
       loading={state.loading}
     />

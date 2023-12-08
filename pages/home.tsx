@@ -1,14 +1,17 @@
+import { FlashCards } from '@/components/flash-cards';
 import { Navbar } from '@/components/navbar';
 import { Snackbar } from '@/components/snackbar';
+import { Tags } from '@/components/tags';
 import { UserId } from '@/server/dtos';
 import { prisma } from '@/server/routers/_app';
 import { NotificationContext, ServerSideProps } from '@/utils/pages/home/constants';
 import { useInputs } from '@/utils/pages/home/inputs';
 import { useOutputs } from '@/utils/pages/home/outputs';
-import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TagsPanel, Wrapper } from '@/utils/pages/home/styles';
+import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TabsPanel, Wrapper } from '@/utils/pages/home/styles';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
 import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next/types';
+import { useRef } from 'react';
 import superjson from 'superjson';
 
 
@@ -55,6 +58,10 @@ export default function Home(
 ) {
   const inputs = useInputs(superjson.deserialize<ServerSideProps>(propsSerialized));
   const outputs = useOutputs(inputs);
+
+  // const tagsPanelRef = useRef(null);
+  // const flashCardPanelRef = useRef(null);
+
   return (
     <NotificationContext.Provider
       value={{
@@ -82,8 +89,12 @@ export default function Home(
                         children={
                           <>
                             <ActivePanel />
-                            <TagsPanel
+                            <TabsPanel
                               $expanded={inputs.tagsExpanded}
+                              options={[
+                                { label: 'Tags', panel: Tags },
+                                { label: 'Flashcards', panel: FlashCards },
+                              ]}
                             />
                           </>
                         }
