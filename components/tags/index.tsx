@@ -1,7 +1,6 @@
 import { Fragment } from 'react';
 
 import { Button } from '../button';
-import { ButtonIcon } from '../button-icon';
 import { Modal } from '../modal';
 import { TagsConfig } from '../tags-config';
 import { useInputs } from './inputs';
@@ -11,6 +10,7 @@ import {
   Body,
   GroupHeaderTag,
   NoTagsPlaceholder,
+  SettingsButton,
   SettingsIcon,
   Tag,
   TagsSection,
@@ -33,8 +33,7 @@ export const Tags = () => {
           />
         }
       />
-      <ButtonIcon
-        style={{ position: 'absolute', top: '12px', right: '12px', zIndex: 4 }}
+      <SettingsButton
         showIf={!!state.tagsForActiveNote.length}
         children={<SettingsIcon />}
         onClick={outputs.onShowDialog}

@@ -9,8 +9,8 @@ export const Container = styled.div`
 
 export const CreateNewButton = styled(ButtonIcon)`
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 16px;
+  right: 16px;
   z-index: 4;
 `;
 
@@ -30,6 +30,9 @@ export const FlashCardText = styled.textarea`
   flex: 1;
   padding: 4px;
   font-size: 14px;
+  &::placeholder {
+    color: grey;
+  }
 `;
 
 export const NoResults = styled(possible.div)`

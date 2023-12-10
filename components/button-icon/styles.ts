@@ -10,6 +10,7 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
   padding: 6px;
   display: flex;
   background-color: transparent;
+  border-radius: 50%;
   svg {
     width: auto;
     height: auto;
@@ -26,7 +27,7 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
     transition: all 0.2s cubic-bezier(0,.73,.44,1);
     &:hover {
       transform: scale(1);
-      background-color: ${p => p.selected ? '#000' : '#313131'};
+      background-color: ${p => p.selected ? '#000' : 'rgba(255,255,255,0.1)'};
       filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
     }
     &:active {

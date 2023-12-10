@@ -11,7 +11,6 @@ import { ActivePanel, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, Expand
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
 import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next/types';
-import { useRef } from 'react';
 import superjson from 'superjson';
 
 
@@ -58,10 +57,6 @@ export default function Home(
 ) {
   const inputs = useInputs(superjson.deserialize<ServerSideProps>(propsSerialized));
   const outputs = useOutputs(inputs);
-
-  // const tagsPanelRef = useRef(null);
-  // const flashCardPanelRef = useRef(null);
-
   return (
     <NotificationContext.Provider
       value={{

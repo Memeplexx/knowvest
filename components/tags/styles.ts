@@ -1,4 +1,4 @@
-import { SettingsIcon as BaseSettingsIcon } from '@/utils/styles';
+import { SettingsIcon as BaseSettingsIcon, IconButton } from '@/utils/styles';
 import styled from 'styled-components';
 import { possible } from '../html';
 
@@ -36,6 +36,13 @@ export const ActiveHeaderTag = styled(Tag)`
 `;
 
 export const GroupHeaderTag = styled(Tag)`
+`;
+
+export const SettingsButton = styled(IconButton)`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 4;
 `;
 
 export const TagsWrapper = styled.div`
