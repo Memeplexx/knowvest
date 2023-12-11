@@ -15,7 +15,6 @@ export const Active = (
 ) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { state, ActiveEditor, store } = inputs;
   return (
     <Wrapper
       {...props}
@@ -60,7 +59,7 @@ export const Active = (
                         }
                       />
                       <PopupOption
-                        disabled={!state.mayDeleteNote}
+                        disabled={!inputs.mayDeleteNote}
                         onClick={outputs.onClickRequestDeleteNote}
                         children={
                           <>
@@ -76,19 +75,19 @@ export const Active = (
                   }
                 />
                 <Confirmation
-                  showIf={state.confirmDelete}
-                  onClose={() => store.activePanel.confirmDelete.$set(false)}
+                  showIf={inputs.confirmDelete}
+                  onClose={() => inputs.store.activePanel.confirmDelete.$set(false)}
                   onConfirm={outputs.onClickRemoveNote}
                   title='Delete note requested'
                   message='Are you sure you want to delete this note?'
                 />
               </>
             }
-            body={ActiveEditor ? <ActiveEditor /> : <></>}
-            loading={state.loadingEditor}
+            body={inputs.ActiveEditor ? <inputs.ActiveEditor /> : <></>}
+            loading={inputs.loadingEditor}
           />
           <Loader
-            showIf={state.loadingNote}
+            showIf={inputs.loadingNote}
           />
         </>
       }

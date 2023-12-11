@@ -11,7 +11,7 @@ export const useInputs = (incomingProps: Props) => {
 
   const [state, setState] = useState(new Array<Message>());
 
-  const floating = useFloating<ReferenceType>({ placement: 'bottom' });
+  const floatingRef = useFloating<ReferenceType>({ placement: 'bottom' });
 
   useEffect(() => {
     if (!props.message) { return; }
@@ -28,7 +28,7 @@ export const useInputs = (incomingProps: Props) => {
   }, [props]);
 
   return {
-    refs: { floating },
+    floatingRef,
     props,
     state,
   }

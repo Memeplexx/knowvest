@@ -4,11 +4,13 @@ import { GroupDTO, NoteDTO, NoteTagDTO, SynonymGroupDTO, TagDTO } from "@/server
 import { snackbarStatus } from "@/components/snackbar/constants";
 
 
-export const homeInitialState = {
-  historyExpanded: false,
-  similarExpanded: false,
-  tagsExpanded: false,
-  headerExpanded: true,
+export const initialState = {
+  home: {
+    historyExpanded: false,
+    similarExpanded: false,
+    tagsExpanded: false,
+    headerExpanded: true,
+  }
 };
 
 export type ServerSideProps = {

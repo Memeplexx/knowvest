@@ -1,13 +1,12 @@
-import { FlashCardId, type FlashCardDTO } from "@/server/dtos";
+import { FlashCardDTO, FlashCardId } from "@/server/dtos";
 import { useInputs } from "./inputs";
 
-
-export const flashCardInitialState = {
-  confirmDeleteFlashCardId: null as null | FlashCardId,
-};
-
-export type ServerSideProps = {
-  flashCards: FlashCardDTO[],
+export const initialState = {
+  flashCards: {
+    items: new Array<FlashCardDTO>(),
+    confirmDeleteId: null as null | FlashCardId,
+    focusId: null as null | FlashCardId,
+  }
 }
 
-export type State = ReturnType<typeof useInputs>;
+export type Inputs = ReturnType<typeof useInputs>;

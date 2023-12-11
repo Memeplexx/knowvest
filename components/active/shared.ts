@@ -6,6 +6,7 @@ import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { Store } from "olik";
+import { Inputs } from "./constants";
 
 export const createAutocompleteExtension = (store: Store<AppState>) => {
   return autocompletion({
@@ -23,22 +24,22 @@ export const createAutocompleteExtension = (store: Store<AppState>) => {
   });
 }
 
-export const createNotePersisterExtension = ({ debounce, store }: { debounce: number, store: Store<AppState> } ) => {
+export const createNotePersisterExtension = ({ debounce, inputs }: { debounce: number, inputs: Inputs } ) => {
   let timestamp = Date.now();
-  let activeNoteIdRef = store.$state.activeNoteId;
+  let activeNoteIdRef = inputs.store.$state.activeNoteId;
   const updateNote = async (update: ViewUpdate) => {
-    if (store.$state.activeNoteId !== activeNoteIdRef) { return; }
+    if (inputs.store.$state.activeNoteId !== activeNoteIdRef) { return; }
     if (Date.now() - timestamp < debounce) { return; }
-    if (!store.$state.activePanel.allowNotePersister) { return; }
-    const apiResponse = await trpc.note.update.mutate({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
-    store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.updatedNote);
+    if (!inputs.store.$state.activePanel.allowNotePersister) { return; }
+    const apiResponse = await trpc.note.update.mutate({ noteId: inputs.store.$state.activeNoteId, text: update.state.doc.toString() });
+    inputs.store.notes.$find.id.$eq(inputs.store.$state.activeNoteId).$set(apiResponse.updatedNote);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
-    if (!store.$state.activePanel.allowNotePersister) { return; }
+    if (!inputs.store.$state.activePanel.allowNotePersister) { return; }
     timestamp = Date.now();
     setTimeout(() => updateNote(update), debounce)
-    activeNoteIdRef = store.$state.activeNoteId;
+    activeNoteIdRef = inputs.store.$state.activeNoteId;
   });
 }
 
@@ -92,71 +93,71 @@ export const noteTagsPersisterExtension = (store: Store<AppState>) => {
   });
 }
 
-export const createTextSelectorPlugin = (store: Store<AppState>) => {
-  const updateSelection = (value: string) => {
-    if (store.$state.activePanel.selection === value) { return; }
-    store.activePanel.selection.$set(value);
-  }
-  return ViewPlugin.fromClass(class {
-    decorations: DecorationSet;
-    constructor(view: EditorView) {
-      this.decorations = this.getDecorations(view)
-    }
-    update(update: ViewUpdate) {
-      if (!update.selectionSet) { return; }
-      this.decorations = this.getDecorations(update.view)
-    }
-    private getDecorations(view: EditorView) {
-      const widgets = [] as Range<Decoration>[];
-      for (const range of view.visibleRanges) {
-        syntaxTree(view.state).iterate({
-          from: range.from,
-          to: range.to,
-          enter: (node) => {
-            if (node.type.name !== 'Document') { return; }
-            const documentText = view.state.doc.toString();
-            if (view.state.selection.main.from === view.state.selection.main.to) {
-              updateSelection('');
-              return;
-            }
-            const regexForAnyNumberAndAnyLetter = /\W/;
-            let from = view.state.selection.main.from;
-            const startChar = documentText[from];
-            if (regexForAnyNumberAndAnyLetter.test(startChar)) {
-              while (regexForAnyNumberAndAnyLetter.test(documentText[from]) && from < documentText.length - 1) { from++; }
-            } else {
-              while (!regexForAnyNumberAndAnyLetter.test(documentText[from - 1]) && from > 0) { from--; }
-            }
-            let to = view.state.selection.main.to;
-            const endChar = documentText[to - 1];
-            if (regexForAnyNumberAndAnyLetter.test(endChar)) {
-              while (regexForAnyNumberAndAnyLetter.test(documentText[to]) && to > 0) { to--; }
-            } else {
-              while (!regexForAnyNumberAndAnyLetter.test(documentText[to]) && to < documentText.length) { to++; }
-            }
-            const selection = view.state.sliceDoc(from, to).toLowerCase();
-            if (!selection.trim().length) {
-              updateSelection('');
-              return;
-            }
-            updateSelection(selection);
-          },
-        })
-      }
-      return Decoration.set(widgets);
-    }
-  }, {
-    decorations: v => v.decorations,
-  });
-}
+// export const createTextSelectorPlugin = (store: Store<AppState>) => {
+//   const updateSelection = (value: string) => {
+//     if (store.$state.activePanel.selection === value) { return; }
+//     store.activePanel.selection.$set(value);
+//   }
+//   return ViewPlugin.fromClass(class {
+//     decorations: DecorationSet;
+//     constructor(view: EditorView) {
+//       this.decorations = this.getDecorations(view)
+//     }
+//     update(update: ViewUpdate) {
+//       if (!update.selectionSet) { return; }
+//       this.decorations = this.getDecorations(update.view)
+//     }
+//     private getDecorations(view: EditorView) {
+//       const widgets = [] as Range<Decoration>[];
+//       for (const range of view.visibleRanges) {
+//         syntaxTree(view.state).iterate({
+//           from: range.from,
+//           to: range.to,
+//           enter: (node) => {
+//             if (node.type.name !== 'Document') { return; }
+//             const documentText = view.state.doc.toString();
+//             if (view.state.selection.main.from === view.state.selection.main.to) {
+//               updateSelection('');
+//               return;
+//             }
+//             const regexForAnyNumberAndAnyLetter = /\W/;
+//             let from = view.state.selection.main.from;
+//             const startChar = documentText[from];
+//             if (regexForAnyNumberAndAnyLetter.test(startChar)) {
+//               while (regexForAnyNumberAndAnyLetter.test(documentText[from]) && from < documentText.length - 1) { from++; }
+//             } else {
+//               while (!regexForAnyNumberAndAnyLetter.test(documentText[from - 1]) && from > 0) { from--; }
+//             }
+//             let to = view.state.selection.main.to;
+//             const endChar = documentText[to - 1];
+//             if (regexForAnyNumberAndAnyLetter.test(endChar)) {
+//               while (regexForAnyNumberAndAnyLetter.test(documentText[to]) && to > 0) { to--; }
+//             } else {
+//               while (!regexForAnyNumberAndAnyLetter.test(documentText[to]) && to < documentText.length) { to++; }
+//             }
+//             const selection = view.state.sliceDoc(from, to).toLowerCase();
+//             if (!selection.trim().length) {
+//               updateSelection('');
+//               return;
+//             }
+//             updateSelection(selection);
+//           },
+//         })
+//       }
+//       return Decoration.set(widgets);
+//     }
+//   }, {
+//     decorations: v => v.decorations,
+//   });
+// }
 
-export const createEditorHasTextUpdater = (store: Store<AppState>) => {
+export const createEditorHasTextUpdater = (inputs: Inputs) => {
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
-    if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
-      store.activePanel.editorHasText.$set(false);      
-    } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {
-      store.activePanel.editorHasText.$set(true);
+    if (inputs.store.$state.activePanel.editorHasText && !update.state.doc.length) {
+      inputs.store.activePanel.editorHasText.$set(false);      
+    } else if (!inputs.store.$state.activePanel.editorHasText && !!update.state.doc.length) {
+      inputs.store.activePanel.editorHasText.$set(true);
     }
   });
 }

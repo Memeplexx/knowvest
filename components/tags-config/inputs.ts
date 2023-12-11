@@ -5,27 +5,27 @@ import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik/derive';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
-import { Props } from './constants';
-import { StoreContext } from '@/utils/constants';
+import { Props, initialState } from './constants';
+import { useContextForNestedStore } from '@/utils/constants';
 
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const store = useContext(StoreContext)!;
+  const store = useContextForNestedStore(initialState)!;
 
-  const floating = useFloating<HTMLButtonElement>({ placement: 'left-start' });
+  const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 
   const notify = useContext(NotificationContext)!;
 
   const state = store.config.$useState();
 
   const tagsInSynonymGroup = derive(
-    store.config.synonymId,
     store.tags,
+    store.config.synonymId,
     store.config.tagId,
     store.config.autocompleteText,
-  ).$with((synonymId, tags, tagId, autocompleteText) => {
+  ).$with((tags, synonymId, tagId, autocompleteText) => {
     return tags
       .filter(t => t.synonymId === synonymId)
       .map((tag, index, array) => ({
@@ -174,23 +174,19 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   });
 
   return {
-    state: {
-      ...state,
-      pageTitle: autocompleteTitle.$useState(),
-      activeNoteId: store.activeNoteId.$useState(),
-      autocompleteOptions: autocompleteOptions.$useState(),
-      tagsInCustomGroups: tagsInCustomGroups.$useState(),
-      tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
-      selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
-    },
-    refs: {
-      floating,
-      modal: useRef<HTMLDivElement>(null),
-      autocomplete: useRef<AutocompleteHandle>(null),
-      selectedTag: useRef<HTMLDivElement>(null),
-      settingsButton: state.modal === 'synonymOptions' ? floating.refs.setReference : null,
-      synonymOptions: state.modal === 'synonymOptions' ? floating.refs.setFloating : null,
-    },
+    ...state,
+    pageTitle: autocompleteTitle.$useState(),
+    activeNoteId: store.activeNoteId.$useState(),
+    autocompleteOptions: autocompleteOptions.$useState(),
+    tagsInCustomGroups: tagsInCustomGroups.$useState(),
+    tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
+    selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
+    floatingRef,
+    modalRef: useRef<HTMLDivElement>(null),
+    autocompleteRef: useRef<AutocompleteHandle>(null),
+    selectedTagRef: useRef<HTMLDivElement>(null),
+    settingsButtonRef: state.modal === 'synonymOptions' ? floatingRef.refs.setReference : null,
+    synonymOptionsRef: state.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null,
     notify,
     props,
     store,

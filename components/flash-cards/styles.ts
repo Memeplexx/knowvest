@@ -22,16 +22,21 @@ export const FlashCardWrapper = styled(possible.div)`
 `;
 
 export const FlashCard = styled.div`
-  background: rgba(255,255,255,0.2);
   display: flex;
+  position: relative;
 `;
 
 export const FlashCardText = styled.textarea`
   flex: 1;
   padding: 4px;
   font-size: 14px;
+  margin-right: 0px;
+  background: rgba(255,255,255,0.2);
   &::placeholder {
     color: grey;
+  }
+  &:focus {
+    outline: 1px solid #fff;
   }
 `;
 
@@ -42,4 +47,10 @@ export const NoResults = styled(possible.div)`
   justify-content: center;
   flex-direction: column;
   color: grey;
+`;
+
+export const DeleteButton = styled(ButtonIcon)`
+  position: absolute;
+  right: 0;
+  top: 0;
 `;

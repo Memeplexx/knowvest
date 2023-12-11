@@ -1,12 +1,12 @@
 import { ForwardedRef, useCallback, useContext, useEffect, useMemo, useRef } from "react";
-import { AutocompleteOptionType, Props, dialogWidth } from "./constants";
+import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
 import { derive } from "olik/derive";
-import { StoreContext } from "@/utils/constants";
+import { useContextForNestedStore } from "@/utils/constants";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const store = useContext(StoreContext)!;
+  const store = useContextForNestedStore(initialState)!;
 
   const state = store.search.$useState();
 
@@ -128,19 +128,15 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   return {
     store,
-    refs: {
-      autocomplete: useRef<AutocompleteHandle>(null),
-      body: useRef<HTMLDivElement>(null),
-    },
-    state: {
-      autocompleteOptions: autocompleteOptions.$useState(),
-      selectedSynonymTags: selectedSynonymTags.$useState(),
-      selectedGroupTags: selectedGroupTags.$useState(),
-      notesByTags: notesByTags.$useState(),
-      tabTitleText,
-      tabButtonText,
-      ...state,
-    },
+    autocompleteRef: useRef<AutocompleteHandle>(null),
+    bodyRef: useRef<HTMLDivElement>(null),
+    autocompleteOptions: autocompleteOptions.$useState(),
+    selectedSynonymTags: selectedSynonymTags.$useState(),
+    selectedGroupTags: selectedGroupTags.$useState(),
+    notesByTags: notesByTags.$useState(),
+    tabTitleText,
+    tabButtonText,
+    ...state,
     props,
   }
 }

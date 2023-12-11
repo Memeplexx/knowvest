@@ -76,22 +76,6 @@ export const Navbar = (props: Props) => {
           </>
         }
       />
-      {/* <PopupOptions
-        showIf={state.showOptions}
-        ref={state.showOptions ? refs.floating.refs.setFloating : null}
-        style={refs.floating.floatingStyles}
-        children={
-          <>
-            <PopupOption
-              children='Sign Out'
-              onClick={outputs.onClickSignOut}
-            />
-            <PopupOption
-              children='Settings'
-            />
-          </>
-        }
-      /> */}
     </>
   );
 }

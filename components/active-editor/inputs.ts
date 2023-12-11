@@ -30,43 +30,41 @@ import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { Store } from 'olik';
 import { AppState, StoreContext } from '@/utils/constants';
+import { initialState } from '../active/constants';
+import { Inputs } from './constants';
 
 
 export const useInputs = () => {
 
-  const store = useContext(StoreContext)!;
+  const store = useContext(StoreContext)! as Store<AppState & typeof initialState>;
+  const state = store.activePanel.$useState();
 
   const mayDeleteNote = derive(store.notes).$with(notes => !!notes.length);
 
-  const state = store.activePanel.$useState();
-
-  const editor = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const codeMirror = useRef<EditorView | null>(null);
 
   useEffect(() => {
     if (codeMirror.current) { return; /* defend against re-render when React strictMode is set to true */ }
-    codeMirror.current = instantiateCodeMirror({ editor: editor.current!, store });
+    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, inputs });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds, store });
-    addAriaAttributeToCodeMirror({ editor: editor.current!, noteId: store.$state.activeNoteId });
+    addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: store.$state.activeNoteId });
   }, [store]);
 
-  return {
+  const inputs = {
     store,
-    refs: {
-      editor,
-    },
-    state: {
-      ...state,
-      mayDeleteNote: mayDeleteNote.$useState(),
-      codeMirror: codeMirror.current,
-    },
+    editorRef,
+    ...state,
+    mayDeleteNote: mayDeleteNote.$useState(),
+    codeMirror: codeMirror.current,
     notify: useContext(NotificationContext)!,
   };
+  return inputs;
 }
 
-export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: Store<AppState> }) => {
+export const instantiateCodeMirror = ({ editor, inputs }: { editor: HTMLDivElement, inputs: Inputs }) => {
   return new EditorView({
     doc: '',
     parent: editor,
@@ -83,11 +81,11 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({ spellcheck: "on", autocapitalize: "on" }),
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
-      autocompleteExtension({ store }),
-      noteTagsPersisterExtension({ store }),
-      createNotePersisterExtension({ debounce: 500, store }),
-      textSelectorPlugin({ store }),
-      editorHasTextUpdater({ store }),
+      autocompleteExtension(inputs),
+      noteTagsPersisterExtension(inputs),
+      createNotePersisterExtension({ debounce: 500, inputs }),
+      textSelectorPlugin(inputs),
+      editorHasTextUpdater(inputs),
       pasteListener,
       bulletPointPlugin,
       inlineNotePlugin,

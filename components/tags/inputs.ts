@@ -1,11 +1,10 @@
-import { StoreContext } from "@/utils/constants";
+import { useContextForNestedStore } from "@/utils/constants";
 import { derive } from "olik/derive";
-import { useContext } from "react";
+import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const store = useContext(StoreContext)!;
-
+  const store = useContextForNestedStore(initialState)!;
   const state = store.tagsPanel.$useState();
 
   const tagIdsForActiveNote = derive(
@@ -89,13 +88,11 @@ export const useInputs = () => {
 
   return {
     store,
-    state: {
-      ...state,
-      groupsWithSynonyms: groupsWithSynonyms.$useState(),
-      tagsForActiveNote: tagsForActiveNote.$useState(),
-      allGroupTagsSelected: allGroupTagsSelected.$useState(),
-      allActiveTagsSelected: allActiveTagsSelected.$useState(),
-      tagIdsForActiveNote: tagIdsForActiveNote.$useState(),
-    },
+    ...state,
+    groupsWithSynonyms: groupsWithSynonyms.$useState(),
+    tagsForActiveNote: tagsForActiveNote.$useState(),
+    allGroupTagsSelected: allGroupTagsSelected.$useState(),
+    allActiveTagsSelected: allActiveTagsSelected.$useState(),
+    tagIdsForActiveNote: tagIdsForActiveNote.$useState(),
   };
 };

@@ -1,16 +1,17 @@
 import { useContext, useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
-import { ServerSideProps, initialTransientState } from "./constants";
+import { ServerSideProps, initialState, initialTransientState } from "./constants";
 import { NoteId } from "@/server/dtos";
 import { useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { StoreContext } from "@/utils/constants";
+import { StoreContext, useContextForNestedStore } from "@/utils/constants";
 
 
 export const useInputs = (props: ServerSideProps) => {
 
-  const store = useContext(StoreContext)!;
+  const store = useContextForNestedStore(initialState)!;
+  const state = store.home.$useState();
 
   useLogoutUserIfSessionExpired();
 
@@ -23,7 +24,7 @@ export const useInputs = (props: ServerSideProps) => {
   return {
     store,
     ...useRecord(initialTransientState),
-    ...store.home.$useState(),
+    ...state,
   }
 }
 
@@ -37,7 +38,7 @@ const useInitializeOlikDevtools = () => {
 
 const useStoreStateInitializer = (props: ServerSideProps) => {
   const init = useRef(false);
-  const store = useContext(StoreContext)!;
+  const store = useContextForNestedStore(initialState)!;
   if (!init.current) {
     init.current = true;
     const activeNoteId = props.notes[0]?.id || 0 as NoteId;
@@ -46,15 +47,12 @@ const useStoreStateInitializer = (props: ServerSideProps) => {
       ...props,
       activeNoteId,
       synonymIds: props.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct(),
-      activePanel: {
-        editorHasText: !!props.notes[0]?.text || false,
-      }
     });
   }
 }
 
 const useHeaderExpander = () => {
-  const store = useContext(StoreContext)!;
+  const store = useContextForNestedStore(initialState)!;
   useIsomorphicLayoutEffect(() => {
     const listener = () => {
       const { headerExpanded: headerContracted } = store.$state.home;

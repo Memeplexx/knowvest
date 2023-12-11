@@ -3,7 +3,7 @@ import { useInputs } from "./inputs";
 
 export type Props = HTMLAttributes<HTMLDivElement>;
 
-export const navBarInitialState = {
+export const initialState = {
   showOptions: false,
   showDialog: false,
 };

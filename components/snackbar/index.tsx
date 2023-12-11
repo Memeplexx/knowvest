@@ -7,14 +7,14 @@ export const Snackbar = function Snackbar(
   partialProps: Props,
 ) {
   const inputs = useInputs(partialProps);
-  const { state, refs, props } = inputs;
+  const { state, floatingRef, props } = inputs;
   return (
     <Container
-      ref={refs.floating.refs.setReference}
+      ref={floatingRef.refs.setReference}
       children={
         <Popup
-          ref={refs.floating.refs.setFloating}
-          style={refs.floating.floatingStyles}
+          ref={floatingRef.refs.setFloating}
+          style={floatingRef.floatingStyles}
           children={
             state.map((message, index) => (
               <Message

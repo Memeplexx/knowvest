@@ -13,26 +13,25 @@ export const SearchDialog = forwardRef(function SearchDialog(
 ) {
   const inputs = useInputs(ref, props);
   const outputs = useOutputs(inputs);
-  const { state, refs, store } = inputs;
   return (
     <Container
-      ref={refs.body}
+      ref={inputs.bodyRef}
       children={
         <>
           <TabsWrapper
-            showIf={state.screenIsNarrow}
+            showIf={inputs.screenIsNarrow}
             children={
               <>
                 <TabTitle
-                  children={state.tabTitleText}
+                  children={inputs.tabTitleText}
                 />
                 <TabsButtons
                   children={
                     <>
                       <TabButton
-                        children={state.tabButtonText}
+                        children={inputs.tabButtonText}
                         onClick={outputs.onClickTabButton}
-                        aria-label={state.tabButtonText}
+                        aria-label={inputs.tabButtonText}
                         highlighted={false}
                       />
                       <CloseButton
@@ -50,18 +49,18 @@ export const SearchDialog = forwardRef(function SearchDialog(
             children={
               <>
                 <LeftContent
-                  showIf={state.showSearchPane}
+                  showIf={inputs.showSearchPane}
                   children={
                     <>
                       <Autocomplete<AutocompleteOptionType>
-                        ref={refs.autocomplete}
-                        options={state.autocompleteOptions}
+                        ref={inputs.autocompleteRef}
+                        options={inputs.autocompleteOptions}
                         inputPlaceholder='Search Tags and Groups'
                         onValueChange={outputs.onAutocompleteSelected}
                         onInputTextChange={outputs.onAutocompleteInputChange}
-                        inputText={state.autocompleteText}
+                        inputText={inputs.autocompleteText}
                         onShowOptionsChange={outputs.onAutocompleteShowOptionsChange}
-                        showOptions={state.showAutocompleteOptions}
+                        showOptions={inputs.showAutocompleteOptions}
                         onInputFocused={outputs.onAutocompleteInputFocused}
                         renderOption={o => (
                           <AutocompleteOption
@@ -96,7 +95,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                   />
                                   <TagsWrapper
                                     children={
-                                      state.selectedSynonymTags.map(tags => (
+                                      inputs.selectedSynonymTags.map(tags => (
                                         <Fragment
                                           key={tags[0].synonymId}
                                           children={
@@ -104,7 +103,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                               {tags.map(tag =>
                                                 <Tag
                                                   key={tag.id}
-                                                  $hovered={tag.synonymId === state.hoveredSynonymId}
+                                                  $hovered={tag.synonymId === inputs.hoveredSynonymId}
                                                   onClick={() => outputs.onClickSelectedSynonym(tag.synonymId)}
                                                   children={tag.text}
                                                   $first={tag.first}
@@ -122,7 +121,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                 </>
                               }
                             />
-                            {state.selectedGroupTags.map(group => (
+                            {inputs.selectedGroupTags.map(group => (
                               <CategoryWrapper
                                 key={group.groupId}
                                 children={
@@ -135,7 +134,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                         synonym.tags.map(tag => (
                                           <Tag
                                             key={tag.id}
-                                            $hovered={tag.synonymId === state.hoveredSynonymId}
+                                            $hovered={tag.synonymId === inputs.hoveredSynonymId}
                                             children={tag.text}
                                             $first={tag.first}
                                             $last={tag.last}
@@ -157,12 +156,12 @@ export const SearchDialog = forwardRef(function SearchDialog(
                   }
                 />
                 <RightContent
-                  showIf={state.showResultsPane}
-                  children={state.notesByTags.map(note => (
+                  showIf={inputs.showResultsPane}
+                  children={inputs.notesByTags.map(note => (
                     <Result
                       key={note.id}
                       note={note}
-                      synonymIds={store.search.selectedSynonymIds}
+                      synonymIds={inputs.store.search.selectedSynonymIds}
                       onClick={() => outputs.onClickResult(note.id)}
                     />
                   ))}

@@ -5,7 +5,7 @@ import { useEventHandlerForDocument } from "@/utils/hooks";
 import { ancestorMatches } from "@/utils/functions";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { state, refs, props, store } = inputs;
+  const { props, store } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
       if ((event.target as HTMLElement).parentNode === null) { // element was removed from the DOM
@@ -14,17 +14,17 @@ export const useOutputs = (inputs: Inputs) => {
       if (ancestorMatches(event.target, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
         return;
       }
-      if (state.showAutocompleteOptions) {
+      if (inputs.showAutocompleteOptions) {
         return store.search.showAutocompleteOptions.$set(false);
       }
-      if (refs.body.current?.contains(event.target as HTMLElement)) {
+      if (inputs.bodyRef.current?.contains(event.target as HTMLElement)) {
         return;
       }
       props.onHide();
     }),
     onAutocompleteSelected: (value: string | null) => {
-      state.autocompleteText && store.search.autocompleteText.$set('');
-      const selection = state.autocompleteOptions.findOrThrow(o => o.value === value);
+      inputs.autocompleteText && store.search.autocompleteText.$set('');
+      const selection = inputs.autocompleteOptions.findOrThrow(o => o.value === value);
       if (selection.type === 'synonym') {
         onSelectSynonym(inputs, selection.id as SynonymId);
       } else if (selection.type === 'group') {
@@ -61,15 +61,15 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
       if (event.key !== 'Escape') { return; }
-      if (state.showAutocompleteOptions) {
+      if (inputs.showAutocompleteOptions) {
         return store.search.showAutocompleteOptions.$set(false);
       }
       props.onHide();
     }),
     onClickTabButton: () => {
-      if (state.showingTab === 'search') {
+      if (inputs.showingTab === 'search') {
         store.search.$patch({ showingTab: 'results', showSearchPane: false, showResultsPane: true })
-      } else if (state.showingTab === 'results') {
+      } else if (inputs.showingTab === 'results') {
         store.search.$patch({ showingTab: 'search', showSearchPane: true, showResultsPane: false })
       }
     },

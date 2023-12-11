@@ -23,17 +23,16 @@ import { Inputs } from './constants';
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { state, notify, refs, props, store } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
-      store.config.$patch({
+      inputs.store.config.$patch({
         groupId,
         groupSynonymId: null,
-        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
+        focusedGroupNameInputText: inputs.store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
     onCustomGroupNameBlur: (groupId: GroupId) => {
-      store.config.focusedGroupNameInputText.$set(store.$state.groups.findOrThrow(g => g.id === groupId).name);
+      inputs.store.config.focusedGroupNameInputText.$set(inputs.store.$state.groups.findOrThrow(g => g.id === groupId).name);
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
@@ -41,42 +40,42 @@ export const useOutputs = (inputs: Inputs) => {
       } else if (event.key === 'Escape') {
         event.target.blur();
         event.stopPropagation();
-        store.config.groupId.$set(null);
+        inputs.store.config.groupId.$set(null);
       }
     },
     onCustomGroupNameChange: (event: ChangeEvent<HTMLInputElement>) => {
-      store.config.focusedGroupNameInputText.$set(event.target.value);
+      inputs.store.config.focusedGroupNameInputText.$set(event.target.value);
     },
     onClickHideOptionsForSynonyms: () => {
-      store.config.modal.$set(null);
+      inputs.store.config.modal.$set(null);
     },
     onClickHideOptionsForGroup: () => {
-      store.config.modal.$set(null);
+      inputs.store.config.modal.$set(null);
     },
     onClickTagSynonym: (event: MouseEvent<HTMLElement>, tagId: TagId) => {
       event.stopPropagation();
-      if (state.tagId === tagId) {
-        return store.config.$patch({
+      if (inputs.tagId === tagId) {
+        return inputs.store.config.$patch({
           tagId: null,
           autocompleteText: '',
           groupSynonymId: null,
         })
       }
-      store.config.$patch({
+      inputs.store.config.$patch({
         tagId,
         groupId: null,
-        autocompleteText: store.$state.tags.findOrThrow(t => t.id === tagId).text,
+        autocompleteText: inputs.store.$state.tags.findOrThrow(t => t.id === tagId).text,
         groupSynonymId: null,
       });
       focusAutocompleteInput(inputs);
     },
     onClickGroupSynonym: (event: MouseEvent<HTMLElement>, groupId: GroupId, groupSynonymId: SynonymId) => {
       event.stopPropagation();
-      if (state.groupId === groupId && state.groupSynonymId === groupSynonymId) {
-        return store.config.groupSynonymId.$set(null);
+      if (inputs.groupId === groupId && inputs.groupSynonymId === groupSynonymId) {
+        return inputs.store.config.groupSynonymId.$set(null);
       }
-      const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
-      store.config.$patch({
+      const focusedGroupNameInputText = inputs.store.$state.groups.findOrThrow(g => g.id === groupId).name;
+      inputs.store.config.$patch({
         tagId: null,
         groupId,
         groupSynonymId,
@@ -85,63 +84,63 @@ export const useOutputs = (inputs: Inputs) => {
       });
     },
     onClickRemoveTagFromSynonyms: async () => {
-      if (!state.tagId) { return; }
-      const apiResponse = await trpc.synonym.removeTagFromItsCurrentSynonym.mutate({ tagId: state.tagId });
+      if (!inputs.tagId) { return; }
+      const apiResponse = await trpc.synonym.removeTagFromItsCurrentSynonym.mutate({ tagId: inputs.tagId });
       const groupIds = apiResponse.deletedSynonymGroups.map(nt => nt.groupId);
       const synonymIds = apiResponse.deletedSynonymGroups.map(nt => nt.synonymId);
-      store.config.$patch({ tagId: null, autocompleteText: '' });
-      store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
-      store.tags.$find.id.$eq(apiResponse.tagUpdated.id).$set(apiResponse.tagUpdated);
-      notify.success('Tag removed from synonyms');
+      inputs.store.config.$patch({ tagId: null, autocompleteText: '' });
+      inputs.store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
+      inputs.store.tags.$find.id.$eq(apiResponse.tagUpdated.id).$set(apiResponse.tagUpdated);
+      inputs.notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
-      if (!state.groupSynonymId) { return; }
-      const response = await trpc.group.removeSynonym.mutate({ groupId: state.groupId!, synonymId: state.groupSynonymId });
-      response.deletedGroup && store.groups
+      if (!inputs.groupSynonymId) { return; }
+      const response = await trpc.group.removeSynonym.mutate({ groupId: inputs.groupId!, synonymId: inputs.groupSynonymId! });
+      response.deletedGroup && inputs.store.groups
         .$find.id.$eq(response.deletedGroup.id)
         .$delete();
-      store.synonymGroups
+      inputs.store.synonymGroups
         .$filter.groupId.$eq(response.deletedSynonymGroup.groupId).$and.synonymId.$eq(response.deletedSynonymGroup.synonymId)
         .$delete();
-      store.config
+      inputs.store.config
         .$patch({ tagId: null, groupId: null, groupSynonymId: null });
-      notify.success('Tag-Synonym removed from group');
+      inputs.notify.success('Tag-Synonym removed from group');
     },
     onClickDeleteTag: (event: MouseEvent) => {
       event.stopPropagation();
-      store.config.modal.$set('confirmDeleteTag');
+      inputs.store.config.modal.$set('confirmDeleteTag');
     },
     onClickEnterEditTextMode: () => {
       focusAutocompleteInput(inputs);
     },
     onAutocompleteInputEnter: async () => {
-      if (!state.synonymId) {
+      if (!inputs.synonymId) {
         await completeCreateTag(inputs)
-      } else if (state.tagId) {
+      } else if (inputs.tagId) {
         await completeEditTag(inputs)
-      } else if (state.autocompleteAction === 'addSynonymsToActiveSynonyms') {
+      } else if (inputs.autocompleteAction === 'addSynonymsToActiveSynonyms') {
         await completeCreateTagForSynonym(inputs)
-      } else if (state.autocompleteAction === 'addSynonymsToActiveGroup') {
+      } else if (inputs.autocompleteAction === 'addSynonymsToActiveGroup') {
         await completeCreateTagForGroup(inputs)
-      } else if (state.autocompleteAction === 'addActiveSynonymsToAGroup') {
+      } else if (inputs.autocompleteAction === 'addActiveSynonymsToAGroup') {
         await completeCreateGroup(inputs)
       }
     },
     onAutocompleteInputChange: (value: string) => {
-      store.config.autocompleteText.$set(value);
+      inputs.store.config.autocompleteText.$set(value);
     },
     onAutocompleteInputFocused: () => {
-      if (!state.tagId && !state.showAutocompleteOptions) {
-        store.config.showAutocompleteOptions.$set(true);
+      if (!inputs.tagId && !inputs.showAutocompleteOptions) {
+        inputs.store.config.showAutocompleteOptions.$set(true);
       }
     },
     onAutocompleteInputCancel: () => {
-      const autocompleteText = !state.tagId ? '' : store.$state.tags.findOrThrow(t => t.id === state.tagId).text;
-      store.config.autocompleteText.$set(autocompleteText);
+      const autocompleteText = !inputs.tagId ? '' : inputs.store.$state.tags.findOrThrow(t => t.id === inputs.tagId).text;
+      inputs.store.config.autocompleteText.$set(autocompleteText);
       blurAutocompleteInput(inputs);
     },
     onClickAddNewTagToSynonymGroup: () => {
-      store.config.$patch({
+      inputs.store.config.$patch({
         autocompleteAction: 'addSynonymsToActiveSynonyms',
         autocompleteText: '',
         tagId: null,
@@ -149,7 +148,7 @@ export const useOutputs = (inputs: Inputs) => {
       focusAutocompleteInput(inputs);
     },
     onClickAddCurrentSynonymsToExistingGroup: () => {
-      store.config.$patch({
+      inputs.store.config.$patch({
         autocompleteAction: 'addActiveSynonymsToAGroup',
         autocompleteText: '',
         tagId: null,
@@ -157,7 +156,7 @@ export const useOutputs = (inputs: Inputs) => {
       focusAutocompleteInput(inputs);
     },
     onClickAddSynonymToCustomGroup: () => {
-      store.config.$patch({
+      inputs.store.config.$patch({
         autocompleteAction: 'addSynonymsToActiveGroup',
         autocompleteText: '',
         showAutocompleteOptions: true,
@@ -165,12 +164,11 @@ export const useOutputs = (inputs: Inputs) => {
       focusAutocompleteInput(inputs);
     },
     onClickUpdateGroupSynonym: () => {
-      const { groupId, groupSynonymId } = state;
-      if (!groupId || !groupSynonymId) { throw new Error(); }
-      const synonymId = store.$state.synonymGroups
-        .findOrThrow(sg => sg.groupId === groupId && sg.synonymId === groupSynonymId)
+      if (!inputs.groupId || !inputs.groupSynonymId) { throw new Error(); }
+      const synonymId = inputs.store.$state.synonymGroups
+        .findOrThrow(sg => sg.groupId === inputs.groupId && sg.synonymId === inputs.groupSynonymId)
         .synonymId;
-      store.config.$patch({
+      inputs.store.config.$patch({
         tagId: null,
         groupId: null,
         synonymId,
@@ -180,7 +178,7 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickStartOver: (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
-      store.config.$patch({
+      inputs.store.config.$patch({
         tagId: null,
         groupId: null,
         synonymId: null,
@@ -194,14 +192,14 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickDeleteGroup: (event: MouseEvent) => {
       event.stopPropagation();
-      store.config.modal.$set('confirmDeleteGroup');
+      inputs.store.config.modal.$set('confirmDeleteGroup');
     },
     onAutocompleteSelected: async (id: TagId | GroupId | null) => {
-      if (state.autocompleteAction === 'addActiveSynonymsToAGroup') {
+      if (inputs.autocompleteAction === 'addActiveSynonymsToAGroup') {
         await onAutocompleteSelectedWhileAddActiveSynonymsToGroup({ inputs, groupId: id as GroupId });
-      } else if (state.autocompleteAction === 'addSynonymsToActiveSynonyms') {
+      } else if (inputs.autocompleteAction === 'addSynonymsToActiveSynonyms') {
         await onAutocompleteSelectedWhileSynonymIsSelected({ inputs, tagId: id as TagId });
-      } else if (state.autocompleteAction === 'addSynonymsToActiveGroup') {
+      } else if (inputs.autocompleteAction === 'addSynonymsToActiveGroup') {
         await onAutocompleteSelectedWhileGroupIsSelected({ inputs, tagId: id as TagId });
       } else {
         await onAutocompleteSelectedWhileNothingIsSelected({ inputs, tagId: id as TagId });
@@ -219,9 +217,9 @@ export const useOutputs = (inputs: Inputs) => {
         return;
       }
       if ((event.target as HTMLElement).tagName === 'INPUT') {
-        refs.autocomplete.current?.blurInput();
-        if (state.showAutocompleteOptions) {
-          store.config.showAutocompleteOptions.$set(false)
+        inputs.autocompleteRef.current?.blurInput();
+        if (inputs.showAutocompleteOptions) {
+          inputs.store.config.showAutocompleteOptions.$set(false)
         }
         return;
       }
@@ -229,10 +227,10 @@ export const useOutputs = (inputs: Inputs) => {
     }),
     onClickDialogBody: (event: MouseEvent) => {
       event.stopPropagation();
-      if (state.modal) {
-        return store.config.modal.$set(null);
+      if (inputs.modal) {
+        return inputs.store.config.modal.$set(null);
       }
-      store.config.$patch({
+      inputs.store.config.$patch({
         tagId: null,
         groupId: null,
         autocompleteText: '',
@@ -241,45 +239,45 @@ export const useOutputs = (inputs: Inputs) => {
       blurAutocompleteInput(inputs);
     },
     onClickConfirmDeleteTag: async () => {
-      const apiResponse = await trpc.tag.delete.mutate({ tagId: state.tagId! });
+      const apiResponse = await trpc.tag.delete.mutate({ tagId: inputs.tagId! });
       const tagIds = apiResponse.noteTagsDeleted.map(nt => nt.tagId);
       const noteIds = apiResponse.noteTagsDeleted.map(nt => nt.noteId);
       const groupIds = apiResponse.deletedSynonymGroups.map(nt => nt.groupId);
       const synonymIds = apiResponse.deletedSynonymGroups.map(nt => nt.synonymId);
-      const synonymId = state.tagsInSynonymGroup.length === 1 ? null : state.synonymId;
-      const lastTag = state.tagsInSynonymGroup.length === 1;
-      store.config.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : store.$state.config.autocompleteAction });
-      store.tags.$find.id.$eq(apiResponse.tagDeleted.id).$delete();
-      store.noteTags.$filter.tagId.$in(tagIds).$and.noteId.$in(noteIds).$delete();
-      store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
-      notify.success('Tag deleted');
+      const synonymId = inputs.tagsInSynonymGroup.length === 1 ? null : inputs.synonymId;
+      const lastTag = inputs.tagsInSynonymGroup.length === 1;
+      inputs.store.config.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : inputs.autocompleteAction });
+      inputs.store.tags.$find.id.$eq(apiResponse.tagDeleted.id).$delete();
+      inputs.store.noteTags.$filter.tagId.$in(tagIds).$and.noteId.$in(noteIds).$delete();
+      inputs.store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
+      inputs.notify.success('Tag deleted');
     },
     onClickConfirmDeleteGroup: async () => {
-      const response = await trpc.group.delete.mutate({ groupId: state.groupId! });
-      store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-      store.synonymGroups.$filter.groupId.$eq(response.groupDeleted.id).$delete();
-      store.groups.$filter.id.$eq(response.groupDeleted.id).$delete();
-      notify.success('Group deleted');
+      const response = await trpc.group.delete.mutate({ groupId: inputs.groupId! });
+      inputs.store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
+      inputs.store.synonymGroups.$filter.groupId.$eq(response.groupDeleted.id).$delete();
+      inputs.store.groups.$filter.id.$eq(response.groupDeleted.id).$delete();
+      inputs.notify.success('Group deleted');
     },
     onCancelConfirmation: () => {
-      store.config.modal.$set(null);
+      inputs.store.config.modal.$set(null);
     },
     onClickShowOptionsForSynonyms: () => {
-      if (state.modal) {
-        return store.config.modal.$set(null);
+      if (inputs.modal) {
+        return inputs.store.config.modal.$set(null);
       }
-      store.config.$patch({
+      inputs.store.config.$patch({
         modal: 'synonymOptions',
         groupId: null,
         groupSynonymId: null,
       })
     },
     onClickShowOptionsForGroup: (groupId: GroupId) => {
-      if (state.groupId === groupId && state.modal) {
-        return store.config.modal.$set(null);
+      if (inputs.groupId === groupId && inputs.modal) {
+        return inputs.store.config.modal.$set(null);
       }
-      const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
-      store.config.$patch({
+      const focusedGroupNameInputText = inputs.store.$state.groups.findOrThrow(g => g.id === groupId).name;
+      inputs.store.config.$patch({
         modal: 'groupOptions',
         groupId,
         tagId: null,
@@ -287,16 +285,16 @@ export const useOutputs = (inputs: Inputs) => {
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      store.config.$patch({ hoveringGroupId, hoveringSynonymId });
+      inputs.store.config.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      store.config.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
+      inputs.store.config.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
     },
     onShowAutocompleteOptionsChange: (showAutocompleteOptions: boolean) => {
-      store.config.showAutocompleteOptions.$set(showAutocompleteOptions)
+      inputs.store.config.showAutocompleteOptions.$set(showAutocompleteOptions)
     },
     onClickCloseButton: () => {
-      props.onHide();
+      inputs.props.onHide();
     },
   };
 }
