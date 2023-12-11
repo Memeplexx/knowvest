@@ -1,10 +1,11 @@
-import { StoreContext } from "@/utils/constants";
+import { StoreContext, useContextForNestedStore } from "@/utils/constants";
 import { useSession } from "next-auth/react";
 import { useContext } from "react";
+import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const store = useContext(StoreContext)!;
+  const store = useContextForNestedStore(initialState)!;
 
   const state = store.navBar.$useState();
 
@@ -12,9 +13,7 @@ export const useInputs = () => {
 
   return {
     store,
-    state: {
-      ...state,
-      session,
-    },
+    ...state,
+    session,
   }
 }

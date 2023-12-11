@@ -49,8 +49,14 @@ export const NoResults = styled(possible.div)`
   color: grey;
 `;
 
-export const DeleteButton = styled(ButtonIcon)`
+export const DeleteButton = styled(ButtonIcon) <{ $hovered: boolean }>`
   position: absolute;
   right: 0;
   top: 0;
+  opacity: 0.2;
+  background-color: transparent;
+  &:hover {
+    opacity: 1;
+    background-color: #494949;
+  }
 `;

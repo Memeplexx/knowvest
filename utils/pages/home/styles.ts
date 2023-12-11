@@ -2,16 +2,17 @@ import { Active } from "@/components/active";
 import { History } from "@/components/history";
 import { Related } from "@/components/related";
 import { Tabs } from "@/components/card-with-tabs";
-import { IconButton, defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
+import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
 import { Tags } from "@/components/tags";
 import { FlashCards } from "@/components/flash-cards";
+import { ButtonIcon } from "@/components/button-icon";
 
 const gap = '4px';
 
 
 
-const BaseToggleButton = styled(IconButton) <{ selected?: boolean }>`
+const BaseToggleButton = styled(ButtonIcon) <{ selected?: boolean }>`
   width: 32px;
   height: 32px;
   position: fixed;

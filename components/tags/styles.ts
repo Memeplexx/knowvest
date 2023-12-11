@@ -1,6 +1,7 @@
-import { SettingsIcon as BaseSettingsIcon, IconButton } from '@/utils/styles';
+import { SettingsIcon as BaseSettingsIcon } from '@/utils/styles';
 import styled from 'styled-components';
 import { possible } from '../html';
+import { ButtonIcon } from '../button-icon';
 
 export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $last: boolean, $active: boolean }>`
   font-size: 12px;
@@ -38,7 +39,7 @@ export const ActiveHeaderTag = styled(Tag)`
 export const GroupHeaderTag = styled(Tag)`
 `;
 
-export const SettingsButton = styled(IconButton)`
+export const SettingsButton = styled(ButtonIcon)`
   position: absolute;
   top: 16px;
   right: 16px;

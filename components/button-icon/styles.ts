@@ -5,8 +5,8 @@ import { mobileBreakPoint } from "@/utils/styles";
 
 export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   padding: 6px;
   display: flex;
   background-color: transparent;
@@ -23,10 +23,10 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
     opacity: 0.5;
   `}
   @media (min-width: ${mobileBreakPoint}) {
-    transform: scale(0.65);
+    transform: scale(1);
     transition: all 0.2s cubic-bezier(0,.73,.44,1);
     &:hover {
-      transform: scale(1);
+      transform: scale(1.4);
       background-color: ${p => p.selected ? '#000' : 'rgba(255,255,255,0.1)'};
       filter: drop-shadow(0 0mm 4mm rgba(0,0,0,0.4));
     }

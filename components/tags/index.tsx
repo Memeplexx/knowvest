@@ -21,11 +21,10 @@ import {
 export const Tags = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { showConfigDialog, tagsForActiveNote, allActiveTagsSelected, groupsWithSynonyms, allGroupTagsSelected, hoveringGroupId, hoveringSynonymId } = inputs;
   return (
     <>
       <Modal
-        showIf={showConfigDialog}
+        showIf={inputs.showConfigDialog}
         onClose={outputs.onHideDialog}
         children={
           <TagsConfig
@@ -34,7 +33,7 @@ export const Tags = () => {
         }
       />
       <SettingsButton
-        showIf={!!tagsForActiveNote.length}
+        showIf={!!inputs.tagsForActiveNote.length}
         children={<SettingsIcon />}
         onClick={outputs.onShowDialog}
         aria-label='Settings'
@@ -46,17 +45,17 @@ export const Tags = () => {
               children={
                 <>
                   <ActiveHeaderTag
-                    showIf={!tagsForActiveNote.length}
-                    selected={allActiveTagsSelected}
+                    showIf={!inputs.tagsForActiveNote.length}
+                    selected={inputs.allActiveTagsSelected}
                     onClick={outputs.onChangeAllActiveTagsSelected}
                     children='Active'
                     $first={true}
                     $last={true}
-                    $active={allActiveTagsSelected}
+                    $active={inputs.allActiveTagsSelected}
                   />
                   <TagsWrapper
                     children={
-                      tagsForActiveNote.map(synonyms => (
+                      inputs.tagsForActiveNote.map(synonyms => (
                         <Fragment
                           key={synonyms.synonymId}
                           children={synonyms.tags.map(tag => (
@@ -77,25 +76,25 @@ export const Tags = () => {
                 </>
               }
             />
-            {groupsWithSynonyms.map(group => (
+            {inputs.groupsWithSynonyms.map(group => (
               <TagsSection
                 key={group.groupId}
                 children={
                   <>
                     <GroupHeaderTag
-                      selected={!!allGroupTagsSelected.get(group.groupId)}
+                      selected={!!inputs.allGroupTagsSelected.get(group.groupId)}
                       onClick={() => outputs.onChangeAllGroupTagsSelected(group.groupId)}
                       children={`Group: ${group.groupName}`}
                       $first={true}
                       $last={true}
-                      $active={!!allGroupTagsSelected.get(group.groupId)}
+                      $active={!!inputs.allGroupTagsSelected.get(group.groupId)}
                     />
                     <TagsWrapper
                       children={group.synonyms.map(synonym => (
                         synonym.tags.map(tag => (
                           <Tag
                             key={tag.id}
-                            selected={(hoveringGroupId === group.groupId && hoveringSynonymId === synonym.id) || synonym.selected}
+                            selected={(inputs.hoveringGroupId === group.groupId && inputs.hoveringSynonymId === synonym.id) || synonym.selected}
                             onClick={() => outputs.onClickSynonym(synonym.id)}
                             children={tag.text}
                             $first={tag.first}
@@ -112,7 +111,7 @@ export const Tags = () => {
               />
             ))}
             <NoTagsPlaceholder
-              showIf={!tagsForActiveNote.length}
+              showIf={!inputs.tagsForActiveNote.length}
               children={
                 <>
                   No tags associated with active note

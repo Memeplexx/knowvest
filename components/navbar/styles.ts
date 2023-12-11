@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { possible } from "../html";
 import { SearchIcon as BaseSearchIcon } from "@/utils/styles";
 import { ButtonIcon } from "../button-icon";
+import { PiStudentFill, PiStudentThin } from 'react-icons/pi';
 
 export const Wrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;
@@ -25,6 +26,8 @@ export const ImageLogo = styled(Image)`
 export const RightContent = styled(possible.div)`
   display: flex;
   gap: 8px;
+  align-items: center;
+  gap: 16px;
 `;
 
 export const SearchIcon = styled(BaseSearchIcon)`
@@ -48,4 +51,19 @@ export const UserImage = styled(Image)`
 `;
 
 export const SearchButton = styled(ButtonIcon)`
+  background-color: rgba(255,255,255,0.2);
+`;
+
+export const FlashCardButton = styled(ButtonIcon)`
+  position: relative;
+  background-color: rgba(255,255,255,0.2);
+`;
+
+export const FlashCardIcon = styled(PiStudentFill)`
+`;
+
+export const FlashCardCount = styled.div`
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
 `;

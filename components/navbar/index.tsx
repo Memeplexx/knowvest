@@ -6,16 +6,15 @@ import { SearchDialog } from '../search';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ImageLogo, RightContent, SearchButton, SearchIcon, UserButton, UserImage, Wrapper } from './styles';
+import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, RightContent, SearchButton, SearchIcon, UserButton, UserImage, Wrapper } from './styles';
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { state } = inputs;
   return (
     <>
       <Modal
-        showIf={state.showDialog}
+        showIf={inputs.showDialog}
         onClose={outputs.onHideDialog}
         children={
           <SearchDialog
@@ -38,6 +37,16 @@ export const Navbar = (props: Props) => {
             <RightContent
               children={
                 <>
+                  <FlashCardButton
+                    children={
+                      <>
+                        <FlashCardIcon />
+                        <FlashCardCount
+                          children={inputs.flashCardCount}
+                        />
+                      </>
+                    }
+                  />
                   <SearchButton
                     children={<SearchIcon />}
                     onClick={outputs.onClickSearchButton}
@@ -51,7 +60,7 @@ export const Navbar = (props: Props) => {
                           <UserImage
                             width={44}
                             height={44}
-                            src={state.session?.user?.image || '/images/user.svg'}
+                            src={inputs.session?.user?.image || '/images/user.svg'}
                             alt='user image'
                             priority={true}
                           />

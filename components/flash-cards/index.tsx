@@ -9,7 +9,6 @@ import { Container, CreateNewButton, DeleteButton, FlashCard, FlashCardText, Fla
 export const FlashCards = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { items, confirmDeleteId, store } = inputs;
   return (
     <>
       <CreateNewButton
@@ -21,9 +20,9 @@ export const FlashCards = () => {
         children={
           <>
             <FlashCardWrapper
-              showIf={!!items.length}
+              showIf={!!inputs.items.length}
               children={
-                items.map(flashCard => (
+                inputs.items.map(flashCard => (
                   <FlashCard
                     key={flashCard.id}
                     children={
@@ -31,19 +30,18 @@ export const FlashCards = () => {
                         <FlashCardText
                           value={flashCard.text}
                           onChange={e => outputs.onChangeFlashCardText(flashCard.id, e.target.value)}
-                          onFocus={() => outputs.onFocusTextEditor(flashCard.id)}
-                          onBlur={outputs.onBlurTextEditor}
                           placeholder="Create a question to test yourself with..."
                           rows={4}
                         />
                         <DeleteButton
-                          showIf={!!flashCard.text && inputs.focusId === flashCard.id}
+                          showIf={!!flashCard.text /*&& inputs.focusId === flashCard.id*/}
+                          $hovered={inputs.focusId === flashCard.id}
                           children={<DeleteIcon />}
                           onClick={() => outputs.onClickRequestDeleteFlashCard(flashCard.id)}
                         />
                         <Confirmation
-                          showIf={!!confirmDeleteId}
-                          onClose={() => store.flashCards.confirmDeleteId.$set(null)}
+                          showIf={!!inputs.confirmDeleteId}
+                          onClose={() => inputs.store.flashCards.confirmDeleteId.$set(null)}
                           onConfirm={() => outputs.onClickRemoveFlashCard(flashCard.id)}
                           title='Delete note requested'
                           message='Are you sure you want to delete this flash card?'
@@ -55,7 +53,7 @@ export const FlashCards = () => {
               }
             />
             <NoResults
-              showIf={!items.length}
+              showIf={!inputs.items.length}
               children={
                 <>
                   <NoResultsIcon />

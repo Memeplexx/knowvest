@@ -99,13 +99,5 @@ export const DownIcon = styled(MdKeyboardArrowDown)`
   ${resetIconDims}
 `;
 
-export const IconButton = styled(possible.button)`
-  display: flex;
-  cursor: pointer;
-  svg {
-    flex: 1;
-  }
-`;
-
 export const mobileBreakPoint = '1000px';
 
