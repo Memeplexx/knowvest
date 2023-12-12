@@ -28,7 +28,7 @@ export const flashCardRouter = router({
     .query(async ({ ctx: { userId } }) => {
 
       // Logic
-      const flashCards = await prisma.flashCard.findMany({ where: { nextQuestionDate: new Date(), note: { userId } } });
+      const flashCards = await prisma.flashCard.findMany({ where: { nextQuestionDate: { lt: new Date() }, note: { userId } }, include: { note: true } });
       return { status: 'FLASH CARDS FOUND', flashCards };
     }),
 

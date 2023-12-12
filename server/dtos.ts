@@ -44,6 +44,7 @@ export interface UserDTO extends User {
 export interface FlashCardDTO extends FlashCard {
   id: FlashCardId;
   noteId: NoteId;
+  note?: NoteDTO;
 }
 
 export const ZodNoteId = z.number() as unknown as ZodType<NoteId, ZodNumberDef>;

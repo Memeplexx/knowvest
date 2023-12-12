@@ -17,5 +17,8 @@ export const useOutputs = (inputs: Inputs) => {
       }
       props.onHide();
     }),
+    onToggleView: () => {
+      store.flashCard.showQuestions.$toggle();
+    },
   };
 }

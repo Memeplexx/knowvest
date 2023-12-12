@@ -8,22 +8,21 @@ import { useInputs } from './inputs';
 export default function ActiveEditor() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
-  const { selection, editorRef, loadingSelection } = inputs;
   return (
     <TextEditorWrapper
       onClick={outputs.onClickTextEditorWrapper}
       children={
         <>
           <TextEditor
-            ref={editorRef}
+            ref={inputs.editorRef}
             onBlur={outputs.onBlurTextEditor}
           />
           <ActiveSelection
-            showIf={!!selection}
+            showIf={!!inputs.selection}
             children={
               <>
                 <ActiveSelectionTagName
-                  children={'"' + selection + '"'}
+                  children={'"' + inputs.selection + '"'}
                 />
                 <ActiveSelectionInstructions
                   children={
@@ -65,7 +64,7 @@ export default function ActiveEditor() {
                   }
                 />
                 <Loader
-                  showIf={loadingSelection}
+                  showIf={inputs.loadingSelection}
                 />
               </>
             }

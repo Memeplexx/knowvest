@@ -3,7 +3,7 @@ import { possible } from "../html";
 import { mobileBreakPoint } from "@/utils/styles";
 
 
-export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighted: boolean }>`
+export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighted?: boolean }>`
   cursor: pointer;
   padding: 8px 16px;
   background-color: transparent;

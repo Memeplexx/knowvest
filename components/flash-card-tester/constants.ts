@@ -12,6 +12,7 @@ export const initialState = {
     showFlashCardsDialog: false,
     flashCardCount: 0,
     items: new Array<FlashCardDTO>(),
+    showQuestions: true,
   }
 };
 
