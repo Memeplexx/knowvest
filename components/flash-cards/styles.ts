@@ -1,6 +1,7 @@
 import { possible } from "@/components/html";
 import styled from "styled-components";
 import { ButtonIcon } from "../button-icon";
+import { TextAreaDebounced } from "../textarea-debounced";
 
 
 export const Container = styled.div`
@@ -28,7 +29,7 @@ export const FlashCard = styled.div`
   position: relative;
 `;
 
-export const FlashCardText = styled.textarea`
+export const TextArea = styled(TextAreaDebounced)`
   flex: 1;
   padding: 4px;
   font-size: 14px;
@@ -51,7 +52,7 @@ export const NoResults = styled(possible.div)`
   color: grey;
 `;
 
-export const DeleteButton = styled(ButtonIcon) <{ $hovered: boolean }>`
+export const DeleteButton = styled(ButtonIcon)`
   position: absolute;
   right: 0;
   top: 0;
