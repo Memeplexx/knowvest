@@ -3,14 +3,17 @@ import styled from 'styled-components';
 import { possible } from '../html';
 import { ButtonIcon } from '../button-icon';
 
-export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $last: boolean, $active: boolean }>`
+export const Tag = styled.div <{ selected: boolean, $first: boolean, $last: boolean, $active: boolean, $show?: boolean }>`
   font-size: 12px;
   height: 20px;
-  display: flex;
   align-items: center;
   padding: 0 4px;
   transition: all 0.2s;
   cursor: pointer;
+  display: flex;
+  ${p => p.$show && `
+    display: none;
+  `}
   ${p => p.selected && `
     background-color: #b100b159;
     font-weight: 500;
@@ -61,6 +64,7 @@ export const TagsSection = styled.div`
 `;
 
 export const Body = styled(possible.div)`
+  flex: 1;
   max-height: 300px;
   display: flex;
   flex-direction: column;
@@ -78,4 +82,5 @@ export const NoTagsPlaceholder = styled(possible.div)`
   flex-direction: column;
   gap: 8px;
   font-size: 14px;
+  flex: 1;
 `;

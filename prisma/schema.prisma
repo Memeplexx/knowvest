@@ -11,14 +11,15 @@ datasource db {
 }
 
 model Note {
-  id          Int       @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   text        String
-  userId      Int       @map("user_id")
-  user        User      @relation(fields: [userId], references: [id])
-  dateCreated DateTime  @default(now()) @map("date_created")
-  dateUpdated DateTime? @map("date_updated")
-  dateViewed  DateTime? @map("date_viewed")
+  userId      Int         @map("user_id")
+  user        User        @relation(fields: [userId], references: [id])
+  dateCreated DateTime    @default(now()) @map("date_created")
+  dateUpdated DateTime?   @map("date_updated")
+  dateViewed  DateTime?   @map("date_viewed")
   noteTags    NoteTag[]
+  FlashCard   FlashCard[]
 
   @@map("note")
 }
@@ -91,6 +92,7 @@ model User {
 model FlashCard {
   id               Int      @id @default(autoincrement())
   noteId           Int      @map("note_id")
+  note             Note     @relation(fields: [noteId], references: [id])
   text             String
   nextQuestionDate DateTime @map("next_question_date")
   cleanRunCount    Int      @map("clean_run_count")

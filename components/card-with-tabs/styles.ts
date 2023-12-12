@@ -24,7 +24,7 @@ export const Underline = styled.div`
 `;
 
 export const Body = styled.div`
-  padding-top: 30px;
+  display: flex;
 `;
 
 export const Container = styled(Card)`

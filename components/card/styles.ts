@@ -51,6 +51,7 @@ export const Body = styled(possible.div)`
   overflow-x: hidden;
   > :first-child {
     margin-top: 70px;
+    flex: 1;
   }
 `;
 

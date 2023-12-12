@@ -7,7 +7,6 @@ import { useContextForNestedStore } from "@/utils/constants";
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const store = useContextForNestedStore(initialState)!;
-
   const state = store.search.$useState();
 
   const allAutocompleteOptions = derive(

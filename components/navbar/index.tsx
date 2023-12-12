@@ -7,6 +7,7 @@ import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, RightContent, SearchButton, SearchIcon, UserButton, UserImage, Wrapper } from './styles';
+import { FlashCardTester } from '../flash-card-tester';
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
@@ -14,11 +15,20 @@ export const Navbar = (props: Props) => {
   return (
     <>
       <Modal
-        showIf={inputs.showDialog}
-        onClose={outputs.onHideDialog}
+        showIf={inputs.showSearchDialog}
+        onClose={outputs.onHideSearchDialog}
         children={
           <SearchDialog
-            onHide={outputs.onHideDialog}
+            onHide={outputs.onHideSearchDialog}
+          />
+        }
+      />
+      <Modal
+        showIf={inputs.showFlashCardsDialog}
+        onClose={outputs.onHideFlashCardsDialog}
+        children={
+          <FlashCardTester
+            onHide={outputs.onHideFlashCardsDialog}
           />
         }
       />
@@ -38,6 +48,8 @@ export const Navbar = (props: Props) => {
               children={
                 <>
                   <FlashCardButton
+                    aria-label='Flash Card'
+                    onClick={outputs.onClickFlashCardsButton}
                     children={
                       <>
                         <FlashCardIcon />
@@ -48,9 +60,9 @@ export const Navbar = (props: Props) => {
                     }
                   />
                   <SearchButton
-                    children={<SearchIcon />}
-                    onClick={outputs.onClickSearchButton}
                     aria-label='Search'
+                    onClick={outputs.onClickSearchButton}
+                    children={<SearchIcon />}
                   />
                   <Popup
                     trigger={props => (

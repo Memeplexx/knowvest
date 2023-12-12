@@ -1,14 +1,17 @@
-import { type HTMLAttributes } from "react";
+import { FlashCardDTO } from "@/server/dtos";
 import { useInputs } from "./inputs";
 
-export type Props = HTMLAttributes<HTMLDivElement>;
+export type Props = {
+  onHide: () => void,
+};
 
 export const initialState = {
-  navBar: {
+  flashCard: {
     showOptions: false,
     showSearchDialog: false,
     showFlashCardsDialog: false,
     flashCardCount: 0,
+    items: new Array<FlashCardDTO>(),
   }
 };
 

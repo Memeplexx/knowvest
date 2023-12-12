@@ -19,17 +19,17 @@ async function main() {
         userId: 1,
       },
       {
-        text: 'Definitions of [[Monopolies]] are highly technical and hard to prove until the damage has already been done. The [[Neoclassical economics]] ideal needs to be abandoned in favour of even distribution of power and fairness.',
+        text: 'Definitions of Monopolies are highly technical and hard to prove until the damage has already been done. The Neoclassical economics ideal needs to be abandoned in favour of even distribution of power and fairness.',
         dateViewed: new Date('2023-01-01'),
         userId: 1,
       },
       {
-        text: 'Chokepoints describe an hourglass-shaped market where there are consumers on one end and producers of value on the other, with [[rentiers]] in the middle. A rentier makes their income by owning [[capital]].',
+        text: 'Chokepoints describe an hourglass-shaped market where there are consumers on one end and producers of value on the other, with rentiers in the middle. A rentier makes their income by owning capital.',
         dateViewed: new Date('2023-02-01'),
         userId: 1,
       },
       {
-        text: 'Some publishers are left with as little as 40% after [[Amazon]] takes its cut. And that 40% goes to the Author, an editor, market, printing, shipping.',
+        text: 'Some publishers are left with as little as 40% after Amazon takes its cut. And that 40% goes to the Author, an editor, market, printing, shipping.',
         dateViewed: new Date('2023-02-10'),
         userId: 1,
       },
@@ -49,7 +49,7 @@ async function main() {
         userId: 1,
       },
       {
-        text: 'Capitalism (like Communism) has a natural tendency toward monopoly. Peter Thiel pronounced that "competition is for losers" and MBAs are taught to avoid competitive industries. Warren Buffet looks for industries with [[Moats]] which prevent competition from entering. Chokepoints are created between producers and consumers to extract value from others work.',
+        text: 'Capitalism (like Communism) has a natural tendency toward monopoly. Peter Thiel pronounced that "competition is for losers" and MBAs are taught to avoid competitive industries. Warren Buffet looks for industries with Moats which prevent competition from entering. Chokepoints are created between producers and consumers to extract value from others work.',
         dateViewed: new Date('2022-05-01'),
         userId: 1,
       }

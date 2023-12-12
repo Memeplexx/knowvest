@@ -5,6 +5,7 @@ import { ButtonIcon } from "../button-icon";
 
 export const Container = styled.div`
   flex: 1;
+  display: flex;
 `;
 
 export const CreateNewButton = styled(ButtonIcon)`
@@ -19,6 +20,7 @@ export const FlashCardWrapper = styled(possible.div)`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-top: 16px;
 `;
 
 export const FlashCard = styled.div`

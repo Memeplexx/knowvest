@@ -45,7 +45,7 @@ export const Tags = () => {
               children={
                 <>
                   <ActiveHeaderTag
-                    showIf={!inputs.tagsForActiveNote.length}
+                    $show={!inputs.tagsForActiveNote.length}
                     selected={inputs.allActiveTagsSelected}
                     onClick={outputs.onChangeAllActiveTagsSelected}
                     children='Active'

@@ -8,3 +8,6 @@ CREATE TABLE "flash_card" (
 
     CONSTRAINT "flash_card_pkey" PRIMARY KEY ("id")
 );
+
+-- AddForeignKey
+ALTER TABLE "flash_card" ADD CONSTRAINT "flash_card_note_id_fkey" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

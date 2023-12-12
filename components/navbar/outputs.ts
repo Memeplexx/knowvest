@@ -11,10 +11,16 @@ export const useOutputs = (inputs: Inputs) => {
       await signOut();
     },
     onClickSearchButton: () => {
-      store.navBar.showDialog.$set(true);
+      store.navBar.showSearchDialog.$set(true);
     },
-    onHideDialog: () => {
-      store.navBar.showDialog.$set(false);
+    onHideSearchDialog: () => {
+      store.navBar.showSearchDialog.$set(false);
+    },
+    onClickFlashCardsButton: () => {
+      store.navBar.showFlashCardsDialog.$set(true);
+    },
+    onHideFlashCardsDialog: () => {
+      store.navBar.showFlashCardsDialog.$set(false);
     },
   };
 }
