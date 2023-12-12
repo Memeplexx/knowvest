@@ -34,19 +34,19 @@ export const useOutputs = (inputs: Inputs) => {
     onAutocompleteInputChange: (value: string) => {
       store.search.autocompleteText.$set(value);
     },
-    onClickSelectedSynonym: (synonymId: SynonymId) => {
+    onClickSelectedSynonym: (synonymId: SynonymId) => () => {
       onSelectSynonym(inputs, synonymId);
     },
-    onClickSelectedGroup: (groupId: GroupId) => {
+    onClickSelectedGroup: (groupId: GroupId) => () => {
       onSelectGroup(inputs, groupId);
     },
-    onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => {
+    onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => () => {
       store.search.hoveredSynonymId.$set(hoveredSynonymId);
     },
     onMouseOutSelectedSynonym: () => {
       store.search.hoveredSynonymId.$set(null);
     },
-    onClickResult: (noteId: NoteId) => {
+    onClickResult: (noteId: NoteId) => () => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
       const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
       store.activeNoteId.$set(noteId);

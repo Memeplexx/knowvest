@@ -14,7 +14,7 @@ export const useOutputs = ({ store, notify }: Inputs) => {
       store.activePanel.editorHasText.$set(false);
       notify.success('New note created');
     },
-    onClickRemoveNote: async () => {
+    onClickConfirmRemoveNote: async () => {
       store.activePanel.allowNotePersister.$set(false);
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.delete.mutate({ noteId: store.$state.activeNoteId });
@@ -27,6 +27,9 @@ export const useOutputs = ({ store, notify }: Inputs) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
       store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
+    },
+    onClickCancelRemoveNote: () => {
+      store.activePanel.confirmDelete.$set(false)
     },
     onClickDuplicateNote: async () => {
       store.activePanel.loadingNote.$set(true);

@@ -24,14 +24,14 @@ import { Inputs } from './constants';
 
 export const useOutputs = (inputs: Inputs) => {
   return {
-    onCustomGroupNameFocus: (groupId: GroupId) => {
+    onCustomGroupNameFocus: (groupId: GroupId) => () => {
       inputs.store.config.$patch({
         groupId,
         groupSynonymId: null,
         focusedGroupNameInputText: inputs.store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
-    onCustomGroupNameBlur: (groupId: GroupId) => {
+    onCustomGroupNameBlur: (groupId: GroupId) => () => {
       inputs.store.config.focusedGroupNameInputText.$set(inputs.store.$state.groups.findOrThrow(g => g.id === groupId).name);
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
@@ -52,7 +52,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickHideOptionsForGroup: () => {
       inputs.store.config.modal.$set(null);
     },
-    onClickTagSynonym: (event: MouseEvent<HTMLElement>, tagId: TagId) => {
+    onClickTagSynonym: (tagId: TagId) => (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (inputs.tagId === tagId) {
         return inputs.store.config.$patch({
@@ -69,7 +69,7 @@ export const useOutputs = (inputs: Inputs) => {
       });
       focusAutocompleteInput(inputs);
     },
-    onClickGroupSynonym: (event: MouseEvent<HTMLElement>, groupId: GroupId, groupSynonymId: SynonymId) => {
+    onClickGroupSynonym: (groupId: GroupId, groupSynonymId: SynonymId) => (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (inputs.groupId === groupId && inputs.groupSynonymId === groupSynonymId) {
         return inputs.store.config.groupSynonymId.$set(null);
@@ -272,7 +272,7 @@ export const useOutputs = (inputs: Inputs) => {
         groupSynonymId: null,
       })
     },
-    onClickShowOptionsForGroup: (groupId: GroupId) => {
+    onClickShowOptionsForGroup: (groupId: GroupId) => () => {
       if (inputs.groupId === groupId && inputs.modal) {
         return inputs.store.config.modal.$set(null);
       }
@@ -284,7 +284,7 @@ export const useOutputs = (inputs: Inputs) => {
         focusedGroupNameInputText,
       });
     },
-    onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
+    onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => () => {
       inputs.store.config.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {

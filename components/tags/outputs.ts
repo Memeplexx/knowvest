@@ -4,14 +4,14 @@ import { Inputs } from "./constants";
 
 export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote }: Inputs) => {
   return {
-    onClickSynonym: (synonymId: SynonymId) => {
+    onClickSynonym: (synonymId: SynonymId) => () => {
       if (store.$state.synonymIds.includes(synonymId)) {
         store.synonymIds.$filter.$eq(synonymId).$delete();
       } else {
         store.synonymIds.$push(synonymId);
       }
     },
-    onChangeAllGroupTagsSelected: (groupId: GroupId) => {
+    onChangeAllGroupTagsSelected: (groupId: GroupId) => () => {
       const synonyms = groupsWithSynonyms
         .findOrThrow(g => g.groupId === groupId).synonyms;
       const synonymIds = synonyms.map(s => s.id);
@@ -35,7 +35,7 @@ export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote }: Inp
     onHideDialog: () => {
       store.tagsPanel.showConfigDialog.$set(false);
     },
-    onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
+    onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => () => {
       store.tagsPanel.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {

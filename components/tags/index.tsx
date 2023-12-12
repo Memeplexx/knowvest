@@ -66,7 +66,7 @@ export const Tags = () => {
                               $first={tag.first}
                               $last={tag.last}
                               children={tag.text}
-                              onClick={() => outputs.onClickSynonym(tag.synonymId)}
+                              onClick={outputs.onClickSynonym(tag.synonymId)}
                             />
                           ))}
                         />
@@ -83,7 +83,7 @@ export const Tags = () => {
                   <>
                     <GroupHeaderTag
                       selected={!!inputs.allGroupTagsSelected.get(group.groupId)}
-                      onClick={() => outputs.onChangeAllGroupTagsSelected(group.groupId)}
+                      onClick={outputs.onChangeAllGroupTagsSelected(group.groupId)}
                       children={`Group: ${group.groupName}`}
                       $first={true}
                       $last={true}
@@ -95,11 +95,11 @@ export const Tags = () => {
                           <Tag
                             key={tag.id}
                             selected={(inputs.hoveringGroupId === group.groupId && inputs.hoveringSynonymId === synonym.id) || synonym.selected}
-                            onClick={() => outputs.onClickSynonym(synonym.id)}
+                            onClick={outputs.onClickSynonym(synonym.id)}
                             children={tag.text}
                             $first={tag.first}
                             $last={tag.last}
-                            onMouseOver={() => outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
+                            onMouseOver={outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
                             onMouseOut={outputs.onMouseOutGroupTag}
                             $active={tag.active}
                           />

@@ -104,11 +104,11 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                                 <Tag
                                                   key={tag.id}
                                                   $hovered={tag.synonymId === inputs.hoveredSynonymId}
-                                                  onClick={() => outputs.onClickSelectedSynonym(tag.synonymId)}
+                                                  onClick={outputs.onClickSelectedSynonym(tag.synonymId)}
                                                   children={tag.text}
                                                   $first={tag.first}
                                                   $last={tag.last}
-                                                  onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
+                                                  onMouseOver={outputs.onMouseOverSelectedSynonym(tag.synonymId)}
                                                   onMouseOut={outputs.onMouseOutSelectedSynonym}
                                                 />
                                               )}
@@ -138,8 +138,8 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                             children={tag.text}
                                             $first={tag.first}
                                             $last={tag.last}
-                                            onClick={() => outputs.onClickSelectedGroup(group.groupId)}
-                                            onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
+                                            onClick={outputs.onClickSelectedGroup(group.groupId)}
+                                            onMouseOver={outputs.onMouseOverSelectedSynonym(tag.synonymId)}
                                             onMouseOut={outputs.onMouseOutSelectedSynonym}
                                           />
                                         ))
@@ -162,7 +162,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                       key={note.id}
                       note={note}
                       synonymIds={inputs.store.search.selectedSynonymIds}
-                      onClick={() => outputs.onClickResult(note.id)}
+                      onClick={outputs.onClickResult(note.id)}
                     />
                   ))}
                 />

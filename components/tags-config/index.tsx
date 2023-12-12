@@ -113,7 +113,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             key={tag.id}
                             selected={tag.selected}
                             ref={tag.id === inputs.tagId ? inputs.selectedTagRef : null}
-                            onClick={e => outputs.onClickTagSynonym(e, tag.id)}
+                            onClick={outputs.onClickTagSynonym(tag.id)}
                             children={tag.text}
                             $first={tag.first}
                             $last={tag.last}
@@ -179,14 +179,14 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                 Group:
                                 <CustomGroupNameInput
                                   value={active ? inputs.focusedGroupNameInputText : group.name}
-                                  onFocus={() => outputs.onCustomGroupNameFocus(group.id)}
-                                  onBlur={() => outputs.onCustomGroupNameBlur(group.id)}
+                                  onFocus={outputs.onCustomGroupNameFocus(group.id)}
+                                  onBlur={outputs.onCustomGroupNameBlur(group.id)}
                                   onKeyUp={outputs.onCustomGroupNameKeyUp}
                                   onChange={outputs.onCustomGroupNameChange}
                                 />
                                 <SettingsButton
                                   children={<SettingsIcon />}
-                                  onClick={() => outputs.onClickShowOptionsForGroup(group.id)}
+                                  onClick={outputs.onClickShowOptionsForGroup(group.id)}
                                   selected={inputs.modal === 'groupOptions'}
                                   $show={active}
                                   ref={active && inputs.modal === 'groupOptions' ? inputs.floatingRef.refs.setReference : null}
@@ -205,8 +205,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                   children={tag.text}
                                   $first={tag.first}
                                   $last={tag.last}
-                                  onClick={e => outputs.onClickGroupSynonym(e, group.id, synonymId)}
-                                  onMouseOver={() => outputs.onMouseOverGroupTag(group.id, synonymId)}
+                                  onClick={outputs.onClickGroupSynonym(group.id, synonymId)}
+                                  onMouseOver={outputs.onMouseOverGroupTag(group.id, synonymId)}
                                   onMouseOut={outputs.onMouseOutGroupTag}
                                 />
                               ))

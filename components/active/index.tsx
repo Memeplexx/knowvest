@@ -76,8 +76,8 @@ export const Active = (
                 />
                 <Confirmation
                   showIf={inputs.confirmDelete}
-                  onClose={() => inputs.store.activePanel.confirmDelete.$set(false)}
-                  onConfirm={outputs.onClickRemoveNote}
+                  onClose={outputs.onClickCancelRemoveNote}
+                  onConfirm={outputs.onClickConfirmRemoveNote}
                   title='Delete note requested'
                   message='Are you sure you want to delete this note?'
                 />
