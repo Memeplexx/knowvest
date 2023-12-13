@@ -19,7 +19,7 @@ export const Body = styled(possible.div)`
   display: flex;
 `;
 
-export const Footer = styled.div`
+export const Footer = styled(possible.div)`
   display: flex;
   justify-content: space-between;
 `;
@@ -35,4 +35,13 @@ export const NextButton = styled(Button)`
 export const FooterRightContent = styled.div`
   display: flex;
   gap: 16px;
+`;
+
+export const NoResults = styled(possible.div)`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: grey;
 `;

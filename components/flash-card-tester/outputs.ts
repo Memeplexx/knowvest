@@ -1,6 +1,7 @@
 import { ancestorMatches } from "@/utils/functions";
 import { Inputs } from "./constants";
 import { useEventHandlerForDocument } from "@/utils/hooks";
+import { trpc } from "@/utils/trpc";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store } = inputs;
@@ -19,6 +20,18 @@ export const useOutputs = (inputs: Inputs) => {
     }),
     onToggleView: () => {
       store.flashCard.showQuestions.$toggle();
+    },
+    onClickWrongAnswer: async () => {
+      const id = inputs.items[0].id;
+      await trpc.flashCard.answerQuestionIncorrectly.mutate({ id });
+      inputs.store.flashCard.items.$find.id.$eq(id).$delete();
+      inputs.notify.success('Better luck next time...');
+    },
+    onClickRightAnswer: async () => {
+      const id = inputs.items[0].id;
+      await trpc.flashCard.answerQuestionCorrectly.mutate({ id });
+      inputs.store.flashCard.items.$find.id.$eq(id).$delete();
+      inputs.notify.success('Nice one!');
     },
   };
 }

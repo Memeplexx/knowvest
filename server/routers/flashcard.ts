@@ -77,5 +77,38 @@ export const flashCardRouter = router({
       await prisma.flashCard.delete({ where: { id } });
       return { status: 'FLASH CARD DELETED', flashCard };
     }),
-});
 
+  answerQuestionCorrectly: procedure
+    .input(z.object({
+      id: ZodFlashCardId,
+    }))
+    .mutation(async ({ ctx: { userId }, input: { id } }) => {
+
+      // Validation
+      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
+      if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
+
+      // Logic
+      const cleanRunCount = flashCard.cleanRunCount + 1;
+      const nextQuestionDate = add(new Date(), { days: flashCard.cleanRunCount + 1 }); // TODO: consider using a more sophisticated algorithm for spaced repitition
+      const updatedFlashCard = await prisma.flashCard.update({ where: { id }, data: { cleanRunCount, nextQuestionDate } });
+      return { status: 'FLASH CARD UPDATED', flashCard: updatedFlashCard };
+    }),
+
+  answerQuestionIncorrectly: procedure
+    .input(z.object({
+      id: ZodFlashCardId,
+    }))
+    .mutation(async ({ ctx: { userId }, input: { id } }) => {
+      
+      // Validation
+      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
+      if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
+
+      // Logic
+      const cleanRunCount = 0;
+      const nextQuestionDate = add(new Date(), { days: 1 });
+      const updatedFlashCard = await prisma.flashCard.update({ where: { id }, data: { cleanRunCount, nextQuestionDate } });
+      return { status: 'FLASH CARD UPDATED', flashCard: updatedFlashCard };
+    }),
+});

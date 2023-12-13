@@ -3,7 +3,8 @@ import ReadonlyNote from "../readonly-note";
 import { Props } from "./constants";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { Body, Container, Footer, FooterRightContent, NextButton, Question, ToggleViewButton } from "./styles";
+import { Body, Container, Footer, FooterRightContent, NextButton, NoResults, Question, ToggleViewButton } from "./styles";
+import { NoResultsIcon } from "../related-items/styles";
 
 export const FlashCardTester = (props: Props) => {
   const inputs = useInputs(props);
@@ -30,6 +31,7 @@ export const FlashCardTester = (props: Props) => {
             }
           />
           <Footer
+            showIf={!!inputs.items.length}
             children={
               <>
                 <ToggleViewButton
@@ -41,6 +43,7 @@ export const FlashCardTester = (props: Props) => {
                     <>
                       <NextButton
                         showIf={inputs.showQuestions}
+                        onClick={outputs.onClickWrongAnswer}
                         children={
                           <>
                             <FaSadCry />
@@ -50,6 +53,7 @@ export const FlashCardTester = (props: Props) => {
                       />
                       <NextButton
                         showIf={inputs.showQuestions}
+                        onClick={outputs.onClickRightAnswer}
                         children={
                           <>
                             <FaSmileBeam />
@@ -60,6 +64,15 @@ export const FlashCardTester = (props: Props) => {
                     </>
                   }
                 />
+              </>
+            }
+          />
+          <NoResults
+            showIf={!inputs.items.length}
+            children={
+              <>
+                <NoResultsIcon />
+                no related notes
               </>
             }
           />
