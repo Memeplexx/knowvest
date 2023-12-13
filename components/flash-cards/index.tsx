@@ -52,7 +52,7 @@ export const FlashCards = () => {
               }
             />
             <NoResults
-              showIf={!inputs.items.length}
+              showIf={!inputs.items.length && !inputs.loading}
               children={
                 <>
                   <NoResultsIcon />

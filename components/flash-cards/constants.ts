@@ -5,6 +5,7 @@ export const initialState = {
   flashCards: {
     items: new Array<FlashCardDTO>(),
     confirmDeleteId: null as null | FlashCardId,
+    loading: true,
   }
 }
 
