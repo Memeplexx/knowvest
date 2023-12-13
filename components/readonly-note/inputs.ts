@@ -17,19 +17,20 @@ export const useInputs = (props: Props) => {
 
   const store = useContext(StoreContext)!;
 
-  const editor = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const codeMirror = useRef<EditorView | null>(null);
 
   useIsomorphicLayoutEffect(() => {
-    if (codeMirror.current) { return; /* defend against re-render when React strictMode is set to true */ }
-    codeMirror.current = instantiateCodeMirror({ editor: editor.current!, note: props.note });
+    if (props.showIf === false) { return; /* do not instantiate because component has been hidden */ } 
+    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: props.synonymIds, store });
-    addAriaAttributeToCodeMirror({ editor: editor.current!, noteId: props.note.id });
-  }, []);
+    addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: props.note.id });
+    return () => codeMirror.current?.destroy();
+  }, [editorRef.current, props.showIf]);
 
   return {
-    refs: { editor },
+    editorRef,
     props,
   }
 }

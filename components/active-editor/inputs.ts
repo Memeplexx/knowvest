@@ -46,11 +46,11 @@ export const useInputs = () => {
   const codeMirror = useRef<EditorView | null>(null);
 
   useEffect(() => {
-    if (codeMirror.current) { return; /* defend against re-render when React strictMode is set to true */ }
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, inputs });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds, store });
     addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: store.$state.activeNoteId });
+    return () => codeMirror.current?.destroy();
   }, [store]);
 
   const inputs = {

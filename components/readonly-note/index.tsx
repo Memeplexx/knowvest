@@ -6,11 +6,12 @@ export default function ReadonlyNote(
   props: Props
 ) {
   const inputs = useInputs(props);
-  const { refs } = inputs;
+  const { showIf, className } = props;
   return (
     <Wrapper
-      className={props.className}
-      ref={refs.editor}
+      showIf={showIf}
+      className={className}
+      ref={inputs.editorRef}
     />
   );
 }

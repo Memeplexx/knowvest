@@ -14,7 +14,7 @@ export const Question = styled(possible.div)`
   flex: 1;
 `;
 
-export const Body = styled.div`
+export const Body = styled(possible.div)`
   flex: 1;
   display: flex;
 `;
