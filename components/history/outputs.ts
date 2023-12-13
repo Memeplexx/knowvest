@@ -4,7 +4,7 @@ import { Inputs } from "./constants";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { props, refs, store } = inputs;
+  const { props, store } = inputs;
   return {
     onSelectNote: async (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
@@ -14,7 +14,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
       await trpc.note.view.mutate({ noteId });
-      refs.card.current!.scrollToTop();
+      inputs.cardRef.current!.scrollToTop();
     }
   };
 }

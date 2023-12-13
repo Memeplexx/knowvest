@@ -8,36 +8,34 @@ export const Card = forwardRef(function Card(
   props: CardProps,
   ref: ForwardedRef<CardHandle>
 ) {
-  const { heading, actions, body, loading, className, id } = props;
   const inputs = useInputs(ref);
   const outputs = useOutputs(inputs);
-  const { refs } = inputs;
   return (
     <Wrapper
-      id={id}
-      className={className}
+      id={props.id}
+      className={props.className}
       children={
         <>
           <Header
-            ref={refs.head}
+            ref={inputs.headRef}
             children={
               <>
                 <Heading 
-                  children={heading}
+                  children={props.heading}
                  />
                 <Actions
-                  children={actions?.()}
+                  children={props.actions?.()}
                 />
               </>
             }
           />
           <Body
-            ref={refs.body}
-            children={body}
+            ref={inputs.bodyRef}
+            children={props.body}
             onScroll={outputs.onBodyScroll}
           />
           <Loader
-            isVisible={loading}
+            isVisible={props.loading}
           />
         </>
       }

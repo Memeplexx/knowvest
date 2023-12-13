@@ -27,8 +27,7 @@ export default function HistoryItems(
                 note={note}
                 synonymIds={store.synonymIds}
               />
-              <RightBorder
-              />
+              <RightBorder />
             </>
           }
         />

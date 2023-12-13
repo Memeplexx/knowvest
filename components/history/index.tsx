@@ -8,14 +8,13 @@ export const History = (
 ) => {
   const inputs = useInputs(props);
   const outputs = useOutputs(inputs);
-  const { state, HistoricalNotes, refs } = inputs;
   return (
     <Card
       className={props.className}
-      ref={refs.card}
+      ref={inputs.cardRef}
       heading='Recent'
-      body={HistoricalNotes ? <HistoricalNotes onSelectNote={outputs.onSelectNote} /> : <></>}
-      loading={state.loading}
+      body={inputs.HistoricalNotes ? <inputs.HistoricalNotes onSelectNote={outputs.onSelectNote} /> : <></>}
+      loading={inputs.loading}
     />
   )
 };

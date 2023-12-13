@@ -8,13 +8,13 @@ export const useInputs = <Option extends OptionBase>(
   props: Props<Option>,
   forwardedRef: ForwardedRef<AutocompleteHandle>
 ) => {
-  const floating = useFloating<HTMLInputElement>(floatingUiDefaultOptions);
+  const floatingRef = useFloating<HTMLInputElement>(floatingUiDefaultOptions);
 
-  const input = floating.refs.domReference;
+  const inputRef = floatingRef.refs.domReference;
 
-  const optionsPopup = floating.refs.floating;
+  const optionsPopupRef = floatingRef.refs.floating;
 
-  const container = useForwardedRef(useRef<HTMLDivElement | null>(null));
+  const containerRef = useForwardedRef(useRef<HTMLDivElement | null>(null));
 
   const optionsSorted = useMemo(() => {
     return props.options.sort((a, b) => a.label.localeCompare(b.label));
@@ -27,21 +27,17 @@ export const useInputs = <Option extends OptionBase>(
   const optionsPopupExpanded = !!props.showOptions && !!options.length;
 
   useImperativeHandle<AutocompleteHandle, AutocompleteHandle>(forwardedRef, () => ({
-    focusInput: () => input.current!.focus(),
-    blurInput: () => input.current!.blur(),
-  }), [input]);
+    focusInput: () => inputRef.current!.focus(),
+    blurInput: () => inputRef.current!.blur(),
+  }), [inputRef]);
 
   return {
     props,
-    refs: {
-      input,
-      container,
-      floating,
-      options: optionsPopup,
-    },
-    state: {
-      optionsPopupExpanded,
-      options,
-    }
+    inputRef,
+    containerRef,
+    floatingRef,
+    optionsPopupRef,
+    optionsPopupExpanded,
+    options,
   }
 }

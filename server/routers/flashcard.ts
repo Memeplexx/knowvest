@@ -20,7 +20,7 @@ export const flashCardRouter = router({
       if (!note) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
 
       // Logic
-      const flashCards = await prisma.flashCard.findMany({ where: { noteId } });
+      const flashCards = await prisma.flashCard.findMany({ where: { noteId, note: { userId } } });
       return { status: 'FLASH CARDS FOUND', flashCards };
     }),
 
@@ -55,7 +55,7 @@ export const flashCardRouter = router({
     .mutation(async ({ ctx: { userId }, input: { id, text } }) => {
 
       // Validation
-      const flashCard = await prisma.flashCard.findFirst({ where: { id } });
+      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
       if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
 
       // Logic
@@ -70,7 +70,7 @@ export const flashCardRouter = router({
     .mutation(async ({ ctx: { userId }, input: { id } }) => {
 
       // Validation
-      const flashCard = await prisma.flashCard.findFirst({ where: { id } });
+      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
       if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
 
       // Logic

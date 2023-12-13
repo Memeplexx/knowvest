@@ -11,15 +11,14 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
 ) {
   const inputs = useInputs(props, forwardedRef);
   const outputs = useOutputs(inputs);
-  const { refs, state } = inputs;
   return (
     <Container
-      ref={refs.container}
+      ref={inputs.containerRef}
       children={
         <>
           <Input
             type='text'
-            ref={refs.floating.refs.setReference}
+            ref={inputs.floatingRef.refs.setReference}
             value={props.inputText}
             onChange={outputs.onChangeInput}
             onKeyDown={outputs.onKeyDownInput}
@@ -41,11 +40,11 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             children={props.error}
           />
           <Options
-            ref={refs.floating.refs.setFloating}
-            style={refs.floating.floatingStyles}
+            ref={inputs.floatingRef.refs.setFloating}
+            style={inputs.floatingRef.floatingStyles}
             showIf={props.showOptions}
             children={
-              state.options.map(option => (
+              inputs.options.map(option => (
                 <OptionItem
                   type='button'
                   key={option.value}

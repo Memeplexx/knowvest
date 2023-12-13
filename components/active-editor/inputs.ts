@@ -38,11 +38,8 @@ export const useInputs = () => {
 
   const store = useContext(StoreContext)! as Store<AppState & typeof initialState>;
   const state = store.activePanel.$useState();
-
   const mayDeleteNote = !!store.notes.$useState().length;
-
   const editorRef = useRef<HTMLDivElement>(null);
-
   const codeMirror = useRef<EditorView | null>(null);
 
   useEffect(() => {

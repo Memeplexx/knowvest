@@ -4,6 +4,12 @@ import { type HTMLAttributes } from 'react';
 
 export type Props = {
   onSelectNote: (noteId: NoteId) => void;
-} & HTMLAttributes<HTMLDivElement>
+} & HTMLAttributes<HTMLDivElement>;
+
+export const initialState = {
+  history: {
+    loading: true,
+  }
+}
 
 export type Inputs = ReturnType<typeof useInputs>;

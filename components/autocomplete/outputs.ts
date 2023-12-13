@@ -2,8 +2,7 @@ import { ChangeEvent, KeyboardEvent, MouseEvent } from "react";
 import { OptionBase, Inputs } from "./constants";
 import { TypedKeyboardEvent } from "@/utils/types";
 
-export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) => {
-  const { state, props, refs } = inputs;
+export const useOutputs = <Option extends OptionBase>({ props, options, inputRef, ...inputs }: Inputs<Option>) => {
   return {
     onFocusInput: () => {
       props.onInputFocused();
@@ -18,14 +17,14 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
     },
     onKeyDownInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key !== 'ArrowDown') { return; }
-      if (!state.options.length) { return true; }
-      (refs.options.current?.firstChild as HTMLElement)?.focus();
+      if (!options.length) { return true; }
+      (inputs.optionsPopupRef.current?.firstChild as HTMLElement)?.focus();
       event.preventDefault(); // prevents undesirable scrolling behavior
     },
     onKeyUpInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key !== 'Enter') { return; }
-      refs.container.current?.blur();
-      const selectedOption = state.options.find(o => o.label.toLowerCase() === refs.input.current!.value.toLowerCase());
+      inputs.containerRef.current?.blur();
+      const selectedOption = options.find(o => o.label.toLowerCase() === inputRef.current!.value.toLowerCase());
       if (selectedOption) {
         props.onValueChange(selectedOption.value);
       } else {
@@ -36,7 +35,7 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
     onKeyDownOption: (event: KeyboardEvent<HTMLElement>) => {
       if (event.key === 'ArrowDown') {
         event.preventDefault(); // prevents undesirable scrolling behavior
-        if (!state.options.length) { return true; }
+        if (!options.length) { return true; }
         (document.activeElement?.nextElementSibling as HTMLElement)?.focus();
       } else if (event.key === 'ArrowUp') {
         event.preventDefault(); // prevents undesirable scrolling behavior
@@ -44,7 +43,7 @@ export const useOutputs = <Option extends OptionBase>(inputs: Inputs<Option>) =>
         if (previousElement) {
           previousElement.focus();
         } else {
-          refs.input.current?.focus();
+          inputRef.current?.focus();
         }
       }
     },
