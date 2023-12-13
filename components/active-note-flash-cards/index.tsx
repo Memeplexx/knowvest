@@ -6,7 +6,7 @@ import { useOutputs } from "./outputs";
 import { Container, CreateNewButton, DeleteButton, FlashCard, TextArea, FlashCardWrapper, NoResults } from "./styles";
 
 
-export const FlashCards = () => {
+export const ActiveNoteFlashCards = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (

@@ -1,11 +1,11 @@
-import { Active } from "@/components/active";
+import { ActivePanel } from "@/components/active-panel";
 import { History } from "@/components/history";
 import { Related } from "@/components/related";
 import { Tabs } from "@/components/card-with-tabs";
 import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
 import { Tags } from "@/components/tags";
-import { FlashCards } from "@/components/flash-cards";
+import { ActiveNoteFlashCards } from "@/components/active-note-flash-cards";
 import { ButtonIcon } from "@/components/button-icon";
 
 const gap = '4px';
@@ -55,7 +55,7 @@ export const ExpandHeaderToggleButton = styled(BaseToggleButton)`
 `;
 
 
-export const ActivePanel = styled(Active)`
+export const ActivePane = styled(ActivePanel)`
   flex: 1;
 `;
 

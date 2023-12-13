@@ -10,7 +10,7 @@ import { CardWrapper, Wrapper } from './styles';
 
 
 
-export const Active = (
+export const ActivePanel = (
   props: HTMLAttributes<HTMLDivElement>
 ) => {
   const inputs = useInputs();

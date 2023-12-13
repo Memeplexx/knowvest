@@ -30,7 +30,7 @@ import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { Store } from 'olik';
 import { AppState, StoreContext } from '@/utils/constants';
-import { initialState } from '../active/constants';
+import { initialState } from '../active-panel/constants';
 import { Inputs } from './constants';
 
 
