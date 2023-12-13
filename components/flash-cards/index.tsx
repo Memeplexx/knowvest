@@ -56,7 +56,7 @@ export const FlashCards = () => {
               children={
                 <>
                   <NoResultsIcon />
-                  no related notes
+                  no flash cards created yet
                 </>
               }
             />

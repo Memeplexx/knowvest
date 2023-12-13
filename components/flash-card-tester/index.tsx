@@ -72,7 +72,7 @@ export const FlashCardTester = (props: Props) => {
             children={
               <>
                 <NoResultsIcon />
-                no related notes
+                no flash cards to test you with
               </>
             }
           />
