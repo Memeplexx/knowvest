@@ -24,13 +24,13 @@ export const useOutputs = (inputs: Inputs) => {
     onClickWrongAnswer: async () => {
       const id = inputs.items[0].id;
       await trpc.flashCard.answerQuestionIncorrectly.mutate({ id });
-      inputs.store.flashCard.items.$find.id.$eq(id).$delete();
+      inputs.store.flashCardsForTest.$find.id.$eq(id).$delete();
       inputs.notify.success('Better luck next time...');
     },
     onClickRightAnswer: async () => {
       const id = inputs.items[0].id;
       await trpc.flashCard.answerQuestionCorrectly.mutate({ id });
-      inputs.store.flashCard.items.$find.id.$eq(id).$delete();
+      inputs.store.flashCardsForTest.$find.id.$eq(id).$delete();
       inputs.notify.success('Nice one!');
     },
   };

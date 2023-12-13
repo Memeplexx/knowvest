@@ -50,6 +50,7 @@ export const Navbar = (props: Props) => {
                   <FlashCardButton
                     aria-label='Flash Card'
                     onClick={outputs.onClickFlashCardsButton}
+                    title={`Flash Cards (${inputs.flashCardCount})`}
                     children={
                       <>
                         <FlashCardIcon />

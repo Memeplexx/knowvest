@@ -1,4 +1,4 @@
-import { GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '@/server/dtos';
+import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '@/server/dtos';
 import { UseFloatingOptions, flip, size, autoUpdate } from '@floating-ui/react';
 import { Context, createContext, useContext, useMemo } from 'react';
 import { Store } from 'olik';
@@ -33,6 +33,7 @@ export const initialAppState = {
   notes: new Array<NoteDTO>(),
   tags: new Array<TagDTO>(),
   synonymIds: new Array<SynonymId>(),
+  flashCardsForTest: new Array<FlashCardDTO>(),
 };
 
 export type AppState = typeof initialAppState;

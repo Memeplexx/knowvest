@@ -8,7 +8,6 @@ export const initialState = {
     showOptions: false,
     showSearchDialog: false,
     showFlashCardsDialog: false,
-    flashCardCount: 0,
   }
 };
 
