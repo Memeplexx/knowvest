@@ -39,7 +39,7 @@ export const useInputs = () => {
   const store = useContext(StoreContext)! as Store<AppState & typeof initialState>;
   const state = store.activePanel.$useState();
 
-  const mayDeleteNote = derive(store.notes).$with(notes => !!notes.length);
+  const mayDeleteNote = !!store.notes.$useState().length;
 
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +57,7 @@ export const useInputs = () => {
     store,
     editorRef,
     ...state,
-    mayDeleteNote: mayDeleteNote.$useState(),
+    mayDeleteNote,
     codeMirror: codeMirror.current,
     notify: useContext(NotificationContext)!,
   };
