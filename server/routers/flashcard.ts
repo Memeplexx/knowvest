@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { procedure, router } from '../trpc';
 import { prisma } from './_app';
-import { ZodFlashCardId, ZodNoteId, ZodTagId } from '../dtos';
+import { ZodFlashCardId, ZodNoteId } from '../dtos';
 import { TRPCError } from '@trpc/server';
 import { add } from 'date-fns';
 
