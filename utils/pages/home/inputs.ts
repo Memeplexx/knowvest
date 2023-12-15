@@ -1,12 +1,11 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { ServerSideProps, initialState, initialTransientState } from "./constants";
 import { NoteId } from "@/server/dtos";
 import { useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { StoreContext, useContextForNestedStore } from "@/utils/constants";
-import { trpc } from "@/utils/trpc";
+import { useContextForNestedStore } from "@/utils/constants";
 
 
 export const useInputs = (props: ServerSideProps) => {
@@ -21,8 +20,6 @@ export const useInputs = (props: ServerSideProps) => {
   useInitializeOlikDevtools();
 
   useHeaderExpander();
-
-  useFlashCardsFetcher();
 
   return {
     store,
@@ -79,18 +76,4 @@ const useLogoutUserIfSessionExpired = () => {
       router.push('/?session-expired=true').catch(console.error);
     }
   }, [router, session.status]);
-}
-
-const useFlashCardsFetcher = () => {
-  const store = useContext(StoreContext)!;
-  useEffect(() => {
-    const fetchCards = () => {
-      trpc.flashCard.listForTest.query()
-        .then(result => store.flashCardsForTest.$mergeMatching.id.$withMany(result.flashCards))
-        .catch(console.error);
-    }
-    const timeout = setTimeout(() => fetchCards(), 1000 * 60);
-    fetchCards();
-    return () => clearTimeout(timeout);
-  }, [store]);
 }

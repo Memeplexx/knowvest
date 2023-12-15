@@ -1,11 +1,9 @@
-import { FlashCardDTO, FlashCardId } from "@/server/dtos";
+import { FlashCardId } from "@/server/dtos";
 import { useInputs } from "./inputs";
 
 export const initialState = {
-  flashCards: {
-    items: new Array<FlashCardDTO>(),
+  activeFlashCards: {
     confirmDeleteId: null as null | FlashCardId,
-    loading: true,
   }
 }
 

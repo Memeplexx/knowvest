@@ -48,6 +48,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       noteTags: await prisma.noteTag.findMany({ where: { tag: { userId } } }),
       groups: await prisma.group.findMany({ where: { userId } }),
       synonymGroups: await prisma.synonymGroup.findMany({ where: { group: { userId } } }),
+      flashCards: await prisma.flashCard.findMany({ where: { note: { userId } } }),
     })
   };
 }

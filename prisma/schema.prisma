@@ -19,7 +19,7 @@ model Note {
   dateUpdated DateTime?   @map("date_updated")
   dateViewed  DateTime?   @map("date_viewed")
   noteTags    NoteTag[]
-  FlashCard   FlashCard[]
+  flashCards  FlashCard[]
 
   @@map("note")
 }

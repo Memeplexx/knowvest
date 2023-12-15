@@ -33,7 +33,7 @@ export const initialAppState = {
   notes: new Array<NoteDTO>(),
   tags: new Array<TagDTO>(),
   synonymIds: new Array<SynonymId>(),
-  flashCardsForTest: new Array<FlashCardDTO>(),
+  flashCards: new Array<FlashCardDTO>(),
 };
 
 export type AppState = typeof initialAppState;
@@ -42,6 +42,6 @@ export const StoreContext = createContext<Store<AppState> | undefined>(undefined
 
 export const useContextForNestedStore = <S extends object>(initialState: S) => {
   const store = useContext(StoreContext as unknown as Context<Store<AppState & S>>);
-  useMemo(() => store.$setNew(initialState), []);
+  useMemo(() => store.$setNew(initialState), [initialState, store]);
   return store;
 }
