@@ -5,9 +5,8 @@ import { NoteId } from "@/server/dtos";
 import { useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { AppState, StoreContext, useContextForNestedStore } from "@/utils/constants";
+import { StoreContext, useContextForNestedStore } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
-import { Store } from "olik";
 
 
 export const useInputs = (props: ServerSideProps) => {
@@ -88,7 +87,7 @@ const useFlashCardsFetcher = () => {
     const fetchCards = () => trpc.flashCard.listForTest.query()
       .then(result => store.flashCardsForTest.$mergeMatching.id.$withMany(result.flashCards));
     const timeout = setTimeout(() => fetchCards(), 1000 * 60);
-    fetchCards();
+    fetchCards().catch(console.error);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [store]);
 }
