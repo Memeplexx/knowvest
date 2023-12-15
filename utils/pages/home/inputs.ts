@@ -84,10 +84,13 @@ const useLogoutUserIfSessionExpired = () => {
 const useFlashCardsFetcher = () => {
   const store = useContext(StoreContext)!;
   useEffect(() => {
-    const fetchCards = () => trpc.flashCard.listForTest.query()
-      .then(result => store.flashCardsForTest.$mergeMatching.id.$withMany(result.flashCards));
+    const fetchCards = () => {
+      trpc.flashCard.listForTest.query()
+        .then(result => store.flashCardsForTest.$mergeMatching.id.$withMany(result.flashCards))
+        .catch(console.error);
+    }
     const timeout = setTimeout(() => fetchCards(), 1000 * 60);
-    fetchCards().catch(console.error);
+    fetchCards();
     return () => clearTimeout(timeout);
   }, [store]);
 }
