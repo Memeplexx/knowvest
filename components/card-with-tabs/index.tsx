@@ -15,7 +15,7 @@ export const Tabs = (
         <Header
           children={
             <>
-              {props.options.map(option => (
+              {options.map(option => (
                 <Tab
                   key={option.label}
                   children={option.label}

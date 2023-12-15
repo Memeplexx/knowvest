@@ -1,4 +1,4 @@
-import { ForwardedRef, useCallback, useContext, useEffect, useMemo, useRef } from "react";
+import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
 import { derive } from "olik/derive";

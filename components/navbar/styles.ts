@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { possible } from "../html";
 import { SearchIcon as BaseSearchIcon } from "@/utils/styles";
 import { ButtonIcon } from "../button-icon";
-import { PiStudentFill, PiStudentThin } from 'react-icons/pi';
+import { PiStudentFill } from 'react-icons/pi';
 
 export const Wrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;

@@ -1,4 +1,3 @@
-import { FlashCardDTO } from "@/server/dtos";
 import { useInputs } from "./inputs";
 
 export type Props = {

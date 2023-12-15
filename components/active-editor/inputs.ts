@@ -25,13 +25,11 @@ import {
   keymap,
   rectangularSelection
 } from '@codemirror/view';
-import { derive } from 'olik/derive';
 import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { Store } from 'olik';
 import { AppState, StoreContext } from '@/utils/constants';
 import { initialState } from '../active-panel/constants';
-import { Inputs } from './constants';
 
 
 export const useInputs = () => {
@@ -43,7 +41,7 @@ export const useInputs = () => {
   const codeMirror = useRef<EditorView | null>(null);
 
   useEffect(() => {
-    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, inputs });
+    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds, store });
     addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: store.$state.activeNoteId });
@@ -61,7 +59,7 @@ export const useInputs = () => {
   return inputs;
 }
 
-export const instantiateCodeMirror = ({ editor, inputs }: { editor: HTMLDivElement, inputs: Inputs }) => {
+export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: Store<AppState & typeof initialState> }) => {
   return new EditorView({
     doc: '',
     parent: editor,
@@ -78,11 +76,11 @@ export const instantiateCodeMirror = ({ editor, inputs }: { editor: HTMLDivEleme
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({ spellcheck: "on", autocapitalize: "on" }),
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
-      autocompleteExtension(inputs),
-      noteTagsPersisterExtension(inputs),
-      createNotePersisterExtension({ debounce: 500, inputs }),
-      textSelectorPlugin(inputs),
-      editorHasTextUpdater(inputs),
+      autocompleteExtension(store),
+      noteTagsPersisterExtension(store),
+      createNotePersisterExtension({ debounce: 500, store }),
+      textSelectorPlugin(store),
+      editorHasTextUpdater(store),
       pasteListener,
       bulletPointPlugin,
       inlineNotePlugin,

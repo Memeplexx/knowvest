@@ -2,9 +2,8 @@ import { NoteId, TagId } from "@/server/dtos";
 import { AppState } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
-import { syntaxTree } from "@codemirror/language";
-import { EditorState, Range } from "@codemirror/state";
-import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
+import { EditorState } from "@codemirror/state";
+import { EditorView, ViewUpdate } from "@codemirror/view";
 import { Store } from "olik";
 import { Inputs } from "./constants";
 

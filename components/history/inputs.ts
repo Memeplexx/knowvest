@@ -15,7 +15,7 @@ export const useInputs = (props: Props) => {
   const HistoricalNotes = useMemo(() => {
     if (!isMounted) { return null; }
     return dynamic(() => import('../history-items').finally(() => store.history.loading.$set(false)));
-  }, [isMounted]);
+  }, [isMounted, store]);
 
   return {
     props,

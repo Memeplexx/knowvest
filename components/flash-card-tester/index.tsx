@@ -20,11 +20,11 @@ export const FlashCardTester = (props: Props) => {
               <>
                 <Question
                   showIf={inputs.showQuestions}
-                  children={inputs.items[0]?.text}
+                  children={inputs.items[0].text}
                 />
                 <ReadonlyNote
                   showIf={!inputs.showQuestions}
-                  note={inputs.items[0]?.note!}
+                  note={inputs.items[0].note!}
                   synonymIds={inputs.store.synonymIds}
                 />
               </>

@@ -3,7 +3,8 @@ import { Props } from "./constants";
 import { useRecord } from "@/utils/hooks";
 
 export const useInputs = (props: Props) => {
-  const tabsRef = props.options.mapToObject(o => o.label, o => useRef<HTMLDivElement>(null));
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const tabsRef = props.options.mapToObject(o => o.label, () => useRef<HTMLDivElement>(null));
   const state = useRecord({ selected: props.options[0].label });
   const underline = {
     left: tabsRef[state.selected].current?.offsetLeft,

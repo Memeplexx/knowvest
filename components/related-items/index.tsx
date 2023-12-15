@@ -7,10 +7,9 @@ export default function Related(
   props: Props
 ) {
   const inputs = useInputs(props);
-  const { state, store } = inputs;
   return (
     <>
-      {state.map(note => (
+      {inputs.items.map(note => (
         <Wrapper
           key={note.note.id}
           onClick={() => props.onSelectNote(note.note.id)}
@@ -26,14 +25,14 @@ export default function Related(
               />
               <Result
                 note={note.note}
-                synonymIds={store.synonymIds}
+                synonymIds={inputs.store.synonymIds}
               />
             </>
           }
         />
       ))}
       <NoResults
-        showIf={state.length === 0}
+        showIf={inputs.items.length === 0}
         children={
           <>
             <NoResultsIcon />

@@ -17,8 +17,9 @@ export const useInputs = () => {
     store.flashCards.loading.$set(true);
     trpc.flashCard.listForNote.query({ noteId: activeNoteId })
       .then(response => store.flashCards.items.$set(response.flashCards))
-      .then(() => store.flashCards.loading.$set(false));
-  }, [activeNoteId]);
+      .then(() => store.flashCards.loading.$set(false))
+      .catch(console.error);
+  }, [activeNoteId, store]);
 
   return {
     notify,

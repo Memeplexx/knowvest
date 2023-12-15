@@ -7,7 +7,7 @@ export const useInputs = (props: Props) => {
 
   const store = useContext(StoreContext)!;
 
-  const queriedNotes = derive(
+  const items = derive(
     store.activeNoteId,
     store.notes,
     store.tags,
@@ -29,12 +29,12 @@ export const useInputs = (props: Props) => {
         ...n,
         matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
       }));
-  });
+  }).$useState();
 
   return {
     props,
     store,
-    state: queriedNotes.$useState()
+    items,
   }
 
 };

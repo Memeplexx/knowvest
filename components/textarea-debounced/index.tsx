@@ -13,7 +13,7 @@ export const TextAreaDebounced = (
 ) => {
   const { onChangeDebounced, ...otherProps } = props;
   const [value, setValue] = useState(props.value);
-  useDebounce(value, debounceTime, () => props.onChangeDebounced(value));
+  useDebounce(value, debounceTime, () => onChangeDebounced(value));
   return (
     <textarea
       {...otherProps}
