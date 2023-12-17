@@ -2,6 +2,7 @@ import { ClockIcon } from "@/utils/styles";
 import styled from "styled-components";
 import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";
+import { WiCloudyWindy } from "react-icons/wi";
 
 
 export const Header = styled.div`
@@ -59,7 +60,21 @@ export const RightBorder = styled(possible.div)`
   z-index: 4;
 `;
 
-export const ListItemsWrapper = styled.div`
+export const ListItemsWrapper = styled(possible.div)`
   display: flex;
   flex-direction: column;
+`;
+
+export const NoResultsWrapper = styled(possible.div)`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: grey;
+`;
+
+export const NoResultsIcon = styled(WiCloudyWindy)`
+  width: 64px;
+  height: auto;
 `;

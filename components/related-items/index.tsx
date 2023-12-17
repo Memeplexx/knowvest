@@ -10,6 +10,7 @@ export default function Related(
   return (
     <>
       <ListItemsWrapper
+        showIf={!!inputs.items.length}
         children={
           inputs.items.map(note => (
             <ListItem
@@ -36,7 +37,7 @@ export default function Related(
         }
       />
       <NoResultsWrapper
-        showIf={inputs.items.length === 0}
+        showIf={!inputs.items.length}
         children={
           <>
             <NoResultsIcon />

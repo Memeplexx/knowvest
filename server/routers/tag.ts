@@ -10,6 +10,21 @@ import { TRPCError } from '@trpc/server';
 
 export const tagRouter = router({
 
+  list: procedure
+    .input(z.object({
+      after: z.date().nullish(),
+    }))
+    .query(async ({ ctx: { userId }, input: { after } }) => {
+      
+      // Logic
+      const tags = !after
+        ? await prisma.tag.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.tag.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+
+      // Populate and return response
+      return { status: 'TAGS_LISTED', tags } as const;
+    }),
+
   create: procedure
     .input(z.object({
       text: z.string(),

@@ -1,6 +1,6 @@
 import { useInputs } from './inputs';
 import { Props } from './constants';
-import { Header, Icon, Result, RightBorder, ListItem, ListItemsWrapper } from './styles';
+import { Header, Icon, Result, RightBorder, ListItem, ListItemsWrapper, NoResultsWrapper, NoResultsIcon } from './styles';
 
 export default function HistoryItems(
   props: Props
@@ -10,6 +10,7 @@ export default function HistoryItems(
   return (
     <>
       <ListItemsWrapper
+        showIf={!!state.length}
         children={
           state.map(note => (
             <ListItem
@@ -34,6 +35,15 @@ export default function HistoryItems(
               }
             />
           ))}
+      />
+      <NoResultsWrapper
+        showIf={!state.length}
+        children={
+          <>
+            <NoResultsIcon />
+            no historical notes
+          </>
+        }
       />
     </>
   )

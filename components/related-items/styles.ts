@@ -57,7 +57,7 @@ export const NoResultsWrapper = styled(possible.div)`
   color: grey;
 `;
 
-export const ListItemsWrapper = styled.div`
+export const ListItemsWrapper = styled(possible.div)`
   display: flex;
   flex-direction: column;
 `;

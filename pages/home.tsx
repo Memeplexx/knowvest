@@ -2,61 +2,26 @@ import { ActiveNoteFlashCards } from '@/components/active-note-flash-cards';
 import { Navbar } from '@/components/navbar';
 import { Snackbar } from '@/components/snackbar';
 import { Tags } from '@/components/tags';
-import { UserId } from '@/server/dtos';
-import { prisma } from '@/server/routers/_app';
-import { NotificationContext, ServerSideProps } from '@/utils/pages/home/constants';
+import { NotificationContext } from '@/utils/pages/home/constants';
 import { useInputs } from '@/utils/pages/home/inputs';
 import { useOutputs } from '@/utils/pages/home/outputs';
 import { ActivePane, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TabsPanel, Wrapper } from '@/utils/pages/home/styles';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
 import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next/types';
-import superjson from 'superjson';
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-
-  // If there is no session, redirect to logic page
+  // If there is no session, or if it has expired, redirect to logic page
   const session = await getSession(context);
   if (!session || new Date(session.expires).getTime() < Date.now()) {
     return { redirect: { destination: '/', permanent: false } }
   }
-
-  // Find else create user by looking them up via the email in their session
-  const user = session.user!;
-  const userByEmail
-    = await prisma.user.findFirst({ where: { email: user.email! } })
-    || await prisma.user.create({ data: { email: user.email!, name: user.name!, image: user.image! } });
-
-  // Create users first note if it doesn't exist yet
-  if (!await prisma.note.findFirst({ where: { userId: userByEmail.id } })) {
-    await prisma.note.create({
-      data: {
-        userId: userByEmail.id,
-        text: '# Welcome to Knowledge Harvest! ## This is your first note. Remove this text to get started ❤️',
-        dateViewed: new Date(),
-      }
-    });
-  }
-
-  // Return props using the user id to select the correct data
-  const userId = userByEmail.id as UserId;
-  return {
-    props: superjson.serialize({
-      tags: await prisma.tag.findMany({ where: { userId } }),
-      notes: await prisma.note.findMany({ where: { userId }, orderBy: { dateViewed: 'desc' } }),
-      noteTags: await prisma.noteTag.findMany({ where: { tag: { userId } } }),
-      groups: await prisma.group.findMany({ where: { userId } }),
-      synonymGroups: await prisma.synonymGroup.findMany({ where: { group: { userId } } }),
-      flashCards: await prisma.flashCard.findMany({ where: { note: { userId } } }),
-    })
-  };
+  return { props: { } };
 }
 
-export default function Home(
-  propsSerialized: Parameters<typeof superjson.deserialize>[0],
-) {
-  const inputs = useInputs(superjson.deserialize<ServerSideProps>(propsSerialized));
+export default function Home() {
+  const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
     <NotificationContext.Provider

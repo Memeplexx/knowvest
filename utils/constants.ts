@@ -45,3 +45,12 @@ export const useContextForNestedStore = <S extends object>(initialState: S) => {
   useMemo(() => store.$setNew(initialState), [initialState, store]);
   return store;
 }
+
+export const database = {
+  tags: new Array<TagDTO>(),
+  notes: new Array<NoteDTO>(),
+  noteTags: new Array<NoteTagDTO>(),
+  groups: new Array<GroupDTO>(),
+  synonymGroups: new Array<SynonymGroupDTO>(),
+  flashCards: new Array<FlashCardDTO>(),
+}

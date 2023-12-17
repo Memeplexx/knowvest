@@ -1,6 +1,5 @@
 import { createContext } from "react";
 import { useInputs } from "./inputs";
-import { GroupDTO, NoteDTO, NoteTagDTO, SynonymGroupDTO, TagDTO } from "@/server/dtos";
 import { snackbarStatus } from "@/components/snackbar/constants";
 
 
@@ -12,14 +11,6 @@ export const initialState = {
     headerExpanded: true,
   }
 };
-
-export type ServerSideProps = {
-  tags: TagDTO[],
-  notes: NoteDTO[],
-  noteTags: NoteTagDTO[],
-  groups: GroupDTO[],
-  synonymGroups: SynonymGroupDTO[],
-}
 
 export type State = ReturnType<typeof useInputs>;
 

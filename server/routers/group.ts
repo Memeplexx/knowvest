@@ -10,6 +10,21 @@ import { listNotesWithTagText } from './shared';
 
 export const groupRouter = router({
 
+  list: procedure
+    .input(z.object({
+      after: z.date().nullish(),
+    }))
+    .query(async ({ ctx: { userId }, input: { after } }) => {
+      
+      // Logic
+      const groups = !after
+        ? await prisma.group.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.group.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+
+      // Populate and return response
+      return { status: 'GROUPS_LISTED', groups } as const;
+    }),
+
   create: procedure
     .input(z.object({
       name: z.string(),

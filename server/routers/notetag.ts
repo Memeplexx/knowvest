@@ -8,6 +8,21 @@ import { TRPCError } from '@trpc/server';
 
 export const noteTagRouter = router({
 
+  list: procedure
+    .input(z.object({
+      after: z.date().nullish(),
+    }))
+    .query(async ({ ctx: { userId }, input: { after } }) => {
+      
+      // Logic
+      const noteTags = !after
+        ? await prisma.noteTag.findMany({ where: { note: { userId } }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.noteTag.findMany({ where: { note: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+
+      // Populate and return response
+      return { status: 'NOTE_TAGS_LISTED', noteTags } as const;
+    }),
+
   noteTagsUpdate: procedure
     .input(z.object({
       noteId: ZodNoteId,

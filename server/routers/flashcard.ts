@@ -9,6 +9,21 @@ import { add } from 'date-fns';
 
 export const flashCardRouter = router({
 
+  list: procedure
+    .input(z.object({
+      after: z.date().nullish(),
+    }))
+    .query(async ({ ctx: { userId }, input: { after } }) => {
+      
+      // Logic
+      const flashCards = !after
+        ? await prisma.flashCard.findMany({ where: { note: { userId } }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.flashCard.findMany({ where: { note: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+
+      // Populate and return response
+      return { status: 'FLASHCARDS_LISTED', flashCards } as const;
+    }),
+
   create: procedure
     .input(z.object({
       noteId: ZodNoteId,
