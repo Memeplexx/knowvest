@@ -37,12 +37,10 @@ export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: 
       store.activePanel.loadingSelection.$set(true);
       const apiResponse = await trpc.note.split.mutate({ ...range, splitFromNoteId: store.$state.activeNoteId });
       store.activePanel.loadingSelection.$set(false);
-      const noteIds = apiResponse.noteTagsRemoved.map(nt => nt.noteId);
-      const tagIds = apiResponse.noteTagsRemoved.map(nt => nt.tagId);
-      store.notes.$find.id.$eq(store.$state.activeNoteId).$set(apiResponse.noteUpdated);
+      store.notes.$mergeMatching.id.$withOne(apiResponse.noteUpdated);
       store.notes.$push(apiResponse.noteCreated);
-      store.noteTags.$push(apiResponse.noteTagsCreated);
-      store.noteTags.$filter.noteId.$in(noteIds).$and.tagId.$in(tagIds).$delete();
+      store.noteTags.$push(apiResponse.newNoteTags);
+      store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
       store.activePanel.selection.$set('');
       codeMirror?.dispatch({
         changes: {

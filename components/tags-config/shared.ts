@@ -12,9 +12,9 @@ export const completeCreateTagForSynonym = async (inputs: Inputs) => {
   switch (apiResponse.status) {
     case 'BAD_REQUEST': return inputs.notify.error(apiResponse.fields.text);
   }
-  inputs.store.config.tagId.$set(apiResponse.tagCreated.id);
-  inputs.store.tags.$push(apiResponse.tagCreated);
-  inputs.store.noteTags.$push(apiResponse.noteTagsCreated);
+  inputs.store.config.tagId.$set(apiResponse.tag.id);
+  inputs.store.tags.$mergeMatching.id.$withOne(apiResponse.tag);
+  inputs.store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
   inputs.notify.success('Tag created');
   blurAutocompleteInput(inputs);
 }
@@ -26,10 +26,10 @@ export const completeCreateTag = async (inputs: Inputs) => {
   switch (apiResponse.status) {
     case 'BAD_REQUEST': return inputs.notify.error(apiResponse.fields.text);
   }
-  inputs.store.config.$patch({ synonymId: apiResponse.tagCreated.synonymId, tagId: apiResponse.tagCreated.id });
-  inputs.store.tags.$push(apiResponse.tagCreated);
-  inputs.store.noteTags.$push(apiResponse.noteTagsCreated);
-  inputs.store.synonymIds.$push(apiResponse.tagCreated.synonymId);
+  inputs.store.config.$patch({ synonymId: apiResponse.tag.synonymId, tagId: apiResponse.tag.id });
+  inputs.store.tags.$push(apiResponse.tag);
+  inputs.store.noteTags.$push(apiResponse.noteTags);
+  inputs.store.synonymIds.$push(apiResponse.tag.synonymId);
   inputs.notify.success('Tag created');
   blurAutocompleteInput(inputs);
 }
@@ -44,9 +44,9 @@ export const completeCreateTagForGroup = async (inputs: Inputs) => {
     case 'BAD_REQUEST': return inputs.notify.error(apiResponse.fields.text)
   }
   inputs.store.config.autocompleteText.$set('');
-  inputs.store.tags.$push(apiResponse.tagCreated);
-  inputs.store.noteTags.$push(apiResponse.noteTagsCreated);
-  inputs.store.synonymGroups.$push(apiResponse.synonymGroupsCreated);
+  inputs.store.tags.$mergeMatching.id.$withOne(apiResponse.tag);
+  inputs.store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
+  inputs.store.synonymGroups.$mergeMatching.id.$withOne(apiResponse.synonymGroup);
   inputs.notify.success('Tag created');
   blurAutocompleteInput(inputs);
 }
@@ -60,7 +60,7 @@ export const completeCreateGroup = async (inputs: Inputs) => {
     case 'BAD_REQUEST': return inputs.notify.error(apiResponse.fields.name);
   }
   inputs.store.config.autocompleteText.$set('');
-  inputs.store.groups.$push(apiResponse.created);
+  inputs.store.groups.$push(apiResponse.createdGroup);
   apiResponse.createdSynonymGroup && inputs.store.synonymGroups.$push(apiResponse.createdSynonymGroup);
   inputs.notify.success('Group created');
   blurAutocompleteInput(inputs);
@@ -75,7 +75,7 @@ export const completeEditGroupName = async (inputs: Inputs) => {
     case 'BAD_REQUEST': return inputs.notify.error(apiResponse.fields.name)
     case 'CONFLICT': return inputs.notify.error(apiResponse.message)
   }
-  inputs.store.groups.$find.id.$eq(inputs.groupId!).$set(apiResponse.updated);
+  inputs.store.groups.$mergeMatching.id.$withOne(apiResponse.updatedGroup);
   inputs.notify.success('Group updated');
   blurAutocompleteInput(inputs);
 }
@@ -86,14 +86,12 @@ export const completeEditTag = async (inputs: Inputs) => {
     case 'TAG_UNCHANGED': return inputs.notify.info('Tag unchanged')
     case 'BAD_REQUEST': return inputs.notify.error(apiResponse.fields.text)
   }
-  const activeTagIdsToBeDeselected = apiResponse.noteTagsDeleted.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
+  const activeTagIdsToBeDeselected = apiResponse.archivedNoteTags.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
   const activeSynonymIdsToBeDeselected = inputs.store.$state.tags.filter(t => activeTagIdsToBeDeselected.includes(t.id)).map(t => t.synonymId);
   const activeTagIdsToBeSelected = apiResponse.noteTagsCreated.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
   const activeSynonymIdsToBeSelected = inputs.store.$state.tags.filter(t => activeTagIdsToBeSelected.includes(t.id)).map(t => t.synonymId);
-  const noteIds = apiResponse.noteTagsDeleted.map(nt => nt.noteId)
-  const tagIds = apiResponse.noteTagsDeleted.map(nt => nt.tagId);
-  inputs.store.tags.$find.id.$eq(apiResponse.tagUpdated.id).$set(apiResponse.tagUpdated);
-  inputs.store.noteTags.$filter.noteId.$in(noteIds).$and.tagId.$in(tagIds).$delete();
+  inputs.store.tags.$mergeMatching.id.$withOne(apiResponse.tagUpdated);
+  inputs.store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
   inputs.store.noteTags.$push(apiResponse.noteTagsCreated);
   inputs.store.synonymIds.$set([...inputs.store.$state.synonymIds.filter(id => !activeSynonymIdsToBeDeselected.includes(id)), ...activeSynonymIdsToBeSelected]);
   inputs.notify.success('Tag updated');
@@ -139,13 +137,11 @@ export const onAutocompleteSelectedWhileSynonymIsSelected = async ({ inputs, tag
   if (!inputs.synonymId) { throw new Error(); }
   const selected = inputs.store.$state.tags.findOrThrow(t => t.id === tagId);
   const apiResponse = await trpc.synonym.addTag.mutate({ tagId, synonymId: inputs.synonymId });
-  const groupIds = apiResponse.deletedSynonymGroups.map(sg => sg.groupId);
-  const synonymIds = apiResponse.deletedSynonymGroups.map(sg => sg.synonymId);
   const synonymId = apiResponse.tagsUpdated[0].synonymId;
   const groupHasMoreThanOneTag = inputs.store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
   const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
-  inputs.store.tags.$filter.id.$in(apiResponse.tagsUpdated.map(tu => tu.id)).$set(apiResponse.tagsUpdated);
-  inputs.store.synonymGroups.$filter.groupId.$in(groupIds).$and.synonymId.$in(synonymIds).$delete();
+  inputs.store.tags.$mergeMatching.id.$withMany(apiResponse.tagsUpdated);
+  inputs.store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
   inputs.store.config.$patch({ tagId, synonymId, autocompleteText: selected.text });
   groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && inputs.notify.success('Tag(s) added to synonyms');
 };
@@ -154,14 +150,14 @@ export const onAutocompleteSelectedWhileGroupIsSelected = async ({ inputs, tagId
   const { synonymId } = inputs.store.$state.tags.findOrThrow(t => t.id === tagId);
   const apiResponse = await trpc.group.addSynonym.mutate({ groupId: inputs.groupId, synonymId });
   inputs.store.config.autocompleteText.$set('');
-  inputs.store.synonymGroups.$push(apiResponse.created);
+  inputs.store.synonymGroups.$mergeMatching.id.$withOne(apiResponse.synonymGroup);
   inputs.notify.success('Added to group');
 };
 
 export const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async ({ inputs, groupId }: { inputs: Inputs, groupId: GroupId }) => {
   if (!inputs.synonymId) { throw new Error(); }
   const apiResponse = await trpc.group.addSynonym.mutate({ groupId, synonymId: inputs.synonymId });
-  inputs.store.synonymGroups.$push(apiResponse.created);
+  inputs.store.synonymGroups.$mergeMatching.id.$withOne(apiResponse.synonymGroup);
   inputs.notify.success('Added to group');
 }
 

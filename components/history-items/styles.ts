@@ -25,7 +25,7 @@ export const Icon = styled(ClockIcon)`
 export const Result = styled(ReadonlyNote)`
 `;
 
-export const Wrapper = styled.div`
+export const ListItem = styled.div`
   font-size: 12px;
   cursor: pointer;
   position: relative;
@@ -57,4 +57,9 @@ export const RightBorder = styled(possible.div)`
   top: 40px;
   bottom: -9px;
   z-index: 4;
+`;
+
+export const ListItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

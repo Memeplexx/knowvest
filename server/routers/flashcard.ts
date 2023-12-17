@@ -32,27 +32,27 @@ export const flashCardRouter = router({
     .mutation(async ({ ctx: { userId }, input: { id, text } }) => {
 
       // Validation
-      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-      if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
+      const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
+      if (!existingFlashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
 
       // Logic
-      const updatedFlashCard = await prisma.flashCard.update({ where: { id }, data: { text } });
-      return { status: 'FLASH CARD UPDATED', flashCard: updatedFlashCard };
+      const flashCard = await prisma.flashCard.update({ where: { id }, data: { text } });
+      return { status: 'FLASH CARD UPDATED', flashCard };
     }),
 
-  delete: procedure
+  archive: procedure
     .input(z.object({
       id: ZodFlashCardId,
     }))
     .mutation(async ({ ctx: { userId }, input: { id } }) => {
 
       // Validation
-      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-      if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
+      const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
+      if (!existingFlashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
 
       // Logic
-      await prisma.flashCard.delete({ where: { id } });
-      return { status: 'FLASH CARD DELETED', flashCard };
+      const flashCard = await prisma.flashCard.update({ where: { id }, data: { isArchived: true } });
+      return { status: 'FLASH CARD ARCHIVED', flashCard };
     }),
 
   answerQuestionCorrectly: procedure
@@ -62,14 +62,14 @@ export const flashCardRouter = router({
     .mutation(async ({ ctx: { userId }, input: { id } }) => {
 
       // Validation
-      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-      if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
+      const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
+      if (!existingFlashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
 
       // Logic
-      const cleanRunCount = flashCard.cleanRunCount + 1;
-      const nextQuestionDate = add(new Date(), { days: flashCard.cleanRunCount + 1 }); // TODO: consider using a more sophisticated algorithm for spaced repitition
-      const updatedFlashCard = await prisma.flashCard.update({ where: { id }, data: { cleanRunCount, nextQuestionDate } });
-      return { status: 'FLASH CARD UPDATED', flashCard: updatedFlashCard };
+      const cleanRunCount = existingFlashCard.cleanRunCount + 1;
+      const nextQuestionDate = add(new Date(), { days: existingFlashCard.cleanRunCount + 1 }); // TODO: consider using a more sophisticated algorithm for spaced repitition
+      const flashCard = await prisma.flashCard.update({ where: { id }, data: { cleanRunCount, nextQuestionDate } });
+      return { status: 'FLASH CARD UPDATED', flashCard };
     }),
 
   answerQuestionIncorrectly: procedure
@@ -79,13 +79,13 @@ export const flashCardRouter = router({
     .mutation(async ({ ctx: { userId }, input: { id } }) => {
       
       // Validation
-      const flashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-      if (!flashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
+      const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
+      if (!existingFlashCard) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Flash card not found' }); }
 
       // Logic
       const cleanRunCount = 0;
       const nextQuestionDate = add(new Date(), { days: 1 });
-      const updatedFlashCard = await prisma.flashCard.update({ where: { id }, data: { cleanRunCount, nextQuestionDate } });
-      return { status: 'FLASH CARD UPDATED', flashCard: updatedFlashCard };
+      const flashCard = await prisma.flashCard.update({ where: { id }, data: { cleanRunCount, nextQuestionDate } });
+      return { status: 'FLASH CARD UPDATED', flashCard };
     }),
 });

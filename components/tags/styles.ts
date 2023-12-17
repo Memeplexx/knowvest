@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { possible } from '../html';
 import { ButtonIcon } from '../button-icon';
 
-export const Tag = styled.div <{ selected: boolean, $first: boolean, $last: boolean, $active: boolean, $show?: boolean }>`
+export const Tag = styled.div <{ selected: boolean, $first: boolean, $last: boolean, $show?: boolean }>`
   font-size: 12px;
   height: 20px;
   align-items: center;

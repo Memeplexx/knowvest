@@ -8,6 +8,7 @@ import { initialState } from './constants';
 
 
 export const useInputs = () => {
+
   const store = useContextForNestedStore(initialState)!;
   const state = store.activePanel.$useState();
   const mayDeleteNote = store.notes.$useState().length > 1;
@@ -18,6 +19,7 @@ export const useInputs = () => {
     if (!isMounted) { return null; }
     return dynamic(() => import('../active-editor').finally(() => setLoadingEditor(false)));
   }, [isMounted]);
+  
   return {
     ...state,
     store,

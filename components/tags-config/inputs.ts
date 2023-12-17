@@ -26,8 +26,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     store.config.tagId,
     store.config.autocompleteText,
   ).$with((tags, synonymId, tagId, autocompleteText) => {
-    return tags
-      .filter(t => t.synonymId === synonymId)
+    const unArchivedTags = tags.filter(t => !t.isArchived);
+    return unArchivedTags
+      .filter(tag => tag.synonymId === synonymId)
       .map((tag, index, array) => ({
         id: tag.id,
         text: tagId === tag.id || (!tagId && tagId === tag.id) ? autocompleteText : tag.text,
@@ -41,14 +42,17 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     store.synonymGroups,
     store.groups,
     store.tags,
-    tagsInSynonymGroup,
     store.config.synonymId,
-  ).$with((synonymGroups, groups, tags, tagsInSynonymGroup, synonymId) => {
+    tagsInSynonymGroup,
+  ).$with((synonymGroups, groups, tags, synonymId, tagsInSynonymGroup) => {
+    const unArchivedSynonymGroups = synonymGroups.filter(sg => !sg.isArchived);
+    const unArchivedGroups = groups.filter(g => !g.isArchived);
+    const unArchivedTags = tags.filter(t => !t.isArchived);
     return [
-      ...synonymGroups
+      ...unArchivedSynonymGroups
         .filter(synonymGroup => synonymGroup.synonymId === synonymId)
         .map(synonymGroup => ({
-          group: groups.findOrThrow(g => g.id === synonymGroup.groupId),
+          group: unArchivedGroups.findOrThrow(g => g.id === synonymGroup.groupId),
           synonyms: [
             !synonymId
               ? null
@@ -56,11 +60,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
                 synonymId,
                 tags: tagsInSynonymGroup,
               },
-            ...synonymGroups
+            ...unArchivedSynonymGroups
               .filter(sg => sg.groupId === synonymGroup.groupId && sg.synonymId !== synonymId)
               .map(sg => ({
                 synonymId: sg.synonymId,
-                tags: tags
+                tags: unArchivedTags
                   .filter(t => t.synonymId === sg.synonymId)
                   .map((tag, index, array) => ({
                     ...tag,
@@ -70,8 +74,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
               }))
           ].filterTruthy()
         })),
-      ...groups
-        .filter(g => !synonymGroups.some(sg => sg.groupId === g.id))
+      ...unArchivedGroups
+        .filter(group => !unArchivedSynonymGroups.some(sg => sg.groupId === group.id))
         .map(group => ({
           group,
           synonyms: [],
@@ -82,7 +86,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const tagSynonymGroupMap = derive(
     store.tags,
   ).$with((tags) => {
-    return tags
+    const unArchivedTags = tags.filter(t => !t.isArchived);
+    return unArchivedTags
       .groupBy(tag => tag.synonymId)
       .mapToObject(t => t[0].synonymId, tags => tags);
   });
@@ -93,12 +98,16 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     store.tags,
     tagsInCustomGroups,
   ).$with((groups, synonymGroups, tags, tagsInCustomGroups) => {
-    return groups
+    const unArchivedGroups = groups.filter(g => !g.isArchived);
+    const unArchivedTags = tags.filter(t => !t.isArchived);
+    return unArchivedGroups
       .filter(group => !tagsInCustomGroups.some(t => t.group.id === group.id))
       .map(group => ({
         value: group.id,
         label: group.name,
-        synonyms: synonymGroups.filter(sg => sg.groupId === group.id).flatMap(sg => tags.filter(t => t.synonymId === sg.synonymId)),
+        synonyms: synonymGroups
+          .filter(sg => sg.groupId === group.id)
+          .flatMap(sg => unArchivedTags.filter(t => t.synonymId === sg.synonymId)),
       }));
   });
 
@@ -109,7 +118,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     store.config.synonymId,
     tagSynonymGroupMap,
   ).$with((tags, synonymGroups, groupId, synonymId, tagSynonymGroupMap) => {
-    return tags
+    const unArchivedTags = tags.filter(t => !t.isArchived);
+    return unArchivedTags
       .filter(t => {
         if (groupId) {
           return t.synonymId !== synonymId && !synonymGroups

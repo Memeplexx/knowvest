@@ -24,11 +24,13 @@ export const useInputs = (props: Props) => {
 const useNotesSortedAndSliced = (store: Store<AppState>) => derive(
   store.notes,
   store.activeNoteId,
-).$with((notes, activeNoteId) => notes
-  .filter(note => activeNoteId !== note.id)
-  .sort((a, b) => b.dateViewed!.toISOString().localeCompare(a.dateViewed!.toISOString()))
-  .slice(0, 40)
-).$useState();
+).$with((notes, activeNoteId) => {
+  const unArchivedNotes = notes.filter(n => !n.isArchived);
+  return unArchivedNotes
+    .filter(note => activeNoteId !== note.id)
+    .sort((a, b) => b.dateViewed!.toISOString().localeCompare(a.dateViewed!.toISOString()))
+    .slice(0, 40);
+}).$useState();
 
 const useEmbellishNotesWithDates = (
   notesSorted: NoteDTO[]

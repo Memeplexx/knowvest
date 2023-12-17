@@ -10,15 +10,15 @@ export const useOutputs = ({ store, notify }: Inputs) => {
     },
     onChangeFlashCardText: (id: FlashCardId) => async (text: string) => {
       const flashCard = await trpc.flashCard.updateText.mutate({ id, text });
-      store.flashCards.$find.id.$eq(id).$set(flashCard.flashCard);
+      store.flashCards.$mergeMatching.id.$withOne(flashCard.flashCard);
     },
     onClickRequestDeleteFlashCard: (id: FlashCardId) => () => {
       store.activeFlashCards.confirmDeleteId.$set(id);
     },
     onConfirmRemoveFlashCard: (id: FlashCardId) => async () => {
-      const flashCard = await trpc.flashCard.delete.mutate({ id });
-      store.flashCards.$find.id.$eq(flashCard.flashCard.id).$delete();
-      notify.success('Flash card deleted');
+      const apiResponse = await trpc.flashCard.archive.mutate({ id });
+      store.flashCards.$mergeMatching.id.$withOne(apiResponse.flashCard);
+      notify.success('Flash card archived');
     },
     onCancelRemoveFlashCard: () => {
       store.activeFlashCards.confirmDeleteId.$set(null);

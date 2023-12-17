@@ -1,0 +1,31 @@
+-- AlterTable
+ALTER TABLE "flash_card" ADD COLUMN     "date_updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE "group" ADD COLUMN     "date_updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE "note" ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false,
+ALTER COLUMN "date_updated" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "note_tag" ADD COLUMN     "date_updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE "synonym" ADD COLUMN     "date_updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE "synonym_group" ADD COLUMN     "date_updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE "tag" ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false,
+ALTER COLUMN "date_updated" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "user" ADD COLUMN     "date_updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "is_archived" BOOLEAN NOT NULL DEFAULT false;

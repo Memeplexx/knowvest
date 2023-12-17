@@ -4,7 +4,7 @@ import { Inputs } from "./constants";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { props, store } = inputs;
+  const { props, store, cardRef } = inputs;
   return {
     onSelectNote: async (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
@@ -13,8 +13,9 @@ export const useOutputs = (inputs: Inputs) => {
       store.synonymIds.$set(synonymIds);
       store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
-      await trpc.note.view.mutate({ noteId });
-      inputs.cardRef.current!.scrollToTop();
+      const apiResponse = await trpc.note.view.mutate({ noteId });
+      store.notes.$mergeMatching.id.$withOne(apiResponse.note);
+      cardRef.current!.scrollToTop();
     }
   };
 }

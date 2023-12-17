@@ -10,7 +10,6 @@ export const useInputs = (props: Props) => {
 
   const store = useContextForNestedStore(initialState)!;
   const state = store.history.$useState();
-
   const isMounted = useIsMounted();
   const HistoricalNotes = useMemo(() => {
     if (!isMounted) { return null; }

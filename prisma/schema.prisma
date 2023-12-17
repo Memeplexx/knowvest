@@ -16,8 +16,9 @@ model Note {
   userId      Int         @map("user_id")
   user        User        @relation(fields: [userId], references: [id])
   dateCreated DateTime    @default(now()) @map("date_created")
-  dateUpdated DateTime?   @map("date_updated")
+  dateUpdated DateTime?   @default(now()) @updatedAt @map("date_updated")
   dateViewed  DateTime?   @map("date_viewed")
+  isArchived  Boolean     @default(false) @map("is_archived")
   noteTags    NoteTag[]
   flashCards  FlashCard[]
 
@@ -26,6 +27,8 @@ model Note {
 
 model Synonym {
   id            Int            @id @default(autoincrement())
+  dateUpdated   DateTime       @default(now()) @updatedAt @map("date_updated")
+  isArchived    Boolean        @default(false) @map("is_archived")
   tag           Tag[]
   synonymGroups SynonymGroup[]
 
@@ -40,7 +43,8 @@ model Tag {
   userId      Int       @map("user_id")
   user        User      @relation(fields: [userId], references: [id])
   dateCreated DateTime  @default(now()) @map("date_created")
-  dateUpdated DateTime  @updatedAt @map("date_updated")
+  dateUpdated DateTime  @default(now()) @updatedAt @map("date_updated")
+  isArchived  Boolean   @default(false) @map("is_archived")
   noteTags    NoteTag[]
 
   @@map("tag")
@@ -51,40 +55,50 @@ model Group {
   name          String         @unique
   userId        Int            @map("user_id")
   user          User           @relation(fields: [userId], references: [id])
+  dateUpdated   DateTime       @default(now()) @updatedAt @map("date_updated")
+  isArchived    Boolean        @default(false) @map("is_archived")
   synonymGroups SynonymGroup[]
 
   @@map("group")
 }
 
 model SynonymGroup {
-  groupId   Int     @map("group_id")
-  group     Group   @relation(fields: [groupId], references: [id])
-  synonymId Int     @map("synonym_id")
-  synonym   Synonym @relation(fields: [synonymId], references: [id])
+  id          Int      @id @default(autoincrement())
+  groupId     Int      @map("group_id")
+  group       Group    @relation(fields: [groupId], references: [id])
+  synonymId   Int      @map("synonym_id")
+  synonym     Synonym  @relation(fields: [synonymId], references: [id])
+  dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
+  isArchived  Boolean  @default(false) @map("is_archived")
+  @@unique([groupId, synonymId])
 
-  @@id([groupId, synonymId])
   @@map("synonym_group")
 }
 
 model NoteTag {
-  noteId     Int      @map("note_id")
-  note       Note     @relation(fields: [noteId], references: [id])
-  tagId      Int      @map("tag_id")
-  tag        Tag      @relation(fields: [tagId], references: [id])
-  assignedAt DateTime @default(now()) @map("assigned_at")
+  id          Int      @id @default(autoincrement())
+  noteId      Int      @map("note_id")
+  note        Note     @relation(fields: [noteId], references: [id])
+  tagId       Int      @map("tag_id")
+  tag         Tag      @relation(fields: [tagId], references: [id])
+  assignedAt  DateTime @default(now()) @map("assigned_at")
+  dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
+  isArchived  Boolean  @default(false) @map("is_archived")
+  @@unique([noteId, tagId])
 
-  @@id([noteId, tagId])
   @@map("note_tag")
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String
-  image String?
-  Note  Note[]
-  Tag   Tag[]
-  Group Group[]
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  name        String
+  image       String?
+  dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
+  isArchived  Boolean  @default(false) @map("is_archived")
+  Note        Note[]
+  Tag         Tag[]
+  Group       Group[]
 
   @@map("user")
 }
@@ -96,6 +110,8 @@ model FlashCard {
   text             String
   nextQuestionDate DateTime @map("next_question_date")
   cleanRunCount    Int      @map("clean_run_count")
+  dateUpdated      DateTime @default(now()) @updatedAt @map("date_updated")
+  isArchived       Boolean  @default(false) @map("is_archived")
 
   @@map("flash_card")
 }

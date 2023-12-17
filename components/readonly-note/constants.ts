@@ -3,7 +3,7 @@ import { Readable } from "olik";
 import { HTMLProps } from "react";
 
 export type Props = {
-  note: NoteDTO,
+  note?: NoteDTO,
   synonymIds: Readable<SynonymId[]>,
   className?: string | undefined;
   onClick?: () => void;

@@ -1,6 +1,6 @@
 import { Props } from './constants';
 import { useInputs } from './inputs';
-import { Header, Icon, NoResults, NoResultsIcon, Result, Wrapper } from './styles';
+import { Header, Icon, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, Result, ListItem } from './styles';
 
 
 export default function Related(
@@ -9,29 +9,33 @@ export default function Related(
   const inputs = useInputs(props);
   return (
     <>
-      {inputs.items.map(note => (
-        <Wrapper
-          key={note.note.id}
-          onClick={() => props.onSelectNote(note.note.id)}
-          children={
-            <>
-              <Header
-                children={
-                  <>
-                    {note.matches}
-                    <Icon />
-                  </>
-                }
-              />
-              <Result
-                note={note.note}
-                synonymIds={inputs.store.synonymIds}
-              />
-            </>
-          }
-        />
-      ))}
-      <NoResults
+      <ListItemsWrapper
+        children={
+          inputs.items.map(note => (
+            <ListItem
+              key={note.note.id}
+              onClick={() => props.onSelectNote(note.note.id)}
+              children={
+                <>
+                  <Header
+                    children={
+                      <>
+                        {note.matches}
+                        <Icon />
+                      </>
+                    }
+                  />
+                  <Result
+                    note={note.note}
+                    synonymIds={inputs.store.synonymIds}
+                  />
+                </>
+              }
+            />
+          ))
+        }
+      />
+      <NoResultsWrapper
         showIf={inputs.items.length === 0}
         children={
           <>

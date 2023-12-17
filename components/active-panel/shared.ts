@@ -31,7 +31,7 @@ export const createNotePersisterExtension = ({ debounce, inputs }: { debounce: n
     if (Date.now() - timestamp < debounce) { return; }
     if (!inputs.store.$state.activePanel.allowNotePersister) { return; }
     const apiResponse = await trpc.note.update.mutate({ noteId: inputs.store.$state.activeNoteId, text: update.state.doc.toString() });
-    inputs.store.notes.$find.id.$eq(inputs.store.$state.activeNoteId).$set(apiResponse.updatedNote);
+    inputs.store.notes.$mergeMatching.id.$withOne(apiResponse.updatedNote);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
@@ -84,8 +84,7 @@ export const noteTagsPersisterExtension = (store: Store<AppState>) => {
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
     const apiResponse = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
-    store.noteTags.$filter.noteId.$eq(store.$state.activeNoteId).$delete();
-    store.noteTags.$push(apiResponse.noteTags);
+    store.noteTags.$mergeMatching.noteId.$withMany(apiResponse.noteTags);
     const tagIds = apiResponse.noteTags.map(nt => nt.tagId);
     const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
     store.synonymIds.$set(synonymIds);

@@ -48,7 +48,7 @@ export const useInputs = () => {
     return () => codeMirror.current?.destroy();
   }, [store]);
 
-  const inputs = {
+  return {
     store,
     editorRef,
     ...state,
@@ -56,7 +56,6 @@ export const useInputs = () => {
     codeMirror: codeMirror.current,
     notify: useContext(NotificationContext)!,
   };
-  return inputs;
 }
 
 export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: Store<AppState & typeof initialState> }) => {

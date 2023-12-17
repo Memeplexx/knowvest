@@ -1,6 +1,6 @@
 import { useInputs } from './inputs';
 import { Props } from './constants';
-import { Header, Icon, Result, RightBorder, Wrapper } from './styles';
+import { Header, Icon, Result, RightBorder, ListItem, ListItemsWrapper } from './styles';
 
 export default function HistoryItems(
   props: Props
@@ -9,29 +9,32 @@ export default function HistoryItems(
   const { state, store } = inputs;
   return (
     <>
-      {state.map(note => (
-        <Wrapper
-          key={note.id}
-          onClick={() => props.onSelectNote(note.id)}
-          children={
-            <>
-              <Header
-                children={
-                  <>
-                    {note.date}
-                    <Icon />
-                  </>
-                }
-              />
-              <Result
-                note={note}
-                synonymIds={store.synonymIds}
-              />
-              <RightBorder />
-            </>
-          }
-        />
-      ))}
+      <ListItemsWrapper
+        children={
+          state.map(note => (
+            <ListItem
+              key={note.id}
+              onClick={() => props.onSelectNote(note.id)}
+              children={
+                <>
+                  <Header
+                    children={
+                      <>
+                        {note.date}
+                        <Icon />
+                      </>
+                    }
+                  />
+                  <Result
+                    note={note}
+                    synonymIds={store.synonymIds}
+                  />
+                  <RightBorder />
+                </>
+              }
+            />
+          ))}
+      />
     </>
   )
 }

@@ -14,14 +14,17 @@ export const useInputs = (props: Props) => {
     store.noteTags,
     store.synonymIds,
   ).$with((activeNoteId, notes, tags, noteTags, synonymIds) => {
+    const unArchivedNotes = notes.filter(n => !n.isArchived);
+    const unArchivedTags = tags.filter(t => !t.isArchived);
+    const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
     return synonymIds
-      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
+      .flatMap(synonymId => unArchivedTags.filter(t => t.synonymId === synonymId))
       .map(t => t.id)
       .distinct()
-      .flatMap(tagId => noteTags.filter(nt => nt.noteId !== activeNoteId && nt.tagId === tagId))
+      .flatMap(tagId => unArchivedNoteTags.filter(nt => nt.noteId !== activeNoteId && nt.tagId === tagId))
       .groupBy(n => n.noteId)
       .map(n => ({
-        note: notes.findOrThrow(nn => nn.id === n[0].noteId),
+        note: unArchivedNotes.findOrThrow(nn => nn.id === n[0].noteId),
         count: n.length,
       }))
       .sort((a, b) => b.count - a.count)

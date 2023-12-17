@@ -11,25 +11,36 @@ export const noteRouter = router({
 
   create: procedure
     .mutation(async ({ ctx: { userId } }) => {
+
+      // Create a new note
       const now = new Date();
-      return await prisma.note.create({ data: { userId, text: '', dateUpdated: now, dateViewed: now } });
+      const note = await prisma.note.create({ data: { userId, text: '', dateUpdated: now, dateViewed: now } });
+
+      // Populate and return response
+      return { status: 'NOTE_CREATED', note } as const;
     }),
 
-  delete: procedure
+  archive: procedure
     .input(z.object({
       noteId: ZodNoteId,
     }))
     .mutation(async ({ ctx: { userId }, input: { noteId } }) => {
 
-      // Validation
-      const noteToDelete = await prisma.note.findFirst({ where: { id: noteId, userId } });
-      if (!noteToDelete) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
+      // Validate
+      const noteToArchive = await prisma.note.findFirst({ where: { id: noteId, userId } });
+      if (!noteToArchive) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
 
-      // Logic
-      const noteTagsToDeleted = await prisma.noteTag.findMany({ where: { noteId } })
-      const noteTagsDeleted = await prisma.$transaction(noteTagsToDeleted.map(nt => prisma.noteTag.delete({ where: { noteId_tagId: { noteId, tagId: nt.tagId } } })));
-      const noteDeleted = await prisma.note.delete({ where: { id: noteId } });
-      return { noteDeleted, noteTagsDeleted } as const;
+      // Archive all note tags associated with the note that is being archived
+      const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId } })
+      const idsOfNoteTagsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
+      await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsToBeArchived } }, data: { isArchived: true } });
+      const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: idsOfNoteTagsToBeArchived } } });
+
+      // Archive note
+      const noteArchived = await prisma.note.update({ where: { id: noteId }, data: { isArchived: true } });
+
+      // Populate and return response
+      return { status: 'NOTE_ARCHIVED', noteArchived, archivedNoteTags } as const;
     }),
 
   view: procedure
@@ -38,12 +49,15 @@ export const noteRouter = router({
     }))
     .mutation(async ({ ctx: { userId }, input: { noteId } }) => {
 
-      // Validation
+      // Validate
       const noteToView = await prisma.note.findFirst({ where: { id: noteId, userId } });
       if (!noteToView) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
 
-      // Logic
-      return await prisma.note.update({ where: { id: noteId }, data: { dateViewed: new Date() } });
+      // Update note
+      const note = await prisma.note.update({ where: { id: noteId }, data: { dateViewed: new Date() } });
+
+      // Populate and return response
+      return { status: 'NOTE_VIEWED', note } as const;
     }),
 
   update: procedure
@@ -57,9 +71,11 @@ export const noteRouter = router({
       const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
       if (!note) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
 
-      // Logic
+      // Update note
       const now = new Date();
       const updatedNote = await prisma.note.update({ where: { id: noteId }, data: { text, dateUpdated: now, dateViewed: now } });
+
+      // Populate and return response
       return { status: 'NOTE_UPDATED', updatedNote } as const;
     }),
 
@@ -73,10 +89,16 @@ export const noteRouter = router({
       const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
       if (!note) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
 
-      // Logic
-      const noteTags = await prisma.noteTag.findMany({ where: { noteId } });
+      // Create a new note with the same text as the note being duplicated
       const noteCreated = await prisma.note.create({ data: { userId, text: note.text, dateUpdated: new Date(), dateViewed: new Date() } });
-      const noteTagsCreated = await prisma.$transaction(noteTags.map(({ tagId }) => prisma.noteTag.create({ data: { noteId: noteCreated.id, tagId } })));
+
+      // Create new note tags with the same tag ids as the note being duplicated
+      const noteTags = await prisma.noteTag.findMany({ where: { noteId } });
+      const noteTagTagIds = noteTags.map(nt => nt.tagId);
+      await prisma.noteTag.createMany({ data: noteTagTagIds.map(tagId => ({ noteId: noteCreated.id, tagId })) });
+
+      // Populate and return response
+      const noteTagsCreated = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } } });
       return { status: 'NOTE_DUPLICATED', noteCreated, noteTagsCreated } as const;
     }),
 
@@ -92,22 +114,30 @@ export const noteRouter = router({
       const note = await prisma.note.findFirst({ where: { id: splitFromNoteId } });
       if (!note) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Could not find note' }); }
 
-      // Create new note and note tags
+      // Create new note with the split text
       const now = new Date();
       const noteCreated = await prisma.note.create({ data: { userId, text: note.text.slice(from, to), dateUpdated: now, dateViewed: now } });
+
+      // Create new note tags for the new note
       const tagsToBeAssigned = await listTagsWithTagText({ userId, noteText: noteCreated.text });
       const tagIdsToBeAssigned = tagsToBeAssigned.map(tag => tag.id);
-      const noteTagsCreated = await prisma.$transaction(tagIdsToBeAssigned.map(tagId => prisma.noteTag.create({ data: { noteId: noteCreated.id, tagId } })));
+      await prisma.noteTag.createMany({ data: tagIdsToBeAssigned.map(tagId => ({ noteId: noteCreated.id, tagId })) });
 
-      // Update existing note and note tags
+      // Update the existing note by removing the split text
       const noteUpdated = await prisma.note.update({ where: { id: splitFromNoteId }, data: { text: `${note.text.slice(0, from)}${note.text.slice(to)}`, dateUpdated: now, dateViewed: now } });
+
+      // Archive note tags that are no longer associated with the existing note
       const tagsUpdatedForExistingNote = await listTagsWithTagText({ userId, noteText: noteUpdated.text });
       const tagIdsUpdatedForExistingNote = tagsUpdatedForExistingNote.map(tag => tag.id);
       const noteTagsForExistingNote = await prisma.noteTag.findMany({ where: { noteId: splitFromNoteId } }) as NoteTagDTO[];
       const tagIdsToBeUnassignedFromExistingNote = noteTagsForExistingNote.map(noteTag => noteTag.tagId).filter(id => !tagIdsUpdatedForExistingNote.includes(id));
-      const noteTagsRemoved = await prisma.$transaction(tagIdsToBeUnassignedFromExistingNote.map(tagId => prisma.noteTag.delete({ where: { noteId_tagId: { noteId: splitFromNoteId, tagId } } })));
+      const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId: splitFromNoteId, tagId: { in: tagIdsToBeUnassignedFromExistingNote } } });
+      const idsOfNoteTagsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
+      await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsToBeArchived } }, data: { isArchived: true } });
 
-      // Return response
-      return { status: 'NOTE_SPLIT', noteCreated, noteUpdated, noteTagsCreated, noteTagsRemoved } as const;
+      // Populate and return response
+      const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: idsOfNoteTagsToBeArchived } } });
+      const newNoteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: tagIdsToBeAssigned } } });
+      return { status: 'NOTE_SPLIT', noteCreated, noteUpdated, newNoteTags, archivedNoteTags } as const;
     }),
 });

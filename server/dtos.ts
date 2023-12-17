@@ -8,6 +8,8 @@ export type GroupId = Brand<number, 'GroupId'>;
 export type SynonymId = Brand<number, 'SynonymId'>;
 export type UserId = Brand<number, 'UserId'>;
 export type FlashCardId = Brand<number, 'FlashCardId'>;
+export type NotTagId = Brand<number, 'NotTagId'>;
+export type SynonymGroupId = Brand<number, 'SynonymGroupId'>;
 
 export interface NoteDTO extends Note {
   id: NoteId;
@@ -20,6 +22,7 @@ export interface TagDTO extends Tag {
 }
 
 export interface NoteTagDTO extends NoteTag {
+  id: NotTagId;
   noteId: NoteId;
   tagId: TagId;
 }
@@ -29,6 +32,7 @@ export interface GroupDTO extends Group {
 }
 
 export interface SynonymGroupDTO extends SynonymGroup {
+  id: SynonymGroupId;
   groupId: GroupId;
   synonymId: SynonymId;
 }

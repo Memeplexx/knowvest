@@ -20,9 +20,9 @@ export const ActiveNoteFlashCards = () => {
         children={
           <>
             <FlashCardWrapper
-              showIf={!!inputs.flashCards.length}
+              showIf={!!inputs.items.length}
               children={
-                inputs.flashCards.map(item => (
+                inputs.items.map(item => (
                   <FlashCard
                     key={item.id}
                     children={
@@ -52,7 +52,7 @@ export const ActiveNoteFlashCards = () => {
               }
             />
             <NoResults
-              showIf={!inputs.flashCards.length}
+              showIf={!inputs.items.length}
               children={
                 <>
                   <NoResultsIcon />

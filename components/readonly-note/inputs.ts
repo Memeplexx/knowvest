@@ -23,9 +23,9 @@ export const useInputs = (props: Props) => {
 
   useIsomorphicLayoutEffect(() => {
     if (props.showIf === false) { return; /* do not instantiate because component has been hidden */ } 
-    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note });
+    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note! });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: props.synonymIds, store });
-    addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: props.note.id });
+    addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: props.note!.id });
     return () => codeMirror.current?.destroy();
   }, [editorRef.current, props.showIf]);
 

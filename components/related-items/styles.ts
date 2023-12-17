@@ -24,7 +24,7 @@ export const Icon = styled(AiOutlineLink)`
 export const Result = styled(ReadonlyNote)`
 `;
 
-export const Wrapper = styled.div`
+export const ListItem = styled.div`
   font-size: 12px;
   cursor: pointer;
   position: relative;
@@ -48,13 +48,18 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const NoResults = styled(possible.div)`
+export const NoResultsWrapper = styled(possible.div)`
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   color: grey;
+`;
+
+export const ListItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export const NoResultsIcon = styled(WiCloudyWindy)`

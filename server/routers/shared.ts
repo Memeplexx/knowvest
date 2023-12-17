@@ -6,16 +6,16 @@ export const pruneOrphanedSynonymsAndSynonymGroups = async () => {
   const orphanedSynonyms = await prisma.$queryRaw<SynonymDTO[]>(Prisma.sql`
     SELECT s.* FROM synonym s 
       WHERE s.id NOT IN (SELECT t.synonym_id FROM tag t);`);
-  const synonymGroupsToDelete = await prisma.synonymGroup.findMany({
+  const synonymGroupsToArchive = await prisma.synonymGroup.findMany({
     where: { synonymId: { in: orphanedSynonyms.map(s => s.id) } }
   });
-  const deletedSynonymGroups = await prisma.$transaction(
-    synonymGroupsToDelete.map(sg => prisma.synonymGroup.delete({ where: { groupId_synonymId: { groupId: sg.groupId, synonymId: sg.synonymId } } }))
-  );
-  const deletedSynonyms = await prisma.$transaction(
-    orphanedSynonyms.map(synonym => prisma.synonym.delete({ where: { id: synonym.id } }))
-  );
-  return { deletedSynonymGroups, deletedSynonyms } as const;
+  const orphanedSynonymGroupIds = synonymGroupsToArchive.map(sg => sg.id);
+  await prisma.synonymGroup.updateMany({ where: { id: { in: orphanedSynonymGroupIds } }, data: { isArchived: true } });
+  const archivedSynonymGroups = await prisma.synonymGroup.findMany({ where: { id: { in: orphanedSynonymGroupIds } } });
+  const orphanedSynonymIds = archivedSynonymGroups.map(sg => sg.synonymId);
+  await prisma.synonym.updateMany({ where: { id: { in: orphanedSynonymIds } }, data: { isArchived: true } });
+  const archivedSynonyms = await prisma.synonym.findMany({ where: { id: { in: orphanedSynonymGroupIds } } });
+  return { archivedSynonymGroups, archivedSynonyms } as const;
 }
 
 export const listNotesWithTagText = async ({ userId, tagText }: { userId: UserId, tagText: string }) => {

@@ -13,7 +13,8 @@ export const useOutputs = (inputs: Inputs) => {
       store.synonymIds.$set(synonymIds);
       store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
-      await trpc.note.view.mutate({ noteId });
+      const apiResponse = await trpc.note.view.mutate({ noteId });
+      store.notes.$mergeMatching.id.$withOne(apiResponse.note);
       refs.card.current!.scrollToTop();
     }
   };

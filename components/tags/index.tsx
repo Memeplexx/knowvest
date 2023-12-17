@@ -51,7 +51,6 @@ export const Tags = () => {
                     children='Active'
                     $first={true}
                     $last={true}
-                    $active={inputs.allActiveTagsSelected}
                   />
                   <TagsWrapper
                     children={
@@ -62,7 +61,6 @@ export const Tags = () => {
                             <Tag
                               key={tag.id}
                               selected={synonyms.selected}
-                              $active={tag.active}
                               $first={tag.first}
                               $last={tag.last}
                               children={tag.text}
@@ -87,7 +85,6 @@ export const Tags = () => {
                       children={`Group: ${group.groupName}`}
                       $first={true}
                       $last={true}
-                      $active={!!inputs.allGroupTagsSelected.get(group.groupId)}
                     />
                     <TagsWrapper
                       children={group.synonyms.map(synonym => (
@@ -101,7 +98,6 @@ export const Tags = () => {
                             $last={tag.last}
                             onMouseOver={outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
                             onMouseOut={outputs.onMouseOutGroupTag}
-                            $active={tag.active}
                           />
                         ))
                       ))}
