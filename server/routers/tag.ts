@@ -44,9 +44,10 @@ export const tagRouter = router({
 
       // Find notes which contain the tag text and create noteTags for them
       const notesWithTag = await listNotesWithTagText({ userId, tagText: text });
-      const noteTags = await prisma.noteTag.createMany({ data: notesWithTag.map(note => ({ noteId: note.id, tagId: tag.id })) });
+      await prisma.noteTag.createMany({ data: notesWithTag.map(note => ({ noteId: note.id, tagId: tag.id })) });
 
       // Populate and return response
+      const noteTags = await prisma.noteTag.findMany({ where: { tagId: tag.id, noteId: { in: notesWithTag.map(nwt => nwt.id) } } });
       return { status: 'TAG_CREATED', tag, noteTags } as const;
     }),
 
@@ -76,12 +77,13 @@ export const tagRouter = router({
 
       // Find notes which contain the tag text and create noteTags for them
       const notesWhichNeedNoteTagsCreated = await listNotesWithTagText({ userId, tagText: text });
-      const noteTagsCreated = await prisma.noteTag.createMany({ data: notesWhichNeedNoteTagsCreated.map(note => ({ noteId: note.id, tagId })) });
+      await prisma.noteTag.createMany({ data: notesWhichNeedNoteTagsCreated.map(note => ({ noteId: note.id, tagId })) });
 
       // Update the tag text
       const tagUpdated = await prisma.tag.update({ where: { id: tagId }, data: { text } });
 
       // Populate and return response
+      const noteTagsCreated = await prisma.noteTag.findMany({ where: { tagId, noteId: { in: notesWhichNeedNoteTagsCreated.map(nwt => nwt.id) } } });
       const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: noteTagIdsToBeArchived } } });
       return { status: 'TAG_UPDATED', tagUpdated, noteTagsCreated, archivedNoteTags } as const;
     }),
