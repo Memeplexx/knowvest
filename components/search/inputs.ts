@@ -2,11 +2,11 @@ import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
 import { derive } from "olik/derive";
-import { useContextForNestedStore } from "@/utils/constants";
+import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState)!;
   const state = store.search.$useState();
 
   const allAutocompleteOptions = derive(

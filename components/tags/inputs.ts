@@ -1,10 +1,10 @@
-import { useContextForNestedStore } from "@/utils/constants";
 import { derive } from "olik/derive";
 import { initialState } from "./constants";
+import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = () => {
 
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState)!;
   const state = store.tagsPanel.$useState();
 
   const tagsForActiveNote = derive(

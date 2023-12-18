@@ -1,6 +1,6 @@
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '@/server/dtos';
 import { UseFloatingOptions, flip, size, autoUpdate } from '@floating-ui/react';
-import { Context, createContext, useContext, useMemo } from 'react';
+import { createContext } from 'react';
 import { Store } from 'olik';
 
 export const OrderTypes = {
@@ -39,12 +39,6 @@ export const initialAppState = {
 export type AppState = typeof initialAppState;
 
 export const StoreContext = createContext<Store<AppState> | undefined>(undefined);
-
-export const useContextForNestedStore = <S extends object>(initialState: S) => {
-  const store = useContext(StoreContext as unknown as Context<Store<AppState & S>>);
-  useMemo(() => store.$setNew(initialState), [initialState, store]);
-  return store;
-}
 
 export const database = {
   tags: new Array<TagDTO>(),

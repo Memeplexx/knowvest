@@ -1,5 +1,4 @@
-import { useContextForNestedStore } from "@/utils/constants";
-import { useIsMounted } from "@/utils/hooks";
+import { useIsMounted, useNestedStore } from "@/utils/hooks";
 import dynamic from "next/dynamic";
 import { useMemo, useRef } from "react";
 import { CardHandle } from "../card/constants";
@@ -8,7 +7,7 @@ import { Props, initialState } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState)!;
   const state = store.history.$useState();
   const isMounted = useIsMounted();
   const HistoricalNotes = useMemo(() => {

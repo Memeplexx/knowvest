@@ -6,13 +6,13 @@ import { derive } from 'olik/derive';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { Props, initialState } from './constants';
-import { useContextForNestedStore } from '@/utils/constants';
+import { useNestedStore } from '@/utils/hooks';
 
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState)!;
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 

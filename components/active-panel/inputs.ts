@@ -1,5 +1,4 @@
-import { useContextForNestedStore } from '@/utils/constants';
-import { useIsMounted } from '@/utils/hooks';
+import { useIsMounted, useNestedStore } from '@/utils/hooks';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import dynamic from 'next/dynamic';
 import { useContext, useMemo, useState } from 'react';
@@ -9,7 +8,7 @@ import { initialState } from './constants';
 
 export const useInputs = () => {
 
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState);
   const state = store.activePanel.$useState();
   const mayDeleteNote = store.notes.$useState().length > 1;
   const activeNoteId = store.activeNoteId.$useState();

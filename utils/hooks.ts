@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef, useContext, Context } from 'react';
 import { EventMap } from './types';
+import { AppState, StoreContext } from './constants';
+import { Store } from 'olik';
 
 
 
@@ -117,4 +119,10 @@ export const useIsMounted = () => {
     setTimeout(() => setInitialized(true));
   }, []);
   return initialized;
+}
+
+export const useNestedStore = <S extends object>(initialState: S) => {
+  const store = useContext(StoreContext as unknown as Context<Store<AppState & S>>);
+  useMemo(() => store.$setNew(initialState), [initialState, store]);
+  return store;
 }

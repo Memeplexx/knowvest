@@ -2,17 +2,18 @@ import { useContext, useEffect } from "react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { initialState, initialTransientState } from "./constants";
 import { NoteId, UserDTO } from "@/server/dtos";
-import { useIsMounted, useIsomorphicLayoutEffect, useRecord } from "@/utils/hooks";
+import { useIsMounted, useIsomorphicLayoutEffect, useNestedStore, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { StoreContext, database, useContextForNestedStore } from "@/utils/constants";
+import { AppState, StoreContext, database } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
 import { ensureIndexedDBIsInitialized, readFromIndexedDB, writeToIndexedDB } from "@/utils/functions";
+import { Store } from "olik";
 
 
 export const useInputs = () => {
 
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState)!;
   const state = store.home.$useState();
 
   useSessionInitializer();
@@ -23,7 +24,7 @@ export const useInputs = () => {
 
   useInitializeOlikDevtools();
 
-  useHeaderExpander();
+  useHeaderExpander(store);
 
   return {
     store,
@@ -41,14 +42,14 @@ const useInitializeOlikDevtools = () => {
 }
 
 const useStoreAndIndexedDBInitializer = () => {
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState)!;
   const mounted = useIsMounted();
   useEffect(() => {
     if (!mounted) { return; }
     ensureIndexedDBIsInitialized()
       .then(() => readFromIndexedDB())
       .then(data => {
-        const activeNoteId = data.notes[0]?.id || 1 as NoteId;
+        const activeNoteId = data.notes[0]?.id || 0 as NoteId;
         const selectedTagIds = data.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
         const synonymIds = data.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct()
         store.$patchDeep({
@@ -59,25 +60,25 @@ const useStoreAndIndexedDBInitializer = () => {
       })
       .then(() => {
         const { notes, synonymGroups, noteTags, tags, groups, flashCards } = store.$state;
+        const mostRecentlyUpdatedRecord = <T extends { dateUpdated: Date | null }>(items: T[]) => {
+          return { after: items.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated };
+        }
         return Promise.all([
-          trpc.note.list.query({ after: notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated }),
-          trpc.group.list.query({ after: groups.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated }),
-          trpc.tag.list.query({ after: tags.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated }),
-          trpc.noteTag.list.query({ after: noteTags.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated }),
-          trpc.synonym.listSynonymGroups.query({ after: synonymGroups.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated }),
-          trpc.flashCard.list.query({ after: flashCards.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated }),
+          trpc.note.list.query(mostRecentlyUpdatedRecord(notes))
+            .then(response => store.notes.$mergeMatching.id.$withMany(response.notes)),
+          trpc.group.list.query(mostRecentlyUpdatedRecord(groups))
+            .then(response => store.groups.$mergeMatching.id.$withMany(response.groups)),
+          trpc.tag.list.query(mostRecentlyUpdatedRecord(tags))
+            .then(response => store.tags.$mergeMatching.id.$withMany(response.tags)),
+          trpc.noteTag.list.query(mostRecentlyUpdatedRecord(noteTags))
+            .then(response => store.noteTags.$mergeMatching.id.$withMany(response.noteTags)),
+          trpc.synonym.listSynonymGroups.query(mostRecentlyUpdatedRecord(synonymGroups))
+            .then(response => store.synonymGroups.$mergeMatching.id.$withMany(response.synonymGroups)),
+          trpc.flashCard.list.query(mostRecentlyUpdatedRecord(flashCards))
+            .then(response => store.flashCards.$mergeMatching.id.$withMany(response.flashCards)),
         ])
       })
-      .then(response => {
-
-        // Ensure that the store any new records that may have been synced to the server
-        store.notes.$mergeMatching.id.$withMany(response[0].notes);
-        store.groups.$mergeMatching.id.$withMany(response[1].groups);
-        store.tags.$mergeMatching.id.$withMany(response[2].tags);
-        store.noteTags.$mergeMatching.id.$withMany(response[3].noteTags);
-        store.synonymGroups.$mergeMatching.id.$withMany(response[4].synonymGroups);
-        store.flashCards.$mergeMatching.id.$withMany(response[5].flashCards);
-
+      .then(() => {
         // Continue to listen for changes
         (Object.keys(database) as Array<keyof typeof database>)
           .map(key => store[key].$onChange(d => {
@@ -89,8 +90,7 @@ const useStoreAndIndexedDBInitializer = () => {
   }, [mounted, store])
 }
 
-const useHeaderExpander = () => {
-  const store = useContextForNestedStore(initialState)!;
+const useHeaderExpander = (store: Store<AppState & typeof initialState>) => {
   useIsomorphicLayoutEffect(() => {
     const listener = () => {
       const { headerExpanded: headerContracted } = store.$state.home;

@@ -1,17 +1,16 @@
-import { useContextForNestedStore } from "@/utils/constants";
 import { useSession } from "next-auth/react";
 import { initialState } from "./constants";
 import { derive } from "olik/derive";
-import { isBefore } from "date-fns";
+import { isAfter } from "date-fns";
+import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = () => {
-  const store = useContextForNestedStore(initialState)!;
+  const store = useNestedStore(initialState)!;
   const state = store.navBar.$useState();
   const { data: session } = useSession()
-
   const flashCardCount = derive(store.flashCards)
-    .$with(flashCards => flashCards.filter(f => !f.isArchived && isBefore(new Date(), f.nextQuestionDate)).length)
-    .$useState();
+    .$with(flashCards => flashCards.filter(f => !f.isArchived && isAfter(new Date(), f.nextQuestionDate)))
+    .$useState().length;
 
   return {
     store,
