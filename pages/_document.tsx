@@ -1,6 +1,7 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
 import { ServerStyleSheet } from "styled-components";
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 
 export default class MyDocument extends Document {
@@ -86,6 +87,7 @@ export default class MyDocument extends Document {
           <Main />
           <NextScript />
           <Analytics />
+          <SpeedInsights />
         </body>
       </Html>
     )
