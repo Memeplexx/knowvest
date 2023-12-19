@@ -9,6 +9,7 @@ import { AppState, StoreContext, database } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
 import { ensureIndexedDBIsInitialized, readFromIndexedDB, writeToIndexedDB } from "@/utils/functions";
 import { Store } from "olik";
+import { isAfter } from "date-fns";
 
 
 export const useInputs = () => {
@@ -49,7 +50,8 @@ const useStoreAndIndexedDBInitializer = () => {
     ensureIndexedDBIsInitialized()
       .then(() => readFromIndexedDB())
       .then(data => {
-        const activeNoteId = data.notes[0]?.id || 0 as NoteId;
+        const mostRecentlyViewNote = data.notes.slice().sort((a, b) => isAfter(b.dateViewed!, a.dateViewed!) ? 1 : -1)[0];
+        const activeNoteId = mostRecentlyViewNote?.id || 0 as NoteId;
         const selectedTagIds = data.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
         const synonymIds = data.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct()
         store.$patchDeep({

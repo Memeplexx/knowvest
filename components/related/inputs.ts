@@ -1,5 +1,5 @@
 import { derive } from "olik/derive";
-import { Props } from "./constants";
+import { Props, tag } from "./constants";
 import { useContext, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { CardHandle } from "../card/constants";
@@ -10,7 +10,7 @@ export const useInputs = (props: Props) => {
 
   const store = useContext(StoreContext)!;
 
-  const queriedNotes = derive(
+  const queriedNotes = derive(tag).$from(
     store.activeNoteId,
     store.notes,
     store.tags,
@@ -38,7 +38,7 @@ export const useInputs = (props: Props) => {
       }));
   });
 
-  const noteCountString = derive(
+  const noteCountString = derive(tag).$from(
     queriedNotes
   ).$with((queriedNotes) => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;

@@ -171,7 +171,7 @@ export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { edito
     previousTagPositions = tagPositions;
   }
 
-  const derivation = derive(
+  const derivation = derive('highlight').$from(
     synonymIds,
     store.tags,
     store.noteTags,

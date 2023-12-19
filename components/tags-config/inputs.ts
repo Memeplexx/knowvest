@@ -5,9 +5,8 @@ import { useFloating } from '@floating-ui/react';
 import { derive } from 'olik/derive';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
-import { Props, initialState } from './constants';
+import { Props, initialState, tag } from './constants';
 import { useNestedStore } from '@/utils/hooks';
-
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
@@ -20,7 +19,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const state = store.config.$useState();
 
-  const tagsInSynonymGroup = derive(
+  const tagsInSynonymGroup = derive(tag).$from(
     store.tags,
     store.config.synonymId,
     store.config.tagId,
@@ -38,7 +37,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       }));
   });
 
-  const tagsInCustomGroups = derive(
+  const tagsInCustomGroups = derive(tag).$from(
     store.synonymGroups,
     store.groups,
     store.tags,
@@ -83,7 +82,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     ]
   });
 
-  const tagSynonymGroupMap = derive(
+  const tagSynonymGroupMap = derive(tag).$from(
     store.tags,
   ).$with((tags) => {
     const unArchivedTags = tags.filter(t => !t.isArchived);
@@ -92,7 +91,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       .mapToObject(t => t[0].synonymId, tags => tags);
   });
 
-  const autocompleteOptionsGroups = derive(
+  const autocompleteOptionsGroups = derive(tag).$from(
     store.groups,
     store.synonymGroups,
     store.tags,
@@ -111,7 +110,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       }));
   });
 
-  const autocompleteOptionsTags = derive(
+  const autocompleteOptionsTags = derive(tag).$from(
     store.tags,
     store.synonymGroups,
     store.config.groupId,
@@ -136,7 +135,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       }));
   });
 
-  const autocompleteOptions = derive(
+  const autocompleteOptions = derive(tag).$from(
     store.config.autocompleteAction,
     autocompleteOptionsGroups,
     autocompleteOptionsTags,
@@ -149,7 +148,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       }));
   });
 
-  const autocompleteTitle = derive(
+  const autocompleteTitle = derive(tag).$from(
     store.config.groupSynonymId,
     store.config.tagId,
     store.config.groupId,
@@ -174,7 +173,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     ])
   });
 
-  const selectedGroupSelectedSynonym = derive(
+  const selectedGroupSelectedSynonym = derive(tag).$from(
     store.config.groupId,
     store.config.groupSynonymId,
     tagsInCustomGroups,

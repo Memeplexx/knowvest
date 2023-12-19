@@ -48,6 +48,8 @@ export const initialState = {
   }
 };
 
+export const tag = 'tagsConfigComponent';
+
 export type Props = {
   onHide: () => void,
 };

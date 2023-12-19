@@ -8,7 +8,7 @@ export const useInputs = () => {
   const store = useNestedStore(initialState)!;
   const state = store.navBar.$useState();
   const { data: session } = useSession()
-  const flashCardCount = derive(store.flashCards)
+  const flashCardCount = derive('flashCardCount').$from(store.flashCards)
     .$with(flashCards => flashCards.filter(f => !f.isArchived && isAfter(new Date(), f.nextQuestionDate)))
     .$useState().length;
 

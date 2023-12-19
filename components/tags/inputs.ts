@@ -1,5 +1,5 @@
 import { derive } from "olik/derive";
-import { initialState } from "./constants";
+import { initialState, tags } from "./constants";
 import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = () => {
@@ -7,7 +7,7 @@ export const useInputs = () => {
   const store = useNestedStore(initialState)!;
   const state = store.tagsPanel.$useState();
 
-  const tagsForActiveNote = derive(
+  const tagsForActiveNote = derive(tags).$from(
     store.tags,
     store.synonymIds,
     store.noteTags,
@@ -34,14 +34,14 @@ export const useInputs = () => {
       }))
   });
 
-  const allActiveTagsSelected = derive(
+  const allActiveTagsSelected = derive(tags).$from(
     tagsForActiveNote,
   ).$with((tagsForActiveNote) => {
     return tagsForActiveNote
       .every(t => t.selected);
   })
 
-  const groupsWithSynonyms = derive(
+  const groupsWithSynonyms = derive(tags).$from(
     store.groups,
     store.noteTags,
     store.synonymGroups,
@@ -78,7 +78,7 @@ export const useInputs = () => {
       }));
   });
 
-  const allGroupTagsSelected = derive(
+  const allGroupTagsSelected = derive(tags).$from(
     groupsWithSynonyms,
   ).$with((groupsWithSynonyms) => {
     return groupsWithSynonyms

@@ -6,4 +6,6 @@ export type Props = {
   onSelectNote: (noteId: NoteId) => void;
 } & HTMLAttributes<HTMLDivElement>
 
+export const tag = 'historyItemsComponent';
+
 export type Inputs = ReturnType<typeof useInputs>;

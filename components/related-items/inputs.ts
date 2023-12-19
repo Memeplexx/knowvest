@@ -1,5 +1,5 @@
 import { derive } from "olik/derive";
-import { Props } from "./constants";
+import { Props, tag } from "./constants";
 import { useContext } from "react";
 import { StoreContext } from "@/utils/constants";
 
@@ -7,7 +7,7 @@ export const useInputs = (props: Props) => {
 
   const store = useContext(StoreContext)!;
 
-  const items = derive(
+  const items = derive(tag).$from(
     store.activeNoteId,
     store.notes,
     store.tags,

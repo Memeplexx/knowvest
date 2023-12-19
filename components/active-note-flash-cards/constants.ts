@@ -7,4 +7,6 @@ export const initialState = {
   }
 }
 
+export const tag = 'activeNoteFlashCardsComponent';
+
 export type Inputs = ReturnType<typeof useInputs>;
