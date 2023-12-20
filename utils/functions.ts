@@ -193,27 +193,36 @@ export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteI
   (editor.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
 }
 
-export const writeToIndexedDB = (tableName: keyof typeof database, data: typeof database[keyof typeof database]) => {
+type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof database]: null | typeof database[tableName] | typeof database[tableName][0] }>;
 
-  // Open (or create) a database
-  const request = indexedDB.open('knowvest', 1);
-
-  // Success callback for opening the database
-  request.onsuccess = (event) => {
-    const db = (event.target as IDBOpenDBRequest).result;
-    const transaction = db.transaction([tableName], 'readwrite');
-    const objectStore = transaction.objectStore(tableName);
-    data.forEach(d => {
-      const addRequest = objectStore.put(d);
-      addRequest.onerror = (error: unknown) => console.error('Error adding data: ', error);
+export const writeToIndexedDB = (records: WriteToIndexedDBArgs) => {
+  return new Promise<void>((resolve, reject) => {
+    (Object.keys(records) as Array<keyof WriteToIndexedDBArgs>).forEach((tableName, index, array) => {
+      const request = indexedDB.open('knowvest', 1);
+      request.onsuccess = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        const transaction = db.transaction([tableName], 'readwrite');
+        const objectStore = transaction.objectStore(tableName);
+        const tableRecord = records[tableName]!;
+        const tableRecords = Array.isArray(tableRecord) ? tableRecord : [tableRecord];
+        tableRecords.forEach(record => {
+          if (record === null) { return; }
+          const addRequest = objectStore.put(record);
+          addRequest.onerror = (error: unknown) => console.error('Error adding data: ', error);
+        });
+        transaction.oncomplete = () => {
+          const last = index === array.length - 1;
+          if (last) {
+            resolve();
+          }
+          db.close();
+        }
+      };
+      request.onerror = (event) => {
+        reject(event);
+      }
     });
-    transaction.oncomplete = () => db.close();
-  };
-
-  // Error callback for opening the database
-  request.onerror = (event) => {
-    console.error('indexedDB: onerror', event.target);
-  }
+  });
 }
 
 export const readFromIndexedDB = () => {

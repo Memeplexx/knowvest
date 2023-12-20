@@ -1,5 +1,6 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
+import { writeToIndexedDB } from "@/utils/functions";
 
 
 export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: Inputs) => {
@@ -36,6 +37,7 @@ export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: 
       const range = codeMirror!.state.selection.ranges[0];
       store.activePanel.loadingSelection.$set(true);
       const apiResponse = await trpc.note.split.mutate({ ...range, splitFromNoteId: store.$state.activeNoteId });
+      await writeToIndexedDB({ notes: [apiResponse.noteCreated, apiResponse.noteUpdated], noteTags: [...apiResponse.newNoteTags, ...apiResponse.archivedNoteTags] });
       store.activePanel.loadingSelection.$set(false);
       store.notes.$mergeMatching.id.$withOne(apiResponse.noteUpdated);
       store.notes.$push(apiResponse.noteCreated);

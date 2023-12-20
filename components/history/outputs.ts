@@ -1,6 +1,7 @@
 import { NoteId } from "@/server/dtos";
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
+import { writeToIndexedDB } from "@/utils/functions";
 
 
 export const useOutputs = (inputs: Inputs) => {
@@ -14,6 +15,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
       const apiResponse = await trpc.note.view.mutate({ noteId });
+      await writeToIndexedDB({ notes: apiResponse.note });
       store.notes.$mergeMatching.id.$withOne(apiResponse.note);
       cardRef.current!.scrollToTop();
     }

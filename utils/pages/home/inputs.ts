@@ -5,11 +5,10 @@ import { NoteId, UserDTO } from "@/server/dtos";
 import { useIsMounted, useIsomorphicLayoutEffect, useNestedStore, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { AppState, StoreContext, database } from "@/utils/constants";
+import { AppState, StoreContext } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
 import { ensureIndexedDBIsInitialized, readFromIndexedDB, writeToIndexedDB } from "@/utils/functions";
 import { Store } from "olik";
-import { isAfter } from "date-fns";
 
 
 export const useInputs = () => {
@@ -50,7 +49,7 @@ const useStoreAndIndexedDBInitializer = () => {
     ensureIndexedDBIsInitialized()
       .then(() => readFromIndexedDB())
       .then(data => {
-        const mostRecentlyViewNote = data.notes.slice().sort((a, b) => isAfter(b.dateViewed!, a.dateViewed!) ? 1 : -1)[0];
+        const mostRecentlyViewNote = data.notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime() ? 1 : -1)[0];
         const activeNoteId = mostRecentlyViewNote?.id || 0 as NoteId;
         const selectedTagIds = data.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
         const synonymIds = data.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct()
@@ -67,26 +66,36 @@ const useStoreAndIndexedDBInitializer = () => {
         }
         return Promise.all([
           trpc.note.list.query(mostRecentlyUpdatedRecord(notes))
-            .then(response => store.notes.$mergeMatching.id.$withMany(response.notes)),
+            .then(response => {
+              store.notes.$mergeMatching.id.$withMany(response.notes);
+              return writeToIndexedDB({ notes: response.notes });
+            }),
           trpc.group.list.query(mostRecentlyUpdatedRecord(groups))
-            .then(response => store.groups.$mergeMatching.id.$withMany(response.groups)),
+            .then(response => {
+              store.groups.$mergeMatching.id.$withMany(response.groups);
+              return writeToIndexedDB({ groups: response.groups });
+            }),
           trpc.tag.list.query(mostRecentlyUpdatedRecord(tags))
-            .then(response => store.tags.$mergeMatching.id.$withMany(response.tags)),
+            .then(response => {
+              store.tags.$mergeMatching.id.$withMany(response.tags);
+              return writeToIndexedDB({ tags: response.tags });
+            }),
           trpc.noteTag.list.query(mostRecentlyUpdatedRecord(noteTags))
-            .then(response => store.noteTags.$mergeMatching.id.$withMany(response.noteTags)),
+            .then(response => {
+              store.noteTags.$mergeMatching.id.$withMany(response.noteTags);
+              return writeToIndexedDB({ noteTags: response.noteTags });
+            }),
           trpc.synonym.listSynonymGroups.query(mostRecentlyUpdatedRecord(synonymGroups))
-            .then(response => store.synonymGroups.$mergeMatching.id.$withMany(response.synonymGroups)),
+            .then(response => {
+              store.synonymGroups.$mergeMatching.id.$withMany(response.synonymGroups);
+              return writeToIndexedDB({ synonymGroups: response.synonymGroups });
+            }),
           trpc.flashCard.list.query(mostRecentlyUpdatedRecord(flashCards))
-            .then(response => store.flashCards.$mergeMatching.id.$withMany(response.flashCards)),
+            .then(response => {
+              store.flashCards.$mergeMatching.id.$withMany(response.flashCards);
+              return writeToIndexedDB({ flashCards: response.flashCards });
+            }),
         ])
-      })
-      .then(() => {
-        // Continue to listen for changes
-        (Object.keys(database) as Array<keyof typeof database>)
-          .map(key => store[key].$onChange(d => {
-            if (!d.length) { return; }
-            writeToIndexedDB(key, d);
-          }))
       })
       .catch(console.error);
   }, [mounted, store])

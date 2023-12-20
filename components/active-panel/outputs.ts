@@ -1,5 +1,6 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
+import { writeToIndexedDB } from "@/utils/functions";
 
 
 export const useOutputs = ({ store, notify }: Inputs) => {
@@ -7,6 +8,7 @@ export const useOutputs = ({ store, notify }: Inputs) => {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.create.mutate();
+      await writeToIndexedDB({ notes: apiResponse.note });
       store.activePanel.loadingNote.$set(false);
       store.notes.$push(apiResponse.note);
       store.activeNoteId.$set(apiResponse.note.id);
@@ -18,6 +20,7 @@ export const useOutputs = ({ store, notify }: Inputs) => {
       store.activePanel.allowNotePersister.$set(false);
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.archive.mutate({ noteId: store.$state.activeNoteId });
+      await writeToIndexedDB({ notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.loadingNote.$set(false);
       store.activePanel.confirmDelete.$set(false);
       store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
@@ -34,6 +37,7 @@ export const useOutputs = ({ store, notify }: Inputs) => {
     onClickDuplicateNote: async () => {
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.duplicate.mutate({ noteId: store.$state.activeNoteId });
+      await writeToIndexedDB({ notes: apiResponse.noteCreated, noteTags: apiResponse.noteTagsCreated });
       store.activePanel.loadingNote.$set(false);
       store.noteTags.$push(apiResponse.noteTagsCreated);
       store.notes.$push(apiResponse.noteCreated);
