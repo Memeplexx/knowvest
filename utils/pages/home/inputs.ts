@@ -84,27 +84,26 @@ export const useDataInitializer = () => {
 }
 
 const initializeData = async ({ session, store }: { session: Session, store: Store<AppState & typeof initialState> }) => {
-  const sessionApiResponse = await trpc.session.initialize.mutate(session.user as UserDTO);
   await ensureIndexedDBIsInitialized();
-  if (sessionApiResponse.status === 'SESSION_INITIALIZED_FOR_NEW_USER') {
+  const dataFromIndexedDB = await readFromIndexedDB();
+  const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
+  const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentlyUpdatedNode?.dateUpdated  });
+  if (apiResponse.status === 'SESSION_INITIALIZED_FOR_NEW_USER') {
     store.$patch({
-      notes: [sessionApiResponse.note],
-      activeNoteId: sessionApiResponse.note.id,
+      notes: [apiResponse.note],
+      activeNoteId: apiResponse.note.id,
     });
     store.home.initialized.$set(true);
     return;
   }
-  const dataFromIndexedDB = await readFromIndexedDB();
   store.$patchDeep(dataFromIndexedDB);
-  const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
-  const dataApiResponse = await trpc.session.fetchLatestData.query({ after: mostRecentlyUpdatedNode?.dateUpdated });
-  store.notes.$mergeMatching.id.$withMany(dataApiResponse.data.notes);
-  store.flashCards.$mergeMatching.id.$withMany(dataApiResponse.data.flashCards);
-  store.groups.$mergeMatching.id.$withMany(dataApiResponse.data.groups);
-  store.tags.$mergeMatching.id.$withMany(dataApiResponse.data.tags);
-  store.noteTags.$mergeMatching.id.$withMany(dataApiResponse.data.noteTags);
-  store.synonymGroups.$mergeMatching.id.$withMany(dataApiResponse.data.synonymGroups);
-  await writeToIndexedDB(dataApiResponse.data);
+  store.notes.$mergeMatching.id.$withMany(apiResponse.data.notes);
+  store.flashCards.$mergeMatching.id.$withMany(apiResponse.data.flashCards);
+  store.groups.$mergeMatching.id.$withMany(apiResponse.data.groups);
+  store.tags.$mergeMatching.id.$withMany(apiResponse.data.tags);
+  store.noteTags.$mergeMatching.id.$withMany(apiResponse.data.noteTags);
+  store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.data.synonymGroups);
+  await writeToIndexedDB(apiResponse.data);
   const { notes, noteTags, tags } = store.$state;
   const mostRecentlyViewNote = notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
   const activeNoteId = mostRecentlyViewNote.id;
