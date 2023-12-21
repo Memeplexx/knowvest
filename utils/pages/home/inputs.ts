@@ -41,6 +41,15 @@ const useInitializeOlikDevtools = () => {
   }, []);
 }
 
+const setActiveNoteIdAndSynonymIds = (store: Store<AppState & typeof initialState>) => {
+  const { notes, noteTags, tags } = store.$state;
+  const mostRecentlyViewNote = notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
+  const activeNoteId = mostRecentlyViewNote?.id || 0 as NoteId;
+  const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
+  const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
+  store.$patchDeep({ activeNoteId, synonymIds });
+}
+
 const useStoreAndIndexedDBInitializer = () => {
   const store = useNestedStore(initialState)!;
   const mounted = useIsMounted();
@@ -50,13 +59,13 @@ const useStoreAndIndexedDBInitializer = () => {
       .then(() => readFromIndexedDB())
       .then(data => {
         store.$patchDeep(data);
+        setActiveNoteIdAndSynonymIds(store);
         store.home.initialized.$set(true);
       })
       .then(() => {
         const { notes, synonymGroups, noteTags, tags, groups, flashCards } = store.$state;
-        const mostRecentlyUpdatedRecord = <T extends { dateUpdated: Date | null }>(items: T[]) => {
-          return { after: items.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated };
-        }
+        const mostRecentlyUpdatedRecord = <T extends { dateUpdated: Date | null }>(items: T[]) =>
+          ({ after: items.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated })
         return Promise.all([
           trpc.note.list.query(mostRecentlyUpdatedRecord(notes))
             .then(response => {
@@ -91,12 +100,7 @@ const useStoreAndIndexedDBInitializer = () => {
         ])
       })
       .then(() => {
-        const { notes, noteTags, tags } = store.$state;
-        const mostRecentlyViewNote = notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
-        const activeNoteId = mostRecentlyViewNote?.id || 0 as NoteId;
-        const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
-        const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
-        store.$patchDeep({ activeNoteId, synonymIds });
+        setActiveNoteIdAndSynonymIds(store);
       })
       .catch(console.error);
   }, [mounted, store])
