@@ -13,7 +13,7 @@ export const sessionRouter = router({
       image: z.string().url().nullish(),
       after: z.date().nullish(),
     }))
-    .mutation(async ({ input: { email, image, name, after } }) => {
+    .mutation(async ({ input: { email, image, name, ...input } }) => {
 
       // Validate
       const userByEmail = await prisma.user.findFirst({ where: { email } });
@@ -28,24 +28,14 @@ export const sessionRouter = router({
 
       const fetchData = async () => {
         const userId = user.id;
-        const notes = !after
-          ? await prisma.note.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
-          : await prisma.note.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
-        const flashCards = !after
-          ? await prisma.flashCard.findMany({ where: { note: { userId } }, orderBy: { dateUpdated: 'desc' } })
-          : await prisma.flashCard.findMany({ where: { note: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
-        const groups = !after
-          ? await prisma.group.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
-          : await prisma.group.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
-        const noteTags = !after
-          ? await prisma.noteTag.findMany({ where: { note: { userId } }, orderBy: { dateUpdated: 'desc' } })
-          : await prisma.noteTag.findMany({ where: { note: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
-        const synonymGroups = !after
-          ? await prisma.synonymGroup.findMany({ where: { group: { userId } }, orderBy: { dateUpdated: 'desc' } })
-          : await prisma.synonymGroup.findMany({ where: { group: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
-        const tags = !after
-          ? await prisma.tag.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
-          : await prisma.tag.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+        const after = { dateUpdated: { gt: input.after || new Date(0) } };
+        const orderBy = { dateUpdated: 'desc' } as const;
+        const notes = await prisma.note.findMany({ where: { userId, ...after }, orderBy });
+        const flashCards = await prisma.flashCard.findMany({ where: { note: { userId }, ...after }, orderBy });
+        const groups = await prisma.group.findMany({ where: { userId, ...after }, orderBy });
+        const noteTags = await prisma.noteTag.findMany({ where: { note: { userId }, ...after }, orderBy });
+        const synonymGroups = await prisma.synonymGroup.findMany({ where: { group: { userId }, ...after }, orderBy });
+        const tags = await prisma.tag.findMany({ where: { userId, ...after }, orderBy });
         return { notes, flashCards, groups, noteTags, synonymGroups, tags };
       }
 

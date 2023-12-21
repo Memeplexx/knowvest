@@ -66,7 +66,6 @@ const useLogoutUserIfSessionExpired = () => {
   }, [router, session.status]);
 }
 
-
 export const useDataInitializer = () => {
   const { data: session } = useSession();
   const store = useNestedStore(initialState)!;
@@ -96,7 +95,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Sto
     store.home.initialized.$set(true);
     return;
   }
-  store.$patchDeep(dataFromIndexedDB);
+  store.$patch(dataFromIndexedDB);
   store.notes.$mergeMatching.id.$withMany(apiResponse.data.notes);
   store.flashCards.$mergeMatching.id.$withMany(apiResponse.data.flashCards);
   store.groups.$mergeMatching.id.$withMany(apiResponse.data.groups);
@@ -105,10 +104,10 @@ const initializeData = async ({ session, store }: { session: Session, store: Sto
   store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.data.synonymGroups);
   await writeToIndexedDB(apiResponse.data);
   const { notes, noteTags, tags } = store.$state;
-  const mostRecentlyViewNote = notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
+  const mostRecentlyViewNote = notes.filter(n => !n.isArchived).sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
   const activeNoteId = mostRecentlyViewNote.id;
   const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
   const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
-  store.$patchDeep({ activeNoteId, synonymIds });
+  store.$patch({ activeNoteId, synonymIds });
   store.home.initialized.$set(true);
 }
