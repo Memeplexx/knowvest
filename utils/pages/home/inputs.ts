@@ -97,10 +97,9 @@ const initializeData = async ({ session, store }: { session: Session, store: Sto
   await trpc.session.fetchLatestData.query({ after: new Date(0) });
   const dataFromIndexedDB = await readFromIndexedDB();
   store.$patchDeep(dataFromIndexedDB);
+  const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
   const dataApiResponse = await trpc.session.fetchLatestData.query({
-    // the most recently updated note can be used to query for new data. It's good enough.
-    after: !dataFromIndexedDB.notes ? null :
-      dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0].dateUpdated
+    after: mostRecentlyUpdatedNode?.dateUpdated
   });
   store.notes.$mergeMatching.id.$withMany(dataApiResponse.data.notes);
   store.flashCards.$mergeMatching.id.$withMany(dataApiResponse.data.flashCards);
