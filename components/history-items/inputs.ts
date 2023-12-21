@@ -17,7 +17,7 @@ export const useInputs = (props: Props) => {
   return {
     props,
     store,
-    state: notes,
+    notes,
   };
 }
 

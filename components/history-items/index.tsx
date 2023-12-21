@@ -6,13 +6,12 @@ export default function HistoryItems(
   props: Props
 ) {
   const inputs = useInputs(props);
-  const { state, store } = inputs;
   return (
     <>
       <ListItemsWrapper
-        showIf={!!state.length}
+        showIf={!!inputs.notes.length}
         children={
-          state.map(note => (
+          inputs.notes.map(note => (
             <ListItem
               key={note.id}
               onClick={() => props.onSelectNote(note.id)}
@@ -28,7 +27,7 @@ export default function HistoryItems(
                   />
                   <Result
                     note={note}
-                    synonymIds={store.synonymIds}
+                    synonymIds={inputs.store.synonymIds}
                   />
                   <RightBorder />
                 </>
@@ -37,7 +36,7 @@ export default function HistoryItems(
           ))}
       />
       <NoResultsWrapper
-        showIf={!state.length}
+        showIf={!inputs.notes.length}
         children={
           <>
             <NoResultsIcon />
