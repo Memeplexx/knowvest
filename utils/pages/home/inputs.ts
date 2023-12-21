@@ -94,13 +94,10 @@ const initializeData = async ({ session, store }: { session: Session, store: Sto
     store.home.initialized.$set(true);
     return;
   }
-  await trpc.session.fetchLatestData.query({ after: new Date(0) });
   const dataFromIndexedDB = await readFromIndexedDB();
   store.$patchDeep(dataFromIndexedDB);
   const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
-  const dataApiResponse = await trpc.session.fetchLatestData.query({
-    after: mostRecentlyUpdatedNode?.dateUpdated
-  });
+  const dataApiResponse = await trpc.session.fetchLatestData.query({ after: mostRecentlyUpdatedNode?.dateUpdated });
   store.notes.$mergeMatching.id.$withMany(dataApiResponse.data.notes);
   store.flashCards.$mergeMatching.id.$withMany(dataApiResponse.data.flashCards);
   store.groups.$mergeMatching.id.$withMany(dataApiResponse.data.groups);
