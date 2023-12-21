@@ -113,6 +113,7 @@ export const oneDarkTheme = EditorView.theme({
     backgroundColor: "#b100b159",
     borderRadius: "10px",
     padding: '0 4px',
+    margin: '0 -4px',
     color: '#FFF',
     display: 'inline-block',
   },
