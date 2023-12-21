@@ -16,7 +16,7 @@ export const sessionRouter = router({
 
       // Validate
       const userByEmail = await prisma.user.findFirst({ where: { email } });
-      
+
       // Create or update user
       if (userByEmail) {
         await prisma.user.update({ where: { email }, data: { email, image, name } });
@@ -34,10 +34,41 @@ export const sessionRouter = router({
             dateViewed: new Date(),
           }
         });
-        return { status: 'SESSION_INITIALIZED', user, note } as const;
+        return { status: 'SESSION_INITIALIZED_FOR_NEW_USER', user, note } as const;
       } else {
         return { status: 'SESSION_INITIALIZED', user } as const;
       }
     }),
+
+  fetchLatestData: procedure
+    .input(z.object({
+      after: z.date().nullish(),
+    }))
+    .query(async ({ ctx: { userId }, input: { after } }) => {
+
+      // Logic
+      const notes = !after
+        ? await prisma.note.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.note.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+      const flashCards = !after
+        ? await prisma.flashCard.findMany({ where: { note: { userId } }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.flashCard.findMany({ where: { note: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+      const groups = !after
+        ? await prisma.group.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.group.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+      const noteTags = !after
+        ? await prisma.noteTag.findMany({ where: { note: { userId } }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.noteTag.findMany({ where: { note: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+      const synonymGroups = !after
+        ? await prisma.synonymGroup.findMany({ where: { group: { userId } }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.synonymGroup.findMany({ where: { group: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+      const tags = !after
+        ? await prisma.tag.findMany({ where: { userId }, orderBy: { dateUpdated: 'desc' } })
+        : await prisma.tag.findMany({ where: { userId, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
+
+      // Populate and return response
+      return { status: 'DATA', data: { notes, flashCards, groups, noteTags, synonymGroups, tags } } as const;
+    }),
+
 
 });

@@ -1,14 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { initialState, initialTransientState } from "./constants";
-import { NoteId, UserDTO } from "@/server/dtos";
+import { UserDTO } from "@/server/dtos";
 import { useIsMounted, useIsomorphicLayoutEffect, useNestedStore, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { AppState, StoreContext } from "@/utils/constants";
+import { AppState } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
 import { ensureIndexedDBIsInitialized, readFromIndexedDB, writeToIndexedDB } from "@/utils/functions";
 import { Store } from "olik";
+import { Session } from "next-auth";
 
 
 export const useInputs = () => {
@@ -16,11 +17,9 @@ export const useInputs = () => {
   const store = useNestedStore(initialState)!;
   const state = store.home.$useState();
 
-  useSessionInitializer();
+  useDataInitializer();
 
   useLogoutUserIfSessionExpired();
-
-  useStoreAndIndexedDBInitializer();
 
   useInitializeOlikDevtools();
 
@@ -39,71 +38,6 @@ const useInitializeOlikDevtools = () => {
       connectOlikDevtoolsToStore({ trace: false });
     }
   }, []);
-}
-
-const setActiveNoteIdAndSynonymIds = (store: Store<AppState & typeof initialState>) => {
-  const { notes, noteTags, tags } = store.$state;
-  const mostRecentlyViewNote = notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
-  const activeNoteId = mostRecentlyViewNote?.id || 0 as NoteId;
-  const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
-  const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
-  store.$patchDeep({ activeNoteId, synonymIds });
-}
-
-const useStoreAndIndexedDBInitializer = () => {
-  const store = useNestedStore(initialState)!;
-  const mounted = useIsMounted();
-  useEffect(() => {
-    if (!mounted) { return; }
-    ensureIndexedDBIsInitialized()
-      .then(() => readFromIndexedDB())
-      .then(data => {
-        store.$patchDeep(data);
-        setActiveNoteIdAndSynonymIds(store);
-        store.home.initialized.$set(true);
-      })
-      .then(() => {
-        const { notes, synonymGroups, noteTags, tags, groups, flashCards } = store.$state;
-        const mostRecentlyUpdatedRecord = <T extends { dateUpdated: Date | null }>(items: T[]) =>
-          ({ after: items.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]?.dateUpdated })
-        return Promise.all([
-          trpc.note.list.query(mostRecentlyUpdatedRecord(notes))
-            .then(response => {
-              store.notes.$mergeMatching.id.$withMany(response.notes);
-              return writeToIndexedDB({ notes: response.notes });
-            }),
-          trpc.group.list.query(mostRecentlyUpdatedRecord(groups))
-            .then(response => {
-              store.groups.$mergeMatching.id.$withMany(response.groups);
-              return writeToIndexedDB({ groups: response.groups });
-            }),
-          trpc.tag.list.query(mostRecentlyUpdatedRecord(tags))
-            .then(response => {
-              store.tags.$mergeMatching.id.$withMany(response.tags);
-              return writeToIndexedDB({ tags: response.tags });
-            }),
-          trpc.noteTag.list.query(mostRecentlyUpdatedRecord(noteTags))
-            .then(response => {
-              store.noteTags.$mergeMatching.id.$withMany(response.noteTags);
-              return writeToIndexedDB({ noteTags: response.noteTags });
-            }),
-          trpc.synonym.listSynonymGroups.query(mostRecentlyUpdatedRecord(synonymGroups))
-            .then(response => {
-              store.synonymGroups.$mergeMatching.id.$withMany(response.synonymGroups);
-              return writeToIndexedDB({ synonymGroups: response.synonymGroups });
-            }),
-          trpc.flashCard.list.query(mostRecentlyUpdatedRecord(flashCards))
-            .then(response => {
-              store.flashCards.$mergeMatching.id.$withMany(response.flashCards);
-              return writeToIndexedDB({ flashCards: response.flashCards });
-            }),
-        ])
-      })
-      .then(() => {
-        setActiveNoteIdAndSynonymIds(store);
-      })
-      .catch(console.error);
-  }, [mounted, store])
 }
 
 const useHeaderExpander = (store: Store<AppState & typeof initialState>) => {
@@ -132,16 +66,53 @@ const useLogoutUserIfSessionExpired = () => {
   }, [router, session.status]);
 }
 
-const useSessionInitializer = () => {
+
+export const useDataInitializer = () => {
   const { data: session } = useSession();
-  const store = useContext(StoreContext)!;
+  const store = useNestedStore(initialState)!;
+  const mounted = useIsMounted();
+  const initializingData = useRef(false);
   useEffect(() => {
     if (!session) { return; }
-    trpc.session.initialize.mutate(session!.user as UserDTO)
-      .then(response => {
-        if (response.note) {
-          store.notes.id.$set(response.note.id);
-        }
-      }).catch(console.error);
-  }, [session, store]);
+    if (!mounted) { return; }
+    if (initializingData.current) { return; }
+    initializingData.current = true;
+    initializeData({ session, store })
+      .then(() => initializingData.current = false)
+      .catch(console.error);
+  }, [mounted, session, store]);
+}
+
+const initializeData = async ({ session, store }: { session: Session, store: Store<AppState & typeof initialState> }) => {
+  const sessionApiResponse = await trpc.session.initialize.mutate(session.user as UserDTO);
+  await ensureIndexedDBIsInitialized();
+  if (sessionApiResponse.status === 'SESSION_INITIALIZED_FOR_NEW_USER') {
+    store.$patch({
+      notes: [sessionApiResponse.note],
+      activeNoteId: sessionApiResponse.note.id,
+    });
+    store.home.initialized.$set(true);
+    return;
+  }
+  await trpc.session.fetchLatestData.query({ after: new Date(0) });
+  const dataFromIndexedDB = await readFromIndexedDB();
+  store.$patchDeep(dataFromIndexedDB);
+  const dataApiResponse = await trpc.session.fetchLatestData.query({
+    // the most recently updated note can be used to query for new data. It's good enough.
+    after: dataFromIndexedDB.flashCards.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0].dateUpdated
+  });
+  store.notes.$mergeMatching.id.$withMany(dataApiResponse.data.notes);
+  store.flashCards.$mergeMatching.id.$withMany(dataApiResponse.data.flashCards);
+  store.groups.$mergeMatching.id.$withMany(dataApiResponse.data.groups);
+  store.tags.$mergeMatching.id.$withMany(dataApiResponse.data.tags);
+  store.noteTags.$mergeMatching.id.$withMany(dataApiResponse.data.noteTags);
+  store.synonymGroups.$mergeMatching.id.$withMany(dataApiResponse.data.synonymGroups);
+  await writeToIndexedDB(dataApiResponse.data);
+  const { notes, noteTags, tags } = store.$state;
+  const mostRecentlyViewNote = notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
+  const activeNoteId = mostRecentlyViewNote.id;
+  const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
+  const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
+  store.$patchDeep({ activeNoteId, synonymIds });
+  store.home.initialized.$set(true);
 }
