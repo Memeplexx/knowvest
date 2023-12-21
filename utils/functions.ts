@@ -3,7 +3,7 @@ import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import { Readable, Store } from "olik";
-import { DecisionResult } from "./types";
+import { DecisionResult, WriteToIndexedDBArgs } from "./types";
 import { derive } from "olik/derive";
 import { AppState, database } from "./constants";
 
@@ -193,8 +193,6 @@ export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteI
   (editor.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
 }
 
-type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof database]: null | typeof database[tableName] | typeof database[tableName][0] }>;
-
 export const writeToIndexedDB = (records: WriteToIndexedDBArgs) => {
   return new Promise<void>((resolve, reject) => {
     (Object.keys(records) as Array<keyof WriteToIndexedDBArgs>).forEach((tableName, index, array) => {
@@ -228,10 +226,9 @@ export const writeToIndexedDB = (records: WriteToIndexedDBArgs) => {
 export const readFromIndexedDB = () => {
 
   return new Promise<typeof database>(resolveOuter => {
-    // Open (or create) a database
+    
     const request = indexedDB.open('knowvest', 1);
 
-    // Success callback for opening the database
     request.onsuccess = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
       const objectStoreNames = Array.from(db.objectStoreNames) as Array<keyof typeof database>;
@@ -255,40 +252,39 @@ export const readFromIndexedDB = () => {
           .finally(() => transaction.oncomplete = () => db.close());
       });
 
-      // Use the promise to handle the results
       readDatabasePromise
         .then((results) => resolveOuter(results))
         .catch((error) => console.error('Error reading database:', error));
     };
 
-    // Error callback for opening the database
-    request.onerror = (event) => console.error('indexedDB: onerror', event.target);
+    request.onerror = (event) => {
+      console.error('indexedDB: onerror', event.target);
+    }
   })
 }
 
 export const ensureIndexedDBIsInitialized = () => {
   return new Promise<void>(resolve => {
-    // Open (or create) a database
+    
     const request = indexedDB.open('knowvest', 1);
 
-    // Create or upgrade database
     request.onupgradeneeded = (event) => {
       console.log('indexedDB: onupgradeneeded', event);
       const db = (event.target as IDBOpenDBRequest).result;
-      (Object.keys(database) as Array<keyof typeof database>).forEach(function (tableName) {
-        if (!db.objectStoreNames.contains(tableName)) {
+      (Object.keys(database) as Array<keyof typeof database>)
+        .filter(tableName => !db.objectStoreNames.contains(tableName))
+        .forEach((tableName) => {
           console.log('Creating table:', tableName);
           db.createObjectStore(tableName, { keyPath: 'id', autoIncrement: false });
-        }
       });
     };
 
-    // Success callback for opening the database
     request.onsuccess = () => {
       resolve();
     };
 
-    // Error callback for opening the database
-    request.onerror = (event) => console.error('indexedDB: onerror', event.target);
+    request.onerror = (event) => {
+      console.error('indexedDB: onerror', event.target);
+    }
   })
 }

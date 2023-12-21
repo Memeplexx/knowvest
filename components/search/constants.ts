@@ -37,3 +37,5 @@ export const initialState = {
     showAutocompleteOptions: false,
   }
 }
+
+export const tag = 'searchDialog';

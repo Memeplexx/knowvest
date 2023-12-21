@@ -54,13 +54,9 @@ export const useInputs = (props: Props) => {
   return {
     props,
     store,
-    refs: {
-      card: useRef<CardHandle>(null),
-    },
-    state: {
-      loading,
-      noteCountString: noteCountString.$useState(),
-    },
+    cardRef: useRef<CardHandle>(null),
+    loading,
+    noteCountString: noteCountString.$useState(),
     RelatedNotes,
   }
 

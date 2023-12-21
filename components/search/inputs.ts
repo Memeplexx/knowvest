@@ -1,5 +1,5 @@
 import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
-import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
+import { AutocompleteOptionType, Props, dialogWidth, initialState, tag } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
 import { derive } from "olik/derive";
 import { useNestedStore } from "@/utils/hooks";
@@ -9,7 +9,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const store = useNestedStore(initialState)!;
   const state = store.search.$useState();
 
-  const allAutocompleteOptions = derive('allSearchOptions').$from(
+  const allAutocompleteOptions = derive(tag).$from(
     store.tags,
     store.groups,
     store.search.selectedSynonymIds,
@@ -36,7 +36,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     ]
   });
 
-  const autocompleteOptions = derive('searchOptions').$from(
+  const autocompleteOptions = derive(tag).$from(
     allAutocompleteOptions,
     store.search.autocompleteText,
   ).$with((allAutocompleteOptions, autocompleteText) => {
@@ -44,7 +44,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       .filter(o => o.label.toLowerCase().includes(autocompleteText.toLowerCase()))
   });
 
-  const selectedSynonymTags = derive('selectedSynonymTags').$from(
+  const selectedSynonymTags = derive(tag).$from(
     store.search.selectedSynonymIds,
     store.tags,
   ).$with((selectedSynonymIds, tags) => {
@@ -58,7 +58,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
         })))
   });
 
-  const selectedGroupTags = derive('selectedGroupTags').$from(
+  const selectedGroupTags = derive(tag).$from(
     store.search.selectedGroupIds,
     store.groups,
     store.synonymGroups,
@@ -83,7 +83,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       }))
   });
 
-  const notesByTags = derive('notesByTags').$from(
+  const notesByTags = derive(tag).$from(
     store.search.selectedSynonymIds,
     store.noteTags,
     store.notes,
