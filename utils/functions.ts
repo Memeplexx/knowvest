@@ -195,7 +195,9 @@ export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteI
 
 export const writeToIndexedDB = (records: WriteToIndexedDBArgs) => {
   return new Promise<void>((resolve, reject) => {
-    (Object.keys(records) as Array<keyof WriteToIndexedDBArgs>).forEach((tableName, index, array) => {
+    (Object.keys(records) as Array<keyof WriteToIndexedDBArgs>)
+      .filter(tableName => !!database[tableName])
+      .forEach((tableName, index, array) => {
       const request = indexedDB.open('knowvest', 1);
       request.onsuccess = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;

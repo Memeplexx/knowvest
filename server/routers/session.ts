@@ -28,7 +28,7 @@ export const sessionRouter = router({
             dateViewed: new Date(),
           }
         });
-        return { status: 'SESSION_INITIALIZED_FOR_NEW_USER', user, note } as const;
+        return { status: 'USER_CREATED', note } as const;
 
       // Else if the user does exist, return their data after the specified date
       } else {
@@ -42,7 +42,7 @@ export const sessionRouter = router({
         const noteTags = await prisma.noteTag.findMany({ where: { note: { userId }, dateUpdated }, orderBy });
         const synonymGroups = await prisma.synonymGroup.findMany({ where: { group: { userId }, dateUpdated }, orderBy });
         const tags = await prisma.tag.findMany({ where: { userId, dateUpdated }, orderBy });
-        return { status: 'SESSION_INITIALIZED', user, data: { notes, flashCards, groups, noteTags, synonymGroups, tags } } as const;
+        return { status: 'USER_UPDATED', notes, flashCards, groups, noteTags, synonymGroups, tags } as const;
       }
     }),
 

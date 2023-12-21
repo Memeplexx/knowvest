@@ -87,7 +87,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Sto
   const dataFromIndexedDB = await readFromIndexedDB();
   const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
   const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentlyUpdatedNode?.dateUpdated  });
-  if (apiResponse.status === 'SESSION_INITIALIZED_FOR_NEW_USER') {
+  if (apiResponse.status === 'USER_CREATED') {
     store.$patch({
       notes: [apiResponse.note],
       activeNoteId: apiResponse.note.id,
@@ -96,13 +96,13 @@ const initializeData = async ({ session, store }: { session: Session, store: Sto
     return;
   }
   store.$patch(dataFromIndexedDB);
-  store.notes.$mergeMatching.id.$withMany(apiResponse.data.notes);
-  store.flashCards.$mergeMatching.id.$withMany(apiResponse.data.flashCards);
-  store.groups.$mergeMatching.id.$withMany(apiResponse.data.groups);
-  store.tags.$mergeMatching.id.$withMany(apiResponse.data.tags);
-  store.noteTags.$mergeMatching.id.$withMany(apiResponse.data.noteTags);
-  store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.data.synonymGroups);
-  await writeToIndexedDB(apiResponse.data);
+  store.notes.$mergeMatching.id.$withMany(apiResponse.notes);
+  store.flashCards.$mergeMatching.id.$withMany(apiResponse.flashCards);
+  store.groups.$mergeMatching.id.$withMany(apiResponse.groups);
+  store.tags.$mergeMatching.id.$withMany(apiResponse.tags);
+  store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
+  store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.synonymGroups);
+  await writeToIndexedDB(apiResponse);
   const { notes, noteTags, tags } = store.$state;
   const mostRecentlyViewNote = notes.filter(n => !n.isArchived).sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
   const activeNoteId = mostRecentlyViewNote.id;
