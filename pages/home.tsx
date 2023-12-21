@@ -30,7 +30,7 @@ export default function Home() {
         success: outputs.onNotifySuccess,
         info: outputs.onNotifyInfo,
       }}
-      children={
+      children={inputs.initialized && 
         <>
           <Wrapper
             children={

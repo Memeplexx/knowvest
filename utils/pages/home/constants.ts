@@ -9,6 +9,7 @@ export const initialState = {
     similarExpanded: false,
     tagsExpanded: false,
     headerExpanded: true,
+    initialized: false,
   }
 };
 

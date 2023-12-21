@@ -243,6 +243,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.tags.$mergeMatching.id.$withOne(apiResponse.tagArchived);
       store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
       store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
+      await writeToIndexedDB({ tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
       inputs.notify.success('Tag deleted');
     },
     onClickConfirmArchiveGroup: async () => {

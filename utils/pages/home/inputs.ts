@@ -48,17 +48,7 @@ const useStoreAndIndexedDBInitializer = () => {
     if (!mounted) { return; }
     ensureIndexedDBIsInitialized()
       .then(() => readFromIndexedDB())
-      .then(data => {
-        const mostRecentlyViewNote = data.notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime() ? 1 : -1)[0];
-        const activeNoteId = mostRecentlyViewNote?.id || 0 as NoteId;
-        const selectedTagIds = data.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
-        const synonymIds = data.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct()
-        store.$patchDeep({
-          ...data,
-          activeNoteId,
-          synonymIds,
-        });
-      })
+      .then(data => store.$patchDeep(data))
       .then(() => {
         const { notes, synonymGroups, noteTags, tags, groups, flashCards } = store.$state;
         const mostRecentlyUpdatedRecord = <T extends { dateUpdated: Date | null }>(items: T[]) => {
@@ -96,6 +86,15 @@ const useStoreAndIndexedDBInitializer = () => {
               return writeToIndexedDB({ flashCards: response.flashCards });
             }),
         ])
+      })
+      .then(() => {
+        const { notes, noteTags, tags } = store.$state;
+        const mostRecentlyViewNote = notes.slice().sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
+        const activeNoteId = mostRecentlyViewNote?.id || 0 as NoteId;
+        const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
+        const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
+        store.$patchDeep({ activeNoteId, synonymIds });
+        store.home.initialized.$set(true);
       })
       .catch(console.error);
   }, [mounted, store])

@@ -4,8 +4,6 @@ import { Related } from "@/components/related";
 import { Tabs } from "@/components/card-with-tabs";
 import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
-import { Tags } from "@/components/tags";
-import { ActiveNoteFlashCards } from "@/components/active-note-flash-cards";
 import { ButtonIcon } from "@/components/button-icon";
 
 const gap = '4px';
