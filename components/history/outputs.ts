@@ -4,8 +4,7 @@ import { Inputs } from "./constants";
 import { writeToIndexedDB } from "@/utils/functions";
 
 
-export const useOutputs = (inputs: Inputs) => {
-  const { props, store, cardRef } = inputs;
+export const useOutputs = ({ store, cardRef, props }: Inputs) => {
   return {
     onSelectNote: async (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);

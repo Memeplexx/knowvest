@@ -4,8 +4,7 @@ import { Inputs } from "./constants";
 import { writeToIndexedDB } from "@/utils/functions";
 
 
-export const useOutputs = (inputs: Inputs) => {
-  const { props, refs, store } = inputs;
+export const useOutputs = ({ store, props, cardRef }: Inputs) => {
   return {
     onSelectNote: async (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
@@ -17,7 +16,7 @@ export const useOutputs = (inputs: Inputs) => {
       const apiResponse = await trpc.note.view.mutate({ noteId });
       await writeToIndexedDB({ notes: apiResponse.note });
       store.notes.$mergeMatching.id.$withOne(apiResponse.note);
-      refs.card.current!.scrollToTop();
+      cardRef.current!.scrollToTop();
     }
   };
 }
