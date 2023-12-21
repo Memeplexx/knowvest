@@ -5,11 +5,17 @@ import { possible } from '../html';
 import { CloseIcon } from '@/utils/styles';
 
 
-export const ClearTextButton = styled(ButtonIcon)`
+export const ClearTextButtonWrapper = styled.div`
   position: absolute;
-  right: 1px;
-  top: 1px;
+  top: 0;
+  bottom: 0;
+  right: 8px;
+  display: flex;
   z-index: 1;
+  align-items: center;
+`;
+
+export const ClearTextButton = styled(ButtonIcon)`
 `;
 
 export const ClearIcon = styled(CloseIcon)`

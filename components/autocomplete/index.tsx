@@ -1,5 +1,5 @@
 import { AutocompleteHandle, Props, OptionBase } from './constants';
-import { ClearIcon, ClearTextButton, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
+import { ClearIcon, ClearTextButton, ClearTextButtonWrapper, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { type ForwardedRef, forwardRef } from 'react';
@@ -28,12 +28,16 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             $hasError={!!props.error}
             disabled={props.disabled}
           />
-          <ClearTextButton
-            showIf={!!props.inputText.trim() && !props.disabled}
-            onClick={outputs.onClickClearText}
-            title="Clear text"
-            aria-label='Clear text'
-            children={<ClearIcon />}
+          <ClearTextButtonWrapper
+            children={
+              <ClearTextButton
+                showIf={!!props.inputText.trim() && !props.disabled}
+                onClick={outputs.onClickClearText}
+                title="Clear text"
+                aria-label='Clear text'
+                children={<ClearIcon />}
+              />
+            }
           />
           <ErrorMsg
             showIf={!!props.error}

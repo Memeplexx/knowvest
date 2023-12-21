@@ -8,6 +8,7 @@ export const useInputs = <Option extends OptionBase>(
   props: Props<Option>,
   forwardedRef: ForwardedRef<AutocompleteHandle>
 ) => {
+  
   const floatingRef = useFloating<HTMLInputElement>(floatingUiDefaultOptions);
 
   const inputRef = floatingRef.refs.domReference;
