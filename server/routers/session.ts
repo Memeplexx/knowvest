@@ -58,7 +58,7 @@ export const sessionRouter = router({
             dateViewed: new Date(),
           }
         });
-        return { status: 'SESSION_INITIALIZED_FOR_NEW_USER', user, note, data: await fetchData() } as const;
+        return { status: 'SESSION_INITIALIZED_FOR_NEW_USER', user, note } as const;
       } else {
         return { status: 'SESSION_INITIALIZED', user, data: await fetchData() } as const;
       }

@@ -74,5 +74,5 @@ export const trpcReturningEntities = createTRPCProxyClient<AppRouter>({
     }),
   ],
 });
-export const trpc = trpcReturningEntities as TrpcReturningDtos;
+export const trpc = trpcReturningEntities as unknown as TrpcReturningDtos;
 
