@@ -1,7 +1,8 @@
 import { GroupId, TagId } from '@/server/dtos';
 import { trpc } from '@/utils/trpc';
 import { Inputs } from './constants';
-import { ancestorMatches, writeToIndexedDB } from '@/utils/functions';
+import { ancestorMatches } from '@/utils/functions';
+import { indexeddb } from '@/utils/indexed-db';
 
 
 export const completeCreateTagForSynonym = async (inputs: Inputs) => {
@@ -15,7 +16,7 @@ export const completeCreateTagForSynonym = async (inputs: Inputs) => {
   inputs.store.config.tagId.$set(apiResponse.tag.id);
   inputs.store.tags.$mergeMatching.id.$withOne(apiResponse.tag);
   inputs.store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
-  await writeToIndexedDB({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+  await indexeddb.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
   inputs.notify.success('Tag created');
   blurAutocompleteInput(inputs);
 }
@@ -31,7 +32,7 @@ export const completeCreateTag = async (inputs: Inputs) => {
   inputs.store.tags.$push(apiResponse.tag);
   inputs.store.noteTags.$push(apiResponse.noteTags);
   inputs.store.synonymIds.$push(apiResponse.tag.synonymId);
-  await writeToIndexedDB({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+  await indexeddb.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
   inputs.notify.success('Tag created');
   blurAutocompleteInput(inputs);
 }
@@ -49,7 +50,7 @@ export const completeCreateTagForGroup = async (inputs: Inputs) => {
   inputs.store.tags.$mergeMatching.id.$withOne(apiResponse.tag);
   inputs.store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
   inputs.store.synonymGroups.$mergeMatching.id.$withOne(apiResponse.synonymGroup);
-  await writeToIndexedDB({ tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroup });
+  await indexeddb.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroup });
   inputs.notify.success('Tag created');
   blurAutocompleteInput(inputs);
 }
@@ -65,7 +66,7 @@ export const completeCreateGroup = async (inputs: Inputs) => {
   inputs.store.config.autocompleteText.$set('');
   inputs.store.groups.$push(apiResponse.createdGroup);
   apiResponse.createdSynonymGroup && inputs.store.synonymGroups.$push(apiResponse.createdSynonymGroup);
-  await writeToIndexedDB({ groups: apiResponse.createdGroup, synonymGroups: apiResponse.createdSynonymGroup });
+  await indexeddb.write({ groups: apiResponse.createdGroup, synonymGroups: apiResponse.createdSynonymGroup });
   inputs.notify.success('Group created');
   blurAutocompleteInput(inputs);
 }
@@ -80,7 +81,7 @@ export const completeEditGroupName = async (inputs: Inputs) => {
     case 'CONFLICT': return inputs.notify.error(apiResponse.message)
   }
   inputs.store.groups.$mergeMatching.id.$withOne(apiResponse.updatedGroup);
-  await writeToIndexedDB({ groups: apiResponse.updatedGroup });
+  await indexeddb.write({ groups: apiResponse.updatedGroup });
   inputs.notify.success('Group updated');
   blurAutocompleteInput(inputs);
 }
@@ -147,7 +148,7 @@ export const onAutocompleteSelectedWhileSynonymIsSelected = async ({ inputs, tag
   const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
   inputs.store.tags.$mergeMatching.id.$withMany(apiResponse.tagsUpdated);
   inputs.store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
-  await writeToIndexedDB({ tags: apiResponse.tagsUpdated, synonymGroups: apiResponse.archivedSynonymGroups });
+  await indexeddb.write({ tags: apiResponse.tagsUpdated, synonymGroups: apiResponse.archivedSynonymGroups });
   inputs.store.config.$patch({ tagId, synonymId, autocompleteText: selected.text });
   groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && inputs.notify.success('Tag(s) added to synonyms');
 };
@@ -157,7 +158,7 @@ export const onAutocompleteSelectedWhileGroupIsSelected = async ({ inputs, tagId
   const apiResponse = await trpc.group.addSynonym.mutate({ groupId: inputs.groupId, synonymId });
   inputs.store.config.autocompleteText.$set('');
   inputs.store.synonymGroups.$mergeMatching.id.$withOne(apiResponse.synonymGroup);
-  await writeToIndexedDB({ synonymGroups: apiResponse.synonymGroup });
+  await indexeddb.write({ synonymGroups: apiResponse.synonymGroup });
   inputs.notify.success('Added to group');
 };
 
@@ -165,7 +166,7 @@ export const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async ({ inpu
   if (!inputs.synonymId) { throw new Error(); }
   const apiResponse = await trpc.group.addSynonym.mutate({ groupId, synonymId: inputs.synonymId });
   inputs.store.synonymGroups.$mergeMatching.id.$withOne(apiResponse.synonymGroup);
-  await writeToIndexedDB({ synonymGroups: apiResponse.synonymGroup });
+  await indexeddb.write({ synonymGroups: apiResponse.synonymGroup });
   inputs.notify.success('Added to group');
 }
 
