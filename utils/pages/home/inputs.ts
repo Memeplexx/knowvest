@@ -7,9 +7,9 @@ import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import { AppState } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
-import { ensureIndexedDBIsInitialized, readFromIndexedDB, writeToIndexedDB } from "@/utils/functions";
 import { Store } from "olik";
 import { Session } from "next-auth";
+import { indexeddb } from "@/utils/indexed-db";
 
 
 export const useInputs = () => {
@@ -83,8 +83,8 @@ export const useDataInitializer = () => {
 }
 
 const initializeData = async ({ session, store }: { session: Session, store: Store<AppState & typeof initialState> }) => {
-  await ensureIndexedDBIsInitialized();
-  const dataFromIndexedDB = await readFromIndexedDB();
+  await indexeddb.initialize();
+  const dataFromIndexedDB = await indexeddb.read();
   const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
   const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentlyUpdatedNode?.dateUpdated  });
   if (apiResponse.status === 'USER_CREATED') {
@@ -102,7 +102,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Sto
   store.tags.$mergeMatching.id.$withMany(apiResponse.tags);
   store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
   store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.synonymGroups);
-  await writeToIndexedDB(apiResponse);
+  await indexeddb.write(apiResponse);
   const { notes, noteTags, tags } = store.$state;
   const mostRecentlyViewNote = notes.filter(n => !n.isArchived).sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
   const activeNoteId = mostRecentlyViewNote.id;

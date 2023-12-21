@@ -1,6 +1,6 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
-import { writeToIndexedDB } from "@/utils/functions";
+import { indexeddb } from "@/utils/indexed-db";
 
 
 export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: Inputs) => {
@@ -16,7 +16,7 @@ export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: 
       if (!store.$state.tags.some(t => t.id === apiResponse.tag.id)) {
         store.tags.$push(apiResponse.tag);
         store.noteTags.$push(apiResponse.noteTags);
-        await writeToIndexedDB({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+        await indexeddb.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
       }
       const synonymId = store.$state.tags.findOrThrow(t => t.id === apiResponse.tag.id).synonymId;
       if (!store.$state.synonymIds.includes(synonymId)) {
@@ -38,7 +38,7 @@ export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: 
       const range = codeMirror!.state.selection.ranges[0];
       store.activePanel.loadingSelection.$set(true);
       const apiResponse = await trpc.note.split.mutate({ ...range, splitFromNoteId: store.$state.activeNoteId });
-      await writeToIndexedDB({ notes: [apiResponse.noteCreated, apiResponse.noteUpdated], noteTags: [...apiResponse.newNoteTags, ...apiResponse.archivedNoteTags] });
+      await indexeddb.write({ notes: [apiResponse.noteCreated, apiResponse.noteUpdated], noteTags: [...apiResponse.newNoteTags, ...apiResponse.archivedNoteTags] });
       store.activePanel.loadingSelection.$set(false);
       store.notes.$mergeMatching.id.$withOne(apiResponse.noteUpdated);
       store.notes.$push(apiResponse.noteCreated);

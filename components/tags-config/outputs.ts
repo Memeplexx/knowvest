@@ -20,7 +20,7 @@ import { trpc } from '@/utils/trpc';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { TypedKeyboardEvent } from '@/utils/types';
 import { Inputs } from './constants';
-import { writeToIndexedDB } from '@/utils/functions';
+import { indexeddb } from '@/utils/indexed-db';
 
 
 export const useOutputs = (inputs: Inputs) => {
@@ -91,7 +91,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.config.$patch({ tagId: null, autocompleteText: '' });
       store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
       store.tags.$mergeMatching.id.$withOne(apiResponse.tagUpdated);
-      await writeToIndexedDB({ synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
+      await indexeddb.write({ synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
       inputs.notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
@@ -99,7 +99,7 @@ export const useOutputs = (inputs: Inputs) => {
       const response = await trpc.group.removeSynonym.mutate({ groupId: inputs.groupId!, synonymId: inputs.groupSynonymId! });
       response.archivedGroup && store.groups.$mergeMatching.id.$withOne(response.archivedGroup);
       store.synonymGroups.$mergeMatching.id.$withMany(response.archivedSynonymGroups);
-      await writeToIndexedDB({ groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
+      await indexeddb.write({ groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
       store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       inputs.notify.success('Tag-Synonym removed from group');
     },
@@ -243,7 +243,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.tags.$mergeMatching.id.$withOne(apiResponse.tagArchived);
       store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
       store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
-      await writeToIndexedDB({ tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
+      await indexeddb.write({ tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
       inputs.notify.success('Tag deleted');
     },
     onClickConfirmArchiveGroup: async () => {
@@ -251,7 +251,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
       store.synonymGroups.$mergeMatching.groupId.$withMany(response.synonymGroupsArchived);
       store.groups.$mergeMatching.id.$withOne(response.groupArchived);
-      await writeToIndexedDB({ synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
+      await indexeddb.write({ synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
       inputs.notify.success('Group deleted');
     },
     onCancelConfirmation: () => {

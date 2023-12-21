@@ -1,7 +1,8 @@
-import { ancestorMatches, writeToIndexedDB } from "@/utils/functions";
+import { ancestorMatches } from "@/utils/functions";
 import { Inputs } from "./constants";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { trpc } from "@/utils/trpc";
+import { indexeddb } from "@/utils/indexed-db";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store, notify, bodyRef, items } = inputs;
@@ -24,14 +25,14 @@ export const useOutputs = (inputs: Inputs) => {
     onClickWrongAnswer: async () => {
       const id = items[0].id;
       const apiResponse = await trpc.flashCard.answerQuestionIncorrectly.mutate({ id });
-      await writeToIndexedDB({ flashCards: apiResponse.flashCard });
+      await indexeddb.write({ flashCards: apiResponse.flashCard });
       store.flashCards.$mergeMatching.id.$withOne(apiResponse.flashCard);
       notify.success('Better luck next time...');
     },
     onClickRightAnswer: async () => {
       const id = items[0].id;
       const apiResponse = await trpc.flashCard.answerQuestionCorrectly.mutate({ id });
-      await writeToIndexedDB({ flashCards: apiResponse.flashCard });
+      await indexeddb.write({ flashCards: apiResponse.flashCard });
       store.flashCards.$mergeMatching.id.$withOne(apiResponse.flashCard);
       notify.success('Nice one!');
     },
