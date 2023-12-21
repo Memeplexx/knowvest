@@ -9,21 +9,6 @@ import { TRPCError } from '@trpc/server';
 
 
 export const synonymRouter = router({
-
-  listSynonymGroups: procedure
-    .input(z.object({
-      after: z.date().nullish(),
-    }))
-    .query(async ({ ctx: { userId }, input: { after } }) => {
-      
-      // Logic
-      const synonymGroups = !after
-        ? await prisma.synonymGroup.findMany({ where: { group: { userId } }, orderBy: { dateUpdated: 'desc' } })
-        : await prisma.synonymGroup.findMany({ where: { group: { userId }, dateUpdated: { gt: after } }, orderBy: { dateUpdated: 'desc' } });
-
-      // Populate and return response
-      return { status: 'SYNONYM_GROUPS_LISTED', synonymGroups } as const;
-    }),
   
   removeTagFromItsCurrentSynonym: procedure
     .input(z.object({
