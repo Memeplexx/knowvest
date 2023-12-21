@@ -48,7 +48,10 @@ const useStoreAndIndexedDBInitializer = () => {
     if (!mounted) { return; }
     ensureIndexedDBIsInitialized()
       .then(() => readFromIndexedDB())
-      .then(data => store.$patchDeep(data))
+      .then(data => {
+        store.$patchDeep(data);
+        store.home.initialized.$set(true);
+      })
       .then(() => {
         const { notes, synonymGroups, noteTags, tags, groups, flashCards } = store.$state;
         const mostRecentlyUpdatedRecord = <T extends { dateUpdated: Date | null }>(items: T[]) => {
@@ -94,7 +97,6 @@ const useStoreAndIndexedDBInitializer = () => {
         const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
         const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
         store.$patchDeep({ activeNoteId, synonymIds });
-        store.home.initialized.$set(true);
       })
       .catch(console.error);
   }, [mounted, store])
