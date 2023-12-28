@@ -6,8 +6,7 @@ import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const store = useNestedStore(initialState)!;
-  const state = store.search.$useState();
+  const { store, state } = useNestedStore('search', initialState)!;
 
   const allAutocompleteOptions = derive(tag).$from(
     store.tags,

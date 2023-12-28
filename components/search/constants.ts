@@ -25,17 +25,15 @@ export type AutocompleteOptionType = {
 };
 
 export const initialState = {
-  search: {
-    autocompleteText: '',
-    selectedSynonymIds: new Array<SynonymId>(),
-    selectedGroupIds: new Array<GroupId>(),
-    showingTab: 'search' as 'search' | 'results',
-    showSearchPane: true,
-    showResultsPane: true,
-    screenIsNarrow: false,
-    hoveredSynonymId: null as SynonymId | null,
-    showAutocompleteOptions: false,
-  }
+  autocompleteText: '',
+  selectedSynonymIds: new Array<SynonymId>(),
+  selectedGroupIds: new Array<GroupId>(),
+  showingTab: 'search' as 'search' | 'results',
+  showSearchPane: true,
+  showResultsPane: true,
+  screenIsNarrow: false,
+  hoveredSynonymId: null as SynonymId | null,
+  showAutocompleteOptions: false,
 }
 
 export const tag = 'searchDialog';

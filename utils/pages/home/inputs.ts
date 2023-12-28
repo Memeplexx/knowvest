@@ -1,23 +1,20 @@
 import { useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
-import { initialState, initialTransientState } from "./constants";
+import { HomeStore, initialState, initialTransientState } from "./constants";
 import { UserDTO } from "@/server/dtos";
 import { useIsMounted, useIsomorphicLayoutEffect, useNestedStore, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
-import { AppState } from "@/utils/constants";
 import { trpc } from "@/utils/trpc";
-import { Store } from "olik";
 import { Session } from "next-auth";
 import { indexeddb } from "@/utils/indexed-db";
 
 
 export const useInputs = () => {
 
-  const store = useNestedStore(initialState)!;
-  const state = store.home.$useState();
+  const { store, state } = useNestedStore('home', initialState)!;
 
-  useDataInitializer();
+  useDataInitializer(store);
 
   useLogoutUserIfSessionExpired();
 
@@ -40,7 +37,7 @@ const useInitializeOlikDevtools = () => {
   }, []);
 }
 
-const useHeaderExpander = (store: Store<AppState & typeof initialState>) => {
+const useHeaderExpander = (store: HomeStore) => {
   useIsomorphicLayoutEffect(() => {
     const listener = () => {
       const { headerExpanded: headerContracted } = store.$state.home;
@@ -66,9 +63,8 @@ const useLogoutUserIfSessionExpired = () => {
   }, [router, session.status]);
 }
 
-export const useDataInitializer = () => {
+export const useDataInitializer = (store: HomeStore) => {
   const { data: session } = useSession();
-  const store = useNestedStore(initialState)!;
   const mounted = useIsMounted();
   const initializingData = useRef(false);
   useEffect(() => {
@@ -82,11 +78,11 @@ export const useDataInitializer = () => {
   }, [mounted, session, store]);
 }
 
-const initializeData = async ({ session, store }: { session: Session, store: Store<AppState & typeof initialState> }) => {
+const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
   await indexeddb.initialize();
   const dataFromIndexedDB = await indexeddb.read();
   const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
-  const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentlyUpdatedNode?.dateUpdated  });
+  const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentlyUpdatedNode?.dateUpdated });
   if (apiResponse.status === 'USER_CREATED') {
     store.$patch({
       notes: [apiResponse.note],

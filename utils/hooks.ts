@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef, useContext, Context } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef, useContext, FunctionComponent } from 'react';
 import { EventMap } from './types';
 import { AppState, StoreContext } from './constants';
 import { Store } from 'olik';
+import dynamic from 'next/dynamic';
 
 
 
@@ -121,8 +122,28 @@ export const useIsMounted = () => {
   return initialized;
 }
 
-export const useNestedStore = <S extends object>(initialState: S) => {
-  const store = useContext(StoreContext as unknown as Context<Store<AppState & S>>);
-  useMemo(() => store.$setNew(initialState), [initialState, store]);
-  return store;
+export const useNestedStore = <K extends string, S extends object>(key: K, initialState: S) => {
+  const store = useContext(StoreContext)!;
+  useMemo(() => {
+    if ((store.$state as Record<K, S>)[key] !== undefined) { return; }
+    store.$setNew({[key]: initialState});
+  }, [initialState, key, store]);
+  return {
+    store: store as Store<AppState & Record<K, S>>,
+    state: (store as Record<K, Store<S>>)[key].$useState() as S,
+  };
+}
+
+export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {
+  const isMounted = useIsMounted();
+  const [loading, setLoading] = useState(true);
+  const importerRef = useRef(importer);
+  const component = useMemo(() => {
+    if (!isMounted) { return null; }
+    return dynamic(() => importerRef.current().finally(() => setLoading(false)));
+  }, [isMounted]);
+  return {
+    loading,
+    component,
+  };
 }

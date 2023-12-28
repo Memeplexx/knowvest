@@ -11,13 +11,11 @@ import { useNestedStore } from '@/utils/hooks';
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const store = useNestedStore(initialState)!;
+  const { store, state } = useNestedStore('config', initialState)!;
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 
   const notify = useContext(NotificationContext)!;
-
-  const state = store.config.$useState();
 
   const tagsInSynonymGroup = derive(tag).$from(
     store.tags,

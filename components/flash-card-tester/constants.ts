@@ -5,12 +5,10 @@ export type Props = {
 };
 
 export const initialState = {
-  flashCard: {
-    showOptions: false,
-    showSearchDialog: false,
-    showFlashCardsDialog: false,
-    showQuestions: true,
-  }
+  showOptions: false,
+  showSearchDialog: false,
+  showFlashCardsDialog: false,
+  showQuestions: true,
 };
 
 export const tag = 'flashCardTesterComponent';

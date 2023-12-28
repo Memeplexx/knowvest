@@ -7,9 +7,7 @@ export type Props = {
 } & HTMLAttributes<HTMLDivElement>;
 
 export const initialState = {
-  history: {
-    loading: true,
-  }
+  loading: true,
 }
 
 export type Inputs = ReturnType<typeof useInputs>;

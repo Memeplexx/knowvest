@@ -83,8 +83,8 @@ export const ActivePanel = (
                 />
               </>
             }
-            body={inputs.ActiveEditor ? <inputs.ActiveEditor /> : <></>}
-            loading={inputs.loadingEditor}
+            body={inputs.downloaded.component ? <inputs.downloaded.component /> : <></>}
+            loading={inputs.downloaded.loading}
           />
           <Loader
             showIf={inputs.loadingNote}

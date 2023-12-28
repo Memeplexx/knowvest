@@ -28,14 +28,15 @@ import {
 import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { Store } from 'olik';
-import { AppState, StoreContext } from '@/utils/constants';
+import { AppState } from '@/utils/constants';
 import { initialState } from '../active-panel/constants';
+import { useNestedStore } from '@/utils/hooks';
+import { ActivePanelStore } from './constants';
 
 
 export const useInputs = () => {
 
-  const store = useContext(StoreContext)! as Store<AppState & typeof initialState>;
-  const state = store.activePanel.$useState();
+  const { store, state } = useNestedStore('activePanel', initialState);
   const mayDeleteNote = !!store.notes.$useState().length;
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
@@ -50,15 +51,15 @@ export const useInputs = () => {
 
   return {
     store,
-    editorRef,
     ...state,
+    editorRef,
     mayDeleteNote,
     codeMirror: codeMirror.current,
     notify: useContext(NotificationContext)!,
   };
 }
 
-export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: Store<AppState & typeof initialState> }) => {
+export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: ActivePanelStore }) => {
   return new EditorView({
     doc: '',
     parent: editor,

@@ -5,8 +5,7 @@ import { isAfter } from "date-fns";
 import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = () => {
-  const store = useNestedStore(initialState)!;
-  const state = store.navBar.$useState();
+  const { store, state } = useNestedStore('navBar', initialState);
   const { data: session } = useSession()
   const flashCardCount = derive(tag).$from(store.flashCards)
     .$with(flashCards => flashCards.filter(f => !f.isArchived && isAfter(new Date(), f.nextQuestionDate)))

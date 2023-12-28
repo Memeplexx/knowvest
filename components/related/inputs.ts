@@ -1,10 +1,9 @@
-import { derive } from "olik/derive";
-import { Props, tag } from "./constants";
-import { useContext, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
-import { CardHandle } from "../card/constants";
 import { StoreContext } from "@/utils/constants";
-import { useIsMounted } from "@/utils/hooks";
+import { useComponentDownloader } from "@/utils/hooks";
+import { derive } from "olik/derive";
+import { useContext, useRef } from "react";
+import { CardHandle } from "../card/constants";
+import { Props, tag } from "./constants";
 
 export const useInputs = (props: Props) => {
 
@@ -44,20 +43,14 @@ export const useInputs = (props: Props) => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
   })
 
-  const isMounted = useIsMounted();
-  const [loading, setLoading] = useState(true);
-  const RelatedNotes = useMemo(() => {
-    if (!isMounted) { return null; }
-    return dynamic(() => import('../related-items').finally(() => setLoading(false)));
-  }, [isMounted]);
+  const downloaded = useComponentDownloader(() => import('../related-items'));
 
   return {
     props,
     store,
     cardRef: useRef<CardHandle>(null),
-    loading,
+    downloaded,
     noteCountString: noteCountString.$useState(),
-    RelatedNotes,
   }
 
 };

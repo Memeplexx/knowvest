@@ -7,8 +7,7 @@ import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = (props: Props) => {
 
-  const store = useNestedStore(initialState);
-  const state = store.flashCard.$useState();
+  const { store, state } = useNestedStore('flashCard', initialState);
   const notify = useContext(NotificationContext)!;
   const items = derive(tag).$from(store.flashCards)
     .$with(flashCards => flashCards.filter(fc => !fc.isArchived && isAfter(new Date(), fc.nextQuestionDate)))
