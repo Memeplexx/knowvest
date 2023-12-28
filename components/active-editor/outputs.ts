@@ -38,12 +38,10 @@ export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: 
       const range = codeMirror!.state.selection.ranges[0];
       store.activePanel.loadingSelection.$set(true);
       const apiResponse = await trpc.note.split.mutate({ ...range, splitFromNoteId: store.$state.activeNoteId });
-      await indexeddb.write({ notes: [apiResponse.noteCreated, apiResponse.noteUpdated], noteTags: [...apiResponse.newNoteTags, ...apiResponse.archivedNoteTags] });
+      await indexeddb.write(apiResponse);
       store.activePanel.loadingSelection.$set(false);
-      store.notes.$mergeMatching.id.$withOne(apiResponse.noteUpdated);
-      store.notes.$push(apiResponse.noteCreated);
-      store.noteTags.$push(apiResponse.newNoteTags);
-      store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
+      store.notes.$mergeMatching.id.$withMany(apiResponse.notes);
+      store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
       store.activePanel.selection.$set('');
       codeMirror?.dispatch({
         changes: {

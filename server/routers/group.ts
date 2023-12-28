@@ -147,9 +147,10 @@ export const groupRouter = router({
       
       // Finds all notes that contain the tag text, then...
       const notesWithTagText = await listNotesWithTagText({ userId, tagText: text });
+      const noteIdsWithTagText = notesWithTagText.map(note => note.id);
 
       // ... If any of the note tags already exist then un archive them, otherwise create new note tags
-      const noteTagsAlreadyCreated = await prisma.noteTag.findMany({ where: { noteId: { in: notesWithTagText.map(note => note.id) }, tag: { text } } });
+      const noteTagsAlreadyCreated = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText }, tag: { text } } });
       const idsOfNoteTagsAlreadyCreated = noteTagsAlreadyCreated.map(nt => nt.id);
       if (noteTagsAlreadyCreated.length) {
         await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsAlreadyCreated } }, data: { isArchived: false } });
@@ -163,7 +164,7 @@ export const groupRouter = router({
 
       // Populate and return response
       const synonymGroup = await prisma.synonymGroup.findFirstOrThrow({ where: { groupId, synonymId } });
-      const noteTags = await prisma.noteTag.findMany({ where: { noteId: { in: notesWithTagText.map(note => note.id) } } });
+      const noteTags = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText } } });
       return { status: 'TAG_CREATED', tag, noteTags, synonymGroup } as const;
     }),
 });

@@ -20,4 +20,3 @@ declare module 'react' {
   ): (props: P & RefAttributes<T>) => ReactElement | null;
 
 }
-

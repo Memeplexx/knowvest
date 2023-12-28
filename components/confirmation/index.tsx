@@ -11,7 +11,6 @@ export const Confirmation = (
 ) => {
   const inputs = useInputs(props);
   const outputs = useOutputs(inputs);
-  const { state } = inputs;
   return (
     <Modal
       onBackdropClick={outputs.onClickCancel}
@@ -31,20 +30,20 @@ export const Confirmation = (
                 children={
                   <>
                     <CancelButton
-                      selected={state.selection === 'cancel'}
+                      selected={inputs.state.selection === 'cancel'}
                       highlighted={false}
                       onMouseUp={outputs.onClickCancel}
                       onMouseLeave={outputs.onMouseLeaveButton}
-                      onMouseDown={() => state.set({ selection: 'cancel' })}
+                      onMouseDown={() => inputs.state.set({ selection: 'cancel' })}
                       children={props.cancelText || 'Cancel'}
                       aria-label='Cancel'
                     />
                     <ConfirmButton
-                      selected={state.selection === 'confirm'}
+                      selected={inputs.state.selection === 'confirm'}
                       highlighted={false}
                       onMouseUp={outputs.onClickConfirm}
                       onMouseLeave={outputs.onMouseLeaveButton}
-                      onMouseDown={() => state.set({ selection: 'confirm' })}
+                      onMouseDown={() => inputs.state.set({ selection: 'confirm' })}
                       children={props.confirmText || 'Confirm'}
                       aria-label='Confirm'
                     />

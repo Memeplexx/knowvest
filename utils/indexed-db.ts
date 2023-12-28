@@ -1,15 +1,20 @@
-import { database } from "./constants";
+import { indexedDbState } from "./constants";
 import { WriteToIndexedDBArgs } from "./types";
+
+
+const openDatabase = () => indexedDB.open('knowvest', 1);
+const keysTyped = <O extends object>(obj: O) => Object.keys(obj) as Array<keyof O>;
+const eventTarget = (event: Event) => event.target as IDBOpenDBRequest;
 
 export const indexeddb = {
   write: (records: WriteToIndexedDBArgs) => {
     return new Promise<void>((resolve, reject) => {
-      (Object.keys(records) as Array<keyof WriteToIndexedDBArgs>)
-        .filter(tableName => !!database[tableName])
+      keysTyped(records)
+        .filter(tableName => !!indexedDbState[tableName])
         .forEach((tableName, index, array) => {
-          const request = indexedDB.open('knowvest', 1);
-          request.onsuccess = (event) => {
-            const db = (event.target as IDBOpenDBRequest).result;
+          const request = openDatabase();
+          request.onsuccess = event => {
+            const db = eventTarget(event).result;
             const transaction = db.transaction([tableName], 'readwrite');
             const objectStore = transaction.objectStore(tableName);
             const tableRecord = records[tableName]!;
@@ -17,7 +22,9 @@ export const indexeddb = {
             tableRecords.forEach(record => {
               if (record === null) { return; }
               const addRequest = objectStore.put(record);
-              addRequest.onerror = (error: unknown) => console.error('Error adding data: ', error);
+              addRequest.onerror = error => {
+                console.error('Error adding data: ', error);
+              }
             });
             transaction.oncomplete = () => {
               const last = index === array.length - 1;
@@ -34,32 +41,34 @@ export const indexeddb = {
     });
   },
   read: () => {
-    return new Promise<typeof database>(resolveOuter => {
-      const request = indexedDB.open('knowvest', 1);
+    return new Promise<typeof indexedDbState>(resolveOuter => {
+      const request = openDatabase();
       request.onsuccess = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        const objectStoreNames = Array.from(db.objectStoreNames) as Array<keyof typeof database>;
-        const readDatabasePromise = new Promise<typeof database>((resolve, reject) => {
+        const db = eventTarget(event).result;
+        const objectStoreNames = Array.from(db.objectStoreNames) as Array<keyof typeof indexedDbState>;
+        const readDatabasePromise = new Promise<typeof indexedDbState>((resolve, reject) => {
           const transaction = db.transaction(objectStoreNames, 'readonly');
-          const results = { ...database };
-          const readObjectStore = (tableName: keyof typeof database) => new Promise<void>((resolveObjectStore, rejectObjectStore) => {
+          const results = { ...indexedDbState };
+          const readObjectStore = (tableName: keyof typeof indexedDbState) => new Promise<void>((resolveObjectStore, rejectObjectStore) => {
             const objectStore = transaction.objectStore(tableName);
             const getAllRequest = objectStore.getAll();
-            getAllRequest.onsuccess = (event) => {
+            getAllRequest.onsuccess = event => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              results[tableName] = (event.target as IDBOpenDBRequest).result as any;
+              results[tableName] = eventTarget(event).result as any;
               resolveObjectStore();
             };
-            getAllRequest.onerror = (event) => rejectObjectStore((event.target as IDBOpenDBRequest).error);
+            getAllRequest.onerror = event => {
+              rejectObjectStore(eventTarget(event).error);
+            }
           })
           Promise.all(objectStoreNames.map(readObjectStore))
             .then(() => resolve(results))
-            .catch((error) => reject(error))
+            .catch(error => reject(error))
             .finally(() => transaction.oncomplete = () => db.close());
         });
         readDatabasePromise
-          .then((results) => resolveOuter(results))
-          .catch((error) => console.error('Error reading database:', error));
+          .then(results => resolveOuter(results))
+          .catch(error => console.error('Error reading database:', error));
       };
       request.onerror = (event) => {
         console.error('indexedDB: onerror', event.target);
@@ -68,25 +77,21 @@ export const indexeddb = {
   },
   initialize: () => {
     return new Promise<void>(resolve => {
-
-      const request = indexedDB.open('knowvest', 1);
-
+      const request = openDatabase();
       request.onupgradeneeded = (event) => {
         console.log('indexedDB: onupgradeneeded', event);
-        const db = (event.target as IDBOpenDBRequest).result;
-        (Object.keys(database) as Array<keyof typeof database>)
+        const db = eventTarget(event).result;
+        keysTyped(indexedDbState)
           .filter(tableName => !db.objectStoreNames.contains(tableName))
-          .forEach((tableName) => {
+          .forEach(tableName => {
             console.log('Creating table:', tableName);
             db.createObjectStore(tableName, { keyPath: 'id', autoIncrement: false });
           });
       };
-
       request.onsuccess = () => {
         resolve();
       };
-
-      request.onerror = (event) => {
+      request.onerror = event => {
         console.error('indexedDB: onerror', event.target);
       }
     })

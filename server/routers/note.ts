@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { procedure, router } from '../trpc';
 import { prisma } from './_app';
-import { NoteTagDTO, ZodNoteId } from '../dtos';
+import { NoteDTO, NoteTagDTO, ZodNoteId } from '../dtos';
 import { TRPCError } from '@trpc/server';
 import { listTagsWithTagText } from './shared';
 
@@ -90,7 +90,8 @@ export const noteRouter = router({
       if (!note) { throw new TRPCError({ code: 'NOT_FOUND', message: 'Note not found' }); }
 
       // Create a new note with the same text as the note being duplicated
-      const noteCreated = await prisma.note.create({ data: { userId, text: note.text, dateUpdated: new Date(), dateViewed: new Date() } });
+      const now = new Date();
+      const noteCreated = await prisma.note.create({ data: { userId, text: note.text, dateUpdated: now, dateViewed: now } });
 
       // Create new note tags with the same tag ids as the note being duplicated
       const noteTags = await prisma.noteTag.findMany({ where: { noteId } });
@@ -138,6 +139,6 @@ export const noteRouter = router({
       // Populate and return response
       const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: idsOfNoteTagsToBeArchived } } });
       const newNoteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: tagIdsToBeAssigned } } });
-      return { status: 'NOTE_SPLIT', noteCreated, noteUpdated, newNoteTags, archivedNoteTags } as const;
+      return { status: 'NOTE_SPLIT', notes: [noteCreated, noteUpdated] as NoteDTO[], noteTags: [ ...newNoteTags, ...archivedNoteTags ] as NoteTagDTO[] } as const;
     }),
 });

@@ -24,7 +24,7 @@ import { indexeddb } from '@/utils/indexed-db';
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store } = inputs;
+  const { store, notify } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => () => {
       store.config.$patch({
@@ -92,7 +92,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
       store.tags.$mergeMatching.id.$withOne(apiResponse.tagUpdated);
       await indexeddb.write({ synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
-      inputs.notify.success('Tag removed from synonyms');
+      notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
       if (!inputs.groupSynonymId) { return; }
@@ -101,7 +101,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.synonymGroups.$mergeMatching.id.$withMany(response.archivedSynonymGroups);
       await indexeddb.write({ groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
       store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null });
-      inputs.notify.success('Tag-Synonym removed from group');
+      notify.success('Tag-Synonym removed from group');
     },
     onClickDeleteTag: (event: MouseEvent) => {
       event.stopPropagation();
@@ -244,7 +244,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
       store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
       await indexeddb.write({ tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
-      inputs.notify.success('Tag deleted');
+      notify.success('Tag deleted');
     },
     onClickConfirmArchiveGroup: async () => {
       const response = await trpc.group.archive.mutate({ groupId: inputs.groupId! });
@@ -252,7 +252,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.synonymGroups.$mergeMatching.groupId.$withMany(response.synonymGroupsArchived);
       store.groups.$mergeMatching.id.$withOne(response.groupArchived);
       await indexeddb.write({ synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
-      inputs.notify.success('Group deleted');
+      notify.success('Group deleted');
     },
     onCancelConfirmation: () => {
       store.config.modal.$set(null);

@@ -91,15 +91,15 @@ export const synonymRouter = router({
 
       // Unarchived note tags that have the same text as the new tag
       const notesWithTagText = await listNotesWithTagText({ userId, tagText: text });
-      const noteIdsWithTaxText = notesWithTagText.map(note => note.id);
-      const noteTagsAlreadyCreated = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTaxText }, tagId: tag.id, isArchived: true } });
+      const noteIdsWithTagText = notesWithTagText.map(note => note.id);
+      const noteTagsAlreadyCreated = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText }, tagId: tag.id, isArchived: true } });
       const idsOfNoteTagsAlreadyCreated = noteTagsAlreadyCreated.map(nt => nt.id);
       if (noteTagsAlreadyCreated.length) {
         await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsAlreadyCreated } }, data: { isArchived: false } });
       }
 
       // Create new note tags for any notes that don't already have one
-      const idsOfNotesToBeCreated = noteIdsWithTaxText.filter(noteId => !idsOfNoteTagsAlreadyCreated.includes(noteId));
+      const idsOfNotesToBeCreated = noteIdsWithTagText.filter(noteId => !idsOfNoteTagsAlreadyCreated.includes(noteId));
       if (idsOfNotesToBeCreated.length) {
         await prisma.noteTag.createMany({ data: idsOfNotesToBeCreated.map(noteId => ({ noteId, tagId: tag.id })) });
       }

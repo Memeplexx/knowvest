@@ -25,22 +25,11 @@ export const floatingUiDefaultOptions = {
   ]
 } as Partial<UseFloatingOptions>;
 
-export const initialAppState = {
-  activeNoteId: 0 as NoteId,
-  groups: new Array<GroupDTO>(),
-  synonymGroups: new Array<SynonymGroupDTO>(),
-  noteTags: new Array<NoteTagDTO>(),
-  notes: new Array<NoteDTO>(),
-  tags: new Array<TagDTO>(),
-  synonymIds: new Array<SynonymId>(),
-  flashCards: new Array<FlashCardDTO>(),
-};
-
 export type AppState = typeof initialAppState;
 
 export const StoreContext = createContext<Store<AppState> | undefined>(undefined);
 
-export const database = {
+export const indexedDbState = {
   tags: new Array<TagDTO>(),
   notes: new Array<NoteDTO>(),
   noteTags: new Array<NoteTagDTO>(),
@@ -48,3 +37,9 @@ export const database = {
   synonymGroups: new Array<SynonymGroupDTO>(),
   flashCards: new Array<FlashCardDTO>(),
 }
+
+export const initialAppState = {
+  ...indexedDbState,
+  activeNoteId: 0 as NoteId,
+  synonymIds: new Array<SynonymId>(),
+};

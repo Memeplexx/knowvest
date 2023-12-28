@@ -3,7 +3,7 @@ import { AppRouter } from "@/server/routers/_app";
 import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym, FlashCard } from "@prisma/client";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { trpcReturningEntities } from "./trpc";
-import { database } from "./constants";
+import { indexedDbState } from "./constants";
 
 export type ValueOf<T> = T[keyof T];
 
@@ -65,4 +65,5 @@ export interface TypedKeyboardEvent<T extends EventTarget> extends React.Keyboar
   target: T,
 }
 
-export type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof database]: null | typeof database[tableName] | typeof database[tableName][0] }>;
+export type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]: null | typeof indexedDbState[tableName] | typeof indexedDbState[tableName][0] }>;
+
