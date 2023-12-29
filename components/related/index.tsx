@@ -20,8 +20,8 @@ export const Related = (
           children={inputs.noteCountString}
         />
       )}
-      body={inputs.downloaded && <inputs.downloaded onSelectNote={outputs.onSelectNote} />}
-      loading={!inputs.downloaded}
+      body={inputs.listItems && <inputs.listItems onSelectNote={outputs.onSelectNote} />}
+      loading={!inputs.listItems}
     />
   )
 }
