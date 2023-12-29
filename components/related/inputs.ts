@@ -43,7 +43,7 @@ export const useInputs = (props: Props) => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
   })
 
-  const listItems = useComponentDownloader(() => import('../related-items').then(m => m.RelatedItems));
+  const listItems = useComponentDownloader(() => import('../related-items'));
 
   return {
     props,

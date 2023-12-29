@@ -3,9 +3,9 @@ import { Props } from './constants';
 import { Header, Icon, Result, RightBorder, ListItem, ListItemsWrapper, NoResultsWrapper, NoResultsIcon } from './styles';
 import { useOutputs } from './outputs';
 
-export const HistoryItems = (
+export default function HistoryItems (
   props: Props,
-) => {
+) {
   const inputs = useInputs(props);
   const outputs = useOutputs(inputs);
   return (
@@ -48,4 +48,4 @@ export const HistoryItems = (
       />
     </>
   )
-};
+}

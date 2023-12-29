@@ -134,12 +134,12 @@ export const useNestedStore = <K extends string, S extends object>(key: K, initi
   };
 }
 
-export const useComponentDownloader = <P>(importer: () => Promise<FunctionComponent<P>>) => {
+export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {
   const isMounted = useIsMounted();
   const importerRef = useRef(importer);
   const component = useMemo(() => {
     if (!isMounted) { return null; }
-    return dynamic(() => importerRef.current());
+    return dynamic(importerRef.current);
   }, [isMounted]);
   return component;
 }
