@@ -30,7 +30,7 @@ export default function Home() {
         success: outputs.onNotifySuccess,
         info: outputs.onNotifyInfo,
       }}
-      children={inputs.initialized && 
+      children={
         <>
           <Wrapper
             children={
@@ -39,7 +39,7 @@ export default function Home() {
                   // showIf={inputs.headerExpanded}
                   showIf={true}
                 />
-                <BodyWrapper
+                {inputs.initialized && <BodyWrapper
                   children={
                     <>
                       <HistoryPanel
@@ -90,7 +90,7 @@ export default function Home() {
                       />
                     </>
                   }
-                />
+                />}
               </>
             }
           />

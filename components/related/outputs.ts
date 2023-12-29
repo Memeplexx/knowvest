@@ -14,8 +14,7 @@ export const useOutputs = ({ store, props, cardRef }: Inputs) => {
       store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
       const apiResponse = await trpc.note.view.mutate({ noteId });
-      await indexeddb.write({ notes: apiResponse.note });
-      store.notes.$mergeMatching.id.$withOne(apiResponse.note);
+      await indexeddb.write(store, { notes: apiResponse.note });
       cardRef.current!.scrollToTop();
     }
   };

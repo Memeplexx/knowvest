@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import { Session } from "next-auth";
 import { indexeddb } from "@/utils/indexed-db";
+import { activeNotesSortedByDateViewed } from "@/utils/functions";
 
 
 export const useInputs = () => {
@@ -81,8 +82,9 @@ export const useDataInitializer = (store: HomeStore) => {
 const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
   await indexeddb.initialize();
   const dataFromIndexedDB = await indexeddb.read();
-  const mostRecentlyUpdatedNode = dataFromIndexedDB.notes.slice().sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0] || null;
-  const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentlyUpdatedNode?.dateUpdated });
+  store.$patch(dataFromIndexedDB);
+  const mostRecentNote = activeNotesSortedByDateViewed(store).$state[0] || null;
+  const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentNote.dateUpdated });
   if (apiResponse.status === 'USER_CREATED') {
     store.$patch({
       notes: [apiResponse.note],
@@ -91,19 +93,11 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
     store.home.initialized.$set(true);
     return;
   }
-  store.$patch(dataFromIndexedDB);
-  store.notes.$mergeMatching.id.$withMany(apiResponse.notes);
-  store.flashCards.$mergeMatching.id.$withMany(apiResponse.flashCards);
-  store.groups.$mergeMatching.id.$withMany(apiResponse.groups);
-  store.tags.$mergeMatching.id.$withMany(apiResponse.tags);
-  store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
-  store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.synonymGroups);
-  await indexeddb.write(apiResponse);
-  const { notes, noteTags, tags } = store.$state;
-  const mostRecentlyViewNote = notes.filter(n => !n.isArchived).sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0];
-  const activeNoteId = mostRecentlyViewNote.id;
-  const selectedTagIds = noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
-  const synonymIds = tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
+  await indexeddb.write(store, apiResponse);
+  const mostRecentlyViewedNote = activeNotesSortedByDateViewed(store).$state[0];
+  const activeNoteId = mostRecentlyViewedNote.id;
+  const selectedTagIds = store.$state.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
+  const synonymIds = store.$state.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
   store.$patch({ activeNoteId, synonymIds });
   store.home.initialized.$set(true);
 }

@@ -192,3 +192,11 @@ export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { edito
 export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteId, editor: HTMLDivElement }) => {
   (editor.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
 }
+
+export const activeNotesSortedByDateViewed = (store: Store<AppState>) => {
+  return derive('activeNotesSortedByDateViewed')
+    .$from(store.notes)
+    .$with(notes => notes
+      .filter(n => !n.isArchived)
+      .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime()));
+}

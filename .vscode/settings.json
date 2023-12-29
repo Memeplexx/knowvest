@@ -17,11 +17,15 @@
   "editor.gotoLocation.multipleReferences": "peek",
   "typescript.referencesCodeLens.enabled": true,
   "highlight-matching-tag.highlightFromAttributes": true,
+  "highlight-matching-tag.highlightSelfClosing": true,
   "highlight-matching-tag.styles": {
     "opening": {
-      "name": {
-        "underline": "yellow"
+      "left": {
+        "highlight": "yellow"
       },
+      "right": {
+        "highlight": "yellow"
+      }
     }
-  }
+  },
 }

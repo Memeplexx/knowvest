@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { NoteDTO } from "@/server/dtos";
 import { Store } from "olik";
 import { AppState, StoreContext } from "@/utils/constants";
+import { activeNotesSortedByDateViewed } from "@/utils/functions";
 
 export const useInputs = (props: Props) => {
 
@@ -22,14 +23,12 @@ export const useInputs = (props: Props) => {
 }
 
 const useNotesSortedAndSliced = (store: Store<AppState>) => derive(tag).$from(
-  store.notes,
+  activeNotesSortedByDateViewed(store),
   store.activeNoteId,
 ).$with((notes, activeNoteId) => {
-  const unArchivedNotes = notes.filter(n => !n.isArchived);
-  return unArchivedNotes
+  return notes
     .filter(note => activeNoteId !== note.id)
-    .sort((a, b) => b.dateViewed!.toISOString().localeCompare(a.dateViewed!.toISOString()))
-    .slice(0, 40);
+    .slice(0, 40); // TODO: Virtualize this list!
 }).$useState();
 
 const useEmbellishNotesWithDates = (

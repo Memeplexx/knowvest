@@ -1,4 +1,5 @@
-import { indexedDbState } from "./constants";
+import { RepsertableObject, Store } from "olik";
+import { AppState, indexedDbState } from "./constants";
 import { WriteToIndexedDBArgs } from "./types";
 
 
@@ -7,18 +8,19 @@ const keysTyped = <O extends object>(obj: O) => Object.keys(obj) as Array<keyof 
 const eventTarget = (event: Event) => event.target as IDBOpenDBRequest;
 
 export const indexeddb = {
-  write: (records: WriteToIndexedDBArgs) => {
+  write: (store: Store<AppState>, records: WriteToIndexedDBArgs) => {
     return new Promise<void>((resolve, reject) => {
       keysTyped(records)
         .filter(tableName => !!indexedDbState[tableName])
         .forEach((tableName, index, array) => {
+          const tableRecord = records[tableName]!;
+          const tableRecords = Array.isArray(tableRecord) ? tableRecord : [tableRecord];
+          (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$withMany(tableRecords);
           const request = openDatabase();
           request.onsuccess = event => {
             const db = eventTarget(event).result;
             const transaction = db.transaction([tableName], 'readwrite');
             const objectStore = transaction.objectStore(tableName);
-            const tableRecord = records[tableName]!;
-            const tableRecords = Array.isArray(tableRecord) ? tableRecord : [tableRecord];
             tableRecords.forEach(record => {
               if (record === null) { return; }
               const addRequest = objectStore.put(record);

@@ -7,21 +7,18 @@ export const useOutputs = ({ store, notify }: Inputs) => {
   return {
     onClickCreateFlashCard: async () => {
       const apiResponse = await trpc.flashCard.create.mutate({ noteId: store.$state.activeNoteId });
-      await indexeddb.write({ flashCards: apiResponse.flashCard });
-      store.flashCards.$push(apiResponse.flashCard);
+      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
     },
     onChangeFlashCardText: (id: FlashCardId) => async (text: string) => {
-      const flashCard = await trpc.flashCard.updateText.mutate({ id, text });
-      await indexeddb.write({ flashCards: flashCard.flashCard });
-      store.flashCards.$mergeMatching.id.$withOne(flashCard.flashCard);
+      const apiResponse = await trpc.flashCard.updateText.mutate({ id, text });
+      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
     },
     onClickRequestDeleteFlashCard: (id: FlashCardId) => () => {
       store.activeFlashCards.confirmDeleteId.$set(id);
     },
     onConfirmRemoveFlashCard: (id: FlashCardId) => async () => {
       const apiResponse = await trpc.flashCard.archive.mutate({ id });
-      await indexeddb.write({ flashCards: apiResponse.flashCard });
-      store.flashCards.$mergeMatching.id.$withOne(apiResponse.flashCard);
+      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
       notify.success('Flash card archived');
     },
     onCancelRemoveFlashCard: () => {

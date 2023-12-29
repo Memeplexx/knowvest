@@ -1,6 +1,7 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
+import { activeNotesSortedByDateViewed } from "@/utils/functions";
 
 
 export const useOutputs = ({ store, notify }: Inputs) => {
@@ -8,9 +9,8 @@ export const useOutputs = ({ store, notify }: Inputs) => {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.create.mutate();
-      await indexeddb.write({ notes: apiResponse.note });
+      await indexeddb.write(store, { notes: apiResponse.note });
       store.activePanel.loadingNote.$set(false);
-      store.notes.$push(apiResponse.note);
       store.activeNoteId.$set(apiResponse.note.id);
       store.synonymIds.$clear();
       store.activePanel.editorHasText.$set(false);
@@ -20,12 +20,10 @@ export const useOutputs = ({ store, notify }: Inputs) => {
       store.activePanel.allowNotePersister.$set(false);
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.archive.mutate({ noteId: store.$state.activeNoteId });
-      await indexeddb.write({ notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
+      await indexeddb.write(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.loadingNote.$set(false);
       store.activePanel.confirmDelete.$set(false);
-      store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
-      store.notes.$mergeMatching.id.$withOne(apiResponse.noteArchived);
-      const newNoteId = store.$state.notes.slice().sort((a, b) => b.dateViewed!.toString().localeCompare(a.dateViewed!.toString()))[0].id!;
+      const newNoteId = activeNotesSortedByDateViewed(store).$state[0].id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
       store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))
@@ -37,10 +35,8 @@ export const useOutputs = ({ store, notify }: Inputs) => {
     onClickDuplicateNote: async () => {
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await trpc.note.duplicate.mutate({ noteId: store.$state.activeNoteId });
-      await indexeddb.write({ notes: apiResponse.noteCreated, noteTags: apiResponse.noteTagsCreated });
+      await indexeddb.write(store, { notes: apiResponse.noteCreated, noteTags: apiResponse.noteTagsCreated });
       store.activePanel.loadingNote.$set(false);
-      store.noteTags.$push(apiResponse.noteTagsCreated);
-      store.notes.$push(apiResponse.noteCreated);
     },
     onClickRequestDeleteNote: () => {
       store.activePanel.confirmDelete.$set(true);

@@ -33,10 +33,7 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
     if (Date.now() - timestamp < debounce) { return; }
     if (!store.$state.activePanel.allowNotePersister) { return; }
     const apiResponse = await trpc.note.update.mutate({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
-    await indexeddb.write({ notes: apiResponse.updatedNote });
-    if (store.$state.notes.some(n => n.id === store.$state.activeNoteId)) { // do this check because sometimes we have issues if the user switches notes too quickly
-      store.notes.$mergeMatching.id.$withOne(apiResponse.updatedNote);
-    }
+    await indexeddb.write(store, { notes: apiResponse.updatedNote });
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
@@ -91,8 +88,7 @@ export const noteTagsPersisterExtension = (store: Store<AppState>) => {
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
     const apiResponse = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
-    store.noteTags.$mergeMatching.id.$withMany(apiResponse.noteTags);
-    await indexeddb.write({ noteTags: apiResponse.noteTags });
+    await indexeddb.write(store, { noteTags: apiResponse.noteTags });
     const tagIds = apiResponse.noteTags.map(nt => nt.tagId);
     const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
     store.synonymIds.$set(synonymIds);

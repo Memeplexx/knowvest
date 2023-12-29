@@ -89,17 +89,13 @@ export const useOutputs = (inputs: Inputs) => {
       if (!inputs.tagId) { return; }
       const apiResponse = await trpc.synonym.removeTagFromItsCurrentSynonym.mutate({ tagId: inputs.tagId });
       store.config.$patch({ tagId: null, autocompleteText: '' });
-      store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
-      store.tags.$mergeMatching.id.$withOne(apiResponse.tagUpdated);
-      await indexeddb.write({ synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
+      await indexeddb.write(store, { synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
       notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
       if (!inputs.groupSynonymId) { return; }
       const response = await trpc.group.removeSynonym.mutate({ groupId: inputs.groupId!, synonymId: inputs.groupSynonymId! });
-      response.archivedGroup && store.groups.$mergeMatching.id.$withOne(response.archivedGroup);
-      store.synonymGroups.$mergeMatching.id.$withMany(response.archivedSynonymGroups);
-      await indexeddb.write({ groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
+      await indexeddb.write(store, { groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
       store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
@@ -240,18 +236,13 @@ export const useOutputs = (inputs: Inputs) => {
       const synonymId = inputs.tagsInSynonymGroup.length === 1 ? null : inputs.synonymId;
       const lastTag = inputs.tagsInSynonymGroup.length === 1;
       store.config.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : inputs.autocompleteAction });
-      store.tags.$mergeMatching.id.$withOne(apiResponse.tagArchived);
-      store.noteTags.$mergeMatching.id.$withMany(apiResponse.archivedNoteTags);
-      store.synonymGroups.$mergeMatching.id.$withMany(apiResponse.archivedSynonymGroups);
-      await indexeddb.write({ tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
+      await indexeddb.write(store, { tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
       notify.success('Tag deleted');
     },
     onClickConfirmArchiveGroup: async () => {
       const response = await trpc.group.archive.mutate({ groupId: inputs.groupId! });
       store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-      store.synonymGroups.$mergeMatching.groupId.$withMany(response.synonymGroupsArchived);
-      store.groups.$mergeMatching.id.$withOne(response.groupArchived);
-      await indexeddb.write({ synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
+      await indexeddb.write(store, { synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
       notify.success('Group deleted');
     },
     onCancelConfirmation: () => {
