@@ -4,7 +4,7 @@ import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = () => {
 
-  const {store, state} = useNestedStore('tagsPanel', initialState)!;
+  const { store, state } = useNestedStore('tagsPanel', initialState)!;
 
   const tagsForActiveNote = derive(tags).$from(
     store.tags,

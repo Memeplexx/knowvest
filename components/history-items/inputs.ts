@@ -28,7 +28,7 @@ const useNotesSortedAndSliced = (store: Store<AppState>) => derive(tag).$from(
 ).$with((notes, activeNoteId) => {
   return notes
     .filter(note => activeNoteId !== note.id)
-    .slice(0, 40); // TODO: Virtualize this list!
+    .slice(0, 40); // TODO: Paginate this list!
 }).$useState();
 
 const useEmbellishNotesWithDates = (
