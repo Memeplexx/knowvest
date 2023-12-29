@@ -1,34 +1,41 @@
 import { derive } from "olik/derive";
-import { Props, tag } from "./constants";
+import { HistoryItemsStore, Props, initialState, pageSize, tag } from "./constants";
 import { formatDistanceToNow } from "date-fns";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { NoteDTO } from "@/server/dtos";
-import { Store } from "olik";
-import { AppState, StoreContext } from "@/utils/constants";
 import { activeNotesSortedByDateViewed } from "@/utils/functions";
+import { useNestedStore } from "@/utils/hooks";
 
-export const useInputs = (props: Props) => {
+export const useInputs = (
+  props: Props,
+) => {
 
-  const store = useContext(StoreContext)!;
+  const { store, state } = useNestedStore('historyItems', initialState);
 
   const notesSorted = useNotesSortedAndSliced(store);
 
   const notes = useEmbellishNotesWithDates(notesSorted);
+  
+  useImperativeHandle(props.innerRef, () => ({
+    onScrollToBottom: () => store.historyItems.index.$add(1),
+  }), [store]);
 
   return {
     props,
     store,
     notes,
+    ...state,
   };
 }
 
-const useNotesSortedAndSliced = (store: Store<AppState>) => derive(tag).$from(
+const useNotesSortedAndSliced = (store: HistoryItemsStore) => derive(tag).$from(
   activeNotesSortedByDateViewed(store),
   store.activeNoteId,
-).$with((notes, activeNoteId) => {
+  store.historyItems.index,
+).$with((notes, activeNoteId, index) => {
   return notes
     .filter(note => activeNoteId !== note.id)
-    .slice(0, 40); // TODO: Paginate this list!
+    .slice(0, (index + 1) * pageSize); // TODO: Paginate this list!
 }).$useState();
 
 const useEmbellishNotesWithDates = (

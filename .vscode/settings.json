@@ -18,6 +18,8 @@
   "typescript.referencesCodeLens.enabled": true,
   "highlight-matching-tag.highlightFromAttributes": true,
   "highlight-matching-tag.highlightSelfClosing": true,
+  "highlight-matching-tag.highlightFromContent": true,
+  "highlight-matching-tag.highlightFromName": true,
   "highlight-matching-tag.styles": {
     "opening": {
       "left": {

@@ -2,13 +2,13 @@ import { type ForwardedRef, forwardRef } from 'react';
 import { Actions, Body, Header, Heading, Loader, Wrapper } from './styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { CardHandle, CardProps } from './constants';
+import { CardHandle, Props } from './constants';
 
 export const Card = forwardRef(function Card(
-  props: CardProps,
+  props: Props,
   ref: ForwardedRef<CardHandle>
 ) {
-  const inputs = useInputs(ref);
+  const inputs = useInputs(ref, props);
   const outputs = useOutputs(inputs);
   return (
     <Wrapper

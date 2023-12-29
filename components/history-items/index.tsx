@@ -1,11 +1,13 @@
 import { useInputs } from './inputs';
 import { Props } from './constants';
 import { Header, Icon, Result, RightBorder, ListItem, ListItemsWrapper, NoResultsWrapper, NoResultsIcon } from './styles';
+import { useOutputs } from './outputs';
 
-export default function HistoryItems(
-  props: Props
-) {
+export const HistoryItems = (
+  props: Props,
+) => {
   const inputs = useInputs(props);
+  const outputs = useOutputs(inputs);
   return (
     <>
       <ListItemsWrapper
@@ -14,7 +16,7 @@ export default function HistoryItems(
           inputs.notes.map(note => (
             <ListItem
               key={note.id}
-              onClick={() => props.onSelectNote(note.id)}
+              onClick={outputs.onSelectNote(note.id)}
               children={
                 <>
                   <Header
@@ -46,4 +48,4 @@ export default function HistoryItems(
       />
     </>
   )
-}
+};

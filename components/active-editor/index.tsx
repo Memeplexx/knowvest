@@ -5,7 +5,7 @@ import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, 
 import { useInputs } from './inputs';
 
 
-export default function ActiveEditor() {
+export function ActiveEditor() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (

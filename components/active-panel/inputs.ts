@@ -11,7 +11,7 @@ export const useInputs = () => {
   const { store, state } = useNestedStore('activePanel', initialState);
   const mayDeleteNote = activeNotesSortedByDateViewed(store).$useState().length > 1;
   const activeNoteId = store.activeNoteId.$useState();
-  const downloaded = useComponentDownloader(() => import('../active-editor'));
+  const downloaded = useComponentDownloader(() => import('../active-editor').then(m => m.ActiveEditor));
   
   return {
     store,

@@ -10,4 +10,8 @@ export const initialState = {
   loading: true,
 }
 
+export type HistoryHandle = {
+  onScrolledToBottom: () => void;
+};
+
 export type Inputs = ReturnType<typeof useInputs>;

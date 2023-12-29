@@ -3,7 +3,7 @@ import { useInputs } from './inputs';
 import { Header, Icon, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, Result, ListItem } from './styles';
 
 
-export default function Related(
+export function RelatedItems(
   props: Props
 ) {
   const inputs = useInputs(props);

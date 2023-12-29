@@ -1,6 +1,6 @@
 import { Inputs } from "./constants";
 
-export const useOutputs = ({ previousScrollOffset, bodyRef, headRef, headerOffset }: Inputs) => {
+export const useOutputs = ({ previousScrollOffset, bodyRef, headRef, headerOffset, props }: Inputs) => {
   return {
     onBodyScroll: () => {
       const isScrollingDown = previousScrollOffset.current < bodyRef.current!.scrollTop;
@@ -12,6 +12,11 @@ export const useOutputs = ({ previousScrollOffset, bodyRef, headRef, headerOffse
       bodyRef.current!.scrollTop > 0
         ? headRef.current!.style.boxShadow = '0px 3px 5px 0px #000'
         : headRef.current!.style.boxShadow = '';
+
+      const element = bodyRef.current!;
+      if (Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) < 1) {
+        props.onScrolledToBottom?.();
+      }
     }
   };
 }

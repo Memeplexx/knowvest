@@ -1,7 +1,7 @@
 import { ForwardedRef, useImperativeHandle, useRef } from "react";
-import { CardHandle } from "./constants";
+import { CardHandle, Props } from "./constants";
 
-export const useInputs = (ref: ForwardedRef<CardHandle>) => {
+export const useInputs = (ref: ForwardedRef<CardHandle>, props: Props) => {
 
   const headRef = useRef<HTMLDivElement>(null);
 
@@ -20,5 +20,6 @@ export const useInputs = (ref: ForwardedRef<CardHandle>) => {
     bodyRef,
     previousScrollOffset,
     headerOffset,
+    props,
   };
 }
