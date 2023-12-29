@@ -29,14 +29,14 @@ import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { Store } from 'olik';
 import { AppState } from '@/utils/constants';
-import { initialState } from '../active-panel/constants';
+import { initialState, tag } from '../active-panel/constants';
 import { useNestedStore } from '@/utils/hooks';
 import { ActivePanelStore } from './constants';
 
 
 export const useInputs = () => {
 
-  const { store, state } = useNestedStore('activePanel', initialState);
+  const { store, state } = useNestedStore(tag, initialState);
   const mayDeleteNote = !!store.notes.$useState().length;
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);

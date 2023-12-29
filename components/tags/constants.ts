@@ -3,7 +3,7 @@ import { useInputs } from "./inputs";
 
 export type Inputs = ReturnType<typeof useInputs>;
 
-export const tags = 'tagsComponent';
+export const tag = 'tagsPanel';
 
 export const initialState = {
   showConfigDialog: false,

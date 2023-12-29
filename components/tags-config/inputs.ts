@@ -11,7 +11,7 @@ import { useNestedStore } from '@/utils/hooks';
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const { store, state } = useNestedStore('config', initialState)!;
+  const { store, state } = useNestedStore(tag, initialState)!;
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 

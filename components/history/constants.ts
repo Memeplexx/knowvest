@@ -15,3 +15,5 @@ export type HistoryHandle = {
 };
 
 export type Inputs = ReturnType<typeof useInputs>;
+
+export const tag = 'historyPanel';

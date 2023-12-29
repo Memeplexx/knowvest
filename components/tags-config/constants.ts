@@ -46,7 +46,7 @@ export const initialState = {
   autocompleteValue: null as null | GroupId | TagId,
 };
 
-export const tag = 'tagsConfigComponent';
+export const tag = 'config';
 
 export type Props = {
   onHide: () => void,
@@ -59,3 +59,4 @@ export type AutocompleteOptionType = {
   label: string,
   synonyms: string,
 };
+
