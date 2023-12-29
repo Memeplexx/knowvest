@@ -9,7 +9,7 @@ export type Props = {
   onSelectNote: (noteId: NoteId) => void;
 } & HTMLAttributes<HTMLDivElement>
 
-export const tag = 'historyItemsComponent';
+export const tag = 'historyItems';
 
 export type Inputs = ReturnType<typeof useInputs>;
 

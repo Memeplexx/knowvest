@@ -92,7 +92,7 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
 }
 
 export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: Store<AppState>, codeMirror: EditorView }) => {
-  const changeListener = () => {
+  const updateEditorText = () => {
     if (!store.$state.notes.length) { return; }
     codeMirror.dispatch(
       {
@@ -110,7 +110,7 @@ export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: 
     );
     codeMirror.focus();
   };
-  changeListener();
-  store.activeNoteId.$onChange(changeListener);
+  updateEditorText();
+  store.activeNoteId.$onChange(updateEditorText);
 }
 

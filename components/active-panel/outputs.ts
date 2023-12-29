@@ -1,7 +1,7 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
-import { activeNotesSortedByDateViewed } from "@/utils/functions";
+import { derivations } from "@/utils/derivations";
 
 
 export const useOutputs = ({ store, notify }: Inputs) => {
@@ -23,7 +23,7 @@ export const useOutputs = ({ store, notify }: Inputs) => {
       await indexeddb.write(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.loadingNote.$set(false);
       store.activePanel.confirmDelete.$set(false);
-      const newNoteId = activeNotesSortedByDateViewed(store).$state[0].id;
+      const newNoteId = derivations.activeNotesSortedByDateViewed(store).$state[0].id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
       store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))

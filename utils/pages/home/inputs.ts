@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import { Session } from "next-auth";
 import { indexeddb } from "@/utils/indexed-db";
-import { activeNotesSortedByDateViewed } from "@/utils/functions";
+import { derivations } from "@/utils/derivations";
 
 
 export const useInputs = () => {
@@ -83,21 +83,26 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
   await indexeddb.initialize();
   const dataFromIndexedDB = await indexeddb.read();
   store.$patch(dataFromIndexedDB);
-  const mostRecentNote = activeNotesSortedByDateViewed(store).$state[0] || null;
-  const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after: mostRecentNote.dateUpdated });
+  const after = derivations.activeNotesSortedByDateViewed(store).$state[0]?.dateUpdated || null;
+  const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after });
   if (apiResponse.status === 'USER_CREATED') {
-    store.$patch({
-      notes: [apiResponse.note],
-      activeNoteId: apiResponse.note.id,
+    return store.$patchDeep({
+      notes: apiResponse.notes,
+      activeNoteId: apiResponse.notes[0].id,
+      home: {
+        initialized: true
+      },
     });
-    store.home.initialized.$set(true);
-    return;
   }
   await indexeddb.write(store, apiResponse);
-  const mostRecentlyViewedNote = activeNotesSortedByDateViewed(store).$state[0];
-  const activeNoteId = mostRecentlyViewedNote.id;
+  const activeNoteId = derivations.activeNotesSortedByDateViewed(store).$state[0].id;
   const selectedTagIds = store.$state.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
   const synonymIds = store.$state.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
-  store.$patch({ activeNoteId, synonymIds });
-  store.home.initialized.$set(true);
+  store.$patchDeep({
+    activeNoteId,
+    synonymIds,
+    home: {
+      initialized: true
+    },
+  });
 }

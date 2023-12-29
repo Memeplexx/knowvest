@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { procedure, router } from '../trpc';
 import { prisma } from './_app';
+import { NoteDTO } from '../dtos';
 
 
 export const sessionRouter = router({
@@ -20,7 +21,13 @@ export const sessionRouter = router({
 
       // If the user doesn't exist, create a new user and their first note
       if (!userByEmail) {
-        const user = await prisma.user.create({ data: { email, image, name } });
+        const user = await prisma.user.create({
+          data: {
+            email,
+            image,
+            name
+          }
+        });
         const note = await prisma.note.create({
           data: {
             userId: user.id,
@@ -28,7 +35,7 @@ export const sessionRouter = router({
             dateViewed: new Date(),
           }
         });
-        return { status: 'USER_CREATED', note } as const;
+        return { status: 'USER_CREATED', notes: [note] as NoteDTO[] } as const;
 
       // Else if the user does exist, return their data after the specified date
       } else {

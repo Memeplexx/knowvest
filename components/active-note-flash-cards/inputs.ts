@@ -9,7 +9,7 @@ import { useNestedStore } from "@/utils/hooks";
 export const useInputs = () => {
 
   const notify = useContext(NotificationContext)!;
-  const { store, state } = useNestedStore('activeFlashCards', initialState)!;
+  const { store, state } = useNestedStore(tag, initialState)!;
   const items = derive(tag)
     .$from(store.flashCards, store.activeNoteId)
     .$with((flashCards, activeNoteid) => flashCards.filter(fc => !fc.isArchived && fc.noteId === activeNoteid))

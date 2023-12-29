@@ -3,14 +3,14 @@ import { HistoryItemsStore, Props, initialState, pageSize, tag } from "./constan
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useImperativeHandle, useState } from "react";
 import { NoteDTO } from "@/server/dtos";
-import { activeNotesSortedByDateViewed } from "@/utils/functions";
 import { useNestedStore } from "@/utils/hooks";
+import { derivations } from "@/utils/derivations";
 
 export const useInputs = (
   props: Props,
 ) => {
 
-  const { store, state } = useNestedStore('historyItems', initialState);
+  const { store, state } = useNestedStore(tag, initialState);
 
   const notesSorted = useNotesSortedAndSliced(store);
 
@@ -29,7 +29,7 @@ export const useInputs = (
 }
 
 const useNotesSortedAndSliced = (store: HistoryItemsStore) => derive(tag).$from(
-  activeNotesSortedByDateViewed(store),
+  derivations.activeNotesSortedByDateViewed(store),
   store.activeNoteId,
   store.historyItems.index,
 ).$with((notes, activeNoteId, index) => {
