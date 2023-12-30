@@ -22,9 +22,10 @@ export const ActivePanel = (
         <>
           <CardWrapper
             heading="Active"
-            actions={() => 
+            actions={() =>
               <>
                 <Popup
+                  ref={inputs.popupRef}
                   trigger={props => (
                     <ButtonIcon
                       {...props}
@@ -41,8 +42,7 @@ export const ActivePanel = (
                             <OptionText
                               children='Create new note'
                             />
-                            <CreateIcon
-                            />
+                            <CreateIcon />
                           </>
                         }
                       />
@@ -53,8 +53,7 @@ export const ActivePanel = (
                             <OptionText
                               children='Duplicate this note'
                             />
-                            <DuplicateIcon
-                            />
+                            <DuplicateIcon />
                           </>
                         }
                       />
@@ -66,8 +65,7 @@ export const ActivePanel = (
                             <OptionText
                               children='Delete this note'
                             />
-                            <DeleteIcon
-                            />
+                            <DeleteIcon />
                           </>
                         }
                       />

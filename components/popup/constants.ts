@@ -9,3 +9,7 @@ export type Props = {
 export type Inputs = ReturnType<typeof useInputs>;
 
 export const animationDuration = 200;
+
+export type PopupHandle = {
+  hide: () => void;
+};

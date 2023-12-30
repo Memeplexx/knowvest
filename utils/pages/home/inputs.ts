@@ -81,8 +81,7 @@ export const useDataInitializer = (store: HomeStore) => {
 
 const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
   await indexeddb.initialize();
-  const dataFromIndexedDB = await indexeddb.read();
-  store.$patch(dataFromIndexedDB);
+  store.$patch(await indexeddb.read());
   const after = derivations.activeNotesSortedByDateViewed(store).$state[0]?.dateUpdated || null;
   const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after });
   if (apiResponse.status === 'USER_CREATED') {

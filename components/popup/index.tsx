@@ -1,37 +1,38 @@
 import { createPortal } from 'react-dom';
 import { Floating, Foreground, ForegroundWrapper } from './styles';
 import { useInputs } from './inputs';
-import { Props } from './constants';
+import { PopupHandle, Props } from './constants';
 import { useOutputs } from './outputs';
+import { ForwardedRef, forwardRef } from 'react';
 
 
-export const Popup = (
-  props: Props
-) => {
-  const inputs = useInputs(props);
+export const Popup = forwardRef(function Popup(
+  props: Props,
+  forwardedRef: ForwardedRef<PopupHandle>
+) {
+  const inputs = useInputs(props, forwardedRef);
   const outputs = useOutputs(inputs);
-  const { state, refs } = inputs;
   return (
     <>
       {props.trigger({
-        ref: refs.floating.refs.setReference,
+        ref: inputs.floatingRef.refs.setReference,
         onClick: () => setTimeout(() => outputs.onClickTrigger(), 50),
       })}
       {
-        !state.showInternal
+        !inputs.showInternal
           ? <></>
           : createPortal(
             <ForegroundWrapper
-              style={state.backgroundAnimations}
+              style={inputs.backgroundAnimations}
               onClick={outputs.onClickBackdrop}
               children={
                 <Floating
-                  ref={refs.floating.refs.setFloating}
-                  style={refs.floating.floatingStyles}
+                  ref={inputs.floatingRef.refs.setFloating}
+                  style={inputs.floatingRef.floatingStyles}
                   onClick={e => e.stopPropagation()}
                   children={
                     <Foreground
-                      style={state.foregroundAnimations}
+                      style={inputs.foregroundAnimations}
                       children={props.overlay}
                     />
                   }
@@ -42,5 +43,4 @@ export const Popup = (
       }
     </>
   )
-}
-
+});
