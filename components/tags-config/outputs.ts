@@ -209,7 +209,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (event.key !== 'Escape') {
         return;
       }
-      if ((event.target as HTMLElement).tagName === 'INPUT') {
+      if (event.target.tagName === 'INPUT') {
         inputs.autocompleteRef.current?.blurInput();
         if (inputs.showAutocompleteOptions) {
           store.config.showAutocompleteOptions.$set(false)

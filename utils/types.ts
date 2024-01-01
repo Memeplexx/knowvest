@@ -37,7 +37,7 @@ export type TrpcReturningDtos = {
 
 export type DecisionResult<X, H> = X extends (string | number | boolean | symbol | Record<string, unknown>) ? X : H;
 
-export type EventMap<T> = T extends 'click' ? MouseEvent : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<EventTarget> : never;
+export type EventMap<T> = T extends 'click' ? MouseEvent : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
 
 export type Keys =
   | 'Backspace'
@@ -60,7 +60,7 @@ export type Keys =
   | 'Insert'
   | 'Delete';
 
-export interface TypedKeyboardEvent<T extends EventTarget> extends React.KeyboardEvent<T> {
+export interface TypedKeyboardEvent<T extends HTMLElement> extends React.KeyboardEvent<T> {
   key: Keys,
   target: T,
 }

@@ -62,7 +62,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                         onShowOptionsChange={outputs.onAutocompleteShowOptionsChange}
                         showOptions={inputs.showAutocompleteOptions}
                         onInputFocused={outputs.onAutocompleteInputFocused}
-                        renderOption={o => (
+                        renderOption={option => (
                           <AutocompleteOption
                             children={
                               <>
@@ -70,10 +70,10 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                   children={
                                     <>
                                       <AutocompleteOptionStatus
-                                        children={o.selected ? '✓' : ' '}
+                                        children={option.selected ? '✓' : ' '}
                                       />
                                       <AutocompleteOptionLabel
-                                        children={o.label}
+                                        children={option.label}
                                       />
                                     </>
                                   }
