@@ -1,29 +1,16 @@
 import { useEventHandlerForDocument } from '@/utils/hooks';
 
-import {
-  blurAutocompleteInput,
-  completeCreateGroup,
-  completeCreateTag,
-  completeCreateTagForGroup,
-  completeCreateTagForSynonym,
-  completeEditGroupName,
-  completeEditTag,
-  doCancel,
-  focusAutocompleteInput,
-  onAutocompleteSelectedWhileAddActiveSynonymsToGroup,
-  onAutocompleteSelectedWhileGroupIsSelected,
-  onAutocompleteSelectedWhileNothingIsSelected,
-  onAutocompleteSelectedWhileSynonymIsSelected,
-} from './shared';
 import { GroupId, SynonymId, TagId } from '@/server/dtos';
 import { trpc } from '@/utils/trpc';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { TypedKeyboardEvent } from '@/utils/types';
 import { Inputs } from './constants';
 import { indexeddb } from '@/utils/indexed-db';
+import { useSharedFunctions } from './shared';
 
 
 export const useOutputs = (inputs: Inputs) => {
+  const shared = useSharedFunctions(inputs);
   const { store, notify } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => () => {
@@ -38,7 +25,7 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
-        await completeEditGroupName(inputs);
+        await shared.completeEditGroupName();
       } else if (event.key === 'Escape') {
         event.target.blur();
         event.stopPropagation();
@@ -69,7 +56,7 @@ export const useOutputs = (inputs: Inputs) => {
         autocompleteText: store.$state.tags.findOrThrow(t => t.id === tagId).text,
         groupSynonymId: null,
       });
-      focusAutocompleteInput(inputs);
+      shared.focusAutocompleteInput();
     },
     onClickGroupSynonym: (groupId: GroupId, groupSynonymId: SynonymId) => (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
@@ -99,24 +86,24 @@ export const useOutputs = (inputs: Inputs) => {
       store.config.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
-    onClickDeleteTag: (event: MouseEvent) => {
+    onClickConfirmDeleteTag: (event: MouseEvent) => {
       event.stopPropagation();
       store.config.modal.$set('confirmDeleteTag');
     },
     onClickEnterEditTextMode: () => {
-      focusAutocompleteInput(inputs);
+      shared.focusAutocompleteInput();
     },
     onAutocompleteInputEnter: async () => {
       if (!inputs.synonymId) {
-        await completeCreateTag(inputs)
+        await shared.completeCreateTag()
       } else if (inputs.tagId) {
-        await completeEditTag(inputs)
+        await shared.completeEditTag()
       } else if (inputs.autocompleteAction === 'addSynonymsToActiveSynonyms') {
-        await completeCreateTagForSynonym(inputs)
+        await shared.completeCreateTagForSynonym()
       } else if (inputs.autocompleteAction === 'addSynonymsToActiveGroup') {
-        await completeCreateTagForGroup(inputs)
+        await shared.completeCreateTagForGroup()
       } else if (inputs.autocompleteAction === 'addActiveSynonymsToAGroup') {
-        await completeCreateGroup(inputs)
+        await shared.completeCreateGroup()
       }
     },
     onAutocompleteInputChange: (value: string) => {
@@ -130,7 +117,7 @@ export const useOutputs = (inputs: Inputs) => {
     onAutocompleteInputCancel: () => {
       const autocompleteText = !inputs.tagId ? '' : store.$state.tags.findOrThrow(t => t.id === inputs.tagId).text;
       store.config.autocompleteText.$set(autocompleteText);
-      blurAutocompleteInput(inputs);
+      shared.blurAutocompleteInput();
     },
     onClickAddNewTagToSynonymGroup: () => {
       store.config.$patch({
@@ -138,7 +125,7 @@ export const useOutputs = (inputs: Inputs) => {
         autocompleteText: '',
         tagId: null,
       });
-      focusAutocompleteInput(inputs);
+      shared.focusAutocompleteInput();
     },
     onClickAddCurrentSynonymsToExistingGroup: () => {
       store.config.$patch({
@@ -146,7 +133,7 @@ export const useOutputs = (inputs: Inputs) => {
         autocompleteText: '',
         tagId: null,
       });
-      focusAutocompleteInput(inputs);
+      shared.focusAutocompleteInput();
     },
     onClickAddSynonymToCustomGroup: () => {
       store.config.$patch({
@@ -154,7 +141,7 @@ export const useOutputs = (inputs: Inputs) => {
         autocompleteText: '',
         showAutocompleteOptions: true,
       });
-      focusAutocompleteInput(inputs);
+      shared.focusAutocompleteInput();
     },
     onClickUpdateGroupSynonym: () => {
       if (!inputs.groupId || !inputs.groupSynonymId) { throw new Error(); }
@@ -181,7 +168,7 @@ export const useOutputs = (inputs: Inputs) => {
         autocompleteAction: null,
         focusedGroupNameInputText: '',
       });
-      focusAutocompleteInput(inputs);
+      shared.focusAutocompleteInput();
     },
     onClickDeleteGroup: (event: MouseEvent) => {
       event.stopPropagation();
@@ -189,21 +176,21 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onAutocompleteSelected: async (id: TagId | GroupId | null) => {
       if (inputs.autocompleteAction === 'addActiveSynonymsToAGroup') {
-        await onAutocompleteSelectedWhileAddActiveSynonymsToGroup({ inputs, groupId: id as GroupId });
+        await shared.onAutocompleteSelectedWhileAddActiveSynonymsToGroup({ groupId: id as GroupId });
       } else if (inputs.autocompleteAction === 'addSynonymsToActiveSynonyms') {
-        await onAutocompleteSelectedWhileSynonymIsSelected({ inputs, tagId: id as TagId });
+        await shared.onAutocompleteSelectedWhileSynonymIsSelected({ tagId: id as TagId });
       } else if (inputs.autocompleteAction === 'addSynonymsToActiveGroup') {
-        await onAutocompleteSelectedWhileGroupIsSelected({ inputs, tagId: id as TagId });
+        await shared.onAutocompleteSelectedWhileGroupIsSelected({ tagId: id as TagId });
       } else {
-        await onAutocompleteSelectedWhileNothingIsSelected({ inputs, tagId: id as TagId });
+        await shared.onAutocompleteSelectedWhileNothingIsSelected({ tagId: id as TagId });
       }
     },
     onClickRenameTag: () => {
-      focusAutocompleteInput(inputs);
+      shared.focusAutocompleteInput();
     },
     onClickDocument: useEventHandlerForDocument('click', event => {
       if (event.detail === 0) { return; } // Events with a detail of 0 come from enter presses of autocomplete option. (https://github.com/facebook/react/issues/3907#issuecomment-363948471)
-      doCancel(inputs, event.target);
+      shared.doCancel(event.target);
     }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
       if (event.key !== 'Escape') {
@@ -216,7 +203,7 @@ export const useOutputs = (inputs: Inputs) => {
         }
         return;
       }
-      doCancel(inputs, event.target);
+      shared.doCancel(event.target);
     }),
     onClickDialogBody: (event: MouseEvent) => {
       event.stopPropagation();
@@ -229,7 +216,7 @@ export const useOutputs = (inputs: Inputs) => {
         autocompleteText: '',
         focusedGroupNameInputText: '',
       })
-      blurAutocompleteInput(inputs);
+      shared.blurAutocompleteInput();
     },
     onClickConfirmArchiveTag: async () => {
       const apiResponse = await trpc.tag.archive.mutate({ tagId: inputs.tagId! });

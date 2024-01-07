@@ -147,7 +147,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             />
                             <PopupOption
                               showIf={!!inputs.tagId}
-                              onClick={outputs.onClickDeleteTag}
+                              onClick={outputs.onClickConfirmDeleteTag}
                               children='Delete selection'
                             />
                           </>
