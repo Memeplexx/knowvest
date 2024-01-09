@@ -1,4 +1,4 @@
-import { NoteId, NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
+import { NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
@@ -188,10 +188,6 @@ export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { edito
   });
   derivation.$onChange(onChangeNoteTags);
   onChangeNoteTags(derivation.$state);
-}
-
-export const addAriaAttributeToCodeMirror = ({ noteId, editor }: { noteId: NoteId, editor: HTMLDivElement }) => {
-  (editor.querySelector('.cm-content') as HTMLElement).setAttribute('aria-label', `note-${noteId}`)
 }
 
 export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(

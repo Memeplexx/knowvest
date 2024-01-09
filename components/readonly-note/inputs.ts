@@ -1,5 +1,5 @@
 import { NoteDTO } from '@/server/dtos';
-import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
+import { highlightTagsInEditor } from '@/utils/functions';
 import { useIsomorphicLayoutEffect } from '@/utils/hooks';
 import { oneDark } from '@/utils/codemirror-theme';
 import { markdown } from '@codemirror/lang-markdown';
@@ -25,7 +25,6 @@ export const useInputs = (props: Props) => {
     if (props.showIf === false) { return; /* do not instantiate because component has been hidden */ } 
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note! });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: props.synonymIds, store });
-    addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: props.note!.id });
     return () => codeMirror.current?.destroy();
   }, [editorRef.current, props.showIf]);
 

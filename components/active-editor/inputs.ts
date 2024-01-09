@@ -1,6 +1,6 @@
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
 import { oneDark } from '@/utils/codemirror-theme';
-import { addAriaAttributeToCodeMirror, highlightTagsInEditor } from '@/utils/functions';
+import { highlightTagsInEditor } from '@/utils/functions';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import {
   closeBrackets,
@@ -45,7 +45,6 @@ export const useInputs = () => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
     highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: store.synonymIds, store });
-    addAriaAttributeToCodeMirror({ editor: editorRef.current!, noteId: store.$state.activeNoteId });
     return () => codeMirror.current?.destroy();
   }, [store]);
 

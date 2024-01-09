@@ -39,7 +39,7 @@ export default function Home() {
                   // showIf={inputs.headerExpanded}
                   showIf={true}
                 />
-                {inputs.initialized && <BodyWrapper
+                {/*inputs.initialized &&*/ <BodyWrapper
                   children={
                     <>
                       <HistoryPanel

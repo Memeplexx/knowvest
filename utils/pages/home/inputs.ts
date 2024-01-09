@@ -88,9 +88,6 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
     return store.$patchDeep({
       notes: apiResponse.notes,
       activeNoteId: apiResponse.notes[0].id,
-      home: {
-        initialized: true
-      },
     });
   }
   await indexeddb.write(store, apiResponse);
@@ -100,8 +97,5 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
   store.$patchDeep({
     activeNoteId,
     synonymIds,
-    home: {
-      initialized: true
-    },
   });
 }
