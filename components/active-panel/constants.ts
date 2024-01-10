@@ -11,5 +11,3 @@ export const initialState = {
 
 export type Inputs = ReturnType<typeof useInputs>;
 
-export const tag = 'activePanel';
-

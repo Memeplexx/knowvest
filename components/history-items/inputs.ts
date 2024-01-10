@@ -10,17 +10,16 @@ export const useInputs = (
   const { store, state } = useNestedStore('historyItems', initialState);
   const notesSorted = useActiveNotesSortedByDateViewed(store);
   const activeNoteId = store.activeNoteId.$useState();
-  const index = store.historyItems.index.$useState();
 
   const notes = useMemo(() => {
     return notesSorted
       .filter(note => activeNoteId !== note.id)
-      .slice(0, (index + 1) * pageSize)
+      .slice(0, (state.index + 1) * pageSize)
       .map(note => ({
         ...note,
         date: formatDistanceToNow(note.dateViewed!, { addSuffix: true }),
       }));
-  }, [activeNoteId, index, notesSorted]);
+  }, [activeNoteId, state.index, notesSorted]);
 
   useImperativeHandle(props.innerRef, () => ({
     onScrollToBottom: () => store.historyItems.index.$add(1),
