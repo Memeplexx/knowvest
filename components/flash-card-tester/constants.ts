@@ -5,10 +5,12 @@ export type Props = {
 };
 
 export const initialState = {
-  showOptions: false,
-  showSearchDialog: false,
-  showFlashCardsDialog: false,
-  showQuestions: true,
+  flashCardTester: {
+    showOptions: false,
+    showSearchDialog: false,
+    showFlashCardsDialog: false,
+    showQuestions: true,
+  }
 };
 
 export type Inputs = ReturnType<typeof useInputs>;

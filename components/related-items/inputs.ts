@@ -1,15 +1,10 @@
+import { useStore } from "@/utils/hooks";
 import { Props } from "./constants";
-import { useContext, useMemo } from "react";
-import { StoreContext } from "@/utils/constants";
+import { useMemo } from "react";
 
 export const useInputs = (props: Props) => {
 
-  const store = useContext(StoreContext)!;
-  const notes = store.notes.$useState();
-  const tags = store.tags.$useState();
-  const noteTags = store.noteTags.$useState();
-  const synonymIds = store.synonymIds.$useState();
-  const activeNoteId = store.activeNoteId.$useState();
+  const { store, notes, tags, noteTags, synonymIds, activeNoteId } = useStore();
 
   const items = useMemo(() => {
     const unArchivedNotes = notes.filter(n => !n.isArchived);

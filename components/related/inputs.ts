@@ -1,17 +1,11 @@
-import { StoreContext } from "@/utils/constants";
-import { useComponentDownloader } from "@/utils/hooks";
-import { useContext, useMemo, useRef } from "react";
+import { useComponentDownloader, useStore } from "@/utils/hooks";
+import { useMemo, useRef } from "react";
 import { CardHandle } from "../card/constants";
 import { Props } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const store = useContext(StoreContext)!;
-  const activeNoteId = store.activeNoteId.$useState();
-  const notes = store.notes.$useState();
-  const tags = store.tags.$useState();
-  const noteTags = store.noteTags.$useState();
-  const synonymIds = store.synonymIds.$useState();
+  const { store, activeNoteId, notes, tags, noteTags, synonymIds } = useStore();
 
   const cardRef = useRef<CardHandle>(null);
 

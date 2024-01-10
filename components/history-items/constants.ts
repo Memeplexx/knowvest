@@ -16,7 +16,9 @@ export type HistoryItemsHandle = {
 };
 
 export const initialState = {
-  index: 0,
+  historyItems: {
+    index: 0,
+  }
 }
 
 export const pageSize = 10;

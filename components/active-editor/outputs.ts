@@ -3,11 +3,11 @@ import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
 
 
-export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: Inputs) => {
+export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => {
   return {
     onClickCreateNewTagFromSelection: async () => {
       store.activePanel.loadingSelection.$set(true);
-      const apiResponse = await trpc.tag.createFromActiveNote.mutate({ tagText: selection });
+      const apiResponse = await trpc.tag.createFromActiveNote.mutate({ tagText: store.activePanel.selection.$state });
       store.activePanel.loadingSelection.$set(false);
       switch (apiResponse.status) {
         case 'BAD_REQUEST': return notify.error(apiResponse.fields.tagText);
@@ -50,7 +50,7 @@ export const useOutputs = ({ store, notify, selection, codeMirror, editorRef }: 
       editorRef.current?.focus();
     },
     onBlurTextEditor: () => {
-      if (selection === '') { return; }
+      if (store.activePanel.selection.$state === '') { return; }
     },
   };
 }

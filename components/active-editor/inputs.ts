@@ -29,17 +29,17 @@ import { useContext, useEffect, useRef } from 'react';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { Store } from 'olik';
 import { AppState } from '@/utils/constants';
+import { useStore } from '@/utils/hooks';
 import { initialState } from '../active-panel/constants';
-import { useNestedStore } from '@/utils/hooks';
-import { ActivePanelStore } from './constants';
 
 
 export const useInputs = () => {
 
-  const { store, state } = useNestedStore('activePanel', initialState);
-  const mayDeleteNote = !!store.notes.$useState().length;
+  const { store, notes } = useStore<typeof initialState>();
+  const mayDeleteNote = !!notes.length;
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
+  const { selection, loadingSelection } = store.activePanel.$state;
 
   useEffect(() => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
@@ -53,15 +53,16 @@ export const useInputs = () => {
 
   return {
     store,
-    ...state,
     editorRef,
     mayDeleteNote,
     codeMirror: codeMirror.current,
     notify: useContext(NotificationContext)!,
+    selection,
+    loadingSelection,
   };
 }
 
-export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: ActivePanelStore }) => {
+export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: Store<AppState & typeof initialState> }) => {
   return new EditorView({
     doc: '',
     parent: editor,
@@ -95,7 +96,7 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
 
 export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: Store<AppState>, codeMirror: EditorView }) => {
   const updateEditorText = () => {
-    if (!store.$state.notes.length) { return; }
+    if (!store.$state.notes.length || !store.$state.activeNoteId) { return; }
     codeMirror.dispatch(
       {
         changes: {

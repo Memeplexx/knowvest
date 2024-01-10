@@ -1,4 +1,4 @@
-import { useComponentDownloader, useNestedStore } from "@/utils/hooks";
+import { useComponentDownloader, useStore } from "@/utils/hooks";
 import { useRef } from "react";
 import { CardHandle } from "../card/constants";
 import { Props, initialState } from "./constants";
@@ -7,7 +7,7 @@ import { HistoryItemsHandle } from "../history-items/constants";
 
 export const useInputs = (props: Props) => {
 
-  const { store, state } = useNestedStore('historyPanel', initialState);
+  const { store, historyPanel } = useStore(initialState);
   const HistoryItems = useComponentDownloader(() => import('../history-items'));
   const listItemsRef = useRef<HistoryItemsHandle>(null);
   const cardRef = useRef<CardHandle>(null);
@@ -15,7 +15,7 @@ export const useInputs = (props: Props) => {
   return {
     props,
     store,
-    ...state,
+    ...historyPanel,
     cardRef,
     HistoryItems,
     listItemsRef,

@@ -1,17 +1,12 @@
 import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
-import { useNestedStore } from "@/utils/hooks";
+import { useStore } from "@/utils/hooks";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const { store, state } = useNestedStore('search', initialState)!;
-  const { selectedGroupIds, selectedSynonymIds, autocompleteText } = state;
-  const tags = store.tags.$useState();
-  const groups = store.groups.$useState();
-  const synonymGroups = store.synonymGroups.$useState();
-  const noteTags = store.noteTags.$useState();
-  const notes = store.notes.$useState();
+  const { store, search, tags, groups, synonymGroups, noteTags, notes } = useStore(initialState);
+  const { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } = search;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -84,24 +79,24 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [noteTags, notes, selectedSynonymIds, tags]);
 
   const tabTitleText = useMemo(() => {
-    return state.showingTab === 'search' ? 'Search' : 'Results';
-  }, [state.showingTab]);
+    return showingTab === 'search' ? 'Search' : 'Results';
+  }, [showingTab]);
   const tabButtonText = useMemo(() => {
-    return state.showingTab === 'search' ? `Results (${notesByTags.length})` : 'Search';
-  }, [state.showingTab, notesByTags]);
+    return showingTab === 'search' ? `Results (${notesByTags.length})` : 'Search';
+  }, [showingTab, notesByTags]);
 
   const listener = useCallback(() => {
     const state = store.$state.search;
     const screenIsNarrow = window.innerWidth < dialogWidth;
     const payload = {
-      showSearchPane: !screenIsNarrow || state.showingTab === 'search',
-      showResultsPane: !screenIsNarrow || state.showingTab === 'results',
+      showSearchPane: !screenIsNarrow || showingTab === 'search',
+      showResultsPane: !screenIsNarrow || showingTab === 'results',
       screenIsNarrow,
     };
-    if (payload.showSearchPane !== state.showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
+    if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
       store.search.$patch(payload);
     }
-  }, [store])
+  }, [store, showSearchPane, showingTab])
   useEffect(() => {
     window.addEventListener('resize', listener);
     return () => window.removeEventListener('resize', listener)
@@ -120,7 +115,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     notesByTags,
     tabTitleText,
     tabButtonText,
-    ...state,
+    ...search,
     props,
   }
 }

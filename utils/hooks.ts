@@ -122,16 +122,19 @@ export const useIsMounted = () => {
   return initialized;
 }
 
-export const useNestedStore = <K extends string, S extends object>(key: K, initialState: S) => {
+export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) => {
+  type StateType = Patch extends undefined ? AppState : AppState & Patch;
   const store = useContext(StoreContext)!;
   useMemo(() => {
-    if ((store.$state as Record<K, S>)[key] !== undefined) { return; }
-    store.$setNew({ [key]: initialState });
-  }, [initialState, key, store]);
-  return {
-    store: store as Store<AppState & Record<K, S>>,
-    state: (store as Record<K, Store<S>>)[key].$useState() as S,
-  };
+    if (!patch) { return; }
+    store.$setNew(patch);
+  }, [patch, store]);
+  return new Proxy({} as { store: Store<StateType> } & {[key in keyof StateType]: (StateType)[key]}, {
+    get(target, p) {
+      if (p === 'store') { return store; }
+      return store[p as (keyof AppState)].$useState();
+    },
+  });
 }
 
 export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {

@@ -1,16 +1,10 @@
 import { initialState } from "./constants";
-import { useNestedStore } from "@/utils/hooks";
+import { useStore } from "@/utils/hooks";
 import { useMemo } from "react";
 
 export const useInputs = () => {
 
-  const { store, state } = useNestedStore('tagsComponent', initialState)!;
-  const tags = store.tags.$useState();
-  const synonymIds = store.synonymIds.$useState();
-  const noteTags = store.noteTags.$useState();
-  const activeNoteId = store.activeNoteId.$useState();
-  const groups = store.groups.$useState();
-  const synonymGroups = store.synonymGroups.$useState();
+  const { store, tagsComponent, tags, synonymIds, noteTags, activeNoteId, groups, synonymGroups } = useStore(initialState);
 
   const tagsForActiveNote = useMemo(() => {
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
@@ -76,7 +70,7 @@ export const useInputs = () => {
 
   return {
     store,
-    ...state,
+    ...tagsComponent,
     groupsWithSynonyms,
     tagsForActiveNote,
     allGroupTagsSelected,

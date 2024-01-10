@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { HomeStore, initialState, initialTransientState } from "./constants";
 import { UserDTO } from "@/server/dtos";
-import { useIsMounted, useIsomorphicLayoutEffect, useNestedStore, useRecord } from "@/utils/hooks";
+import { useIsMounted, useIsomorphicLayoutEffect, useStore, useRecord } from "@/utils/hooks";
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
@@ -13,7 +13,7 @@ import { derivations } from "@/utils/derivations";
 
 export const useInputs = () => {
 
-  const { store, state } = useNestedStore('home', initialState)!;
+  const { store, home } = useStore(initialState)!;
 
   useDataInitializer(store);
 
@@ -26,7 +26,7 @@ export const useInputs = () => {
   return {
     store,
     ...useRecord(initialTransientState),
-    ...state,
+    ...home,
   }
 }
 

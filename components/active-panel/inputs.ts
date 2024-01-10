@@ -1,4 +1,4 @@
-import { useActiveNotesSortedByDateViewed, useComponentDownloader, useNestedStore } from '@/utils/hooks';
+import { useActiveNotesSortedByDateViewed, useComponentDownloader, useStore } from '@/utils/hooks';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { useContext, useRef } from 'react';
 import { initialState } from './constants';
@@ -8,16 +8,15 @@ import { PopupHandle } from '../popup/constants';
 
 export const useInputs = () => {
 
-  const { store, state } = useNestedStore('activePanel', initialState);
+  const { store, activePanel, activeNoteId } = useStore(initialState);
   const mayDeleteNote = useActiveNotesSortedByDateViewed(store).length > 1;
-  const activeNoteId = store.activeNoteId.$useState();
   const ActiveEditor = useComponentDownloader(() => import('../active-editor'));
   const popupRef = useRef<PopupHandle>(null);
   const notify = useContext(NotificationContext)!
   
   return {
     store,
-    ...state,
+    activePanel,
     activeNoteId,
     ActiveEditor,
     mayDeleteNote,

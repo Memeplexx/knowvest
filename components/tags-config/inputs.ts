@@ -5,21 +5,17 @@ import { useFloating } from '@floating-ui/react';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { Props, initialState } from './constants';
-import { useNestedStore } from '@/utils/hooks';
+import { useStore } from '@/utils/hooks';
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const { store, state } = useNestedStore('tagsConfig', initialState)!;
-  const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = state;
-  const tags = store.tags.$useState();
-  const groups = store.groups.$useState();
-  const synonymGroups = store.synonymGroups.$useState();
-  const activeNoteId = store.activeNoteId.$useState();
+  const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState)!;
+  const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = tagsConfig;
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
-  const settingsButtonRef = state.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
-  const synonymOptionsRef = state.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null;
+  const settingsButtonRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
+  const synonymOptionsRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null;
   const modalRef = useRef<HTMLDivElement>(null);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const selectedTagRef = useRef<HTMLDivElement>(null);
@@ -154,7 +150,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [groupId, synonymId, tagsInCustomGroups]);
 
   return {
-    ...state,
+    ...tagsConfig,
     pageTitle,
     activeNoteId,
     autocompleteOptions,

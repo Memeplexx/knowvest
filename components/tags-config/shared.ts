@@ -14,7 +14,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     switch (apiResponse.status) {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text);
     }
-    store.config.tagId.$set(apiResponse.tag.id);
+    store.tagsConfig.tagId.$set(apiResponse.tag.id);
     await indexeddb.write(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
     notify.success('Tag created');
     blurAutocompleteInput();
@@ -26,7 +26,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     switch (apiResponse.status) {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text);
     }
-    store.config.$patch({ synonymId: apiResponse.tag.synonymId, tagId: apiResponse.tag.id });
+    store.tagsConfig.$patch({ synonymId: apiResponse.tag.synonymId, tagId: apiResponse.tag.id });
     store.synonymIds.$push(apiResponse.tag.synonymId);
     await indexeddb.write(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
     notify.success('Tag created');
@@ -42,7 +42,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     switch (apiResponse.status) {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text)
     }
-    store.config.autocompleteText.$set('');
+    store.tagsConfig.autocompleteText.$set('');
     await indexeddb.write(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroup });
     notify.success('Tag created');
     blurAutocompleteInput();
@@ -56,7 +56,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     switch (apiResponse.status) {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.name);
     }
-    store.config.autocompleteText.$set('');
+    store.tagsConfig.autocompleteText.$set('');
     await indexeddb.write(store, { groups: apiResponse.createdGroup, synonymGroups: apiResponse.createdSynonymGroup });
     notify.success('Group created');
     blurAutocompleteInput();
@@ -96,21 +96,21 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
       return;
     }
     if (inputs.showAutocompleteOptions) {
-      return store.config.showAutocompleteOptions.$set(false);
+      return store.tagsConfig.showAutocompleteOptions.$set(false);
     }
     if (inputs.tagId) {
-      return store.config.$patch({ tagId: null, autocompleteText: '' });
+      return store.tagsConfig.$patch({ tagId: null, autocompleteText: '' });
     }
     if (inputs.groupSynonymId) {
-      return store.config.$patch({ groupSynonymId: null, autocompleteText: '' });
+      return store.tagsConfig.$patch({ groupSynonymId: null, autocompleteText: '' });
     }
     if (inputs.modal) {
-      return store.config.modal.$set(null);
+      return store.tagsConfig.modal.$set(null);
     }
     if (inputs.modalRef.current?.contains(eventTarget as HTMLElement)) {
       return;
     }
-    store.config.$patch({
+    store.tagsConfig.$patch({
       tagId: null,
       groupId: null,
       synonymId: null,
@@ -124,7 +124,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const onAutocompleteSelectedWhileNothingIsSelected = async ({ tagId }: { tagId: TagId }) => {
     const synonymId = store.$state.tags.findOrThrow(t => t.id === tagId).synonymId;
     const autocompleteText = store.$state.tags.findOrThrow(t => t.id === tagId).text;
-    store.config.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: 'addSynonymsToActiveGroup' });
+    store.tagsConfig.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: 'addSynonymsToActiveGroup' });
     focusAutocompleteInput();
   }
   const onAutocompleteSelectedWhileSynonymIsSelected = async ({ tagId }: { tagId: TagId }) => {
@@ -135,14 +135,14 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     const groupHasMoreThanOneTag = store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
     const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
     await indexeddb.write(store, { tags: apiResponse.tagsUpdated, synonymGroups: apiResponse.archivedSynonymGroups });
-    store.config.$patch({ tagId, synonymId, autocompleteText: selected.text });
+    store.tagsConfig.$patch({ tagId, synonymId, autocompleteText: selected.text });
     groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && notify.success('Tag(s) added to synonyms');
   };
   const onAutocompleteSelectedWhileGroupIsSelected = async ({ tagId }: { tagId: TagId }) => {
     if (!inputs.groupId) { throw new Error(); }
     const { synonymId } = store.$state.tags.findOrThrow(t => t.id === tagId);
     const apiResponse = await trpc.group.addSynonym.mutate({ groupId: inputs.groupId, synonymId });
-    store.config.autocompleteText.$set('');
+    store.tagsConfig.autocompleteText.$set('');
     await indexeddb.write(store, { synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
   };

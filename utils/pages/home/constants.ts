@@ -6,13 +6,15 @@ import { AppState } from "@/utils/constants";
 
 
 export const initialState = {
-  historyExpanded: false,
-  similarExpanded: false,
-  tagsExpanded: false,
-  headerExpanded: true,
+  home: {
+    historyExpanded: false,
+    similarExpanded: false,
+    tagsExpanded: false,
+    headerExpanded: true,
+  }
 };
 
-export type HomeStore = Store<AppState & { home: typeof initialState }>;
+export type HomeStore = Store<AppState & typeof initialState>;
 
 export type State = ReturnType<typeof useInputs>;
 

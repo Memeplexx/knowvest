@@ -7,7 +7,9 @@ export type Props = {
 } & HTMLAttributes<HTMLDivElement>;
 
 export const initialState = {
-  loading: true,
+  historyPanel: {
+    loading: true,
+  }
 }
 
 export type HistoryHandle = {

@@ -73,7 +73,7 @@ export const ActivePanel = (
                   }
                 />
                 <Confirmation
-                  showIf={inputs.confirmDelete}
+                  showIf={inputs.activePanel.confirmDelete}
                   onClose={outputs.onClickCancelRemoveNote}
                   onConfirm={outputs.onClickConfirmRemoveNote}
                   title='Delete note requested'
@@ -85,7 +85,7 @@ export const ActivePanel = (
             loading={!inputs.ActiveEditor}
           />
           <Loader
-            showIf={inputs.loadingNote}
+            showIf={inputs.activePanel.loadingNote}
           />
         </>
       }

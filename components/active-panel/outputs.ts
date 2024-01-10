@@ -45,6 +45,12 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     onClickRequestDeleteNote: () => {
       store.activePanel.confirmDelete.$set(true);
     },
+    selectionChanged: (selection: string) => {
+      store.activePanel.selection.$set(selection);
+    },
+    editorHasTextChanged: (hasText: boolean) => {
+      store.activePanel.editorHasText.$set(hasText);
+    },
     onHideDialog: () => {
 
     },

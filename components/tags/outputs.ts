@@ -30,16 +30,16 @@ export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote }: Inp
       }
     },
     onShowDialog: () => {
-      store.tagsPanel.showConfigDialog.$set(true);
+      store.tagsComponent.showConfigDialog.$set(true);
     },
     onHideDialog: () => {
-      store.tagsPanel.showConfigDialog.$set(false);
+      store.tagsComponent.showConfigDialog.$set(false);
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => () => {
-      store.tagsPanel.$patch({ hoveringGroupId, hoveringSynonymId });
+      store.tagsComponent.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      store.tagsPanel.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
+      store.tagsComponent.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
     },
   };
 }
