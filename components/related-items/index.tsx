@@ -28,6 +28,7 @@ export default function RelatedItems(
                   />
                   <Result
                     note={note.note}
+                    synonymIds={inputs.store.synonymIds}
                   />
                 </>
               }

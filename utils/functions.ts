@@ -1,8 +1,8 @@
-import { NoteTagDTO, TagId } from "@/server/dtos";
+import { NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { Store } from "olik";
+import { Readable, Store } from "olik";
 import { DecisionResult } from "./types";
 import { AppState } from "./constants";
 import { ComponentType, ForwardedRef, forwardRef } from "react";
@@ -80,7 +80,7 @@ export function pipe(arg0: unknown, ...fns: Array<(arg: unknown) => unknown>) {
   return fns.reduce((prev, curr) => curr(prev), arg0);
 }
 
-export const highlightTagsInEditor = ({ editorView, store }: { editorView: EditorView, store: Store<AppState> }) => {
+export const highlightTagsInEditor = ({ editorView, store, synonymIds }: { editorView: EditorView, store: Store<AppState>, synonymIds: Readable<Array<SynonymId>> }) => {
 
   const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
     try {
@@ -185,7 +185,7 @@ export const highlightTagsInEditor = ({ editorView, store }: { editorView: Edito
 
   let called = Date.now();
   const debounce = 100;
-  const subscriptions = [store.synonymIds, store.tags, store.noteTags, store.synonymGroups].map(item => {
+  const subscriptions = [synonymIds, store.tags, store.noteTags, store.synonymGroups].map(item => {
     return item.$onChange(async () => {
       await setTimeout(() => {
         if ((Date.now() - debounce) < called) { return; }

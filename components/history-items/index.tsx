@@ -29,6 +29,7 @@ export default function HistoryItems (
                   />
                   <Result
                     note={note}
+                    synonymIds={inputs.store.synonymIds}
                   />
                   <RightBorder />
                 </>
