@@ -1,8 +1,7 @@
-import { type ForwardedRef, useContext, useRef } from 'react';
+import { type ForwardedRef, useContext, useRef, useMemo } from 'react';
 
 import { decide } from '@/utils/functions';
 import { useFloating } from '@floating-ui/react';
-import { derive } from 'olik/derive';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
 import { Props, initialState, tag } from './constants';
@@ -12,17 +11,17 @@ import { useNestedStore } from '@/utils/hooks';
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const { store, state } = useNestedStore(tag, initialState)!;
+  const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = state;
+  const tags = store.tags.$useState();
+  const groups = store.groups.$useState();
+  const synonymGroups = store.synonymGroups.$useState();
+  const activeNoteId = store.activeNoteId.$useState();
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
 
   const notify = useContext(NotificationContext)!;
 
-  const tagsInSynonymGroup = derive(tag).$from(
-    store.tags,
-    store.config.synonymId,
-    store.config.tagId,
-    store.config.autocompleteText,
-  ).$with((tags, synonymId, tagId, autocompleteText) => {
+  const tagsInSynonymGroup = useMemo(() => {
     const unArchivedTags = tags.filter(t => !t.isArchived);
     return unArchivedTags
       .filter(tag => tag.synonymId === synonymId)
@@ -33,15 +32,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
         last: index === array.length - 1,
         selected: tag.id === tagId,
       }));
-  });
+  }, [autocompleteText, synonymId, tagId, tags]);
 
-  const tagsInCustomGroups = derive(tag).$from(
-    store.synonymGroups,
-    store.groups,
-    store.tags,
-    store.config.synonymId,
-    tagsInSynonymGroup,
-  ).$with((synonymGroups, groups, tags, synonymId, tagsInSynonymGroup) => {
+  const tagsInCustomGroups = useMemo(() => {
     const unArchivedSynonymGroups = synonymGroups.filter(sg => !sg.isArchived);
     const unArchivedGroups = groups.filter(g => !g.isArchived);
     const unArchivedTags = tags.filter(t => !t.isArchived);
@@ -78,23 +71,16 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
           synonyms: [],
         })),
     ]
-  });
+  }, [groups, synonymGroups, synonymId, tags, tagsInSynonymGroup]);
 
-  const tagSynonymGroupMap = derive(tag).$from(
-    store.tags,
-  ).$with((tags) => {
+  const tagSynonymGroupMap = useMemo(() => {
     const unArchivedTags = tags.filter(t => !t.isArchived);
     return unArchivedTags
       .groupBy(tag => tag.synonymId)
       .mapToObject(t => t[0].synonymId, tags => tags);
-  });
+  }, [tags]);
 
-  const autocompleteOptionsGroups = derive(tag).$from(
-    store.groups,
-    store.synonymGroups,
-    store.tags,
-    tagsInCustomGroups,
-  ).$with((groups, synonymGroups, tags, tagsInCustomGroups) => {
+  const autocompleteOptionsGroups = useMemo(() => {
     const unArchivedGroups = groups.filter(g => !g.isArchived);
     const unArchivedTags = tags.filter(t => !t.isArchived);
     return unArchivedGroups
@@ -106,15 +92,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
           .filter(sg => sg.groupId === group.id)
           .flatMap(sg => unArchivedTags.filter(t => t.synonymId === sg.synonymId)),
       }));
-  });
+  }, [groups, synonymGroups, tags, tagsInCustomGroups]);
 
-  const autocompleteOptionsTags = derive(tag).$from(
-    store.tags,
-    store.synonymGroups,
-    store.config.groupId,
-    store.config.synonymId,
-    tagSynonymGroupMap,
-  ).$with((tags, synonymGroups, groupId, synonymId, tagSynonymGroupMap) => {
+  const autocompleteOptionsTags = useMemo(() => {
     const unArchivedTags = tags.filter(t => !t.isArchived);
     return unArchivedTags
       .filter(t => {
@@ -131,33 +111,25 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
         label: t.text,
         synonyms: tagSynonymGroupMap[t.synonymId]
       }));
-  });
+  }, [groupId, synonymGroups, synonymId, tagSynonymGroupMap, tags]);
 
-  const autocompleteOptions = derive(tag).$from(
-    store.config.autocompleteAction,
-    autocompleteOptionsGroups,
-    autocompleteOptionsTags,
-  ).$with((autocompleteAction, autocompleteOptionsGroups, autocompleteOptionsTags) => {
+  const autocompleteOptions = useMemo(() => {
     return (autocompleteAction === 'addActiveSynonymsToAGroup'
       ? autocompleteOptionsGroups
       : autocompleteOptionsTags).map(option => ({
         ...option,
         synonyms: option.synonyms.map(synonym => synonym.text).join(', '),
       }));
-  });
+  }, [autocompleteOptionsGroups, autocompleteOptionsTags, autocompleteAction]);
 
-  const autocompleteTitle = derive(tag).$from(
-    store.config.groupSynonymId,
-    store.config.tagId,
-    store.config.groupId,
-  ).$with((groupSynonymId, tagId, groupId) => {
+  const pageTitle = useMemo(() => {
     return decide([
       {
         when: () => !!tagId,
         then: () => 'Update selected Tag',
       },
       {
-        when: () => !!groupSynonymId,
+        when: () => !!synonymId,
         then: () => 'Search for Tag to add to active Group',
       },
       {
@@ -169,25 +141,21 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
         then: () => 'Search for Tag or create a new Tag',
       },
     ])
-  });
+  }, [groupId, synonymId, tagId]);
 
-  const selectedGroupSelectedSynonym = derive(tag).$from(
-    store.config.groupId,
-    store.config.groupSynonymId,
-    tagsInCustomGroups,
-  ).$with((groupId, groupSynonymId, tagsInCustomGroups) => {
-    if (!groupId || !groupSynonymId) { return ''; }
-    return tagsInCustomGroups.findOrThrow(t => t.group.id === groupId).synonyms.find(s => s.synonymId === groupSynonymId)?.tags || '';
-  });
+  const selectedGroupSelectedSynonym = useMemo(() => {
+    if (!groupId || !synonymId) { return ''; }
+    return tagsInCustomGroups.findOrThrow(t => t.group.id === groupId).synonyms.find(s => s.synonymId === synonymId)?.tags || '';
+  }, [groupId, synonymId, tagsInCustomGroups]);
 
   return {
     ...state,
-    pageTitle: autocompleteTitle.$useState(),
-    activeNoteId: store.activeNoteId.$useState(),
-    autocompleteOptions: autocompleteOptions.$useState(),
-    tagsInCustomGroups: tagsInCustomGroups.$useState(),
-    tagsInSynonymGroup: tagsInSynonymGroup.$useState(),
-    selectedGroupSelectedSynonym: selectedGroupSelectedSynonym.$useState(),
+    pageTitle,
+    activeNoteId,
+    autocompleteOptions,
+    tagsInCustomGroups,
+    tagsInSynonymGroup,
+    selectedGroupSelectedSynonym,
     floatingRef,
     modalRef: useRef<HTMLDivElement>(null),
     autocompleteRef: useRef<AutocompleteHandle>(null),

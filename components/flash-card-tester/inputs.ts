@@ -1,17 +1,17 @@
 import { NotificationContext } from "@/utils/pages/home/constants";
-import { useContext, useRef } from "react";
-import { Props, initialState, tag } from "./constants";
+import { useContext, useMemo, useRef } from "react";
+import { Props, initialState } from "./constants";
 import { isAfter } from "date-fns";
-import { derive } from "olik/derive";
 import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = (props: Props) => {
 
   const { store, state } = useNestedStore('flashCard', initialState);
   const notify = useContext(NotificationContext)!;
-  const items = derive(tag).$from(store.flashCards)
-    .$with(flashCards => flashCards.filter(fc => !fc.isArchived && isAfter(new Date(), fc.nextQuestionDate)))
-    .$useState();
+  const flashCards = store.flashCards.$useState();
+  const items = useMemo(() => {
+    return flashCards.filter(fc => !fc.isArchived && isAfter(new Date(), fc.nextQuestionDate));
+  }, [flashCards]);
 
   return {
     ...state,

@@ -1,21 +1,19 @@
 import { StoreContext } from "@/utils/constants";
 import { useComponentDownloader } from "@/utils/hooks";
-import { derive } from "olik/derive";
-import { useContext, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { CardHandle } from "../card/constants";
-import { Props, tag } from "./constants";
+import { Props } from "./constants";
 
 export const useInputs = (props: Props) => {
 
   const store = useContext(StoreContext)!;
+  const activeNoteId = store.activeNoteId.$useState();
+  const notes = store.notes.$useState();
+  const tags = store.tags.$useState();
+  const noteTags = store.noteTags.$useState();
+  const synonymIds = store.synonymIds.$useState();
 
-  const queriedNotes = derive(tag).$from(
-    store.activeNoteId,
-    store.notes,
-    store.tags,
-    store.noteTags,
-    store.synonymIds,
-  ).$with((activeNoteId, notes, tags, noteTags, synonymIds) => {
+  const queriedNotes = useMemo(() => {
     const unArchivedNotes = notes.filter(n => !n.isArchived);
     const unArchivedTags = tags.filter(t => !t.isArchived);
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
@@ -35,13 +33,11 @@ export const useInputs = (props: Props) => {
         ...n,
         matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
       }));
-  });
+  }, [activeNoteId, notes, tags, noteTags, synonymIds]);
 
-  const noteCountString = derive(tag).$from(
-    queriedNotes
-  ).$with((queriedNotes) => {
+  const noteCountString = useMemo(() => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
-  })
+  }, [queriedNotes]);
 
   const listItems = useComponentDownloader(() => import('../related-items'));
 
@@ -50,7 +46,7 @@ export const useInputs = (props: Props) => {
     store,
     cardRef: useRef<CardHandle>(null),
     listItems,
-    noteCountString: noteCountString.$useState(),
+    noteCountString,
   }
 
 };

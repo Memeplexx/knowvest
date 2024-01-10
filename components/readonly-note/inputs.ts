@@ -22,10 +22,13 @@ export const useInputs = (props: Props) => {
   const codeMirror = useRef<EditorView | null>(null);
 
   useIsomorphicLayoutEffect(() => {
-    if (props.showIf === false) { return; /* do not instantiate because component has been hidden */ } 
+    if (props.showIf === false) { return; /* do not instantiate because component has been hidden */ }
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note! });
-    highlightTagsInEditor({ editorView: codeMirror.current!, synonymIds: props.synonymIds, store });
-    return () => codeMirror.current?.destroy();
+    const sub = highlightTagsInEditor({ editorView: codeMirror.current!, store });
+    return () => {
+      codeMirror.current?.destroy();
+      sub.unsubscribe();
+    }
   }, [editorRef.current, props.showIf]);
 
   return {

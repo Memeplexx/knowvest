@@ -1,15 +1,16 @@
 import { useSession } from "next-auth/react";
-import { initialState, tag } from "./constants";
-import { derive } from "olik/derive";
+import { initialState } from "./constants";
 import { isAfter } from "date-fns";
 import { useNestedStore } from "@/utils/hooks";
+import { useMemo } from "react";
 
 export const useInputs = () => {
   const { store, state } = useNestedStore('navBar', initialState);
-  const { data: session } = useSession()
-  const flashCardCount = derive(tag).$from(store.flashCards)
-    .$with(flashCards => flashCards.filter(f => !f.isArchived && isAfter(new Date(), f.nextQuestionDate)))
-    .$useState().length;
+  const { data: session } = useSession();
+  const flashCards = store.flashCards.$useState();
+  const flashCardCount = useMemo(() => {
+    return flashCards.filter(f => !f.isArchived && isAfter(new Date(), f.nextQuestionDate)).length;
+  }, [flashCards]);
 
   return {
     store,

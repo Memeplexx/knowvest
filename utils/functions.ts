@@ -1,10 +1,9 @@
-import { NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
+import { NoteTagDTO, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { Readable, Store } from "olik";
+import { Store } from "olik";
 import { DecisionResult } from "./types";
-import { derive } from "olik/derive";
 import { AppState } from "./constants";
 import { ComponentType, ForwardedRef, forwardRef } from "react";
 
@@ -81,7 +80,7 @@ export function pipe(arg0: unknown, ...fns: Array<(arg: unknown) => unknown>) {
   return fns.reduce((prev, curr) => curr(prev), arg0);
 }
 
-export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { editorView: EditorView, synonymIds: Readable<SynonymId[]>, store: Store<AppState> }) => {
+export const highlightTagsInEditor = ({ editorView, store }: { editorView: EditorView, store: Store<AppState> }) => {
 
   const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
     try {
@@ -151,7 +150,8 @@ export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { edito
       .filterTruthy()
       .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
         .map(m => m.index!)
-        .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })));
+        .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })))
+      .distinct(t => t.tagId + ' ' + t.from);
     const effects = [
       ...previousTagPositions
         .filter(tp => !tagPositions.some(t => t.tagId === tp.tagId && t.from === tp.from && t.to === tp.to))
@@ -172,12 +172,8 @@ export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { edito
     previousTagPositions = tagPositions;
   }
 
-  const derivation = derive('highlight').$from(
-    synonymIds,
-    store.tags,
-    store.noteTags,
-    store.synonymGroups,
-  ).$with((synonymIds, tags, noteTags, synonymGroups) => {
+  const getData = () => {
+    const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
     const groupSynonymIds = synonymGroups
       .filter(sg => synonymIds.includes(sg.synonymId))
       .distinct();
@@ -185,9 +181,21 @@ export const highlightTagsInEditor = ({ editorView, synonymIds, store }: { edito
       .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
       .distinct(t => t.id)
       .flatMap(t => noteTags.filter(nt => nt.tagId === t.id));
+  }
+
+  let called = Date.now();
+  const debounce = 100;
+  const subscriptions = [store.synonymIds, store.tags, store.noteTags, store.synonymGroups].map(item => {
+    return item.$onChange(async () => {
+      await setTimeout(() => {
+        if ((Date.now() - debounce) < called) { return; }
+        called = Date.now();
+        onChangeNoteTags(getData());
+      }, debounce);
+    });
   });
-  derivation.$onChange(onChangeNoteTags);
-  onChangeNoteTags(derivation.$state);
+  onChangeNoteTags(getData());
+  return { unsubscribe: () => subscriptions.forEach(sub => sub.unsubscribe()) };
 }
 
 export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(
@@ -205,3 +213,4 @@ export const createComponent = <Props, Inputs extends object, Outputs extends ob
   }
   return forwardRef(Component) as ComponentType<Props>;
 }
+

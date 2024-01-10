@@ -1,19 +1,19 @@
 import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
-import { AutocompleteOptionType, Props, dialogWidth, initialState, tag } from "./constants";
+import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
-import { derive } from "olik/derive";
 import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const { store, state } = useNestedStore('search', initialState)!;
+  const tags = store.tags.$useState();
+  const groups = store.groups.$useState();
+  const synonymGroups = store.synonymGroups.$useState();
+  const noteTags = store.noteTags.$useState();
+  const notes = store.notes.$useState();
+  const { selectedGroupIds, selectedSynonymIds, autocompleteText } = state;
 
-  const allAutocompleteOptions = derive(tag).$from(
-    store.tags,
-    store.groups,
-    store.search.selectedSynonymIds,
-    store.search.selectedGroupIds,
-  ).$with((tags, groups, selectedSynonymIds, selectedGroupIds) => {
+  const allAutocompleteOptions = useMemo(() => {
     return [
       ...tags
         .groupBy(tags => tags.synonymId)
@@ -33,20 +33,14 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
           selected: selectedGroupIds.includes(g.id),
         } as AutocompleteOptionType)),
     ]
-  });
+  }, [groups, selectedGroupIds, selectedSynonymIds, tags]);
 
-  const autocompleteOptions = derive(tag).$from(
-    allAutocompleteOptions,
-    store.search.autocompleteText,
-  ).$with((allAutocompleteOptions, autocompleteText) => {
+  const autocompleteOptions = useMemo(() => {
     return allAutocompleteOptions
       .filter(o => o.label.toLowerCase().includes(autocompleteText.toLowerCase()))
-  });
+  }, [allAutocompleteOptions, autocompleteText]);
 
-  const selectedSynonymTags = derive(tag).$from(
-    store.search.selectedSynonymIds,
-    store.tags,
-  ).$with((selectedSynonymIds, tags) => {
+  const selectedSynonymTags = useMemo(() => {
     return selectedSynonymIds
       .map(synonymId => tags
         .filter(t => t.synonymId === synonymId)
@@ -55,14 +49,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
           first: index === 0,
           last: index === array.length - 1,
         })))
-  });
+  }, [selectedSynonymIds, tags]);
 
-  const selectedGroupTags = derive(tag).$from(
-    store.search.selectedGroupIds,
-    store.groups,
-    store.synonymGroups,
-    store.tags,
-  ).$with((selectedGroupIds, groups, synonymGroups, tags) => {
+  const selectedGroupTags = useMemo(() => {
     return selectedGroupIds
       .map(groupId => ({
         groupId,
@@ -80,14 +69,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
               })),
           }))
       }))
-  });
+  }, [groups, selectedGroupIds, synonymGroups, tags]);
 
-  const notesByTags = derive(tag).$from(
-    store.search.selectedSynonymIds,
-    store.noteTags,
-    store.notes,
-    store.tags,
-  ).$with((selectedSynonymIds, noteTags, notes, tags) => {
+  const notesByTags = useMemo(() => {
     const tagIds = tags
       .filter(t => selectedSynonymIds.includes(t.synonymId))
       .map(t => t.id);
@@ -95,13 +79,13 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       .filter(nt => tagIds.includes(nt.tagId))
       .flatMap(nt => notes.filter(n => n.id === nt.noteId))
       .distinct(n => n.id);
-  })
+  }, [noteTags, notes, selectedSynonymIds, tags]);
 
   const tabTitleText = useMemo(() => {
     return state.showingTab === 'search' ? 'Search' : 'Results';
   }, [state.showingTab]);
   const tabButtonText = useMemo(() => {
-    return state.showingTab === 'search' ? `Results (${notesByTags.$state.length})` : 'Search';
+    return state.showingTab === 'search' ? `Results (${notesByTags.length})` : 'Search';
   }, [state.showingTab, notesByTags]);
 
   const listener = useCallback(() => {
@@ -128,10 +112,10 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     store,
     autocompleteRef: useRef<AutocompleteHandle>(null),
     bodyRef: useRef<HTMLDivElement>(null),
-    autocompleteOptions: autocompleteOptions.$useState(),
-    selectedSynonymTags: selectedSynonymTags.$useState(),
-    selectedGroupTags: selectedGroupTags.$useState(),
-    notesByTags: notesByTags.$useState(),
+    autocompleteOptions,
+    selectedSynonymTags,
+    selectedGroupTags,
+    notesByTags,
     tabTitleText,
     tabButtonText,
     ...state,

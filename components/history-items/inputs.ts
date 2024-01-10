@@ -1,10 +1,7 @@
-import { derive } from "olik/derive";
 import { HistoryItemsStore, Props, initialState, pageSize, tag } from "./constants";
 import { formatDistanceToNow } from "date-fns";
-import { useEffect, useImperativeHandle, useState } from "react";
-import { NoteDTO } from "@/server/dtos";
-import { useNestedStore } from "@/utils/hooks";
-import { derivations } from "@/utils/derivations";
+import { useImperativeHandle, useMemo } from "react";
+import { useActiveNotesSortedByDateViewed, useNestedStore } from "@/utils/hooks";
 
 export const useInputs = (
   props: Props,
@@ -12,10 +9,8 @@ export const useInputs = (
 
   const { store, state } = useNestedStore(tag, initialState);
 
-  const notesSorted = useNotesSortedAndSliced(store);
+  const notes = useNotesSortedAndSliced(store);
 
-  const notes = useEmbellishNotesWithDates(notesSorted);
-  
   useImperativeHandle(props.innerRef, () => ({
     onScrollToBottom: () => store.historyItems.index.$add(1),
   }), [store]);
@@ -28,25 +23,17 @@ export const useInputs = (
   };
 }
 
-const useNotesSortedAndSliced = (store: HistoryItemsStore) => derive(tag).$from(
-  derivations.activeNotesSortedByDateViewed(store),
-  store.activeNoteId,
-  store.historyItems.index,
-).$with((notes, activeNoteId, index) => {
-  return notes
-    .filter(note => activeNoteId !== note.id)
-    .slice(0, (index + 1) * pageSize); // TODO: Paginate this list!
-}).$useState();
-
-const useEmbellishNotesWithDates = (
-  notesSorted: NoteDTO[]
-) => {
-  const [notes, setNotes] = useState<(NoteDTO & { date: string })[]>([]);
-  useEffect(() => {
-    setNotes(notesSorted.map(note => ({
-      ...note,
-      date: formatDistanceToNow(note.dateViewed!, { addSuffix: true }),
-    })));
-  }, [notesSorted]);
-  return notes;
+const useNotesSortedAndSliced = (store: HistoryItemsStore) => {
+  const notesSorted = useActiveNotesSortedByDateViewed(store);
+  const activeNoteId = store.activeNoteId.$useState();
+  const index = store.historyItems.index.$useState();
+  return useMemo(() => {
+    return notesSorted
+      .filter(note => activeNoteId !== note.id)
+      .slice(0, (index + 1) * pageSize)
+      .map(note => ({
+        ...note,
+        date: formatDistanceToNow(note.dateViewed!, { addSuffix: true }),
+      }));
+  }, [activeNoteId, index, notesSorted]);
 }

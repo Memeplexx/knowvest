@@ -81,7 +81,7 @@ export const noteTagsPersisterExtension = (store: Store<AppState>) => {
     previousActiveNoteTagIds = newActiveNoteTagIds;
     if (!uniqueTagsHaveChanged) {
       if (nonUniqueTagsHaveChanged) {
-        store.noteTags.$set(store.$state.noteTags.slice().reverse());  // forces re-rendering in history and similar panels
+        store.noteTags.$set(store.$state.noteTags.slice());  // forces re-rendering
       }
       return;
     }
@@ -89,8 +89,8 @@ export const noteTagsPersisterExtension = (store: Store<AppState>) => {
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
     const apiResponse = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
     await indexeddb.write(store, { noteTags: apiResponse.noteTags });
-    const tagIds = apiResponse.noteTags.map(nt => nt.tagId);
-    const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId);
+    const tagIds = apiResponse.noteTags.filter(nt => !nt.isArchived).map(nt => nt.tagId);
+    const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId).distinct();
     store.synonymIds.$set(synonymIds);
   });
 }

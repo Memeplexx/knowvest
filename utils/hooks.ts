@@ -126,7 +126,7 @@ export const useNestedStore = <K extends string, S extends object>(key: K, initi
   const store = useContext(StoreContext)!;
   useMemo(() => {
     if ((store.$state as Record<K, S>)[key] !== undefined) { return; }
-    store.$setNew({[key]: initialState});
+    store.$setNew({ [key]: initialState });
   }, [initialState, key, store]);
   return {
     store: store as Store<AppState & Record<K, S>>,
@@ -142,4 +142,11 @@ export const useComponentDownloader = <P>(importer: () => Promise<{ default: Fun
     return dynamic(importerRef.current);
   }, [isMounted]);
   return component;
+}
+
+export const useActiveNotesSortedByDateViewed = (store: Store<AppState>) => {
+  const notes = store.notes.$useState();
+  return notes
+    .filter(n => !n.isArchived)
+    .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime());
 }

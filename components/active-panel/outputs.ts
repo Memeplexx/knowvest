@@ -24,7 +24,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
       await indexeddb.write(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.loadingNote.$set(false);
       store.activePanel.confirmDelete.$set(false);
-      const newNoteId = derivations.activeNotesSortedByDateViewed(store).$state[0].id;
+      const newNoteId = derivations.activeNotesSortedByDateViewed(store)[0].id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
       store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))

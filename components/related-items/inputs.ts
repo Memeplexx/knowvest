@@ -1,19 +1,17 @@
-import { derive } from "olik/derive";
-import { Props, tag } from "./constants";
-import { useContext } from "react";
+import { Props } from "./constants";
+import { useContext, useMemo } from "react";
 import { StoreContext } from "@/utils/constants";
 
 export const useInputs = (props: Props) => {
 
   const store = useContext(StoreContext)!;
+  const notes = store.notes.$useState();
+  const tags = store.tags.$useState();
+  const noteTags = store.noteTags.$useState();
+  const synonymIds = store.synonymIds.$useState();
+  const activeNoteId = store.activeNoteId.$useState();
 
-  const items = derive(tag).$from(
-    store.activeNoteId,
-    store.notes,
-    store.tags,
-    store.noteTags,
-    store.synonymIds,
-  ).$with((activeNoteId, notes, tags, noteTags, synonymIds) => {
+  const items = useMemo(() => {
     const unArchivedNotes = notes.filter(n => !n.isArchived);
     const unArchivedTags = tags.filter(t => !t.isArchived);
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
@@ -32,7 +30,7 @@ export const useInputs = (props: Props) => {
         ...n,
         matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
       }));
-  }).$useState();
+  }, [activeNoteId, notes, tags, noteTags, synonymIds]);
 
   return {
     props,

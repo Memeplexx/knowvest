@@ -82,7 +82,7 @@ export const useDataInitializer = (store: HomeStore) => {
 const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
   await indexeddb.initialize();
   store.$patch(await indexeddb.read());
-  const after = derivations.activeNotesSortedByDateViewed(store).$state[0]?.dateUpdated || null;
+  const after = derivations.activeNotesSortedByDateViewed(store)[0]?.dateUpdated || null;
   const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after });
   if (apiResponse.status === 'USER_CREATED') {
     return store.$patchDeep({
@@ -91,7 +91,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
     });
   }
   await indexeddb.write(store, apiResponse);
-  const activeNoteId = derivations.activeNotesSortedByDateViewed(store).$state[0].id;
+  const activeNoteId = derivations.activeNotesSortedByDateViewed(store)[0].id;
   const selectedTagIds = store.$state.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
   const synonymIds = store.$state.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
   store.$patchDeep({

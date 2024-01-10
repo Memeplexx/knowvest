@@ -1,17 +1,18 @@
-import { derive } from "olik/derive";
 import { initialState, tag } from "./constants";
 import { useNestedStore } from "@/utils/hooks";
+import { useMemo } from "react";
 
 export const useInputs = () => {
 
   const { store, state } = useNestedStore(tag, initialState)!;
+  const tags = store.tags.$useState();
+  const synonymIds = store.synonymIds.$useState();
+  const noteTags = store.noteTags.$useState();
+  const activeNoteId = store.activeNoteId.$useState();
+  const groups = store.groups.$useState();
+  const synonymGroups = store.synonymGroups.$useState();
 
-  const tagsForActiveNote = derive(tag).$from(
-    store.tags,
-    store.synonymIds,
-    store.noteTags,
-    store.activeNoteId,
-  ).$with((tags, synonymIds, noteTags, activeNoteId) => {
+  const tagsForActiveNote = useMemo(() => {
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
     const unArchivedTags = tags.filter(t => !t.isArchived);
     return unArchivedNoteTags
@@ -31,23 +32,14 @@ export const useInputs = () => {
           last: index === array.length - 1,
         })),
       }))
-  });
+  }, [tags, synonymIds, noteTags, activeNoteId]);
 
-  const allActiveTagsSelected = derive(tag).$from(
-    tagsForActiveNote,
-  ).$with((tagsForActiveNote) => {
+  const allActiveTagsSelected = useMemo(() => {
     return tagsForActiveNote
       .every(t => t.selected);
-  })
+  }, [tagsForActiveNote]);
 
-  const groupsWithSynonyms = derive(tag).$from(
-    store.groups,
-    store.noteTags,
-    store.synonymGroups,
-    store.tags,
-    store.synonymIds,
-    store.activeNoteId,
-  ).$with((groups, noteTags, synonymGroups, tags, synonymIds, activeNoteId) => {
+  const groupsWithSynonyms = useMemo(() => {
     const unArchivedGroups = groups.filter(g => !g.isArchived);
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
     const unArchivedSynonymGroups = synonymGroups.filter(sg => !sg.isArchived);
@@ -75,21 +67,19 @@ export const useInputs = () => {
               })),
           })),
       }));
-  });
+  }, [activeNoteId, groups, noteTags, synonymGroups, synonymIds, tags]);
 
-  const allGroupTagsSelected = derive(tag).$from(
-    groupsWithSynonyms,
-  ).$with((groupsWithSynonyms) => {
+  const allGroupTagsSelected = useMemo(() => {
     return groupsWithSynonyms
       .mapToMap(g => g.groupId, g => g.synonyms.every(s => s.selected));
-  });
+  }, [groupsWithSynonyms]);
 
   return {
     store,
     ...state,
-    groupsWithSynonyms: groupsWithSynonyms.$useState(),
-    tagsForActiveNote: tagsForActiveNote.$useState(),
-    allGroupTagsSelected: allGroupTagsSelected.$useState(),
-    allActiveTagsSelected: allActiveTagsSelected.$useState(),
+    groupsWithSynonyms,
+    tagsForActiveNote,
+    allGroupTagsSelected,
+    allActiveTagsSelected,
   };
 };
