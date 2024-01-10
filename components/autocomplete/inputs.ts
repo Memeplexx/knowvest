@@ -10,11 +10,8 @@ export const useInputs = <Option extends OptionBase>(
 ) => {
   
   const floatingRef = useFloating<HTMLInputElement>(floatingUiDefaultOptions);
-
   const inputRef = floatingRef.refs.domReference;
-
   const optionsPopupRef = floatingRef.refs.floating;
-
   const containerRef = useForwardedRef(useRef<HTMLDivElement | null>(null));
 
   const optionsSorted = useMemo(() => {

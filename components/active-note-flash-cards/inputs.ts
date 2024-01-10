@@ -11,6 +11,7 @@ export const useInputs = () => {
   const { store, state } = useNestedStore(tag, initialState)!;
   const flashCards = store.flashCards.$useState();
   const activeNoteId = store.activeNoteId.$useState();
+  const confirmDeleteId = store.activeFlashCards.confirmDeleteId.$useState();
   const items = useMemo(() => {
     return flashCards.filter(fc => !fc.isArchived && fc.noteId === activeNoteId);
   }, [flashCards, activeNoteId]);
@@ -20,7 +21,7 @@ export const useInputs = () => {
     store,
     ...state,
     items,
-    confirmDeleteId: store.activeFlashCards.confirmDeleteId.$useState(),
+    confirmDeleteId,
   }
 }
 

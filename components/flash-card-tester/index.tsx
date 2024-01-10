@@ -25,7 +25,6 @@ export const FlashCardTester = (props: Props) => {
                 <ReadonlyNote
                   showIf={!inputs.showQuestions}
                   note={inputs.items[0]?.note}
-                  synonymIds={inputs.store.synonymIds}
                 />
               </>
             }

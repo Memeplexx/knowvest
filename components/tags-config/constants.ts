@@ -46,8 +46,6 @@ export const initialState = {
   autocompleteValue: null as null | GroupId | TagId,
 };
 
-export const tag = 'config';
-
 export type Props = {
   onHide: () => void,
 };

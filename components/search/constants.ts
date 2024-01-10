@@ -35,5 +35,3 @@ export const initialState = {
   hoveredSynonymId: null as SynonymId | null,
   showAutocompleteOptions: false,
 }
-
-export const tag = 'searchDialog';

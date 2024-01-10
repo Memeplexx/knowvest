@@ -4,13 +4,13 @@ import { decide } from '@/utils/functions';
 import { useFloating } from '@floating-ui/react';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { NotificationContext } from '@/utils/pages/home/constants';
-import { Props, initialState, tag } from './constants';
+import { Props, initialState } from './constants';
 import { useNestedStore } from '@/utils/hooks';
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const { store, state } = useNestedStore(tag, initialState)!;
+  const { store, state } = useNestedStore('tagsConfig', initialState)!;
   const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = state;
   const tags = store.tags.$useState();
   const groups = store.groups.$useState();

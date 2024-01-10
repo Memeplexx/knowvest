@@ -11,6 +11,4 @@ export const initialState = {
   showQuestions: true,
 };
 
-export const tag = 'flashCardTesterComponent';
-
 export type Inputs = ReturnType<typeof useInputs>;

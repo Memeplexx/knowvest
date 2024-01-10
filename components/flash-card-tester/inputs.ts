@@ -6,9 +6,10 @@ import { useNestedStore } from "@/utils/hooks";
 
 export const useInputs = (props: Props) => {
 
-  const { store, state } = useNestedStore('flashCard', initialState);
+  const { store, state } = useNestedStore('flashCardTester', initialState);
   const notify = useContext(NotificationContext)!;
   const flashCards = store.flashCards.$useState();
+  const bodyRef = useRef<HTMLDivElement>(null);
   const items = useMemo(() => {
     return flashCards.filter(fc => !fc.isArchived && isAfter(new Date(), fc.nextQuestionDate));
   }, [flashCards]);
@@ -19,6 +20,6 @@ export const useInputs = (props: Props) => {
     notify,
     store,
     props,
-    bodyRef: useRef<HTMLDivElement>(null),
+    bodyRef,
   }
 }

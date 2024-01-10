@@ -3,8 +3,6 @@ import { useInputs } from "./inputs";
 
 export type Inputs = ReturnType<typeof useInputs>;
 
-export const tag = 'tagsPanel';
-
 export const initialState = {
   showConfigDialog: false,
   hoveringGroupId: null as null | GroupId,

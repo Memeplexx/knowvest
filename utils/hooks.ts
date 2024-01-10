@@ -144,6 +144,7 @@ export const useComponentDownloader = <P>(importer: () => Promise<{ default: Fun
   return component;
 }
 
+/** @deprecated */
 export const useActiveNotesSortedByDateViewed = (store: Store<AppState>) => {
   const notes = store.notes.$useState();
   return notes

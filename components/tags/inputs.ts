@@ -1,10 +1,10 @@
-import { initialState, tag } from "./constants";
+import { initialState } from "./constants";
 import { useNestedStore } from "@/utils/hooks";
 import { useMemo } from "react";
 
 export const useInputs = () => {
 
-  const { store, state } = useNestedStore(tag, initialState)!;
+  const { store, state } = useNestedStore('tagsComponent', initialState)!;
   const tags = store.tags.$useState();
   const synonymIds = store.synonymIds.$useState();
   const noteTags = store.noteTags.$useState();

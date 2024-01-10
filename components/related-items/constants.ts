@@ -6,6 +6,4 @@ export type Props = {
   onSelectNote: (noteId: NoteId) => void;
 } & HTMLAttributes<HTMLDivElement>
 
-export const tag = 'relatedItemsComponent';
-
 export type Inputs = ReturnType<typeof useInputs>;
