@@ -8,7 +8,7 @@ import { HistoryItemsHandle } from "../history-items/constants";
 export const useInputs = (props: Props) => {
 
   const { store, state } = useNestedStore(tag, initialState);
-  const listItems = useComponentDownloader(() => import('../history-items'));
+  const HistoryItems = useComponentDownloader(() => import('../history-items'));
   const listItemsRef = useRef<HistoryItemsHandle>(null);
   const cardRef = useRef<CardHandle>(null);
 
@@ -17,7 +17,7 @@ export const useInputs = (props: Props) => {
     store,
     ...state,
     cardRef,
-    listItems,
+    HistoryItems,
     listItemsRef,
   };
 }

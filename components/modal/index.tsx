@@ -10,18 +10,17 @@ export const Modal = (
 ) => {
   const inputs = useInputs(props);
   const outputs = useOutputs(inputs);
-  const { state, refs } = inputs;
-  return !state.showInternal ? <></> : createPortal(
+  return !inputs.showInternal ? <></> : createPortal(
     <>
       <Background
-        style={state.backgroundAnimations}
-        ref={refs.backdrop}
+        style={inputs.backgroundAnimations}
+        ref={inputs.backdropRef}
         onClick={outputs.onClickBackdrop}
       />
       <ForegroundWrapper
         children={
           <Foreground
-            style={state.foregroundAnimations}
+            style={inputs.foregroundAnimations}
             children={props.children}
           />
         }

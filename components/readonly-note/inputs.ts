@@ -18,7 +18,6 @@ export const useInputs = (props: Props) => {
   const store = useContext(StoreContext)!;
 
   const editorRef = useRef<HTMLDivElement>(null);
-
   const codeMirror = useRef<EditorView | null>(null);
 
   useIsomorphicLayoutEffect(() => {

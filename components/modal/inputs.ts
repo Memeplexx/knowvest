@@ -6,7 +6,7 @@ export const useInputs = (props: Props) => {
 
   const [showInternal, setShowInternal] = useState(props.showIf);
 
-  const backdrop = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
 
   const isClosingRef = useRef(false);
 
@@ -36,14 +36,10 @@ export const useInputs = (props: Props) => {
   const isMobileWidth = useIsMobileWidth();
 
   return {
-    refs: {
-      backdrop,
-    },
-    state: {
-      showInternal,
-      backgroundAnimations: isMobileWidth ? undefined : backgroundAnimations,
-      foregroundAnimations: isMobileWidth ? undefined : foregroundAnimations,
-    },
+    backdropRef,
+    showInternal,
+    backgroundAnimations: isMobileWidth ? undefined : backgroundAnimations,
+    foregroundAnimations: isMobileWidth ? undefined : foregroundAnimations,
     props,
   }
 }

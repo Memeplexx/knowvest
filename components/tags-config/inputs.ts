@@ -18,6 +18,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const activeNoteId = store.activeNoteId.$useState();
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
+  const settingsButtonRef = state.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
+  const synonymOptionsRef = state.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null;
+  const modalRef = useRef<HTMLDivElement>(null);
+  const autocompleteRef = useRef<AutocompleteHandle>(null);
+  const selectedTagRef = useRef<HTMLDivElement>(null);
 
   const notify = useContext(NotificationContext)!;
 
@@ -157,11 +162,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     tagsInSynonymGroup,
     selectedGroupSelectedSynonym,
     floatingRef,
-    modalRef: useRef<HTMLDivElement>(null),
-    autocompleteRef: useRef<AutocompleteHandle>(null),
-    selectedTagRef: useRef<HTMLDivElement>(null),
-    settingsButtonRef: state.modal === 'synonymOptions' ? floatingRef.refs.setReference : null,
-    synonymOptionsRef: state.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null,
+    modalRef,
+    autocompleteRef,
+    selectedTagRef,
+    settingsButtonRef,
+    synonymOptionsRef,
     notify,
     props,
     store,

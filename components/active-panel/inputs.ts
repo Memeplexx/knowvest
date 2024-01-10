@@ -11,17 +11,18 @@ export const useInputs = () => {
   const { store, state } = useNestedStore(tag, initialState);
   const mayDeleteNote = useActiveNotesSortedByDateViewed(store).length > 1;
   const activeNoteId = store.activeNoteId.$useState();
-  const editor = useComponentDownloader(() => import('../active-editor'));
+  const ActiveEditor = useComponentDownloader(() => import('../active-editor'));
   const popupRef = useRef<PopupHandle>(null);
+  const notify = useContext(NotificationContext)!
   
   return {
     store,
     ...state,
     activeNoteId,
-    editor,
+    ActiveEditor,
     mayDeleteNote,
     popupRef,
-    notify: useContext(NotificationContext)!,
+    notify,
   };
 }
 

@@ -13,6 +13,8 @@ export const useInputs = (props: Props) => {
   const noteTags = store.noteTags.$useState();
   const synonymIds = store.synonymIds.$useState();
 
+  const cardRef = useRef<CardHandle>(null);
+
   const queriedNotes = useMemo(() => {
     const unArchivedNotes = notes.filter(n => !n.isArchived);
     const unArchivedTags = tags.filter(t => !t.isArchived);
@@ -39,13 +41,13 @@ export const useInputs = (props: Props) => {
     return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
   }, [queriedNotes]);
 
-  const listItems = useComponentDownloader(() => import('../related-items'));
+  const RelatedItems = useComponentDownloader(() => import('../related-items'));
 
   return {
     props,
     store,
-    cardRef: useRef<CardHandle>(null),
-    listItems,
+    cardRef,
+    RelatedItems,
     noteCountString,
   }
 

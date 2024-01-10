@@ -81,8 +81,8 @@ export const ActivePanel = (
                 />
               </>
             }
-            body={inputs.editor && <inputs.editor />}
-            loading={!inputs.editor}
+            body={inputs.ActiveEditor && <inputs.ActiveEditor />}
+            loading={!inputs.ActiveEditor}
           />
           <Loader
             showIf={inputs.loadingNote}

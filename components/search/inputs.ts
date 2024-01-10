@@ -6,12 +6,14 @@ import { useNestedStore } from "@/utils/hooks";
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   const { store, state } = useNestedStore('search', initialState)!;
+  const { selectedGroupIds, selectedSynonymIds, autocompleteText } = state;
   const tags = store.tags.$useState();
   const groups = store.groups.$useState();
   const synonymGroups = store.synonymGroups.$useState();
   const noteTags = store.noteTags.$useState();
   const notes = store.notes.$useState();
-  const { selectedGroupIds, selectedSynonymIds, autocompleteText } = state;
+  const autocompleteRef = useRef<AutocompleteHandle>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   const allAutocompleteOptions = useMemo(() => {
     return [
@@ -110,8 +112,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
   return {
     store,
-    autocompleteRef: useRef<AutocompleteHandle>(null),
-    bodyRef: useRef<HTMLDivElement>(null),
+    autocompleteRef,
+    bodyRef,
     autocompleteOptions,
     selectedSynonymTags,
     selectedGroupTags,

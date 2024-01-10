@@ -13,8 +13,8 @@ export const History = (
       className={props.className}
       ref={inputs.cardRef}
       heading='Recent'
-      body={inputs.listItems && <inputs.listItems onSelectNote={outputs.onSelectNote} innerRef={inputs.listItemsRef} />}
-      loading={!inputs.listItems}
+      body={inputs.HistoryItems && <inputs.HistoryItems onSelectNote={outputs.onSelectNote} innerRef={inputs.listItemsRef} />}
+      loading={!inputs.HistoryItems}
       onScrolledToBottom={inputs.listItemsRef.current?.onScrollToBottom}
     />
   )
