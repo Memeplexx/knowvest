@@ -91,13 +91,13 @@ export const Tags = () => {
                         synonym.tags.map(tag => (
                           <Tag
                             key={tag.id}
-                            selected={(inputs.hoveringGroupId === group.groupId && inputs.hoveringSynonymId === synonym.id) || synonym.selected}
-                            onClick={outputs.onClickSynonym(synonym.id)}
                             children={tag.text}
                             $first={tag.first}
                             $last={tag.last}
+                            selected={(inputs.hoveringGroupId === group.groupId && inputs.hoveringSynonymId === synonym.id) || synonym.selected}
                             onMouseOver={outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
                             onMouseOut={outputs.onMouseOutGroupTag}
+                            onClick={outputs.onClickSynonym(synonym.id)}
                           />
                         ))
                       ))}

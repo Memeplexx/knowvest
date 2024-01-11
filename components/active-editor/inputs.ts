@@ -45,10 +45,10 @@ export const useInputs = () => {
   useEffect(() => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
-    const sub = highlightTagsInEditor({ editorView: codeMirror.current!, store, synonymIds: store.synonymIds });
+    const changeListener = highlightTagsInEditor({ editorView: codeMirror.current!, store, synonymIds: store.synonymIds });
     return () => {
       codeMirror.current?.destroy();
-      sub.unsubscribe();
+      changeListener.unsubscribe();
     }
   }, [store]);
 

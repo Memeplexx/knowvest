@@ -22,12 +22,12 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
           selected: selectedSynonymIds.includes(tags[0].synonymId),
         } as AutocompleteOptionType)),
       ...groups
-        .map(g => ({
-          value: `${g.id}-group`,
+        .map(group => ({
+          value: `${group.id}-group`,
           type: 'group',
-          label: g.name,
-          id: g.id,
-          selected: selectedGroupIds.includes(g.id),
+          label: group.name,
+          id: group.id,
+          selected: selectedGroupIds.includes(group.id),
         } as AutocompleteOptionType)),
     ]
   }, [groups, selectedGroupIds, selectedSynonymIds, tags]);
@@ -40,7 +40,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const selectedSynonymTags = useMemo(() => {
     return selectedSynonymIds
       .map(synonymId => tags
-        .filter(t => t.synonymId === synonymId)
+        .filter(tag => tag.synonymId === synonymId)
         .map((tag, index, array) => ({
           ...tag,
           first: index === 0,
