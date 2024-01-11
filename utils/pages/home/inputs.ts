@@ -13,7 +13,7 @@ import { derivations } from "@/utils/derivations";
 
 export const useInputs = () => {
 
-  const { store, home } = useStore(initialState)!;
+  const { store, home } = useStore(initialState);
 
   useDataInitializer(store);
 

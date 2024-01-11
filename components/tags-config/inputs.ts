@@ -10,7 +10,7 @@ import { useStore } from '@/utils/hooks';
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 
-  const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState)!;
+  const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState);
   const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = tagsConfig;
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });

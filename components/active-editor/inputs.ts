@@ -31,6 +31,7 @@ import { Store } from 'olik';
 import { AppState } from '@/utils/constants';
 import { useStore } from '@/utils/hooks';
 import { initialState } from '../active-panel/constants';
+import { ActivePanelStore } from './constants';
 
 
 export const useInputs = () => {
@@ -62,7 +63,7 @@ export const useInputs = () => {
   };
 }
 
-export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: Store<AppState & typeof initialState> }) => {
+export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: ActivePanelStore }) => {
   return new EditorView({
     doc: '',
     parent: editor,
@@ -96,13 +97,14 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
 
 export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: Store<AppState>, codeMirror: EditorView }) => {
   const updateEditorText = () => {
-    if (!store.$state.notes.length || !store.$state.activeNoteId) { return; }
+    const { notes, activeNoteId } = store.$state;
+    if (!notes.length || !activeNoteId) { return; }
     codeMirror.dispatch(
       {
         changes: {
           from: 0,
           to: codeMirror.state.doc.length,
-          insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
+          insert: notes.findOrThrow(n => n.id === activeNoteId).text,
         },
       },
       {
