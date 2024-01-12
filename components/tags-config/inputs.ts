@@ -1,11 +1,10 @@
-import { type ForwardedRef, useContext, useRef, useMemo } from 'react';
+import { useMemo, useRef, type ForwardedRef } from 'react';
 
 import { decide } from '@/utils/functions';
+import { useNotifier, useStore } from '@/utils/hooks';
 import { useFloating } from '@floating-ui/react';
 import { AutocompleteHandle } from '../autocomplete/constants';
-import { NotificationContext } from '@/utils/pages/home/constants';
 import { Props, initialState } from './constants';
-import { useStore } from '@/utils/hooks';
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
@@ -20,7 +19,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const selectedTagRef = useRef<HTMLDivElement>(null);
 
-  const notify = useContext(NotificationContext)!;
+  const notify = useNotifier();
 
   const tagsInSynonymGroup = useMemo(() => {
     const unArchivedTags = tags.filter(t => !t.isArchived);

@@ -1,8 +1,6 @@
 import { ActiveNoteFlashCards } from '@/components/active-note-flash-cards';
 import { Navbar } from '@/components/navbar';
-import { Snackbar } from '@/components/snackbar';
 import { Tags } from '@/components/tags';
-import { NotificationContext } from '@/utils/pages/home/constants';
 import { useInputs } from '@/utils/pages/home/inputs';
 import { useOutputs } from '@/utils/pages/home/outputs';
 import { ActivePane, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TabsPanel, Wrapper } from '@/utils/pages/home/styles';
@@ -17,87 +15,71 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (!session || new Date(session.expires).getTime() < Date.now()) {
     return { redirect: { destination: '/', permanent: false } }
   }
-  return { props: { } };
+  return { props: {} };
 }
 
 export default function Home() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
-    <NotificationContext.Provider
-      value={{
-        error: outputs.onNotifyError,
-        success: outputs.onNotifySuccess,
-        info: outputs.onNotifyInfo,
-      }}
+    <Wrapper
       children={
         <>
-          <Wrapper
+          <Navbar
+            // showIf={inputs.headerExpanded}
+            showIf={true}
+          />
+          <BodyWrapper
             children={
               <>
-                <Navbar
-                  // showIf={inputs.headerExpanded}
-                  showIf={true}
+                <HistoryPanel
+                  $expanded={inputs.historyExpanded}
+                  onSelectNote={outputs.onClickHistoricalNote}
                 />
-                <BodyWrapper
+                <CenterPanel
                   children={
                     <>
-                      <HistoryPanel
-                        $expanded={inputs.historyExpanded}
-                        onSelectNote={outputs.onClickHistoricalNote}
-                      />
-                      <CenterPanel
-                        children={
-                          <>
-                            <ActivePane />
-                            <TabsPanel
-                              $expanded={inputs.tagsExpanded}
-                              options={[
-                                { label: 'Tags', panel: Tags },
-                                { label: 'Flashcards', panel: ActiveNoteFlashCards },
-                              ]}
-                            />
-                          </>
-                        }
-                      />
-                      <RelatedPanel
-                        $expanded={inputs.similarExpanded}
-                        onSelectNote={outputs.onClickRelatedNote}
-                      />
-                      <ExpandHistoryToggleButton
-                        selected={inputs.historyExpanded}
-                        onClick={outputs.onClickHistoryToggle}
-                        children={<RightIcon />}
-                        aria-label='Expand History'
-                      />
-                      <ExpandTagsToggleButton
-                        selected={inputs.tagsExpanded}
-                        onClick={outputs.onClickTagsToggle}
-                        children={<UpIcon />}
-                        aria-label='Expand Tags'
-                      />
-                      <ExpandHeaderToggleButton
-                        selected={inputs.headerExpanded}
-                        onClick={outputs.onClickHeaderToggle}
-                        children={<DownIcon />}
-                        aria-label='Expand Header'
-                      />
-                      <ExpandRelatedToggleButton
-                        selected={inputs.similarExpanded}
-                        onClick={outputs.onClickSimilarToggle}
-                        children={<LeftIcon />}
-                        aria-label='Expand Related'
+                      <ActivePane />
+                      <TabsPanel
+                        $expanded={inputs.tagsExpanded}
+                        options={[
+                          { label: 'Tags', panel: Tags },
+                          { label: 'Flashcards', panel: ActiveNoteFlashCards },
+                        ]}
                       />
                     </>
                   }
                 />
+                <RelatedPanel
+                  $expanded={inputs.similarExpanded}
+                  onSelectNote={outputs.onClickRelatedNote}
+                />
+                <ExpandHistoryToggleButton
+                  selected={inputs.historyExpanded}
+                  onClick={outputs.onClickHistoryToggle}
+                  children={<RightIcon />}
+                  aria-label='Expand History'
+                />
+                <ExpandTagsToggleButton
+                  selected={inputs.tagsExpanded}
+                  onClick={outputs.onClickTagsToggle}
+                  children={<UpIcon />}
+                  aria-label='Expand Tags'
+                />
+                <ExpandHeaderToggleButton
+                  selected={inputs.headerExpanded}
+                  onClick={outputs.onClickHeaderToggle}
+                  children={<DownIcon />}
+                  aria-label='Expand Header'
+                />
+                <ExpandRelatedToggleButton
+                  selected={inputs.similarExpanded}
+                  onClick={outputs.onClickSimilarToggle}
+                  children={<LeftIcon />}
+                  aria-label='Expand Related'
+                />
               </>
             }
-          />
-          <Snackbar
-            message={inputs.message}
-            status={inputs.status}
-            onMessageClear={outputs.onMessageClear}
           />
         </>
       }

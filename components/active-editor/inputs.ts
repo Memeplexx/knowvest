@@ -1,7 +1,8 @@
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
 import { oneDark } from '@/utils/codemirror-theme';
+import { AppState } from '@/utils/constants';
 import { highlightTagsInEditor } from '@/utils/functions';
-import { NotificationContext } from '@/utils/pages/home/constants';
+import { useNotifier, useStore } from '@/utils/hooks';
 import {
   closeBrackets,
   closeBracketsKeymap,
@@ -25,13 +26,11 @@ import {
   keymap,
   rectangularSelection
 } from '@codemirror/view';
-import { useContext, useEffect, useRef } from 'react';
-import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { Store } from 'olik';
-import { AppState } from '@/utils/constants';
-import { useStore } from '@/utils/hooks';
+import { useEffect, useRef } from 'react';
 import { initialState } from '../active-panel/constants';
 import { ActivePanelStore } from './constants';
+import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 
 
 export const useInputs = () => {
@@ -57,7 +56,7 @@ export const useInputs = () => {
     editorRef,
     mayDeleteNote,
     codeMirror: codeMirror.current,
-    notify: useContext(NotificationContext)!,
+    notify: useNotifier(),
     selection,
     loadingSelection,
   };

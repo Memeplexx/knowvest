@@ -1,8 +1,7 @@
-import { useActiveNotesSortedByDateViewed, useComponentDownloader, useStore } from '@/utils/hooks';
-import { NotificationContext } from '@/utils/pages/home/constants';
-import { useContext, useRef } from 'react';
-import { initialState } from './constants';
+import { useActiveNotesSortedByDateViewed, useComponentDownloader, useNotifier, useStore } from '@/utils/hooks';
+import { useRef } from 'react';
 import { PopupHandle } from '../popup/constants';
+import { initialState } from './constants';
 
 
 
@@ -12,7 +11,7 @@ export const useInputs = () => {
   const mayDeleteNote = useActiveNotesSortedByDateViewed(store).length > 1;
   const ActiveEditor = useComponentDownloader(() => import('../active-editor'));
   const popupRef = useRef<PopupHandle>(null);
-  const notify = useContext(NotificationContext)!
+  const notify = useNotifier();
   
   return {
     store,

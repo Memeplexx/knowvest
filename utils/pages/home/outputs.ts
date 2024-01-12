@@ -31,25 +31,4 @@ export const useOutputs = (state: State) => ({
   onClickHistoricalNote: () => {
     state.historyExpanded && state.store.home.historyExpanded.$set(false);
   },
-  onNotifyError: (message: string) => {
-    state.set({
-      message,
-      status: 'error',
-    });
-  },
-  onNotifySuccess: (message: string) => {
-    state.set({
-      message,
-      status: 'success',
-    });
-  },
-  onNotifyInfo: (message: string) => {
-    state.set({
-      message,
-      status: 'info',
-    });
-  },
-  onMessageClear: () => {
-    state.set({ message: '' });
-  }
 });
