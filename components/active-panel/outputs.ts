@@ -1,10 +1,9 @@
 import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
-import { derivations } from "@/utils/derivations";
 
 
-export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
+export const useOutputs = ({ store, notify, popupRef, notesSorted }: Inputs) => {
   return {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
@@ -24,7 +23,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
       await indexeddb.write(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.loadingNote.$set(false);
       store.activePanel.confirmDelete.$set(false);
-      const newNoteId = derivations.activeNotesSortedByDateViewed(store)[0].id;
+      const newNoteId = notesSorted[0].id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
       store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))
@@ -50,9 +49,6 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     },
     editorHasTextChanged: (hasText: boolean) => {
       store.activePanel.editorHasText.$set(hasText);
-    },
-    onHideDialog: () => {
-
     },
   };
 }

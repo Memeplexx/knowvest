@@ -20,7 +20,7 @@ export default function App({
       session={session}
       children={
         <StoreContext.Provider
-          value={inputs.store}
+          value={{ store: inputs.store, notesSorted: inputs.notesSorted }}
           children={
             <NotificationContext.Provider
               value={{

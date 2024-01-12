@@ -1,5 +1,4 @@
 import { UserDTO } from "@/server/dtos";
-import { derivations } from "@/utils/derivations";
 import { useIsMounted, useIsomorphicLayoutEffect, useStore } from "@/utils/hooks";
 import { indexeddb } from "@/utils/indexed-db";
 import { trpc } from "@/utils/trpc";
@@ -9,13 +8,14 @@ import { useRouter } from 'next/router';
 import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { useEffect, useRef } from "react";
 import { HomeStore, initialState } from "./constants";
+import { getNotesSorted } from "@/utils/functions";
 
 
 export const useInputs = () => {
 
   const { store, home } = useStore(initialState);
 
-  useDataInitializer(store);
+  useDataInitializer({ store });
 
   useLogoutUserIfSessionExpired();
 
@@ -63,7 +63,7 @@ const useLogoutUserIfSessionExpired = () => {
   }, [router, session.status]);
 }
 
-export const useDataInitializer = (store: HomeStore) => {
+export const useDataInitializer = ({ store }: { store: HomeStore }) => {
   const { data: session } = useSession();
   const mounted = useIsMounted();
   const initializingData = useRef(false);
@@ -81,7 +81,8 @@ export const useDataInitializer = (store: HomeStore) => {
 const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
   await indexeddb.initialize();
   store.$patch(await indexeddb.read());
-  const after = derivations.activeNotesSortedByDateViewed(store)[0]?.dateUpdated || null;
+  const notesSorted = getNotesSorted(store.$state.notes);
+  const after = notesSorted[0]?.dateUpdated || null;
   const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after });
   if (apiResponse.status === 'USER_CREATED') {
     return store.$patchDeep({
@@ -90,7 +91,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
     });
   }
   await indexeddb.write(store, apiResponse);
-  const activeNoteId = derivations.activeNotesSortedByDateViewed(store)[0].id;
+  const activeNoteId = notesSorted[0].id;
   const selectedTagIds = store.$state.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
   const synonymIds = store.$state.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
   store.$patchDeep({

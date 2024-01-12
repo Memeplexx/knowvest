@@ -1,14 +1,13 @@
 import { Props, initialState, pageSize } from "./constants";
 import { formatDistanceToNow } from "date-fns";
 import { useImperativeHandle, useMemo } from "react";
-import { useActiveNotesSortedByDateViewed, useStore } from "@/utils/hooks";
+import {  useStore } from "@/utils/hooks";
 
 export const useInputs = (
   props: Props,
 ) => {
 
-  const { store, historyItems, activeNoteId } = useStore(initialState);
-  const notesSorted = useActiveNotesSortedByDateViewed(store);
+  const { store, historyItems, activeNoteId, notesSorted } = useStore(initialState);
 
   const notes = useMemo(() => {
     return notesSorted

@@ -1,4 +1,4 @@
-import { NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
+import { NoteDTO, NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
@@ -214,3 +214,8 @@ export const createComponent = <Props, Inputs extends object, Outputs extends ob
   return forwardRef(Component) as ComponentType<Props>;
 }
 
+export const getNotesSorted = (notes: NoteDTO[]) => {
+  return notes
+      .filter(n => !n.isArchived)
+      .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime());
+}

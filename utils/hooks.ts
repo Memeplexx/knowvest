@@ -3,6 +3,7 @@ import { EventMap } from './types';
 import { AppState, NotificationContext, StoreContext } from './constants';
 import { Store } from 'olik';
 import dynamic from 'next/dynamic';
+import { NoteDTO } from '@/server/dtos';
 
 
 
@@ -124,14 +125,15 @@ export const useIsMounted = () => {
 
 export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) => {
   type StateType = Patch extends undefined ? AppState : AppState & Patch;
-  const store = useContext(StoreContext)!;
+  const { store, notesSorted } = useContext(StoreContext)!;
   useMemo(() => {
     if (!patch) { return; }
     store.$setNew(patch);
   }, [patch, store]);
-  return new Proxy({} as { store: Store<StateType> } & {[key in keyof StateType]: (StateType)[key]}, {
+  return new Proxy({} as { store: Store<StateType>, notesSorted: NoteDTO[] } & { [key in keyof StateType]: (StateType)[key] }, {
     get(target, p) {
       if (p === 'store') { return store; }
+      if (p === 'notesSorted') { return notesSorted; }
       return store[p as (keyof AppState)].$useState();
     },
   });
@@ -149,12 +151,4 @@ export const useComponentDownloader = <P>(importer: () => Promise<{ default: Fun
     return dynamic(importerRef.current);
   }, [isMounted]);
   return component;
-}
-
-/** @deprecated */
-export const useActiveNotesSortedByDateViewed = (store: Store<AppState>) => {
-  const notes = store.notes.$useState();
-  return notes
-    .filter(n => !n.isArchived)
-    .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime());
 }
