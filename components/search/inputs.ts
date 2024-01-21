@@ -33,8 +33,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [groups, selectedGroupIds, selectedSynonymIds, tags]);
 
   const autocompleteOptions = useMemo(() => {
+    const autocompleteTextToLowerCase = autocompleteText.toLowerCase();
     return allAutocompleteOptions
-      .filter(o => o.label.toLowerCase().includes(autocompleteText.toLowerCase()))
+      .filter(o => o.label.toLowerCase().includes(autocompleteTextToLowerCase))
   }, [allAutocompleteOptions, autocompleteText]);
 
   const selectedSynonymTags = useMemo(() => {

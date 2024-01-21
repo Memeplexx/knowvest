@@ -25,7 +25,8 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onClickFilterNotesFromSelection: () => {
       const { from, to } = codeMirror!.state.selection.ranges[0];
       const selection = codeMirror!.state.doc.sliceString(from, to);
-      const synonymIds = store.$state.tags.filter(t => selection.toLowerCase().includes(t.text)).map(t => t.synonymId);
+      const selectionToLowerCase = selection.toLowerCase();
+      const synonymIds = store.$state.tags.filter(t => selectionToLowerCase.includes(t.text)).map(t => t.synonymId);
       store.synonymIds.$set(synonymIds);
       store.activePanel.selection.$set('');
       notify.success(`Filtered notes by "${selection}"`);

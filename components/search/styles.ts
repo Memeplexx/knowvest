@@ -120,17 +120,6 @@ export const AutocompleteOptionStatus = styled.div`
   width: 8px;
 `;
 
-export const AutocompleteOptionSynonyms = styled(possible.div)`
-  color: grey;
-`;
-
-export const TagGroup = styled(possible.div)`
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 2px;
-  row-gap: 12px;
-`;
-
 export const Tag = styled(possible.button) <{ $hovered: boolean, $first?: boolean, $last?: boolean }>`
   font-size: 12px;
   height: 20px;

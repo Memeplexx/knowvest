@@ -63,13 +63,12 @@ export const useOutputs = (inputs: Inputs) => {
       if (inputs.groupId === groupId && inputs.groupSynonymId === groupSynonymId) {
         return store.tagsConfig.groupSynonymId.$set(null);
       }
-      const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
       store.tagsConfig.$patch({
         tagId: null,
         groupId,
         groupSynonymId,
         autocompleteText: '',
-        focusedGroupNameInputText,
+        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
     onClickRemoveTagFromSynonyms: async () => {

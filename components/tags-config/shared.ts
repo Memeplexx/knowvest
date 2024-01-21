@@ -146,26 +146,22 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     await indexeddb.write(store, { synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
   };
-  
   const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async ({ groupId }: { groupId: GroupId }) => {
     if (!inputs.synonymId) { throw new Error(); }
     const apiResponse = await trpc.group.addSynonym.mutate({ groupId, synonymId: inputs.synonymId });
     await indexeddb.write(store, { synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
   }
-  
   const focusAutocompleteInput = () => {
     setTimeout(() => {
       inputs.autocompleteRef.current?.focusInput();
     });
   }
-  
   const blurAutocompleteInput = () => {
     setTimeout(() => {
       inputs.autocompleteRef.current?.blurInput();
     });
   }
-  
   return {
     completeCreateTagForSynonym,
     completeCreateTag,

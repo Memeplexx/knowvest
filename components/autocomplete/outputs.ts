@@ -24,7 +24,8 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
     onKeyUpInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key !== 'Enter') { return; }
       inputs.containerRef.current?.blur();
-      const selectedOption = options.find(o => o.label.toLowerCase() === inputRef.current!.value.toLowerCase());
+      const inputValueToLowerCase = inputRef.current!.value.toLowerCase();
+      const selectedOption = options.find(o => o.label.toLowerCase() === inputValueToLowerCase);
       if (selectedOption) {
         props.onValueChange(selectedOption.value);
       } else {
