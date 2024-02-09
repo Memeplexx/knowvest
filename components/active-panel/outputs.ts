@@ -25,8 +25,9 @@ export const useOutputs = ({ store, notify, popupRef, notesSorted }: Inputs) => 
       store.activePanel.confirmDelete.$set(false);
       const newNoteId = notesSorted[0].id;
       store.activeNoteId.$set(newNoteId);
-      const tagIds = store.$state.noteTags.filter(nt => nt.noteId === newNoteId).map(nt => nt.tagId);
-      store.synonymIds.$set(store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId))
+      const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
+      const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
+      store.synonymIds.$set(synonymIds);
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
       popupRef.current?.hide();
     },

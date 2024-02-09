@@ -16,7 +16,7 @@ export default function HistoryItems (
           inputs.notes.map(note => (
             <ListItem
               key={note.id}
-              onClick={outputs.onSelectNote(note.id)}
+              onClick={() => outputs.onSelectNote(note.id)}
               children={
                 <>
                   <Header

@@ -13,15 +13,16 @@ export const useOutputs = (inputs: Inputs) => {
   const shared = useSharedFunctions(inputs);
   const { store, notify } = inputs;
   return {
-    onCustomGroupNameFocus: (groupId: GroupId) => () => {
+    onCustomGroupNameFocus: (groupId: GroupId) => {
       store.tagsConfig.$patch({
         groupId,
         groupSynonymId: null,
-        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
+        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name,
       });
     },
-    onCustomGroupNameBlur: (groupId: GroupId) => () => {
-      store.tagsConfig.focusedGroupNameInputText.$set(store.$state.groups.findOrThrow(g => g.id === groupId).name);
+    onCustomGroupNameBlur: (groupId: GroupId) => {
+      const groupName = store.groups.$find.id.$eq(groupId).name;
+      store.tagsConfig.focusedGroupNameInputText.$set(groupName);
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
@@ -41,7 +42,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickHideOptionsForGroup: () => {
       store.tagsConfig.modal.$set(null);
     },
-    onClickTagSynonym: (tagId: TagId) => (event: MouseEvent<HTMLElement>) => {
+    onClickTagSynonym: (tagId: TagId, event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (inputs.tagId === tagId) {
         return store.tagsConfig.$patch({
@@ -53,12 +54,12 @@ export const useOutputs = (inputs: Inputs) => {
       store.tagsConfig.$patch({
         tagId,
         groupId: null,
-        autocompleteText: store.$state.tags.findOrThrow(t => t.id === tagId).text,
         groupSynonymId: null,
+        autocompleteText: store.tags.$find.id.$eq(tagId).text,
       });
       shared.focusAutocompleteInput();
     },
-    onClickGroupSynonym: (groupId: GroupId, groupSynonymId: SynonymId) => (event: MouseEvent<HTMLElement>) => {
+    onClickGroupSynonym: (groupId: GroupId, groupSynonymId: SynonymId, event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (inputs.groupId === groupId && inputs.groupSynonymId === groupSynonymId) {
         return store.tagsConfig.groupSynonymId.$set(null);
@@ -68,7 +69,7 @@ export const useOutputs = (inputs: Inputs) => {
         groupId,
         groupSynonymId,
         autocompleteText: '',
-        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
+        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name,
       });
     },
     onClickRemoveTagFromSynonyms: async () => {
@@ -114,7 +115,7 @@ export const useOutputs = (inputs: Inputs) => {
       }
     },
     onAutocompleteInputCancel: () => {
-      const autocompleteText = !inputs.tagId ? '' : store.$state.tags.findOrThrow(t => t.id === inputs.tagId).text;
+      const autocompleteText = !inputs.tagId ? '' : store.tags.$find.id.$eq(inputs.tagId).text;
       store.tagsConfig.autocompleteText.$set(autocompleteText);
       shared.blurAutocompleteInput();
     },
@@ -144,8 +145,8 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickUpdateGroupSynonym: () => {
       if (!inputs.groupId || !inputs.groupSynonymId) { throw new Error(); }
-      const synonymId = store.$state.synonymGroups
-        .findOrThrow(sg => sg.groupId === inputs.groupId && sg.synonymId === inputs.groupSynonymId)
+      const synonymId = store.synonymGroups
+        .$find.groupId.$eq(inputs.groupId).$and.synonymId.$eq(inputs.groupSynonymId)
         .synonymId;
       store.tagsConfig.$patch({
         tagId: null,
@@ -244,11 +245,11 @@ export const useOutputs = (inputs: Inputs) => {
         groupSynonymId: null,
       })
     },
-    onClickShowOptionsForGroup: (groupId: GroupId) => () => {
+    onClickShowOptionsForGroup: (groupId: GroupId) => {
       if (inputs.groupId === groupId && inputs.modal) {
         return store.tagsConfig.modal.$set(null);
       }
-      const focusedGroupNameInputText = store.$state.groups.findOrThrow(g => g.id === groupId).name;
+      const focusedGroupNameInputText = store.groups.$find.id.$eq(groupId).name;
       store.tagsConfig.$patch({
         modal: 'groupOptions',
         groupId,
@@ -256,7 +257,7 @@ export const useOutputs = (inputs: Inputs) => {
         focusedGroupNameInputText,
       });
     },
-    onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => () => {
+    onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
       store.tagsConfig.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {

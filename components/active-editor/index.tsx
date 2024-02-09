@@ -4,7 +4,6 @@ import { useOutputs } from './outputs';
 import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, Instruction, TextEditor, TextEditorWrapper } from './styles';
 import { useInputs } from './inputs';
 
-
 export default function ActiveEditor() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);

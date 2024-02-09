@@ -13,6 +13,7 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
   const outputs = useOutputs(inputs);
   return (
     <Container
+      tabIndex={0}
       ref={inputs.containerRef}
       children={
         <>

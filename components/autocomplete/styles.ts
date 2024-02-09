@@ -5,7 +5,7 @@ import { possible } from '../html';
 import { CloseIcon } from '@/utils/styles';
 
 
-export const ClearTextButtonWrapper = styled.div`
+export const ClearTextButtonWrapper = styled(possible.div)`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -33,7 +33,7 @@ export const Container = styled.div<{ disabled?: boolean }>`
   `}
 `;
 
-export const Input = styled.input<{ $hasError: boolean }>`
+export const Input = styled(possible.input)<{ $hasError: boolean }>`
   flex: 1;
   outline: none;
   border: 0.5px solid #CCC;

@@ -9,14 +9,14 @@ export const useOutputs = ({ store, notify }: Inputs) => {
       const apiResponse = await trpc.flashCard.create.mutate({ noteId: store.$state.activeNoteId });
       await indexeddb.write(store, { flashCards: apiResponse.flashCard });
     },
-    onChangeFlashCardText: (id: FlashCardId) => async (text: string) => {
+    onChangeFlashCardText: async (id: FlashCardId, text: string) => {
       const apiResponse = await trpc.flashCard.updateText.mutate({ id, text });
       await indexeddb.write(store, { flashCards: apiResponse.flashCard });
     },
-    onClickRequestDeleteFlashCard: (id: FlashCardId) => () => {
+    onClickRequestDeleteFlashCard: (id: FlashCardId) => {
       store.activeFlashCards.confirmDeleteId.$set(id);
     },
-    onConfirmRemoveFlashCard: (id: FlashCardId) => async () => {
+    onConfirmRemoveFlashCard: async (id: FlashCardId) => {
       const apiResponse = await trpc.flashCard.archive.mutate({ id });
       await indexeddb.write(store, { flashCards: apiResponse.flashCard });
       notify.success('Flash card archived');

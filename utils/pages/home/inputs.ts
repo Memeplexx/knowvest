@@ -32,7 +32,7 @@ export const useInputs = () => {
 const useInitializeOlikDevtools = () => {
   useEffect(() => {
     if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      connectOlikDevtoolsToStore({ trace: false });
+      connectOlikDevtoolsToStore({ trace: true });
     }
   }, []);
 }
@@ -85,17 +85,18 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
   const after = notesSorted[0]?.dateUpdated || null;
   const apiResponse = await trpc.session.initialize.mutate({ ...session.user as UserDTO, after });
   if (apiResponse.status === 'USER_CREATED') {
-    return store.$patchDeep({
+    return store.$patch({
       notes: apiResponse.notes,
       activeNoteId: apiResponse.notes[0].id,
     });
   }
   await indexeddb.write(store, apiResponse);
   const activeNoteId = notesSorted[0].id;
-  const selectedTagIds = store.$state.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
-  const synonymIds = store.$state.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
-  store.$patchDeep({
+  const selectedTagIds = store.noteTags.$filter.noteId.$eq(activeNoteId).tagId;
+  const synonymIds = store.tags.$filter.id.$in(selectedTagIds).synonymId;
+  store.$patch({
     activeNoteId,
     synonymIds,
   });
+
 }

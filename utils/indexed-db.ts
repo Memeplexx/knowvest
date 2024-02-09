@@ -12,7 +12,7 @@ export const indexeddb = {
     return new Promise<void>((resolve, reject) => {
       keysTyped(records)
         .filter(tableName => !!indexedDbState[tableName])
-        .forEach((tableName, index, array) => {
+        .forEach(function writeToDB(tableName, index, array) {
           const tableRecord = records[tableName]!;
           const tableRecords = Array.isArray(tableRecord) ? tableRecord : [tableRecord];
           (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$withMany(tableRecords);

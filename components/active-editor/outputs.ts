@@ -14,10 +14,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
         case 'CONFLICT': return notify.error(apiResponse.fields.tagText);
       }
       await indexeddb.write(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
-      const synonymId = store.$state.tags.findOrThrow(t => t.id === apiResponse.tag.id).synonymId;
-      if (!store.$state.synonymIds.includes(synonymId)) {
-        store.synonymIds.$push(synonymId);
-      }
+      store.synonymIds.$merge(store.tags.$find.id.$eq(apiResponse.tag.id).synonymId);
       store.activePanel.selection.$set('');
       codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0].anchor } });
       notify.success(`Tag "${apiResponse.tag.text}" created`);
@@ -26,8 +23,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       const { from, to } = codeMirror!.state.selection.ranges[0];
       const selection = codeMirror!.state.doc.sliceString(from, to);
       const selectionToLowerCase = selection.toLowerCase();
-      const synonymIds = store.$state.tags.filter(t => selectionToLowerCase.includes(t.text)).map(t => t.synonymId);
-      store.synonymIds.$set(synonymIds);
+      store.synonymIds.$set(store.tags.$filter.text.$containsIgnoreCase(selectionToLowerCase).synonymId);
       store.activePanel.selection.$set('');
       notify.success(`Filtered notes by "${selection}"`);
     },

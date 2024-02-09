@@ -15,7 +15,8 @@
     "postinstall": "prisma generate",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "prisma:generate": "prisma generate",
-    "prisma:create-db": "npx prisma migrate dev --name init"
+    "prisma:create-db": "npx prisma migrate dev --name init",
+    "test": "vitest"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -48,7 +49,7 @@
     "next-auth": "^4.22.4",
     "next-pwa": "^5.6.0",
     "next-superjson": "^0.0.4",
-    "olik": "1.0.41",
+    "olik": "1.0.49",
     "olik-react": "1.0.10",
     "postcss": "8.4.23",
     "react": "18.2.0",
@@ -65,16 +66,21 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^13.4.19",
     "@prisma/client": "^5.2.0",
+    "@testing-library/react": "^14.1.2",
     "@types/codemirror": "^5.60.7",
-    "@types/node": "^20.2.5",
+    "@types/node": "^20.5.7",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.1",
     "@types/styled-components": "^5.1.26",
     "@types/styled-system": "^5.1.16",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "jsdom": "^24.0.0",
     "prisma": "^5.2.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.2.1"
   }
 }

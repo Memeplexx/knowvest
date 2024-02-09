@@ -3,7 +3,7 @@ import { Inputs } from "./constants";
 
 export const useOutputs = ({ store, props }: Inputs) => {
   return {
-    onSelectNote: (noteId: NoteId) => async () => {
+    onSelectNote: async (noteId: NoteId) => {
       store.historyItems.index.$set(0);
       props.onSelectNote(noteId);
     }

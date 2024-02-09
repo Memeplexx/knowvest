@@ -126,7 +126,7 @@ export const useIsMounted = () => {
 export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) => {
   type StateType = Patch extends undefined ? AppState : AppState & Patch;
   const { store, notesSorted } = useContext(StoreContext)!;
-  useMemo(() => {
+  useMemo(function createSubStore() {
     if (!patch) { return; }
     store.$setNew(patch);
   }, [patch, store]);

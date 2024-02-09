@@ -29,19 +29,19 @@ export const ActiveNoteFlashCards = () => {
                       <>
                         <TextArea
                           value={item.text}
-                          onChangeDebounced={outputs.onChangeFlashCardText(item.id)}
+                          onChangeDebounced={text => outputs.onChangeFlashCardText(item.id, text)}
                           placeholder="Create a question to test yourself with..."
                           rows={4}
                         />
                         <DeleteButton
                           showIf={!!item.text}
                           children={<DeleteIcon />}
-                          onClick={outputs.onClickRequestDeleteFlashCard(item.id)}
+                          onClick={() => outputs.onClickRequestDeleteFlashCard(item.id)}
                         />
                         <Confirmation
                           showIf={!!inputs.confirmDeleteId}
                           onClose={outputs.onCancelRemoveFlashCard}
-                          onConfirm={outputs.onConfirmRemoveFlashCard(item.id)}
+                          onConfirm={() => outputs.onConfirmRemoveFlashCard(item.id)}
                           title='Delete note requested'
                           message='Are you sure you want to delete this flash card?'
                         />

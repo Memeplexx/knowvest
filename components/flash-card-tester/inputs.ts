@@ -9,8 +9,10 @@ export const useInputs = (props: Props) => {
   const notify = useNotifier();
   const bodyRef = useRef<HTMLDivElement>(null);
   const items = useMemo(() => {
-    return flashCards.filter(fc => !fc.isArchived && isAfter(new Date(), fc.nextQuestionDate));
-  }, [flashCards]);
+    return flashCards
+      .filter(fc => !fc.isArchived && isAfter(new Date(), fc.nextQuestionDate))
+      .map(fc => ({...fc, note: store.$state.notes.findOrThrow(n => n.id === fc.noteId)}));
+  }, [flashCards, store]);
 
   return {
     ...flashCardTester,
