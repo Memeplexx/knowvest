@@ -56,7 +56,7 @@ export const TagsWrapper = styled.div`
   row-gap: 12px;
 `;
 
-export const TagsSection = styled.div`
+export const TagsSection = styled(possible.div)`
   display: flex;
   flex-direction: column;
   gap: 8px;

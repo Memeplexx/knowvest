@@ -55,8 +55,8 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
                   key={option.value}
                   tabIndex={0}
                   onKeyDown={outputs.onKeyDownOption}
-                  onKeyUp={outputs.onKeyUpOption(option.value)}
-                  onClick={outputs.onClickOption(option.value)}
+                  onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
+                  onClick={e => outputs.onClickOption(option.value, e)}
                   children={props.renderOption?.(option) || option.label}
                 />
               ))

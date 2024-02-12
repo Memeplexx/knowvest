@@ -42,6 +42,7 @@ export const initialAppState = {
   ...indexedDbState,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
+  stateInitialized: false,
 };
 
 

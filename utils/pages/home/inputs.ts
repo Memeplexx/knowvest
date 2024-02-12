@@ -74,6 +74,7 @@ export const useDataInitializer = ({ store }: { store: HomeStore }) => {
     initializingData.current = true;
     initializeData({ session, store })
       .then(() => initializingData.current = false)
+      .then(function useDataInitializerDone() { store.stateInitialized.$set(true); })
       .catch(console.error);
   }, [mounted, session, store]);
 }

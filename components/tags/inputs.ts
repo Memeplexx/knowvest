@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 export const useInputs = () => {
 
-  const { store, tagsComponent, tags, synonymIds, noteTags, activeNoteId, groups, synonymGroups } = useStore(initialState);
+  const { store, tagsComponent, tags, synonymIds, noteTags, activeNoteId, groups, synonymGroups, stateInitialized } = useStore(initialState);
 
   const tagsForActiveNote = useMemo(() => {
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
@@ -70,6 +70,7 @@ export const useInputs = () => {
 
   return {
     store,
+    stateInitialized,
     ...tagsComponent,
     groupsWithSynonyms,
     tagsForActiveNote,

@@ -25,7 +25,7 @@ export const Tags = () => {
     <>
       <Modal
         showIf={inputs.showConfigDialog}
-        onClose={outputs.onHideDialog}
+        // onClose={outputs.onHideDialog}
         children={
           <TagsConfig
             onHide={outputs.onHideDialog}
@@ -77,6 +77,7 @@ export const Tags = () => {
             {inputs.groupsWithSynonyms.map(group => (
               <TagsSection
                 key={group.groupId}
+                showIf={inputs.stateInitialized}
                 children={
                   <>
                     <GroupHeaderTag
@@ -107,7 +108,7 @@ export const Tags = () => {
               />
             ))}
             <NoTagsPlaceholder
-              showIf={!inputs.tagsForActiveNote.length}
+              showIf={inputs.stateInitialized && !inputs.tagsForActiveNote.length}
               children={
                 <>
                   No tags associated with active note

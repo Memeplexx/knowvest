@@ -153,7 +153,7 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
 }
 
 export const editorHasTextUpdater = (store: ActivePanelStore) => {
-  return EditorView.updateListener.of(update => {
+  return EditorView.updateListener.of(function editorHasTextUpdater(update) {
     if (!update.docChanged) { return; }
     if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
       store.activePanel.editorHasText.$set(false);

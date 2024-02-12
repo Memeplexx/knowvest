@@ -7,7 +7,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
     onFocusInput: () => {
       props.onInputFocused();
     },
-    onClickOption: (value: Option['value']) => (event: MouseEvent) => {
+    onClickOption: (value: Option['value'], event: MouseEvent) => {
       if (event.detail === 0) { return; } /* handled by onKeyUpInput */
       props.onValueChange(value);
       props.onShowOptionsChange(false);
@@ -48,7 +48,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
         }
       }
     },
-    onKeyUpOption: (value: Option['value']) => (event: KeyboardEvent<HTMLElement>) => {
+    onKeyUpOption: (value: Option['value'], event: KeyboardEvent<HTMLElement>) => {
       if (event.key !== 'Enter') { return; }
       props.onValueChange(value);
     },

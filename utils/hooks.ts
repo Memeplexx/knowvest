@@ -1,36 +1,17 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef, useContext, FunctionComponent } from 'react';
-import { EventMap } from './types';
-import { AppState, NotificationContext, StoreContext } from './constants';
-import { Store } from 'olik';
-import dynamic from 'next/dynamic';
 import { NoteDTO } from '@/server/dtos';
+import dynamic from 'next/dynamic';
+import { Store } from 'olik';
+import { FunctionComponent, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
+import { AppState, NotificationContext, StoreContext } from './constants';
+import { EventMap } from './types';
 
-
-
-export const useEventHandlerForDomElement = <Type extends 'click' | 'keyup' | 'keydown'>(
-  target: HTMLElement | null,
-  type: Type,
-  handler: (event: EventMap<Type>) => void
-) => {
-  const ref = useRef(handler)
-  ref.current = handler;
-  useIsomorphicLayoutEffect(() => {
-    const listener = ((event: EventMap<Type>) => {
-      if (event.target !== target) { return; }
-      const handler = ref.current;
-      if (handler) {
-        handler(event);
-      }
-    }) as EventListener;
-    target?.addEventListener(type, listener);
-    return () => target?.removeEventListener(type, listener);
-  }, [target, type]);
-}
 
 export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'keydown'>(
   type: Type,
   handler: (event: EventMap<Type>) => void
 ) => {
+  const listenerName = `onDocument${type.substring(0, 1).toUpperCase()}${type.substring(1)}`;
+  Object.defineProperty(handler, 'name', { value: listenerName });
   const ref = useRef(handler)
   ref.current = handler;
   useIsomorphicLayoutEffect(() => {
@@ -40,6 +21,7 @@ export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'key
         handler(event);
       }
     }) as EventListener;
+    Object.defineProperty(listener, 'name', { value: listenerName });
     document.addEventListener(type, listener);
     return () => document.removeEventListener(type, listener);
   }, [type]);
@@ -128,6 +110,8 @@ export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) =
   const { store, notesSorted } = useContext(StoreContext)!;
   useMemo(function createSubStore() {
     if (!patch) { return; }
+    // prevent react.strictmode from setting state twice
+    if (Object.keys(patch).every(key => (store.$state as Record<string, unknown>)[key] !== undefined)) { return; }
     store.$setNew(patch);
   }, [patch, store]);
   return new Proxy({} as { store: Store<StateType>, notesSorted: NoteDTO[] } & { [key in keyof StateType]: (StateType)[key] }, {
