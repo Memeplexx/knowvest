@@ -249,12 +249,11 @@ export const useOutputs = (inputs: Inputs) => {
       if (inputs.groupId === groupId && inputs.modal) {
         return store.tagsConfig.modal.$set(null);
       }
-      const focusedGroupNameInputText = store.groups.$find.id.$eq(groupId).name;
       store.tagsConfig.$patch({
         modal: 'groupOptions',
         groupId,
         tagId: null,
-        focusedGroupNameInputText,
+        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name,
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
