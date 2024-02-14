@@ -6,7 +6,10 @@ export type Inputs = ReturnType<typeof useInputs>;
 export const initialState = {
   tagsComponent: {
     showConfigDialog: false,
-    hoveringGroupId: null as null | GroupId,
-    hoveringSynonymId: null as null | SynonymId,
   }
 }
+
+export const initialTransientState = {
+  hoveringGroupId: null as null | GroupId,
+  hoveringSynonymId: null as null | SynonymId,
+};

@@ -2,7 +2,7 @@ import { GroupId, SynonymId } from "@/server/dtos";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote }: Inputs) => {
+export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote, set }: Inputs) => {
   return {
     onClickSynonym: (synonymId: SynonymId) => {
       if (store.$state.synonymIds.includes(synonymId)) {
@@ -36,10 +36,10 @@ export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote }: Inp
       store.tagsComponent.showConfigDialog.$set(false);
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      store.tagsComponent.$patch({ hoveringGroupId, hoveringSynonymId });
+      set({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      store.tagsComponent.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
+      set({ hoveringGroupId: null, hoveringSynonymId: null });
     },
   };
 }

@@ -257,10 +257,10 @@ export const useOutputs = (inputs: Inputs) => {
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      store.tagsConfig.$patch({ hoveringGroupId, hoveringSynonymId });
+      inputs.set({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      store.tagsConfig.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
+      inputs.set({ hoveringGroupId: null, hoveringSynonymId: null });
     },
     onShowAutocompleteOptionsChange: (showAutocompleteOptions: boolean) => {
       store.tagsConfig.showAutocompleteOptions.$set(showAutocompleteOptions)

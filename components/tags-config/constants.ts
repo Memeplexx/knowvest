@@ -41,12 +41,15 @@ export const initialState = {
      */
     focusedGroupNameInputText: '',
 
-    hoveringGroupId: null as null | GroupId,
-    hoveringSynonymId: null as null | SynonymId,
     showAutocompleteOptions: false,
     autocompleteValue: null as null | GroupId | TagId,
   }
 };
+
+export const initialTransientState = {
+  hoveringGroupId: null as null | GroupId,
+  hoveringSynonymId: null as null | SynonymId,
+}
 
 export type Props = {
   onHide: () => void,
