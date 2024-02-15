@@ -20,7 +20,7 @@ export const useInputs = (
   }, [activeNoteId, historyItems.index, notesSorted]);
 
   useImperativeHandle(props.innerRef, () => ({
-    onScrollToBottom: () => store.historyItems.index.$add(1),
+    onScrollToBottom: function onScrollToBottom(){ store.historyItems.index.$add(1); },
   }), [store]);
 
   return {

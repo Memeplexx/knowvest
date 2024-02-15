@@ -15,6 +15,9 @@ export const indexeddb = {
         .forEach(function writeToDB(tableName, index, array) {
           const tableRecord = records[tableName]!;
           const tableRecords = Array.isArray(tableRecord) ? tableRecord : [tableRecord];
+          if (!tableRecords.length) {
+            return resolve();
+          }
           (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$withMany(tableRecords);
           const request = openDatabase();
           request.onsuccess = event => {

@@ -38,7 +38,7 @@ export const useInputs = (
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'bottom-end' });
 
   useImperativeHandle(forwardedRef, () => ({
-    hide: () => state.set({ show: false })
+    hide: function hide(){ state.set({ show: false }); }
   }), [state]);
 
   return {

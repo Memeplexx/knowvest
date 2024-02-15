@@ -25,8 +25,8 @@ export const useInputs = <Option extends OptionBase>(
   const optionsPopupExpanded = !!props.showOptions && !!options.length;
 
   useImperativeHandle(forwardedRef, () => ({
-    focusInput: () => inputRef.current!.focus(),
-    blurInput: () => inputRef.current!.blur(),
+    focusInput: function focusInput(){ inputRef.current!.focus(); },
+    blurInput: function blurInput() { inputRef.current!.blur(); },
   }), [inputRef]);
 
   return {

@@ -95,7 +95,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     if (ancestorMatches(eventTarget, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
       return;
     }
-    if (inputs.showAutocompleteOptions) {
+    if (store.tagsConfig.$state.showAutocompleteOptions) {
       return store.tagsConfig.showAutocompleteOptions.$set(false);
     }
     if (inputs.tagId) {
@@ -125,7 +125,6 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     const synonymId = store.tags.$find.id.$eq(tagId).synonymId;
     const autocompleteText = store.tags.$find.id.$eq(tagId).text;
     store.tagsConfig.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: /*'addSynonymsToActiveGroup'*/'addSynonymsToActiveSynonyms' });
-    focusAutocompleteInput();
   }
   const onAutocompleteSelectedWhileSynonymIsSelected = async ({ tagId }: { tagId: TagId }) => {
     if (!inputs.synonymId) { throw new Error(); }
