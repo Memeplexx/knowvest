@@ -1,3 +1,4 @@
+"use client";
 import { Card } from '../card';
 import { Props } from './constants';
 import { useInputs } from './inputs';

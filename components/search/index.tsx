@@ -1,3 +1,4 @@
+"use client";
 import { type ForwardedRef, forwardRef, Fragment } from 'react';
 import { Autocomplete } from '../autocomplete';
 import { AutocompleteOptionType, Props } from './constants';

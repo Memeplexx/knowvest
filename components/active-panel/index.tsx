@@ -1,3 +1,4 @@
+"use client";
 import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, SettingsIcon } from '@/utils/styles';
 import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';

@@ -1,3 +1,4 @@
+"use client";
 import { AutocompleteHandle, Props, OptionBase } from './constants';
 import { ClearIcon, ClearTextButton, ClearTextButtonWrapper, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
 import { useInputs } from './inputs';

@@ -1,3 +1,4 @@
+"use client";
 import { useInputs } from './inputs';
 import { Props } from './constants';
 import { Header, Icon, Result, RightBorder, ListItem, ListItemsWrapper, NoResultsWrapper, NoResultsIcon } from './styles';

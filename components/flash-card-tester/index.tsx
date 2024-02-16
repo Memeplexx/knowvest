@@ -1,3 +1,4 @@
+"use client";
 import { FaSadCry, FaSmileBeam } from "react-icons/fa";
 import ReadonlyNote from "../readonly-note";
 import { Props } from "./constants";

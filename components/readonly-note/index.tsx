@@ -1,3 +1,4 @@
+"use client";
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { Wrapper } from './styles';

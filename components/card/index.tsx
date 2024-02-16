@@ -1,3 +1,4 @@
+"use client";
 import { type ForwardedRef, forwardRef } from 'react';
 import { Actions, Body, Header, Heading, Loader, Wrapper } from './styles';
 import { useInputs } from './inputs';

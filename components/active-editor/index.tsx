@@ -1,3 +1,4 @@
+"use client";
 import { AddIcon, FilterIcon, SplitIcon } from '@/utils/styles';
 import { Loader } from '../loader';
 import { useOutputs } from './outputs';

@@ -1,3 +1,4 @@
+"use client";
 import { createPortal } from 'react-dom';
 import { Floating, Foreground, ForegroundWrapper } from './styles';
 import { useInputs } from './inputs';

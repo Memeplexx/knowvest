@@ -1,3 +1,4 @@
+"use client";
 import { Modal } from '../modal';
 import { CancelButton, ConfirmButton, DialogBody, ButtonWrapper, Message, Header } from './styles';
 import { Props } from './constants';

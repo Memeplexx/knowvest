@@ -1,3 +1,4 @@
+"use client";
 import { ButtonHTMLAttributes, ForwardedRef, HTMLAttributes, InputHTMLAttributes, forwardRef } from "react";
 
 

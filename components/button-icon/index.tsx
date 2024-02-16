@@ -1,3 +1,4 @@
+"use client";
 import { ForwardedRef, forwardRef } from "react";
 import { Props } from "./constants";
 import { Wrapper } from "./styles";

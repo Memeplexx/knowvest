@@ -1,3 +1,4 @@
+"use client";
 import { Confirmation } from "@/components/confirmation";
 import { NoResultsIcon } from "@/components/related-items/styles";
 import { AddIcon, DeleteIcon } from "@/utils/styles";

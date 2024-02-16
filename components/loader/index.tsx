@@ -1,3 +1,4 @@
+"use client";
 import { Props } from "./constants";
 import { Container, Spinner } from "./styles";
 
