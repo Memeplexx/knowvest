@@ -1,35 +1,31 @@
-"use client";
+"use server";
 
 import '@/styles/application.css';
 import '@/styles/reset.css';
 import '@/utils/array';
-import { NotificationContext, StoreContext } from '@/utils/constants'
-import { useInputs } from './inputs';
-import { SessionProvider } from 'next-auth/react';
-import { useOutputs } from './outputs';
+import { NextAuthProvider } from '@/utils/nextauth.provider';
+import SnackBarProvider from '@/utils/snackbar.provider';
+import StoreProvider from '@/utils/store.provider';
+import StyledComponentsRegistry from '@/utils/style-registry';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const inputs = useInputs();
-  const outputs = useOutputs(inputs);
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <SessionProvider
+        <NextAuthProvider
           children={
-            <StoreContext.Provider
-              value={{ store: inputs.store, notesSorted: inputs.notesSorted }}
+            <StoreProvider
               children={
-                <NotificationContext.Provider
-                  value={{
-                    error: outputs.onNotifyError,
-                    success: outputs.onNotifySuccess,
-                    info: outputs.onNotifyInfo,
-                  }}
-                  children={children}
+                <SnackBarProvider
+                  children={
+                    <StyledComponentsRegistry
+                      children={children}
+                    />
+                  }
                 />
               }
             />

@@ -1,5 +1,6 @@
 "use client";
 
+import '@/utils/array';
 import { ActiveNoteFlashCards } from '@/components/active-note-flash-cards';
 import { Navbar } from '@/components/navbar';
 import { Tags } from '@/components/tags';

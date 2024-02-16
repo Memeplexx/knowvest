@@ -1,3 +1,4 @@
+"use client";
 import { Container, Message, Popup } from './styles';
 import { Props, snackbarStatuses } from './constants';
 import { useInputs } from './inputs';
