@@ -1,3 +1,5 @@
+"use client";
+
 import { NoteDTO } from '@/server/dtos';
 import { highlightTagsInEditor } from '@/utils/functions';
 import { useIsomorphicLayoutEffect } from '@/utils/hooks';

@@ -1,3 +1,5 @@
+"use client";
+
 import { useDebounce } from "@/utils/hooks";
 import { TextareaHTMLAttributes, useState } from "react";
 

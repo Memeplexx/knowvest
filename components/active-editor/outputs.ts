@@ -1,13 +1,14 @@
-import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
+import { splitNote } from "@/app/actions/note";
+import { createTagFromActiveNote } from "@/app/actions/tag";
 
 
 export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => {
   return {
     onClickCreateNewTagFromSelection: async () => {
       store.activePanel.loadingSelection.$set(true);
-      const apiResponse = await trpc.tag.createFromActiveNote.mutate({ tagText: store.activePanel.selection.$state });
+      const apiResponse = await createTagFromActiveNote({ tagText: store.activePanel.selection.$state });
       store.activePanel.loadingSelection.$set(false);
       switch (apiResponse.status) {
         case 'BAD_REQUEST': return notify.error(apiResponse.fields.tagText);
@@ -30,10 +31,12 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onClickSplitNoteFromSelection: async () => {
       const range = codeMirror!.state.selection.ranges[0];
       store.activePanel.loadingSelection.$set(true);
-      const apiResponse = await trpc.note.split.mutate({ ...range, splitFromNoteId: store.$state.activeNoteId });
+      const apiResponse = await splitNote({ ...range, splitFromNoteId: store.$state.activeNoteId });
       await indexeddb.write(store, apiResponse);
-      store.activePanel.loadingSelection.$set(false);
-      store.activePanel.selection.$set('');
+      store.activePanel.$patch({
+        loadingSelection: false,
+        selection: '',
+      })
       codeMirror?.dispatch({
         changes: {
           from: 0,

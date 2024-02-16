@@ -1,3 +1,5 @@
+"use client";
+
 import { useComponentDownloader, useStore } from "@/utils/hooks";
 import { useRef } from "react";
 import { CardHandle } from "../card/constants";

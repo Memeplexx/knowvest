@@ -1,11 +1,12 @@
 import { NoteId, TagId } from "@/server/dtos";
-import { trpc } from "@/utils/trpc";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { indexeddb } from "@/utils/indexed-db";
 import { ActivePanelStore } from "./constants";
+import { updateNoteTags } from "@/app/actions/notetag";
+import { updateNote } from "@/app/actions/note";
 
 export const autocompleteExtension = (store: ActivePanelStore) => {
   return autocompletion({
@@ -26,18 +27,18 @@ export const autocompleteExtension = (store: ActivePanelStore) => {
 export const createNotePersisterExtension = ({ debounce, store }: { debounce: number, store: ActivePanelStore }) => {
   let timestamp = Date.now();
   let activeNoteIdRef = store.$state.activeNoteId;
-  const updateNote = async (update: ViewUpdate) => {
+  const doNoteUpdate = async (update: ViewUpdate) => {
     if (store.$state.activeNoteId !== activeNoteIdRef) { return; }
     if (Date.now() - timestamp < debounce) { return; }
     if (!store.$state.activePanel.allowNotePersister) { return; }
-    const apiResponse = await trpc.note.update.mutate({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
+    const apiResponse = await updateNote({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
     await indexeddb.write(store, { notes: apiResponse.updatedNote });
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
     if (!store.$state.activePanel.allowNotePersister) { return; }
     timestamp = Date.now();
-    setTimeout(() => updateNote(update), debounce)
+    setTimeout(() => doNoteUpdate(update), debounce)
     activeNoteIdRef = store.$state.activeNoteId;
   });
 }
@@ -85,7 +86,7 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
     }
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
-    const apiResponse = await trpc.noteTag.noteTagsUpdate.mutate({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
+    const apiResponse = await updateNoteTags({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
     await indexeddb.write(store, { noteTags: apiResponse.noteTags });
     const tagIds = apiResponse.noteTags.filter(nt => !nt.isArchived).map(nt => nt.tagId);
     const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId).distinct();

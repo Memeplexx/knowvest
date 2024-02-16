@@ -1,13 +1,15 @@
 import { GroupId, TagId } from '@/server/dtos';
-import { trpc } from '@/utils/trpc';
 import { Inputs } from './constants';
 import { ancestorMatches } from '@/utils/functions';
 import { indexeddb } from '@/utils/indexed-db';
+import { addTagToSynonym, createTagToSynonym } from '@/app/actions/synonym';
+import { createTag, updateTag } from '@/app/actions/tag';
+import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '@/app/actions/group';
 
 
 export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const completeCreateTagForSynonym = async () => {
-    const apiResponse = await trpc.synonym.createTag.mutate({
+    const apiResponse = await createTagToSynonym({
       text: inputs.autocompleteText.trim(),
       synonymId: inputs.synonymId
     });
@@ -20,7 +22,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     blurAutocompleteInput();
   }
   const completeCreateTag = async () => {
-    const apiResponse = await trpc.tag.create.mutate({
+    const apiResponse = await createTag({
       text: inputs.autocompleteText.trim(),
     });
     switch (apiResponse.status) {
@@ -34,7 +36,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   }
   const completeCreateTagForGroup = async () => {
     if (!inputs.groupId || !inputs.synonymId) { return }
-    const apiResponse = await trpc.group.createTag.mutate({
+    const apiResponse = await createTagForGroup({
       text: inputs.autocompleteText.trim(),
       groupId: inputs.groupId,
       synonymId: inputs.synonymId
@@ -49,7 +51,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   }
   const completeCreateGroup = async () => {
     if (!inputs.synonymId) { throw new Error() }
-    const apiResponse = await trpc.group.create.mutate({
+    const apiResponse = await createGroup({
       name: inputs.autocompleteText.trim(),
       synonymId: inputs.synonymId
     });
@@ -63,7 +65,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   }
   const completeEditGroupName = async () => {
     if (!inputs.groupId) { throw new Error(); }
-    const apiResponse = await trpc.group.update.mutate({
+    const apiResponse = await updateGroup({
       groupId: inputs.groupId,
       name: inputs.focusedGroupNameInputText,
     });
@@ -77,7 +79,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   }
   const completeEditTag = async () => {
     if (!inputs.tagId) { throw new Error() }
-    const apiResponse = await trpc.tag.update.mutate({ tagId: inputs.tagId, text: inputs.autocompleteText.trim() })
+    const apiResponse = await updateTag({ tagId: inputs.tagId, text: inputs.autocompleteText.trim() })
     switch (apiResponse.status) {
       case 'TAG_UNCHANGED': return notify.info('Tag unchanged')
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text)
@@ -129,7 +131,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const onAutocompleteSelectedWhileSynonymIsSelected = async ({ tagId }: { tagId: TagId }) => {
     if (!inputs.synonymId) { throw new Error(); }
     const selected = store.$state.tags.findOrThrow(t => t.id === tagId);
-    const apiResponse = await trpc.synonym.addTag.mutate({ tagId, synonymId: inputs.synonymId });
+    const apiResponse = await addTagToSynonym({ tagId, synonymId: inputs.synonymId });
     const synonymId = apiResponse.tagsUpdated[0].synonymId;
     const groupHasMoreThanOneTag = store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
     const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
@@ -140,14 +142,14 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const onAutocompleteSelectedWhileGroupIsSelected = async ({ tagId }: { tagId: TagId }) => {
     if (!inputs.groupId) { throw new Error(); }
     const { synonymId } = store.$state.tags.findOrThrow(t => t.id === tagId);
-    const apiResponse = await trpc.group.addSynonym.mutate({ groupId: inputs.groupId, synonymId });
+    const apiResponse = await addSynonymToGroup({ groupId: inputs.groupId, synonymId });
     store.tagsConfig.autocompleteText.$set('');
     await indexeddb.write(store, { synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
   };
   const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async ({ groupId }: { groupId: GroupId }) => {
     if (!inputs.synonymId) { throw new Error(); }
-    const apiResponse = await trpc.group.addSynonym.mutate({ groupId, synonymId: inputs.synonymId });
+    const apiResponse = await addSynonymToGroup({ groupId, synonymId: inputs.synonymId });
     await indexeddb.write(store, { synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
   }

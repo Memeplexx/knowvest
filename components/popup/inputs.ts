@@ -1,3 +1,5 @@
+"use client";
+
 import { ForwardedRef, useImperativeHandle, useRef } from "react";
 import { useSpring } from "react-spring";
 import { PopupHandle, Props, animationDuration } from "./constants";

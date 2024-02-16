@@ -1,13 +1,13 @@
-import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
+import { archiveNote, createNote, duplicateNote } from "@/app/actions/note";
 
 
 export const useOutputs = ({ store, notify, popupRef, notesSorted }: Inputs) => {
   return {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
-      const apiResponse = await trpc.note.create.mutate();
+      const apiResponse = await createNote({});
       await indexeddb.write(store, { notes: apiResponse.note });
       store.activePanel.loadingNote.$set(false);
       store.activeNoteId.$set(apiResponse.note.id);
@@ -17,12 +17,10 @@ export const useOutputs = ({ store, notify, popupRef, notesSorted }: Inputs) => 
       popupRef.current?.hide();
     },
     onClickConfirmRemoveNote: async () => {
-      store.activePanel.allowNotePersister.$set(false);
-      store.activePanel.loadingNote.$set(true);
-      const apiResponse = await trpc.note.archive.mutate({ noteId: store.$state.activeNoteId });
+      store.activePanel.$patch({ allowNotePersister: false, loadingNote: true })
+      const apiResponse = await archiveNote({ noteId: store.$state.activeNoteId });
       await indexeddb.write(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
-      store.activePanel.loadingNote.$set(false);
-      store.activePanel.confirmDelete.$set(false);
+      store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
       const newNoteId = notesSorted[0].id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
@@ -37,7 +35,7 @@ export const useOutputs = ({ store, notify, popupRef, notesSorted }: Inputs) => 
     },
     onClickDuplicateNote: async () => {
       store.activePanel.loadingNote.$set(true);
-      const apiResponse = await trpc.note.duplicate.mutate({ noteId: store.$state.activeNoteId });
+      const apiResponse = await duplicateNote({ noteId: store.$state.activeNoteId })
       await indexeddb.write(store, { notes: apiResponse.noteCreated, noteTags: apiResponse.noteTagsCreated });
       store.activePanel.loadingNote.$set(false);
       popupRef.current?.hide();

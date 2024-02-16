@@ -1,3 +1,5 @@
+"use client";
+
 import { useComponentDownloader, useNotifier, useStore } from '@/utils/hooks';
 import { useRef } from 'react';
 import { PopupHandle } from '../popup/constants';

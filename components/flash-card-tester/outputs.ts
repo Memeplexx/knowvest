@@ -1,8 +1,8 @@
 import { ancestorMatches } from "@/utils/functions";
 import { Inputs } from "./constants";
 import { useEventHandlerForDocument } from "@/utils/hooks";
-import { trpc } from "@/utils/trpc";
 import { indexeddb } from "@/utils/indexed-db";
+import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/app/actions/flashcard";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store, notify, bodyRef, items } = inputs;
@@ -24,13 +24,13 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickWrongAnswer: async () => {
       const id = items[0].id;
-      const apiResponse = await trpc.flashCard.answerQuestionIncorrectly.mutate({ id });
+      const apiResponse = await answerFlashCardQuestionIncorrectly({ id });
       await indexeddb.write(store, { flashCards: apiResponse.flashCard });
       notify.success('Better luck next time...');
     },
     onClickRightAnswer: async () => {
       const id = items[0].id;
-      const apiResponse = await trpc.flashCard.answerQuestionCorrectly.mutate({ id });
+      const apiResponse = await answerFlashCardQuestionCorrectly({ id });
       await indexeddb.write(store, { flashCards: apiResponse.flashCard });
       notify.success('Nice one!');
     },

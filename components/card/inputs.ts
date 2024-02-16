@@ -1,3 +1,5 @@
+"use client";
+
 import { ForwardedRef, useImperativeHandle, useRef } from "react";
 import { CardHandle, Props } from "./constants";
 

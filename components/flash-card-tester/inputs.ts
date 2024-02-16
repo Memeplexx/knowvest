@@ -1,3 +1,5 @@
+"use client";
+
 import { useNotifier, useStore } from "@/utils/hooks";
 import { isAfter } from "date-fns";
 import { useMemo, useRef } from "react";

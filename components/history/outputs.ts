@@ -1,7 +1,7 @@
 import { NoteId } from "@/server/dtos";
-import { trpc } from "@/utils/trpc";
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
+import { viewNote } from "@/app/actions/note";
 
 
 export const useOutputs = ({ store, cardRef, props }: Inputs) => {
@@ -13,7 +13,7 @@ export const useOutputs = ({ store, cardRef, props }: Inputs) => {
       store.synonymIds.$set(synonymIds);
       // store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
-      const apiResponse = await trpc.note.view.mutate({ noteId });
+      const apiResponse = await viewNote({ noteId });
       await indexeddb.write(store, { notes: apiResponse.note });
       cardRef.current!.scrollToTop();
     }

@@ -1,12 +1,14 @@
 import { useEventHandlerForDocument } from '@/utils/hooks';
 
 import { GroupId, SynonymId, TagId } from '@/server/dtos';
-import { trpc } from '@/utils/trpc';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { TypedKeyboardEvent } from '@/utils/types';
 import { Inputs } from './constants';
 import { indexeddb } from '@/utils/indexed-db';
 import { useSharedFunctions } from './shared';
+import { removeTagFromItsCurrentSynonym } from '@/app/actions/synonym';
+import { archiveGroup, removeSynonymFromGroup } from '@/app/actions/group';
+import { archiveTag } from '@/app/actions/tag';
 
 
 export const useOutputs = (inputs: Inputs) => {
@@ -74,14 +76,14 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickRemoveTagFromSynonyms: async () => {
       if (!inputs.tagId) { return; }
-      const apiResponse = await trpc.synonym.removeTagFromItsCurrentSynonym.mutate({ tagId: inputs.tagId });
+      const apiResponse = await removeTagFromItsCurrentSynonym({ tagId: inputs.tagId });
       await indexeddb.write(store, { synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
       store.tagsConfig.$patch({ tagId: null, autocompleteText: '' });
       notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
       if (!inputs.groupSynonymId) { return; }
-      const response = await trpc.group.removeSynonym.mutate({ groupId: inputs.groupId!, synonymId: inputs.groupSynonymId! });
+      const response = await removeSynonymFromGroup({ groupId: inputs.groupId!, synonymId: inputs.groupSynonymId! });
       await indexeddb.write(store, { groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
@@ -219,7 +221,7 @@ export const useOutputs = (inputs: Inputs) => {
       shared.blurAutocompleteInput();
     },
     onClickConfirmArchiveTag: async () => {
-      const apiResponse = await trpc.tag.archive.mutate({ tagId: inputs.tagId! });
+      const apiResponse = await archiveTag({ tagId: inputs.tagId! });
       const synonymId = inputs.tagsInSynonymGroup.length === 1 ? null : inputs.synonymId;
       const lastTag = inputs.tagsInSynonymGroup.length === 1;
       store.tagsConfig.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : inputs.autocompleteAction });
@@ -227,7 +229,7 @@ export const useOutputs = (inputs: Inputs) => {
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {
-      const response = await trpc.group.archive.mutate({ groupId: inputs.groupId! });
+      const response = await archiveGroup({ groupId: inputs.groupId! });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
       await indexeddb.write(store, { synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
       notify.success('Group archived');

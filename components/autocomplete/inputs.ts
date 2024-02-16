@@ -1,3 +1,5 @@
+"use client";
+
 import { floatingUiDefaultOptions } from "@/utils/constants";
 import { useFloating } from "@floating-ui/react";
 import { ForwardedRef, useImperativeHandle, useMemo, useRef } from "react";

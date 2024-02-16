@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from "react";
 import { Props } from "./constants";
 import { useRecord } from "@/utils/hooks";
