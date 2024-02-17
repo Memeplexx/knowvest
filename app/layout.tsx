@@ -15,26 +15,33 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body suppressHydrationWarning={true}>
-        <NextAuthProvider
+    <html lang="en"
+      children={
+        <body
+          suppressHydrationWarning={true}
           children={
-            <StoreProvider
-              children={
-                <SnackBarProvider
-                  children={
-                    <StyledComponentsRegistry
-                      children={children}
-                    />
-                  }
-                />
-              }
-            />
+            <>
+              <NextAuthProvider
+                children={
+                  <StoreProvider
+                    children={
+                      <SnackBarProvider
+                        children={
+                          <StyledComponentsRegistry
+                            children={children}
+                          />
+                        }
+                      />
+                    }
+                  />
+                }
+              />
+              <SpeedInsights />
+              <Analytics />
+            </>
           }
         />
-        <SpeedInsights />
-        <Analytics />
-      </body>
-    </html>
+      }
+    />
   )
 }
