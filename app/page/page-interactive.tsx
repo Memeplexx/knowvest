@@ -7,7 +7,7 @@ import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 
 
-export default function Index() {
+export default function PageInteractive() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (

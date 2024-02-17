@@ -1,6 +1,6 @@
 "use server";
 import { getServerSession } from 'next-auth';
-import LoginButton from './page/login-button';
+import LoginButton from './page/page-interactive';
 import { CenterContent, Title, Divider, Wrapper } from './page/styles';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { redirect } from 'next/navigation';

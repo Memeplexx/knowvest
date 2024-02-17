@@ -2,11 +2,11 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import ProviderButtons from "./provider-buttons";
+import ProviderButtons from "./page-interactive";
 import { CenterContent, Divider, SubTitle, Title, Wrapper } from "./styles";
 
 
-export default async function Login() {
+export default async function PageInteractive() {
 
   const session = await getServerSession(authOptions);
   if (session) {
