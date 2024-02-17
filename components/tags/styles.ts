@@ -16,7 +16,6 @@ export const Tag = styled.div <{ selected: boolean, $first: boolean, $last: bool
   `}
   ${p => p.selected && `
     background-color: #b100b159;
-    font-weight: 500;
     z-index: 1;
   `}
   ${p => p.$first && `
