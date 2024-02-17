@@ -1,3 +1,4 @@
+"use client";
 import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
 import styled from "styled-components";
 

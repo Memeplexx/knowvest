@@ -1,7 +1,7 @@
 "use server";
 import { z } from 'zod';
 
-import { NotFoundError, receive, prisma } from './_common';
+import { receive, prisma, ApiError } from './_common';
 import { ZodNoteId, ZodTagId } from '@/server/dtos';
 
 
@@ -14,10 +14,10 @@ export const updateNoteTags = receive({
 
   // Validation
   const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!note) { throw new NotFoundError('Note not found'); }
+  if (!note) { throw new ApiError('NOT_FOUND', 'Note not found'); }
   await [...addTagIds, ...removeTagIds].map(async tagId => {
     const tag = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-    if (!tag) { throw new NotFoundError('Tag not found'); }
+    if (!tag) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
   });
 
   // If there are any tags to be added...

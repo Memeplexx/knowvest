@@ -1,7 +1,7 @@
 "use server";
 import { z } from 'zod';
 
-import { ConflictError, NotFoundError, receive, listNotesWithTagText, prisma } from './_common';
+import { ApiError, receive, listNotesWithTagText, prisma } from './_common';
 import { ZodGroupId, ZodSynonymId } from '@/server/dtos';
 
 
@@ -13,7 +13,7 @@ export const createGroup = receive({
   // Validation
   if (!name.trim().length) { return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const; }
   const groupWithSameName = await prisma.group.findFirst({ where: { name, userId } });
-  if (groupWithSameName) { throw new ConflictError('A group with this name already exists.'); }
+  if (groupWithSameName) { throw new ApiError('CONFLICT', 'A group with this name already exists.'); }
 
   // Logic
   const createdGroup = await prisma.group.create({ data: { name, userId } });
@@ -42,7 +42,7 @@ export const archiveGroup = receive({
 
   // Validation
   const groupToArchive = await prisma.group.findFirst({ where: { id: groupId } });
-  if (!groupToArchive) { throw new NotFoundError('Group not found'); }
+  if (!groupToArchive) { throw new ApiError('NOT_FOUND', 'Group not found'); }
 
   // Logic
   const synonymGroupsArchived = await prisma.synonymGroup.findMany({ where: { groupId } });
@@ -58,7 +58,7 @@ export const removeSynonymFromGroup = receive({
 
   // Validation
   const synonymToArchive = await prisma.synonym.findFirst({ where: { id: synonymId, tag: { some: { userId } } } });
-  if (!synonymToArchive) { throw new NotFoundError('Synonym not found'); }
+  if (!synonymToArchive) { throw new ApiError('NOT_FOUND', 'Synonym not found'); }
 
   // Update synonym groups
   const synonymGroupsToBeArchived = await prisma.synonymGroup.findMany({ where: { synonymId, groupId } });
@@ -79,9 +79,9 @@ export const addSynonymToGroup = receive({
 
   // Validation
   const group = await prisma.group.findFirst({ where: { id: groupId, userId } });
-  if (!group) { throw new NotFoundError('Group not found'); }
+  if (!group) { throw new ApiError('NOT_FOUND', 'Group not found'); }
   const synonym = await prisma.synonym.findFirst({ where: { id: synonymId, tag: { some: { userId } } } });
-  if (!synonym) { throw new NotFoundError('Synonym not found'); }
+  if (!synonym) { throw new ApiError('NOT_FOUND', 'Synonym not found'); }
 
   // Logic
   const existingSynonymGroup = await prisma.synonymGroup.findFirst({ where: { synonymId, groupId } });
@@ -104,9 +104,9 @@ export const createTagForGroup = receive({
 
   // Validation
   const group = await prisma.group.findFirst({ where: { id: groupId, userId } });
-  if (!group) { throw new NotFoundError('Group not found'); }
+  if (!group) { throw new ApiError('NOT_FOUND', 'Group not found'); }
   const synonym = await prisma.synonym.findFirst({ where: { id: synonymId, tag: { some: { userId } } } });
-  if (!synonym) { throw new NotFoundError('Synonym not found'); }
+  if (!synonym) { throw new ApiError('NOT_FOUND', 'Synonym not found'); }
   if (!text.trim()) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   const tagWithSameName = await prisma.tag.findFirst({ where: { text, userId } });
   if (tagWithSameName) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }

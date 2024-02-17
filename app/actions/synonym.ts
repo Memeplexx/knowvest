@@ -1,7 +1,7 @@
 "use server";
 import { z } from 'zod';
 
-import { NotFoundError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups } from './_common';
+import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups } from './_common';
 import { ZodSynonymId, ZodTagId } from '@/server/dtos';
 
 
@@ -13,7 +13,7 @@ export const removeTagFromItsCurrentSynonym = receive({
 
   // Validation
   const tag = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-  if (!tag) { throw new NotFoundError('Tag could not be found'); }
+  if (!tag) { throw new ApiError('NOT_FOUND', 'Tag could not be found'); }
 
   // Create a new synonym and assign the tag to it
   const synonym = await prisma.synonym.create({ data: {} });
@@ -33,9 +33,9 @@ export const addTagToSynonym = receive({
 
   // Validate
   const tagToUpdate = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-  if (!tagToUpdate) { throw new NotFoundError('Tag could not be found'); }
+  if (!tagToUpdate) { throw new ApiError('NOT_FOUND', 'Tag could not be found'); }
   const synonym = await prisma.synonym.findFirst({ where: { id: synonymId, tag: { some: { userId } } } });
-  if (!synonym) { throw new NotFoundError('Synonym could not be found'); }
+  if (!synonym) { throw new ApiError('NOT_FOUND', 'Synonym could not be found'); }
 
   // Find all tags that are currently associated with the same synonym as the tag to be updated
   const allTagsAssociatedWithOldSynonym = await prisma.tag.findMany({ where: { synonymId: tagToUpdate.synonymId } });

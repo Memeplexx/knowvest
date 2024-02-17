@@ -1,7 +1,7 @@
 import { ZodTagId } from "@/server/dtos";
 import { NoteTag, Prisma } from "@prisma/client";
 import { z } from "zod";
-import { NotFoundError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups } from "./_common";
+import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups } from "./_common";
 
 export const createTag = receive({
   text: z.string(),
@@ -35,7 +35,7 @@ export const updateTag = receive({
   // Validate
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   const toUpdate = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-  if (!toUpdate) { throw new NotFoundError('Tag not found'); }
+  if (!toUpdate) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
   if (toUpdate.text === text) { return { status: 'TAG_UNCHANGED' } as const; }
   const tagWithSameName = await prisma.tag.findFirst({ where: { text } });
   if (tagWithSameName) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
@@ -68,7 +68,7 @@ export const archiveTag = receive({
 
   // Validate
   const tag = await prisma.tag.findFirst({ where: { id: tagId } });
-  if (!tag) { throw new NotFoundError('Tag not found'); }
+  if (!tag) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
 
   // Archive any noteTags associated with the tag which is about to be archived
   await prisma.noteTag.updateMany({ where: { tagId: tagId }, data: { isArchived: true } });

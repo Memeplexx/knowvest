@@ -15,22 +15,22 @@ export default async function Login() {
 
   return (
     <Wrapper
-        children={
-          <CenterContent
-            children={
-              <>
-                <Title
-                  children="know-vest"
-                />
-                <SubTitle
-                  children="sign in options"
-                />
-                <Divider />
-                <ProviderButtons />
-              </>
-            }
-          />
-        }
-      />
+      children={
+        <CenterContent
+          children={
+            <>
+              <Title
+                children="know-vest"
+              />
+              <SubTitle
+                children="sign in options"
+              />
+              <Divider />
+              <ProviderButtons />
+            </>
+          }
+        />
+      }
+    />
   )
 }

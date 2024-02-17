@@ -1,6 +1,6 @@
 "use server";
 import { NoteDTO, NoteTagDTO, ZodNoteId } from "@/server/dtos";
-import { NotFoundError, receive, getUserId, listTagsWithTagText, prisma } from "./_common";
+import { ApiError, receive, getUserId, listTagsWithTagText, prisma } from "./_common";
 import { z } from "zod";
 
 
@@ -21,7 +21,7 @@ export const archiveNote = receive({
 
   // Validate
   const noteToArchive = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!noteToArchive) { throw new NotFoundError('Note not found'); }
+  if (!noteToArchive) { throw new ApiError('NOT_FOUND', 'Note not found'); }
 
   // Archive all note tags associated with the note that is being archived
   const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId } })
@@ -42,7 +42,7 @@ export const duplicateNote = receive({
 
   // Logic
   const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!note) { throw new NotFoundError('Note not found'); }
+  if (!note) { throw new ApiError('NOT_FOUND', 'Note not found'); }
 
   // Create a new note with the same text as the note being duplicated
   const now = new Date();
@@ -66,7 +66,7 @@ export const splitNote = receive({
 
   const userId = await getUserId();
   const note = await prisma.note.findFirst({ where: { id: splitFromNoteId } });
-  if (!note) { throw new NotFoundError('Could not find note'); }
+  if (!note) { throw new ApiError('NOT_FOUND', 'Could not find note'); }
 
   // Create new note with the split text
   const now = new Date();
@@ -102,7 +102,7 @@ export const updateNote = receive({
 
   // Validation
   const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!note) { throw new NotFoundError('Note not found'); }
+  if (!note) { throw new ApiError('NOT_FOUND', 'Note not found'); }
 
   // Update note
   const now = new Date();
@@ -118,7 +118,7 @@ export const viewNote = receive({
 
   // Validate
   const noteToView = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!noteToView) { throw new NotFoundError('Note not found'); }
+  if (!noteToView) { throw new ApiError('NOT_FOUND', 'Note not found'); }
 
   // Update note
   const note = await prisma.note.update({ where: { id: noteId }, data: { dateViewed: new Date() } });

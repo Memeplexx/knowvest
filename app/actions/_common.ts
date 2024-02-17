@@ -10,7 +10,7 @@ export const prisma = new PrismaClient({
 
 export async function getUserId() {
   const session = await getServerSession(authOptions);
-  return (await prisma.user.findFirstOrThrow({where: { email: session!.user!.email! }})).id as UserId;
+  return (await prisma.user.findFirstOrThrow({ where: { email: session!.user!.email! } })).id as UserId;
 }
 
 export const pruneOrphanedSynonymsAndSynonymGroups = async () => {
@@ -63,30 +63,23 @@ export const receive = <T extends ZodRawShape>(spec: T) => {
   return {
     then: <R>(processor: (a: z.infer<z.ZodObject<typeof spec>> & { userId: UserId }) => Promise<R>) => {
       return async (arg: z.infer<z.ZodObject<typeof spec>>) => {
-        const r = z.object(spec).parse(arg);
-        return processor({
-          ...r,
-          userId: await getUserId()
-        }) as EntityToDto<R>;
+        const parseResponse = z.object(spec).safeParse(arg);
+        if (!parseResponse.success) {
+          throw new ApiError('BAD_REQUEST', 'Invalid request');
+        } else {
+          return processor({
+            ...parseResponse.data,
+            userId: await getUserId()
+          }) as EntityToDto<R>;
+        }
       }
     }
   }
 }
 
-export class NotFoundError extends Error {
-  code = 'NOT_FOUND';
-  message!: string;
-  constructor(message: string) {
+export class ApiError extends Error {
+  constructor(readonly code: 'NOT_FOUND' | 'CONFLICT' | 'BAD_REQUEST', readonly message: string) {
     super(message);
-    Object.setPrototypeOf(this, NotFoundError.prototype);
-  }
-}
-
-export class ConflictError extends Error {
-  code = 'CONFLICT';
-  message!: string;
-  constructor(message: string) {
-    super(message);
-    Object.setPrototypeOf(this, ConflictError.prototype);
+    Object.setPrototypeOf(this, ApiError.prototype);
   }
 }
