@@ -12,9 +12,9 @@ export default function HistoryItems (
   return (
     <>
       <ListItemsWrapper
-        showIf={!!inputs.notes.length}
+        showIf={!!inputs.items.length}
         children={
-          inputs.notes.map(note => (
+          inputs.items.map(note => (
             <ListItem
               key={note.id}
               onClick={() => outputs.onSelectNote(note.id)}
@@ -39,7 +39,7 @@ export default function HistoryItems (
           ))}
       />
       <NoResultsWrapper
-        showIf={!inputs.notes.length}
+        showIf={!inputs.items.length}
         children={
           <>
             <NoResultsIcon />

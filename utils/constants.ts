@@ -27,7 +27,7 @@ export const floatingUiDefaultOptions = {
 
 export type AppState = typeof initialAppState;
 
-export const StoreContext = createContext<{ store: Store<AppState>, notesSorted: NoteDTO[] } | undefined>(undefined);
+export const StoreContext = createContext<{ store: Store<AppState> } | undefined>(undefined);
 
 export const indexedDbState = {
   tags: new Array<TagDTO>(),

@@ -1,5 +1,5 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { EntityToDto, FlashCardId, GroupId, NoteDTO, NoteId, SynonymDTO, SynonymId, TagDTO, TagId, UserId } from "@/utils/types";
+import { DatelessObject, EntityToDto, FlashCardId, GroupId, NoteDTO, NoteId, SynonymDTO, SynonymId, TagDTO, TagId, UserId } from "@/utils/types";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { ZodNumberDef, ZodRawShape, ZodType, z } from "zod";
@@ -42,6 +42,33 @@ export const listTagsWithTagText = async ({ userId, noteText }: { userId: UserId
   );
 }
 
+// export const receive = <T extends ZodRawShape>(spec: T) => {
+//   return {
+//     then: <R>(processor: (a: z.infer<z.ZodObject<typeof spec>> & { userId: UserId }) => Promise<R>) => {
+//       return async (arg: z.infer<z.ZodObject<typeof spec>>) => {
+//         const parseResponse = z.object(spec).safeParse(arg);
+//         if (!parseResponse.success) {
+//           throw new ApiError('BAD_REQUEST', 'Invalid request');
+//         } else {
+//           const session = await getServerSession(authOptions);
+//           const userId = (await prisma.user.findFirstOrThrow({ where: { email: session!.user!.email! } })).id as UserId;
+//           const response = await processor({
+//             ...parseResponse.data,
+//             userId,
+//           });
+//           const replaceDatesWithStrings = <X>(arg: X): DatelessObject<X> => {
+//             return (arg === null ? null
+//               : Array.isArray(arg) ? arg.map(a => replaceDatesWithStrings(a))
+//                 : typeof (arg) === 'object' ? (Object.keys(arg) as Array<keyof X>)
+//                   .mapToObject(k => k, k => replaceDatesWithStrings(arg[k])) : arg instanceof Date ? arg.toISOString() : arg
+//             ) as DatelessObject<X>;
+//           }
+//           return replaceDatesWithStrings(response as EntityToDto<R>);
+//         }
+//       }
+//     }
+//   }
+// }
 export const receive = <T extends ZodRawShape>(spec: T) => {
   return {
     then: <R>(processor: (a: z.infer<z.ZodObject<typeof spec>> & { userId: UserId }) => Promise<R>) => {

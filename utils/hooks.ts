@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import { Store } from 'olik';
 import { FunctionComponent, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
 import { AppState, NotificationContext, StoreContext } from './constants';
-import { EventMap, NoteDTO } from './types';
+import { EventMap } from './types';
 
 
 export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'keydown'>(
@@ -106,17 +106,16 @@ export const useIsMounted = () => {
 
 export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) => {
   type StateType = Patch extends undefined ? AppState : AppState & Patch;
-  const { store, notesSorted } = useContext(StoreContext)!;
+  const { store } = useContext(StoreContext)!;
   useMemo(function createSubStore() {
     if (!patch) { return; }
     // prevent react.strictmode from setting state twice
     if (Object.keys(patch).every(key => (store.$state as Record<string, unknown>)[key] !== undefined)) { return; }
     store.$setNew(patch);
   }, [patch, store]);
-  return new Proxy({} as { store: Store<StateType>, notesSorted: NoteDTO[] } & { [key in keyof StateType]: (StateType)[key] }, {
+  return new Proxy({} as { store: Store<StateType> } & { [key in keyof StateType]: (StateType)[key] }, {
     get(target, p) {
       if (p === 'store') { return store; }
-      if (p === 'notesSorted') { return notesSorted; }
       return store[p as (keyof AppState)].$useState();
     },
   });

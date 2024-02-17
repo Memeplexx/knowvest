@@ -7,17 +7,19 @@ export const useInputs = (
   props: Props,
 ) => {
 
-  const { store, historyItems, activeNoteId, notesSorted } = useStore(initialState);
+  const { store, historyItems, activeNoteId, notes } = useStore(initialState);
 
-  const notes = useMemo(() => {
-    return notesSorted
+  const items = useMemo(() => {
+    return notes
       .filter(note => activeNoteId !== note.id)
+      .filter(note => !note.isArchived)
+      .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())
       .slice(0, (historyItems.index + 1) * pageSize)
       .map(note => ({
         ...note,
         date: formatDistanceToNow(note.dateViewed!, { addSuffix: true }),
       }));
-  }, [activeNoteId, historyItems.index, notesSorted]);
+  }, [activeNoteId, historyItems.index, notes]);
 
   useImperativeHandle(props.innerRef, () => ({
     onScrollToBottom: function onScrollToBottom(){ store.historyItems.index.$add(1); },
@@ -26,7 +28,7 @@ export const useInputs = (
   return {
     props,
     store,
-    notes,
+    items,
     ...historyItems,
   };
 }

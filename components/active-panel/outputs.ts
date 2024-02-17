@@ -1,9 +1,10 @@
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
 import { archiveNote, createNote, duplicateNote } from "@/app/actions/note";
+import { getNotesSorted } from "@/utils/functions";
 
 
-export const useOutputs = ({ store, notify, popupRef, notesSorted }: Inputs) => {
+export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
   return {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
@@ -21,7 +22,7 @@ export const useOutputs = ({ store, notify, popupRef, notesSorted }: Inputs) => 
       const apiResponse = await archiveNote({ noteId: store.$state.activeNoteId });
       await indexeddb.write(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
-      const newNoteId = notesSorted[0].id;
+      const newNoteId = getNotesSorted(store.$state.notes)[0].id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;

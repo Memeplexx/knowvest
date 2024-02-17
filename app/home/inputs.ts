@@ -83,12 +83,12 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
   await indexeddb.initialize();
   store.$patch(await indexeddb.read());
   const notesSorted = getNotesSorted(store.$state.notes);
-  const after = notesSorted[0]?.dateUpdated || null;
+  const after = notesSorted[0] ? notesSorted[0].dateUpdated : null;
   const apiResponse = await initialize({ ...session.user as UserDTO, after });
   if (apiResponse.status === 'USER_CREATED') {
     return store.$patch({
-      notes: apiResponse.notes,
-      activeNoteId: apiResponse.notes[0].id,
+      notes: [apiResponse.firstNote],
+      activeNoteId: apiResponse.firstNote.id,
     });
   }
   await indexeddb.write(store, apiResponse);

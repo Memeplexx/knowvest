@@ -1,6 +1,6 @@
 import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym, type FlashCard, type User } from "@prisma/client";
 import { type indexedDbState } from "./constants";
-import { type Brand } from "olik";
+import { PossiblyBrandedPrimitive, type Brand } from "olik";
 
 export type ValueOf<T> = T[keyof T];
 
@@ -48,6 +48,11 @@ export interface TypedKeyboardEvent<T extends HTMLElement> extends React.Keyboar
   target: T,
 }
 
+export type DatelessObject<T> = T extends Date
+  ? string : T extends Array<infer E>
+  ? Array<DatelessObject<E>> : T extends PossiblyBrandedPrimitive
+  ? T : { [key in keyof T]: DatelessObject<T[key]> }
+
 export type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]: null | typeof indexedDbState[tableName] | typeof indexedDbState[tableName][0] }>;
 
 export type NoteId = Brand<number, 'NoteId'>;
@@ -59,43 +64,51 @@ export type FlashCardId = Brand<number, 'FlashCardId'>;
 export type NotTagId = Brand<number, 'NotTagId'>;
 export type SynonymGroupId = Brand<number, 'SynonymGroupId'>;
 
-export interface NoteDTO extends Note {
-  id: NoteId;
-}
 
-export interface TagDTO extends Tag {
+
+
+type DatelessDto<T, P extends Partial<T>> = {
+  [key in keyof T]: P[key] extends number ? P[key] : T[key];
+};
+
+export type NoteDTO = DatelessDto<Note, {
+  id: NoteId,
+  userId: UserId,
+}>;
+
+export type TagDTO = DatelessDto<Tag, {
   id: TagId;
   synonymId: SynonymId;
   userId: UserId;
-}
+}>;
 
-export interface NoteTagDTO extends NoteTag {
+export type NoteTagDTO = DatelessDto<NoteTag, {
   id: NotTagId;
   noteId: NoteId;
   tagId: TagId;
-}
+}>
 
-export interface GroupDTO extends Group {
+export type GroupDTO = DatelessDto<Group, {
   id: GroupId;
-}
+  userId: UserId;
+}>
 
-export interface SynonymGroupDTO extends SynonymGroup {
+export type SynonymGroupDTO = DatelessDto<SynonymGroup, {
   id: SynonymGroupId;
   groupId: GroupId;
   synonymId: SynonymId;
-}
+}>
 
-export interface SynonymDTO extends Synonym {
+export type SynonymDTO = DatelessDto<Synonym, {
   id: SynonymId;
-}
+}>
 
-export interface UserDTO extends User {
+export type UserDTO = DatelessDto<User, {
   id: UserId;
-}
+}>
 
-export interface FlashCardDTO extends FlashCard {
+export type FlashCardDTO = DatelessDto<FlashCard, {
   id: FlashCardId;
   noteId: NoteId;
   note?: NoteDTO;
-}
-
+}>
