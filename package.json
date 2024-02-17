@@ -43,7 +43,7 @@
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.4",
     "next": "14.1.0",
-    "next-auth": "^4.22.4",
+    "next-auth": "^4.24.6",
     "next-pwa": "^5.6.0",
     "olik": "1.0.55",
     "olik-react": "1.0.10",
