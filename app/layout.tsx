@@ -6,7 +6,8 @@ import { NextAuthProvider } from '@/utils/nextauth.provider';
 import SnackBarProvider from '@/utils/snackbar.provider';
 import StoreProvider from '@/utils/store.provider';
 import StyledComponentsRegistry from '@/utils/style-registry';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from '@vercel/analytics/react';
 
 export default async function RootLayout({
   children,
@@ -31,7 +32,8 @@ export default async function RootLayout({
             />
           }
         />
-        <SpeedInsights  />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
