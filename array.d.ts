@@ -69,7 +69,7 @@ declare global {
      * @example
      * currentUsers.merge(array, e => e.id);
      */
-    merge<P = T>(toMerge: T[], getUniqueIdentifier: (el: T) => P): void;
+    merge<P = T>(toMerge: T[], getUniqueIdentifier: (el: T) => P | T): void;
     /**
      * Returns a new array which is a merge of this array and the provided element(s).
      *
@@ -81,7 +81,7 @@ declare global {
      * @example
      * const merged = currentUsers.merge(newUsersWhichMayContainDuplicates, u => u.id);
      */
-    mergeMap<P = T>(toMerge: T | T[], match: (el1: T, el2: T) => boolean): T[];
+    mergeMap<T>(toMerge: T | T[], match: (el1: T, el2: T) => boolean): T[];
     /**
      * Can be used to perform some side-effect using each array element,
      * for example, this function can be used to log each element value.
@@ -89,7 +89,7 @@ declare global {
      * @example
      * array.peek(console.log);
      */
-    peek(fn: (element: T, index: number) => any): T[];
+    peek(fn: (element: T, index: number) => unknown): T[];
     /**
      * Converts this array to an object.
      *

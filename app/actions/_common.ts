@@ -1,6 +1,7 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { FlashCardDTO, GroupDTO, NoteDTO, NoteTagDTO, SynonymDTO, SynonymGroupDTO, TagDTO, UserId } from "@/server/dtos";
-import { FlashCard, Group, Note, NoteTag, Prisma, PrismaClient, Synonym, SynonymGroup, Tag } from "@prisma/client";
+import { NoteDTO, SynonymDTO, TagDTO, UserId } from "@/server/dtos";
+import { EntityToDto } from "@/utils/types";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { ZodRawShape, z } from "zod";
 
@@ -41,18 +42,6 @@ export const listTagsWithTagText = async ({ userId, noteText }: { userId: UserId
     `
   );
 }
-
-export type EntityToDto<T>
-  = T extends Note ? NoteDTO
-  : T extends FlashCard ? FlashCardDTO
-  : T extends Tag ? TagDTO
-  : T extends NoteTag ? NoteTagDTO
-  : T extends Group ? GroupDTO
-  : T extends SynonymGroup ? SynonymGroupDTO
-  : T extends Synonym ? SynonymDTO
-  : T extends Array<infer E> ? Array<EntityToDto<E>>
-  : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
-  : T
 
 export const receive = <T extends ZodRawShape>(spec: T) => {
   return {

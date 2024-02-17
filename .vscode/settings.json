@@ -1,14 +1,11 @@
 {
   "cSpell.words": [
-    "clsx",
     "codemirror",
     "dtos",
     "isactive",
     "keymap",
     "Olik",
-    "Scroller",
-    "superjson",
-    "trpc"
+    "Scroller"
   ],
   "editor.gotoLocation.multipleTypeDefinitions": "peek",
   "editor.gotoLocation.multipleDefinitions": "goto", 
