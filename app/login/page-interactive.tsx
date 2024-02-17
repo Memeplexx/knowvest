@@ -19,8 +19,11 @@ export default function ProviderButtons() {
           aria-label={`Sign in with ${provider.name}`}
         />
       ))}
-      {!inputs.showLoader ? <></> : createPortal(<Loader showIf={true} />, document.body)
-      }
+      {!inputs.showLoader ? <></> : createPortal(
+        <Loader
+          showIf={true}
+        />, document.body
+      )}
     </>
   )
 }
