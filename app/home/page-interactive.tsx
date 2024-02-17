@@ -4,10 +4,10 @@ import '@/utils/array';
 import { ActiveNoteFlashCards } from '@/components/active-note-flash-cards';
 import { Navbar } from '@/components/navbar';
 import { Tags } from '@/components/tags';
-import { ActivePane, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TabsPanel } from '@/utils/pages/home/styles';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
+import { BodyWrapper, HistoryPanel, CenterPanel, ActivePane, TabsPanel, RelatedPanel, ExpandHistoryToggleButton, ExpandTagsToggleButton, ExpandHeaderToggleButton, ExpandRelatedToggleButton } from './styles';
 
 
 export default function HomeInteractive() {

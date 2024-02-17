@@ -8,11 +8,6 @@ export const prisma = new PrismaClient({
   // log: ['query', 'info', 'warn', 'error'],
 });
 
-export async function getUserId() {
-  const session = await getServerSession(authOptions);
-  return (await prisma.user.findFirstOrThrow({ where: { email: session!.user!.email! } })).id as UserId;
-}
-
 export const pruneOrphanedSynonymsAndSynonymGroups = async () => {
   const orphanedSynonyms = await prisma.$queryRaw<SynonymDTO[]>(Prisma.sql`
     SELECT s.* FROM synonym s 
@@ -67,9 +62,11 @@ export const receive = <T extends ZodRawShape>(spec: T) => {
         if (!parseResponse.success) {
           throw new ApiError('BAD_REQUEST', 'Invalid request');
         } else {
+          const session = await getServerSession(authOptions);
+          const userId = (await prisma.user.findFirstOrThrow({ where: { email: session!.user!.email! } })).id as UserId;
           return processor({
             ...parseResponse.data,
-            userId: await getUserId()
+            userId,
           }) as EntityToDto<R>;
         }
       }

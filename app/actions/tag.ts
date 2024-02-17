@@ -1,3 +1,4 @@
+"use server";
 import { ZodTagId } from "@/server/dtos";
 import { NoteTag, Prisma } from "@prisma/client";
 import { z } from "zod";

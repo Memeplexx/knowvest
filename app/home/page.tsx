@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import HomeInteractive from './page-interactive';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { Wrapper } from '@/utils/pages/home/styles';
+import { Wrapper } from './styles';
 
 
 export default async function Home() {

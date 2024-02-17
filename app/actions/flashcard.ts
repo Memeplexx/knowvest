@@ -1,13 +1,9 @@
 "use server";
 import { ZodFlashCardId, ZodNoteId } from "@/server/dtos";
-import { NotFoundError, receive, prisma } from "./_common";
+import { receive, prisma, ApiError } from "./_common";
 import { z } from "zod";
 import add from "date-fns/add";
 
-export const testAction = receive({
-}).then(async () => {
-  return new Date();
-})
 
 export const createFlashCard = receive({
   noteId: ZodNoteId,
@@ -15,7 +11,7 @@ export const createFlashCard = receive({
 
   // Validation
   const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!note) { throw new NotFoundError('Note not found'); }
+  if (!note) { throw new ApiError('NOT_FOUND', 'Note not found'); }
 
   // Logic
   const flashCard = await prisma.flashCard.create({ data: { noteId, text: '', cleanRunCount: 0, nextQuestionDate: add(new Date(), { days: 1 }) } });
@@ -29,7 +25,7 @@ export const updateFlashCardText = receive({
 
   // Validation
   const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-  if (!existingFlashCard) { throw new NotFoundError('Flash card not found'); }
+  if (!existingFlashCard) { throw new ApiError('NOT_FOUND', 'Flash card not found'); }
 
   // Logic
   const flashCard = await prisma.flashCard.update({ where: { id }, data: { text } });
@@ -42,7 +38,7 @@ export const archiveFlashCard = receive({
 
   // Validation
   const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-  if (!existingFlashCard) { throw new NotFoundError('Flash card not found'); }
+  if (!existingFlashCard) { throw new ApiError('NOT_FOUND', 'Flash card not found'); }
 
   // Logic
   const flashCard = await prisma.flashCard.update({ where: { id }, data: { isArchived: true } });
@@ -55,7 +51,7 @@ export const answerFlashCardQuestionCorrectly = receive({
 
   // Validation
   const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-  if (!existingFlashCard) { throw new NotFoundError('Flash card not found'); }
+  if (!existingFlashCard) { throw new ApiError('NOT_FOUND', 'Flash card not found'); }
 
   // Logic
   const cleanRunCount = existingFlashCard.cleanRunCount + 1;
@@ -70,7 +66,7 @@ export const answerFlashCardQuestionIncorrectly = receive({
 
   // Validation
   const existingFlashCard = await prisma.flashCard.findFirst({ where: { id, note: { userId } } });
-  if (!existingFlashCard) { throw new NotFoundError('Flash card not found'); }
+  if (!existingFlashCard) { throw new ApiError('NOT_FOUND', 'Flash card not found'); }
 
   // Logic
   const cleanRunCount = 0;

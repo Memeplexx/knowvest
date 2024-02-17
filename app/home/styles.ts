@@ -1,3 +1,4 @@
+"use client";
 import { ActivePanel } from "@/components/active-panel";
 import { History } from "@/components/history";
 import { Related } from "@/components/related";

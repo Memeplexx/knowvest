@@ -1,6 +1,6 @@
 "use server";
 import { NoteDTO, NoteTagDTO, ZodNoteId } from "@/server/dtos";
-import { ApiError, receive, getUserId, listTagsWithTagText, prisma } from "./_common";
+import { ApiError, receive, listTagsWithTagText, prisma } from "./_common";
 import { z } from "zod";
 
 
@@ -62,9 +62,8 @@ export const splitNote = receive({
   splitFromNoteId: ZodNoteId,
   from: z.number(),
   to: z.number(),
-}).then(async ({ from, splitFromNoteId, to }) => {
+}).then(async ({ from, splitFromNoteId, to, userId }) => {
 
-  const userId = await getUserId();
   const note = await prisma.note.findFirst({ where: { id: splitFromNoteId } });
   if (!note) { throw new ApiError('NOT_FOUND', 'Could not find note'); }
 

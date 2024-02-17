@@ -5,8 +5,6 @@ import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsA
 import { ZodSynonymId, ZodTagId } from '@/server/dtos';
 
 
-
-
 export const removeTagFromItsCurrentSynonym = receive({
   tagId: ZodTagId,
 }).then(async ({ userId, tagId }) => {

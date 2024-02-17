@@ -1,9 +1,9 @@
 "use client";
 import { Loader } from "@/components/loader";
-import { ProviderButton } from "@/utils/pages/login/styles";
 import { createPortal } from "react-dom";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
+import { ProviderButton } from "./styles";
 
 
 export default function ProviderButtons() {
