@@ -1,8 +1,7 @@
 "use server";
 import { z } from 'zod';
 
-import { ApiError, receive, listNotesWithTagText, prisma } from './_common';
-import { ZodGroupId, ZodSynonymId } from '@/server/dtos';
+import { ApiError, receive, listNotesWithTagText, prisma, ZodGroupId, ZodSynonymId } from './_common';
 
 
 export const createGroup = receive({

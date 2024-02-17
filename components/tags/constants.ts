@@ -1,4 +1,4 @@
-import { GroupId, SynonymId } from "@/server/dtos";
+import { GroupId, SynonymId } from "@/utils/types";
 import { useInputs } from "./inputs";
 
 export type Inputs = ReturnType<typeof useInputs>;

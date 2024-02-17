@@ -1,8 +1,7 @@
 "use server";
 import { z } from 'zod';
 
-import { receive, prisma, ApiError } from './_common';
-import { ZodNoteId, ZodTagId } from '@/server/dtos';
+import { receive, prisma, ApiError, ZodNoteId, ZodTagId } from './_common';
 
 
 

@@ -1,4 +1,3 @@
-import { UserDTO } from "@/server/dtos";
 import { useIsMounted, useIsomorphicLayoutEffect, useStore } from "@/utils/hooks";
 import { indexeddb } from "@/utils/indexed-db";
 import { Session } from "next-auth";
@@ -9,6 +8,7 @@ import { HomeStore, initialState } from "./constants";
 import { getNotesSorted } from "@/utils/functions";
 import { redirect } from "next/navigation";
 import { initialize } from "../actions/session";
+import { UserDTO } from "@/utils/types";
 
 
 export const useInputs = () => {

@@ -1,8 +1,7 @@
 import { useEventHandlerForDocument } from '@/utils/hooks';
 
-import { GroupId, SynonymId, TagId } from '@/server/dtos';
 import { type ChangeEvent, type MouseEvent } from 'react';
-import { TypedKeyboardEvent } from '@/utils/types';
+import { GroupId, SynonymId, TagId, TypedKeyboardEvent } from '@/utils/types';
 import { Inputs } from './constants';
 import { indexeddb } from '@/utils/indexed-db';
 import { useSharedFunctions } from './shared';

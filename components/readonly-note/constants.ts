@@ -1,4 +1,4 @@
-import { NoteDTO, SynonymId } from "@/server/dtos";
+import { NoteDTO, SynonymId } from "@/utils/types";
 import { Readable } from "olik";
 import { HTMLProps } from "react";
 

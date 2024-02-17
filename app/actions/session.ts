@@ -1,7 +1,7 @@
 "use server";
-import { FlashCardDTO, GroupDTO, NoteDTO, NoteTagDTO, SynonymGroupDTO, TagDTO } from '@/server/dtos';
 import { z } from 'zod';
 import { prisma } from './_common';
+import { NoteDTO, FlashCardDTO, GroupDTO, NoteTagDTO, SynonymGroupDTO, TagDTO } from '@/utils/types';
 
 
 

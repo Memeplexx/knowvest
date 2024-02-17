@@ -1,8 +1,8 @@
-import { NoteId } from "@/server/dtos";
 import { useInputs } from "./inputs";
 import { type HTMLAttributes, RefObject } from 'react';
 import { Store } from "olik";
 import { AppState } from "@/utils/constants";
+import { NoteId } from "@/utils/types";
 
 export type Props = {
   innerRef: RefObject<HistoryItemsHandle>,

@@ -1,9 +1,8 @@
-import { NoteDTO } from '@/server/dtos';
 import dynamic from 'next/dynamic';
 import { Store } from 'olik';
 import { FunctionComponent, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
 import { AppState, NotificationContext, StoreContext } from './constants';
-import { EventMap } from './types';
+import { EventMap, NoteDTO } from './types';
 
 
 export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'keydown'>(

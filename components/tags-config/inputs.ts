@@ -1,5 +1,3 @@
-"use client";
-
 import { useMemo, useRef, type ForwardedRef } from 'react';
 
 import { decide } from '@/utils/functions';

@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import { useSpring } from "react-spring";
 import { Props, animationDuration } from "./constants";

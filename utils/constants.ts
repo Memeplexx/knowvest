@@ -1,7 +1,7 @@
-import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '@/server/dtos';
 import { UseFloatingOptions, flip, size, autoUpdate } from '@floating-ui/react';
 import { createContext } from 'react';
 import { Store } from 'olik';
+import { NoteDTO, TagDTO, NoteTagDTO, GroupDTO, SynonymGroupDTO, FlashCardDTO, NoteId, SynonymId } from './types';
 
 export const OrderTypes = {
   Created: 'dateCreated',

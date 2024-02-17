@@ -1,4 +1,4 @@
-import { GroupId, SynonymId } from "@/server/dtos";
+import { SynonymId, GroupId } from "@/utils/types";
 import { Inputs } from "./constants";
 
 export const onSelectSynonym = (inputs: Inputs, synonymId: SynonymId) => {

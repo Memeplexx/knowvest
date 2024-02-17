@@ -1,4 +1,3 @@
-import { NoteId, TagId } from "@/server/dtos";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range } from "@codemirror/state";
@@ -7,6 +6,7 @@ import { indexeddb } from "@/utils/indexed-db";
 import { ActivePanelStore } from "./constants";
 import { updateNoteTags } from "@/app/actions/notetag";
 import { updateNote } from "@/app/actions/note";
+import { NoteId, TagId } from "@/utils/types";
 
 export const autocompleteExtension = (store: ActivePanelStore) => {
   return autocompletion({

@@ -1,8 +1,7 @@
 "use server";
 import { z } from 'zod';
 
-import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups } from './_common';
-import { ZodSynonymId, ZodTagId } from '@/server/dtos';
+import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, ZodSynonymId, ZodTagId } from './_common';
 
 
 export const removeTagFromItsCurrentSynonym = receive({

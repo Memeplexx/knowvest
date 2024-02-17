@@ -1,8 +1,7 @@
 "use server";
-import { ZodTagId } from "@/server/dtos";
 import { NoteTag, Prisma } from "@prisma/client";
 import { z } from "zod";
-import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups } from "./_common";
+import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, ZodTagId } from "./_common";
 
 export const createTag = receive({
   text: z.string(),

@@ -1,5 +1,4 @@
 "use server";
-
 import '@/styles/application.css';
 import '@/styles/reset.css';
 import '@/utils/array';

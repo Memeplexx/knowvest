@@ -1,4 +1,4 @@
-import { NoteId } from "@/server/dtos";
+import { NoteId } from "@/utils/types";
 import { Inputs } from "./constants";
 
 export const useOutputs = ({ store, props }: Inputs) => {

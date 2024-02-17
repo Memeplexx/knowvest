@@ -1,6 +1,3 @@
-"use client";
-
-import { NoteDTO } from '@/server/dtos';
 import { highlightTagsInEditor } from '@/utils/functions';
 import { useIsomorphicLayoutEffect } from '@/utils/hooks';
 import { oneDark } from '@/utils/codemirror-theme';
@@ -13,6 +10,7 @@ import { useContext, useRef } from 'react';
 import { Props } from './constants';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
 import { StoreContext } from '@/utils/constants';
+import { NoteDTO } from '@/utils/types';
 
 
 export const useInputs = (props: Props) => {

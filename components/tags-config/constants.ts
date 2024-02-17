@@ -1,4 +1,4 @@
-import { TagId, GroupId, SynonymId } from "@/server/dtos";
+import { SynonymId, TagId, GroupId } from "@/utils/types";
 import { useInputs } from "./inputs";
 
 export const initialState = {

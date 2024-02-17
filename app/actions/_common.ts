@@ -1,9 +1,8 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { NoteDTO, SynonymDTO, TagDTO, UserId } from "@/server/dtos";
-import { EntityToDto } from "@/utils/types";
+import { EntityToDto, FlashCardId, GroupId, NoteDTO, NoteId, SynonymDTO, SynonymId, TagDTO, TagId, UserId } from "@/utils/types";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { ZodRawShape, z } from "zod";
+import { ZodNumberDef, ZodRawShape, ZodType, z } from "zod";
 
 export const prisma = new PrismaClient({
   // log: ['query', 'info', 'warn', 'error'],
@@ -69,3 +68,10 @@ export class ApiError extends Error {
     Object.setPrototypeOf(this, ApiError.prototype);
   }
 }
+
+export const ZodNoteId = z.number() as unknown as ZodType<NoteId, ZodNumberDef>;
+export const ZodTagId = z.number() as unknown as ZodType<TagId, ZodNumberDef>;
+export const ZodGroupId = z.number() as unknown as ZodType<GroupId, ZodNumberDef>;
+export const ZodSynonymId = z.number() as unknown as ZodType<SynonymId, ZodNumberDef>;
+export const ZodUserId = z.number() as unknown as ZodType<UserId, ZodNumberDef>;
+export const ZodFlashCardId = z.number() as unknown as ZodType<FlashCardId, ZodNumberDef>;

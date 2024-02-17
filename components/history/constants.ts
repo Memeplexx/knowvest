@@ -1,4 +1,4 @@
-import { NoteId } from "@/server/dtos";
+import { NoteId } from "@/utils/types";
 import { useInputs } from "./inputs";
 import { type HTMLAttributes } from 'react';
 

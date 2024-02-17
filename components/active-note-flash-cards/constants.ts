@@ -1,4 +1,4 @@
-import { FlashCardId } from "@/server/dtos";
+import { FlashCardId } from "@/utils/types";
 import { useInputs } from "./inputs";
 
 export const initialState = {

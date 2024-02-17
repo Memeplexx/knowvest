@@ -1,10 +1,10 @@
-import { GroupId, TagId } from '@/server/dtos';
 import { Inputs } from './constants';
 import { ancestorMatches } from '@/utils/functions';
 import { indexeddb } from '@/utils/indexed-db';
 import { addTagToSynonym, createTagToSynonym } from '@/app/actions/synonym';
 import { createTag, updateTag } from '@/app/actions/tag';
 import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '@/app/actions/group';
+import { TagId, GroupId } from '@/utils/types';
 
 
 export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {

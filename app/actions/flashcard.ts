@@ -1,6 +1,5 @@
 "use server";
-import { ZodFlashCardId, ZodNoteId } from "@/server/dtos";
-import { receive, prisma, ApiError } from "./_common";
+import { receive, prisma, ApiError, ZodFlashCardId, ZodNoteId } from "./_common";
 import { z } from "zod";
 import add from "date-fns/add";
 

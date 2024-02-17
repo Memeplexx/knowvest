@@ -1,9 +1,8 @@
-import { NoteDTO, NoteTagDTO, SynonymId, TagId } from "@/server/dtos";
 import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import { Readable, Store } from "olik";
-import { DecisionResult } from "./types";
+import { DecisionResult, NoteDTO, NoteTagDTO, SynonymId, TagId } from "./types";
 import { AppState } from "./constants";
 import { ComponentType, ForwardedRef, forwardRef } from "react";
 
