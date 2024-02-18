@@ -157,7 +157,7 @@ export const useOutputs = (inputs: Inputs) => {
         autocompleteAction: 'addSynonymsToActiveSynonyms',
       });
     },
-    onClickStartOver: (event: MouseEvent<HTMLElement>) => {
+    onClickStartOver: (event: MouseEvent) => {
       event.stopPropagation();
       store.tagsConfig.$patch({
         tagId: null,

@@ -4,8 +4,6 @@ import { PossiblyBrandedPrimitive, type Brand } from "olik";
 
 export type ValueOf<T> = T[keyof T];
 
-export type OrderBy = 'dateCreated' | 'dateUpdated' | 'dateViewed';
-
 export type EntityToDto<T>
   = T extends Note ? NoteDTO
   : T extends FlashCard ? FlashCardDTO
@@ -63,9 +61,6 @@ export type UserId = Brand<number, 'UserId'>;
 export type FlashCardId = Brand<number, 'FlashCardId'>;
 export type NotTagId = Brand<number, 'NotTagId'>;
 export type SynonymGroupId = Brand<number, 'SynonymGroupId'>;
-
-
-
 
 type DatelessDto<T, P extends Partial<T>> = {
   [key in keyof T]: P[key] extends number ? P[key] : T[key];
