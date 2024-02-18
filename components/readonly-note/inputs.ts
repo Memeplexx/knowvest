@@ -1,21 +1,20 @@
 import { highlightTagsInEditor } from '@/utils/functions';
-import { useIsomorphicLayoutEffect } from '@/utils/hooks';
+import { useIsomorphicLayoutEffect, useStore } from '@/utils/hooks';
 import { oneDark } from '@/utils/codemirror-theme';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import { Props } from './constants';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
-import { StoreContext } from '@/utils/constants';
 import { NoteDTO } from '@/utils/types';
 
 
 export const useInputs = (props: Props) => {
 
-  const { store } = useContext(StoreContext)!;
+  const { store } = useStore();
 
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);

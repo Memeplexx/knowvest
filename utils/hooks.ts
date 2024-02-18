@@ -94,7 +94,7 @@ export const useIsMounted = () => {
 
 export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) => {
   type StateType = Patch extends undefined ? AppState : AppState & Patch;
-  const { store } = useContext(StoreContext)!;
+  const store = useContext(StoreContext)!;
   useMemo(function createSubStore() {
     if (!patch) { return; }
     // prevent react.strictmode from setting state twice

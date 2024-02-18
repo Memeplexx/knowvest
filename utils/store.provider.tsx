@@ -5,6 +5,7 @@ import { augmentOlikForReact } from 'olik-react';
 import { useMemo } from "react";
 
 
+
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
 
   augmentOlikForReact() // invoke before initializing store
@@ -12,7 +13,7 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
 
   return (
     <StoreContext.Provider
-      value={{store}}
+      value={store}
       children={children}
     />
   );
