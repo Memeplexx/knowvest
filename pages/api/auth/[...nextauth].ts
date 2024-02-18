@@ -19,6 +19,9 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
+  },
+  callbacks: {
+    redirect: async () => '/home',
   }
 }
 export default NextAuth(authOptions)

@@ -1,13 +1,12 @@
-"use client";
+"use server";
+import { getProviders } from "next-auth/react";
+import { Suspense } from "react";
+import { LoginInteractive } from "./page-interactive";
 import { CenterContent, Divider, ProviderButton, ProviderButtonContent, Providers, SubTitle, Title, Wrapper } from "./styles";
-import { Loader } from "@/components/loader";
-import { useInputs } from "./inputs";
-import { useOutputs } from "./outputs";
 
 
-export default function PageInteractive() {
-  const inputs = useInputs();
-  const outputs = useOutputs(inputs);
+export default async function PageInteractive() {
+  const providers = Object.values((await getProviders())!);
   return (
     <>
       <Wrapper
@@ -23,18 +22,18 @@ export default function PageInteractive() {
                 />
                 <Divider />
                 <Providers
-                  $count={inputs.providers.length}
+                  $count={providers.length}
                   children={
-                    inputs.providers.map(provider => (
+                    providers.map(provider => (
                       <ProviderButton
                         key={provider.name}
-                        onClick={() => outputs.onClickSignIn(provider.id)}
+                        aria-label={`Sign in with ${provider.name}`}
+                        data-provider-id={provider.id}
                         children={
                           <ProviderButtonContent
                             children={provider.name}
                           />
                         }
-                        aria-label={`Sign in with ${provider.name}`}
                       />
                     ))
                   }
@@ -44,8 +43,8 @@ export default function PageInteractive() {
           />
         }
       />
-      <Loader
-        showIf={inputs.showLoader}
+      <Suspense
+        children={<LoginInteractive />}
       />
     </>
   )
