@@ -14,14 +14,14 @@ export const useInputs = () => {
 
   useEffect(() => {
     setState(s => ({ ...s, initialized: true }));
-  }, [state]);
+  }, []);
 
   useEffect(() => {
     if (state.initialized && searchParams?.has('session-expired')) {
       setState(s => ({ ...s, message: 'Your session expired. Please sign in again' }));
       router.replace('/');
     }
-  }, [searchParams, state, state.initialized, router]);
+  }, [searchParams, state.initialized, router]);
 
   return {
     ...state,
