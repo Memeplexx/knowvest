@@ -1,6 +1,7 @@
-import { useNotifier, useStore } from "@/utils/hooks";
+import { useStore } from "@/utils/hooks";
 import { useMemo } from "react";
 import { initialState } from "./constants";
+import { useNotifier } from "../notifier";
 
 
 

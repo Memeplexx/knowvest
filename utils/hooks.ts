@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import { Store } from 'olik';
 import { FunctionComponent, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
-import { AppState, NotificationContext, StoreContext } from './constants';
+import { AppState, StoreContext } from './constants';
 import { EventMap } from './types';
 
 
@@ -119,10 +119,6 @@ export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) =
       return store[p as (keyof AppState)].$useState();
     },
   });
-}
-
-export const useNotifier = () => {
-  return useRef(useContext(NotificationContext)!).current;
 }
 
 export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {

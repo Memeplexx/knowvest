@@ -1,10 +1,9 @@
 "use client";
 import { Loader } from "@/components/loader";
-import { Snackbar } from "@/components/snackbar";
 import { createPortal } from "react-dom";
-import { LoginButton } from "./styles";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
+import { LoginButton } from "./styles";
 
 
 export default function PageInteractive() {
@@ -19,14 +18,6 @@ export default function PageInteractive() {
       {!inputs.initialized ? <></> : createPortal(
         <Loader
           showIf={inputs.showLoader}
-        />,
-        document.body
-      )}
-      {!inputs.initialized ? <></> : createPortal(
-        <Snackbar
-          message={inputs.message}
-          status='error'
-          onMessageClear={() => inputs.set({ message: '' })}
         />,
         document.body
       )}

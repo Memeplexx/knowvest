@@ -23,9 +23,9 @@ export default function PageInteractive() {
                 />
                 <Divider />
                 <Providers
-                  $count={Object.keys(inputs.providers).length}
+                  $count={inputs.providers.length}
                   children={
-                    Object.values(inputs.providers).map(provider => (
+                    inputs.providers.map(provider => (
                       <ProviderButton
                         key={provider.name}
                         onClick={() => outputs.onClickSignIn(provider.id)}

@@ -6,11 +6,13 @@ export const useInputs = () => {
 
   const state = useRecord({
     showLoader: false,
-    providers: {} as NonNullable<Awaited<ReturnType<typeof getProviders>>>,
+    providers: new Array<{ id: string, name: string }>(),
   });
 
   useEffect(() => {
-    getProviders().then(providers => state.set({ providers: providers! })).catch(console.error);
+    getProviders().then(providers => {
+      state.set({ providers: Object.entries(providers!).map(([id, provider]) => ({ id, name: provider.name })) });
+    }).catch(console.error);
   }, [state]);
 
   return state;

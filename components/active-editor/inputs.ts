@@ -2,7 +2,7 @@ import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin
 import { oneDark } from '@/utils/codemirror-theme';
 import { AppState } from '@/utils/constants';
 import { highlightTagsInEditor } from '@/utils/functions';
-import { useNotifier, useStore } from '@/utils/hooks';
+import { useStore } from '@/utils/hooks';
 import {
   closeBrackets,
   closeBracketsKeymap,
@@ -31,6 +31,7 @@ import { useEffect, useRef } from 'react';
 import { initialState } from '../active-panel/constants';
 import { ActivePanelStore } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
+import { useNotifier } from '../notifier';
 
 
 export const useInputs = () => {

@@ -1,7 +1,8 @@
-import { useNotifier, useStore } from "@/utils/hooks";
+import { useStore } from "@/utils/hooks";
 import { isAfter } from "date-fns";
 import { useMemo, useRef } from "react";
 import { Props, initialState } from "./constants";
+import { useNotifier } from "../notifier";
 
 export const useInputs = (props: Props) => {
 

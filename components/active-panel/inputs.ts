@@ -1,7 +1,8 @@
-import { useComponentDownloader, useNotifier, useStore } from '@/utils/hooks';
+import { useComponentDownloader, useStore } from '@/utils/hooks';
 import { useMemo, useRef } from 'react';
 import { PopupHandle } from '../popup/constants';
 import { initialState } from './constants';
+import { useNotifier } from '../notifier';
 
 
 export const useInputs = () => {
