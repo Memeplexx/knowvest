@@ -6,7 +6,8 @@ import { CenterContent, Divider, ProviderButton, Providers, SubTitle, Title, Wra
 
 
 export default async function PageInteractive() {
-  const providers = Object.values((await getProviders())!);
+  const providersRaw = await getProviders();
+  const providers = Object.values(providersRaw || {});
   return (
     <>
       <Wrapper
