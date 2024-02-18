@@ -1,7 +1,7 @@
 "use server";
 import { getProviders } from "next-auth/react";
 import { Suspense } from "react";
-import { LoginInteractive } from "./page-interactive";
+import { LoginEvents } from "./events";
 import { CenterContent, Divider, ProviderButton, Providers, SubTitle, Title, Wrapper } from "./styles";
 
 
@@ -39,7 +39,7 @@ export default async function PageInteractive() {
         }
       />
       <Suspense
-        children={<LoginInteractive />}
+        children={<LoginEvents />}
       />
     </>
   )

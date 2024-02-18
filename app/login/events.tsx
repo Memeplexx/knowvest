@@ -3,7 +3,7 @@ import { Loader } from "@/components/loader"
 import { signIn } from "next-auth/react";
 import { useEffect, useState } from "react"
 
-export const LoginInteractive = () => {
+export const LoginEvents = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const clickListener = async (event: MouseEvent) => {
