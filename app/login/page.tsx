@@ -1,13 +1,12 @@
 "use server";
-import { getProviders } from "next-auth/react";
 import { Suspense } from "react";
 import { LoginEvents } from "./events";
 import { CenterContent, Divider, ProviderButton, Providers, SubTitle, Title, Wrapper } from "./styles";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 
 export default async function PageInteractive() {
-  const providersRaw = await getProviders();
-  const providers = Object.values(providersRaw || {});
+  const providers = Object.values(authOptions.providers);
   return (
     <>
       <Wrapper
