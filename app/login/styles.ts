@@ -36,28 +36,21 @@ export const Divider = styled.div`
   align-self: normal;
 `;
 
-export const Providers = styled.div<{ $count: number }>`
+export const Providers = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: ${props => props.$count * 44}px;
-  transition: all 0.4s;
   gap: 4px;
 `;
 
 export const ProviderButton = styled.button`
   background-color: rgba(0,0,0,0.1);
-  height: 40px;
-  position: relative;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transform: scale(1);
   transition: all 0.4s;
-  width: 140px;
-  > * {
-    position: absolute;
-  }
   @media (min-width: ${mobileBreakPoint}) {
     transform: scale(1);
     transition: all 0.2s cubic-bezier(0,.73,.44,1);
@@ -70,7 +63,4 @@ export const ProviderButton = styled.button`
       transform: scale(1);
     }
   }
-`;
-
-export const ProviderButtonContent = styled.div`
 `;
