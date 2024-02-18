@@ -1,12 +1,12 @@
 import { initialState, initialTransientState } from "./constants";
-import { useRecord, useStore } from "@/utils/hooks";
-import { useMemo } from "react";
+import { useStore } from "@/utils/hooks";
+import { useMemo, useState } from "react";
 
 export const useInputs = () => {
 
   const { store, tagsComponent, tags, synonymIds, noteTags, activeNoteId, groups, synonymGroups, stateInitialized } = useStore(initialState);
 
-  const transientState = useRecord(initialTransientState)
+  const [state, setState] = useState(initialTransientState)
 
   const tagsForActiveNote = useMemo(() => {
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
@@ -78,6 +78,7 @@ export const useInputs = () => {
     tagsForActiveNote,
     allGroupTagsSelected,
     allActiveTagsSelected,
-    ...transientState,
+    ...state,
+    setState,
   };
 };

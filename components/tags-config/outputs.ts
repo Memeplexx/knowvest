@@ -12,7 +12,7 @@ import { archiveTag } from '@/app/actions/tag';
 
 export const useOutputs = (inputs: Inputs) => {
   const shared = useSharedFunctions(inputs);
-  const { store, notify } = inputs;
+  const { store, notify, setState } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       store.tagsConfig.$patch({
@@ -258,10 +258,10 @@ export const useOutputs = (inputs: Inputs) => {
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      inputs.set({ hoveringGroupId, hoveringSynonymId });
+      setState({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      inputs.set({ hoveringGroupId: null, hoveringSynonymId: null });
+      setState({ hoveringGroupId: null, hoveringSynonymId: null });
     },
     onShowAutocompleteOptionsChange: (showAutocompleteOptions: boolean) => {
       store.tagsConfig.showAutocompleteOptions.$set(showAutocompleteOptions)

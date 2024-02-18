@@ -35,7 +35,7 @@ export const Confirmation = (
                       highlighted={false}
                       onMouseUp={outputs.onClickCancel}
                       onMouseLeave={outputs.onMouseLeaveButton}
-                      onMouseDown={() => inputs.state.set({ selection: 'cancel' })}
+                      onMouseDown={() => inputs.setState({ selection: 'cancel' })}
                       children={props.cancelText || 'Cancel'}
                       aria-label='Cancel'
                     />
@@ -44,7 +44,7 @@ export const Confirmation = (
                       highlighted={false}
                       onMouseUp={outputs.onClickConfirm}
                       onMouseLeave={outputs.onMouseLeaveButton}
-                      onMouseDown={() => inputs.state.set({ selection: 'confirm' })}
+                      onMouseDown={() => inputs.setState({ selection: 'confirm' })}
                       children={props.confirmText || 'Confirm'}
                       aria-label='Confirm'
                     />

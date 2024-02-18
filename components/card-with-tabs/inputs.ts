@@ -1,13 +1,15 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Props } from "./constants";
-import { useRecord } from "@/utils/hooks";
 
 export const useInputs = (props: Props) => {
+  
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const tabsRef = props.options.mapToObject(o => o.label, () => useRef<HTMLDivElement>(null));
-  const state = useRecord({ selected: props.options[0].label });
+  const [state, setState] = useState({
+    selected: props.options[0].label
+  });
   const underline = {
     left: tabsRef[state.selected].current?.offsetLeft,
     width: tabsRef[state.selected].current?.offsetWidth,
@@ -18,5 +20,6 @@ export const useInputs = (props: Props) => {
     tabsRef,
     underline,
     state,
+    setState,
   }
 }

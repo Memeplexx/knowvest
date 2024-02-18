@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import { Store } from 'olik';
-import { FunctionComponent, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
+import { FunctionComponent, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
 import { AppState, StoreContext } from './constants';
 import { EventMap } from './types';
 
@@ -63,18 +63,6 @@ export const useDebounce = <T>(value: T, delay: number, action: () => void) => {
 
 export const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
-
-export const useRecord = <T extends object>(initializeState: T) => {
-  const [state, setState] = useState(initializeState);
-  const result = useRef({
-    ...state,
-    set: useCallback((arg: Partial<T> | ((prevState: T) => Partial<T>)) => {
-      setState({ ...result.current, ...(typeof (arg) === 'function' ? arg(result.current) : arg) });
-    }, [])
-  });
-  Object.assign(result.current, state);
-  return result.current;
-}
 
 export const usePropsWithDefaults = <P extends Record<string, unknown>, I extends P, D extends P>(incomingProps: I, defaultProps: D) => {
 

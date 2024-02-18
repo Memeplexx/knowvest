@@ -3,10 +3,10 @@ import { Inputs } from "./constants";
 export const useOutputs = (inputs: Inputs) => {
   return {
     onClickBackdrop: () => {
-      inputs.set({ show: false });
+      inputs.setState(s => ({ ...s, show: false }));
     },
     onClickTrigger: () => {
-      inputs.set({ show: true });
+      inputs.setState(s => ({ ...s, show: true }));
     }
   };
 };

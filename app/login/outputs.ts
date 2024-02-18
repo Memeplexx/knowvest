@@ -7,10 +7,10 @@ export const useOutputs = (inputs: Inputs) => {
   const params = useSearchParams()!;
   return {
     onClickSignIn: async (providerId: LiteralUnion<BuiltInProviderType> | undefined) => {
-      inputs.set({ showLoader: true });
+      inputs.setState(s => ({ ...s, showLoader: true }));
       signIn(providerId, { callbackUrl: params.get('callbackUrl')! }).catch(error => {
         console.error(error);
-        inputs.set({ showLoader: false });
+        inputs.setState(s => ({ ...s, showLoader: false }));
       });
     },
   }

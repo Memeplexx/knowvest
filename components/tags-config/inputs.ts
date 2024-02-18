@@ -1,11 +1,11 @@
-import { useMemo, useRef, type ForwardedRef } from 'react';
+import { useMemo, useRef, type ForwardedRef, useState } from 'react';
 
 import { decide } from '@/utils/functions';
-import { useRecord, useStore } from '@/utils/hooks';
 import { useFloating } from '@floating-ui/react';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { Props, initialState, initialTransientState } from './constants';
 import { useNotifier } from '../notifier';
+import { useStore } from '@/utils/hooks';
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
@@ -13,7 +13,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState);
   const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = tagsConfig;
 
-  const transientState = useRecord(initialTransientState)
+  const [state, setState] = useState(initialTransientState)
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
   const settingsButtonRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
@@ -168,6 +168,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     notify,
     props,
     store,
-    ...transientState,
+    ...state,
+    setState,
   };
 }
