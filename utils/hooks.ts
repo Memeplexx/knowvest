@@ -76,6 +76,21 @@ export const useRecord = <T extends object>(initializeState: T) => {
   return result.current;
 }
 
+// export const useRecord2 = <T extends object>(initializeState: T) => {
+//   const [state, setState] = useState(initializeState);
+//   const result = useRef({
+//     ...state,
+//     set: (arg: Partial<T> | ((prevState: T) => Partial<T>)) => {
+//       setState(old => {
+//         return ({ ...old, ...(typeof (arg) === 'function' ? arg(old) : arg) });
+//       });
+//     }
+//   });
+//   Object.assign(result.current, state);
+//   console.log(result.current);
+//   return result.current;
+// }
+
 export const usePropsWithDefaults = <P extends Record<string, unknown>, I extends P, D extends P>(incomingProps: I, defaultProps: D) => {
 
   // We need a ref of incomingProps so we can compare previous props to incoming props

@@ -1,5 +1,17 @@
-import { ReactNode } from "react";
-import { FailureIcon, InfoIcon, SuccessIcon } from "./styles";
+import { ReactNode, createContext } from "react";
+import { useInputs } from "./inputs";
+import { SuccessIcon, FailureIcon, InfoIcon } from "./styles";
+
+interface NotificationContextType {
+  error: (message: string) => void;
+  success: (message: string) => void;
+  info: (message: string) => void;
+}
+
+export const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+
+export type Inputs = ReturnType<typeof useInputs>;
+
 
 export const snackbarStatuses = {
   success: { icon: () => <SuccessIcon/>, color: '#50C878' },
@@ -9,15 +21,19 @@ export const snackbarStatuses = {
 
 export type snackbarStatus = keyof typeof snackbarStatuses;
 
+export type Message = {
+  text: string,
+  ts: number,
+  show: boolean
+};
+
 export type Props = {
-  message: string,
-  status: snackbarStatus,
   stackGap?: number,
   displayDuration?: number,
   animationDuration?: number,
   maxCount?: number,
   renderMessage?: (message: string) => ReactNode,
-  onMessageClear: () => void,
+  children: React.ReactNode,
 };
 
 export const defaultProps = {
@@ -25,12 +41,4 @@ export const defaultProps = {
   animationDuration: 200,
   stackGap: 80,
   maxCount: 5,
-  message: '',
-  status: 'info',
 } satisfies Partial<Props>;
-
-export type Message = {
-  text: string,
-  ts: number,
-  show: boolean
-};

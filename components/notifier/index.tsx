@@ -1,46 +1,57 @@
 "use client";
 import { useContext } from "react"
-import { NotificationContext } from "./constants";
-import { useRecord } from '../../utils/hooks';
-import { useEffect } from 'react';
-import { snackbarStatus } from './snackbar/constants';
-import { Snackbar } from './snackbar';
+import { NotificationContext, Props, snackbarStatuses } from "./constants";
 import { createPortal } from "react-dom";
+import { useInputs } from "./inputs";
+import { useOutputs } from "./outputs";
+import { Container, Message, Popup } from "./styles";
 
 export const useNotifier = () => {
   return useContext(NotificationContext)!;
 }
 
-export function NotifierProvider({ children }: { children: React.ReactNode }) {
-  const state = useRecord({
-    message: '',
-    status: 'info' as snackbarStatus,
-    initialized: false,
-  });
-  const update = (status: snackbarStatus, message: string) => state.set({ message, status })
-  const onNotifyError = (message: string) => update('error', message);
-  const onNotifySuccess = (message: string) => update('success', message);
-  const onNotifyInfo = (message: string) => update('info', message);
-  useEffect(() => {
-    state.set({ initialized: true });
-  }, [state]);
+export function NotifierProvider(partialProps: Props) {
+  const inputs = useInputs(partialProps);
+  const outputs = useOutputs(inputs);
   return (
     <>
       <NotificationContext.Provider
-        value={{
-          error: onNotifyError,
-          success: onNotifySuccess,
-          info: onNotifyInfo,
-        }}
-        children={children}
+        value={outputs}
+        children={
+          <>
+            {inputs.children}
+          </>
+        }
       />
-      {!state.initialized ? <></> : createPortal(
-        <Snackbar
-          message={state.message}
-          status={state.status}
-          onMessageClear={() => state.set({ message: '' })}
-        />,
-        document.body)}
+      {!inputs.initialized ? <></> : createPortal(
+        <Container
+          ref={inputs.floatingRef.refs.setReference}
+          children={
+            <Popup
+              ref={inputs.floatingRef.refs.setFloating}
+              style={inputs.floatingRef.floatingStyles}
+              children={
+                inputs.messages.map((message, index) => (
+                  <Message
+                    key={message.ts}
+                    $showIf={message.show}
+                    $index={index}
+                    $animation={inputs.animationDuration}
+                    $gap={inputs.stackGap}
+                    $status={inputs.status}
+                    children={
+                      <>
+                        {snackbarStatuses[inputs.status].icon()}
+                        {inputs.renderMessage ? inputs.renderMessage(message.text) : message.text}
+                      </>
+                    }
+                  />
+                ))
+              }
+            />
+          }
+        />
+        , document.body)}
     </>
   );
 }
