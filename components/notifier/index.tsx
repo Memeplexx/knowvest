@@ -17,11 +17,7 @@ export function NotifierProvider(partialProps: Props) {
     <>
       <NotificationContext.Provider
         value={outputs}
-        children={
-          <>
-            {inputs.children}
-          </>
-        }
+        children={inputs.children}
       />
       {!inputs.initialized ? <></> : createPortal(
         <Container
