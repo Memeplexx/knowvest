@@ -11,7 +11,7 @@ export default function RelatedItems(
   return (
     <>
       <ListItemsWrapper
-        showIf={!!inputs.items.length}
+        $showIf={inputs.stateInitialized && !!inputs.items.length}
         children={
           inputs.items.map(note => (
             <ListItem

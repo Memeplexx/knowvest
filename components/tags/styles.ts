@@ -55,11 +55,13 @@ export const TagsWrapper = styled.div`
   row-gap: 12px;
 `;
 
-export const TagsSection = styled(possible.div)`
+export const TagsSection = styled.div<{ $showIf: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: start;
+  transition: all 0.4s;
+  opacity: ${p => p.$showIf ? 1 : 0};
 `;
 
 export const Body = styled(possible.div)`

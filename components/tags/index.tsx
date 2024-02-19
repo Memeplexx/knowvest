@@ -42,6 +42,7 @@ export const Tags = () => {
         children={
           <>
             <TagsSection
+              $showIf={inputs.stateInitialized}
               children={
                 <>
                   <ActiveHeaderTag
@@ -77,7 +78,7 @@ export const Tags = () => {
             {inputs.groupsWithSynonyms.map(group => (
               <TagsSection
                 key={group.groupId}
-                showIf={inputs.stateInitialized}
+                $showIf={inputs.stateInitialized}
                 children={
                   <>
                     <GroupHeaderTag

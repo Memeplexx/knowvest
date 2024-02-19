@@ -60,9 +60,11 @@ export const RightBorder = styled(possible.div)`
   z-index: 4;
 `;
 
-export const ListItemsWrapper = styled(possible.div)`
+export const ListItemsWrapper = styled.div<{ $showIf: boolean }>`
   display: flex;
   flex-direction: column;
+  transition: all 0.4s;
+  opacity: ${p => p.$showIf ? 1 : 0};
 `;
 
 export const NoResultsWrapper = styled(possible.div)`
