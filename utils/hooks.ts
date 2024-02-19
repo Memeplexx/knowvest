@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
-import { Store } from 'olik';
-import { FunctionComponent, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
-import { AppState, StoreContext } from './constants';
+import { createUseStoreHook } from 'olik-react';
+import { FunctionComponent, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
+import { StoreContext } from './constants';
 import { EventMap } from './types';
 
 
@@ -92,22 +92,7 @@ export const useIsMounted = () => {
   return initialized;
 }
 
-export const useStore = <Patch extends Record<string, unknown>>(patch?: Patch) => {
-  type StateType = Patch extends undefined ? AppState : AppState & Patch;
-  const store = useContext(StoreContext)!;
-  useMemo(function createSubStore() {
-    if (!patch) { return; }
-    // prevent react.strictmode from setting state twice
-    if (Object.keys(patch).every(key => (store.$state as Record<string, unknown>)[key] !== undefined)) { return; }
-    store.$setNew(patch);
-  }, [patch, store]);
-  return new Proxy({} as { store: Store<StateType> } & { [key in keyof StateType]: (StateType)[key] }, {
-    get(target, p) {
-      if (p === 'store') { return store; }
-      return store[p as (keyof AppState)].$useState();
-    },
-  });
-}
+export const useStore = createUseStoreHook(StoreContext);
 
 export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {
   const isMounted = useIsMounted();

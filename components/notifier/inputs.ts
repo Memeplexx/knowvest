@@ -28,7 +28,7 @@ export const useInputs = (incomingProps: Props) => {
       return;
     }
 
-    // if we get to this point, we know that the message text is not empty
+    // if we get to this point, we know that the message text is not empty, so we can push the message onto the messages queue
     const ts = Date.now();
     setState(s => ({ ...s, messages: s.messages.length > props.maxCount ? s.messages.slice(s.messages.length - props.maxCount) : [...s.messages, { text: s.message, ts, show: false }] }));
     requestAnimationFrame(() => requestAnimationFrame(() => { // needed for animation to work
