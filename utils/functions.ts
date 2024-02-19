@@ -58,7 +58,9 @@ export const decideComparing = <C, X, T extends { when(): C; then(): X }>(
 ): DecisionResult<X, ReturnType<T['then']>> =>
   decisions.findOrThrow(d => d.when() === toCompare).then() as DecisionResult<X, ReturnType<T['then']>>;
 
-
+/**
+ * Checks whether an element or any of its ancestors matches a given condition.
+ */
 export const ancestorMatches = (element: EventTarget | null, check: (element: HTMLElement) => boolean): boolean => {
   const parentNode = (element as HTMLElement).parentNode as HTMLElement;
   if (parentNode == null || parentNode.tagName === 'WINDOW') {

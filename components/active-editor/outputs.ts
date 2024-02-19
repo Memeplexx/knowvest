@@ -2,6 +2,8 @@ import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
 import { splitNote } from "@/app/actions/note";
 import { createTagFromActiveNote } from "@/app/actions/tag";
+import { useEventHandlerForDocument } from "@/utils/hooks";
+import { ancestorMatches } from "@/utils/functions";
 
 
 export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => {
@@ -52,5 +54,9 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onBlurTextEditor: () => {
       if (store.activePanel.selection.$state === '') { return; }
     },
+    onDocumentClick: useEventHandlerForDocument('click', event => {
+      if (ancestorMatches(event.target, e => e === editorRef.current)) { return; }
+      store.activePanel.selection.$set('');
+    })
   };
 }

@@ -11,7 +11,7 @@ export const useOutputs = ({ store, cardRef, props }: Inputs) => {
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
       store.activeNoteId.$set(noteId);
       store.synonymIds.$set(synonymIds);
-      // store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
+      store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
       const apiResponse = await viewNote({ noteId });
       await indexeddb.write(store, { notes: apiResponse.note });

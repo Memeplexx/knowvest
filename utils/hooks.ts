@@ -19,7 +19,7 @@ export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'key
       if (handler) {
         handler(event);
       }
-    }) as EventListener;
+    }) as unknown as EventListener;
     Object.defineProperty(listener, 'name', { value: listenerName });
     document.addEventListener(type, listener);
     return () => document.removeEventListener(type, listener);

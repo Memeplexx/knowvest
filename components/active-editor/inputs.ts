@@ -36,11 +36,10 @@ import { useNotifier } from '../notifier';
 
 export const useInputs = () => {
 
-  const { store, notes } = useStore<typeof initialState>();
+  const { store, notes, activePanel } = useStore<typeof initialState & typeof initialState>();
   const mayDeleteNote = !!notes.length;
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
-  const { selection, loadingSelection } = store.activePanel.$state;
 
   useEffect(() => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
@@ -58,8 +57,7 @@ export const useInputs = () => {
     mayDeleteNote,
     codeMirror: codeMirror.current,
     notify: useNotifier(),
-    selection,
-    loadingSelection,
+    ...activePanel,
   };
 }
 

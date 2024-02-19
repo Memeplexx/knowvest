@@ -1,6 +1,7 @@
 import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym, type FlashCard, type User } from "@prisma/client";
 import { type indexedDbState } from "./constants";
 import { PossiblyBrandedPrimitive, type Brand } from "olik";
+import { MouseEvent } from "react";
 
 export type ValueOf<T> = T[keyof T];
 
@@ -18,7 +19,7 @@ export type EntityToDto<T>
 
 export type DecisionResult<X, H> = X extends (string | number | boolean | symbol | Record<string, unknown>) ? X : H;
 
-export type EventMap<T> = T extends 'click' ? MouseEvent : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
+export type EventMap<T> = T extends 'click' ? MouseEvent<HTMLElement> : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
 
 export type Keys =
   | 'Backspace'
