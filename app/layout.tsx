@@ -2,12 +2,12 @@
 import '@/styles/application.css';
 import '@/styles/reset.css';
 import '@/utils/array-utils';
-import { NextAuthProvider } from '@/utils/nextauth.provider';
-import StyledComponentsRegistry from '@/utils/style-registry';
+import { NextAuthProvider } from '@/utils/auth-utils';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from '@vercel/analytics/react';
 import { NotifierProvider } from '@/components/notifier';
-import StoreProvider from '@/utils/store.provider';
+import StyledComponentsRegistry from '@/utils/style-utils';
+import StoreProvider from '@/utils/store-utils';
 
 export default async function RootLayout({
   children,
@@ -16,7 +16,6 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en"
-
       children={
         <>
           <head

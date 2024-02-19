@@ -1,24 +1,24 @@
 import { Inputs } from "./constants";
-import { indexeddb } from "@/utils/indexed-db";
 import { archiveFlashCard, createFlashCard, updateFlashCardText } from "@/actions/flashcard";
 import { FlashCardId } from "@/actions/types";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
 
 export const useOutputs = ({ store, notify }: Inputs) => {
   return {
     onClickCreateFlashCard: async () => {
       const apiResponse = await createFlashCard({ noteId: store.$state.activeNoteId });
-      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
+      await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
     },
     onChangeFlashCardText: async (id: FlashCardId, text: string) => {
       const apiResponse = await updateFlashCardText({ id, text });
-      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
+      await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
     },
     onClickRequestDeleteFlashCard: (id: FlashCardId) => {
       store.activeFlashCards.confirmDeleteId.$set(id);
     },
     onConfirmRemoveFlashCard: async (id: FlashCardId) => {
       const apiResponse = await archiveFlashCard({ id });
-      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
+      await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
       notify.success('Flash card archived');
     },
     onCancelRemoveFlashCard: () => {

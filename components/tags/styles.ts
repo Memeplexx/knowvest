@@ -1,4 +1,4 @@
-import { SettingsIcon as BaseSettingsIcon } from '@/utils/styles';
+import { SettingsIcon as BaseSettingsIcon } from '@/utils/style-utils';
 import styled from 'styled-components';
 import { possible } from '../html';
 import { ButtonIcon } from '../button-icon';

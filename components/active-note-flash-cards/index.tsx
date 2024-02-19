@@ -1,7 +1,7 @@
 "use client";
 import { Confirmation } from "@/components/confirmation";
 import { NoResultsIcon } from "@/components/related-items/styles";
-import { AddIcon, DeleteIcon } from "@/utils/styles";
+import { AddIcon, DeleteIcon } from "@/utils/style-utils";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { Container, CreateNewButton, DeleteButton, FlashCard, TextArea, FlashCardWrapper, NoResults } from "./styles";

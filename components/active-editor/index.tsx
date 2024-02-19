@@ -1,5 +1,5 @@
 "use client";
-import { AddIcon, FilterIcon, SplitIcon } from '@/utils/styles';
+import { AddIcon, FilterIcon, SplitIcon } from '@/utils/style-utils';
 import { Loader } from '../loader';
 import { useOutputs } from './outputs';
 import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, Instruction, TextEditor, TextEditorWrapper } from './styles';

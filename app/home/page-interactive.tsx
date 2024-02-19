@@ -3,7 +3,7 @@ import '@/utils/array-utils';
 import { ActiveNoteFlashCards } from '@/components/active-note-flash-cards';
 import { Navbar } from '@/components/navbar';
 import { Tags } from '@/components/tags';
-import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/styles';
+import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/style-utils';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { BodyWrapper, HistoryPanel, CenterPanel, ActivePane, TabsPanel, RelatedPanel, ExpandHistoryToggleButton, ExpandTagsToggleButton, ExpandHeaderToggleButton, ExpandRelatedToggleButton } from './styles';

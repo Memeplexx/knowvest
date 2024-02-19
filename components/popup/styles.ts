@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { animated } from "react-spring";
-import { defaultFontFamily } from "@/utils/styles";
+import { defaultFontFamily } from "@/utils/style-utils";
 
 
 

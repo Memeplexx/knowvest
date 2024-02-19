@@ -11,24 +11,22 @@ export default async function Index() {
     redirect('/home');
   }
   return (
-    <>
-      <Wrapper
-        children={
-          <CenterContent
-            children={
-              <>
-                <Title
-                  children="know-vest"
-                />
-                <Divider />
-                <LoginButton
-                  aria-label='Sign in'
-                />
-              </>
-            }
-          />
-        }
-      />
-    </>
+    <Wrapper
+      children={
+        <CenterContent
+          children={
+            <>
+              <Title
+                children="know-vest"
+              />
+              <Divider />
+              <LoginButton
+                aria-label='Sign in'
+              />
+            </>
+          }
+        />
+      }
+    />
   )
 }

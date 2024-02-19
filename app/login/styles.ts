@@ -1,5 +1,5 @@
 "use client";
-import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
+import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
 
 export const Wrapper = styled.div`

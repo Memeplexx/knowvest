@@ -3,7 +3,7 @@ import { ActivePanel } from "@/components/active-panel";
 import { History } from "@/components/history";
 import { Related } from "@/components/related";
 import { Tabs } from "@/components/card-with-tabs";
-import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
+import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
 import { ButtonIcon } from "@/components/button-icon";
 

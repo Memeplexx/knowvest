@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { possible } from "../html";
-import { mobileBreakPoint } from "@/utils/styles";
+import { mobileBreakPoint } from "@/utils/style-utils";
 
 
 export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighted?: boolean }>`

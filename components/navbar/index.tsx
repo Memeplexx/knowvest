@@ -1,5 +1,5 @@
 "use client";
-import { PopupOption } from '@/utils/styles';
+import { PopupOption } from '@/utils/style-utils';
 import Farm from '../../public/images/farm.svg';
 import { Modal } from '../modal';
 import { Popup } from '../popup';

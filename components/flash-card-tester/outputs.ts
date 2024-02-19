@@ -1,8 +1,8 @@
-import { Inputs } from "./constants";
-import { useEventHandlerForDocument } from "@/utils/hooks";
-import { indexeddb } from "@/utils/indexed-db";
 import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/actions/flashcard";
 import { ancestorMatches } from "@/utils/dom-utils";
+import { useEventHandlerForDocument } from "@/utils/hooks";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
+import { Inputs } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store, notify, bodyRef, items } = inputs;
@@ -25,13 +25,13 @@ export const useOutputs = (inputs: Inputs) => {
     onClickWrongAnswer: async () => {
       const id = items[0].id;
       const apiResponse = await answerFlashCardQuestionIncorrectly({ id });
-      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
+      await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
       notify.success('Better luck next time...');
     },
     onClickRightAnswer: async () => {
       const id = items[0].id;
       const apiResponse = await answerFlashCardQuestionCorrectly({ id });
-      await indexeddb.write(store, { flashCards: apiResponse.flashCard });
+      await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
       notify.success('Nice one!');
     },
   };

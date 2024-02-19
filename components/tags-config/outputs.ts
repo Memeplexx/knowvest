@@ -3,11 +3,11 @@ import { useEventHandlerForDocument } from '@/utils/hooks';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { GroupId, SynonymId, TagId, TypedKeyboardEvent } from '@/actions/types';
 import { Inputs } from './constants';
-import { indexeddb } from '@/utils/indexed-db';
 import { useSharedFunctions } from './shared';
 import { removeTagFromItsCurrentSynonym } from '@/actions/synonym';
 import { archiveGroup, removeSynonymFromGroup } from '@/actions/group';
 import { archiveTag } from '@/actions/tag';
+import { writeToStoreAndDb } from '@/utils/storage-utils';
 
 
 export const useOutputs = (inputs: Inputs) => {
@@ -76,14 +76,14 @@ export const useOutputs = (inputs: Inputs) => {
     onClickRemoveTagFromSynonyms: async () => {
       if (!inputs.tagId) { return; }
       const apiResponse = await removeTagFromItsCurrentSynonym({ tagId: inputs.tagId });
-      await indexeddb.write(store, { synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
+      await writeToStoreAndDb(store, { synonymGroups: apiResponse.archivedSynonymGroups, tags: apiResponse.tagUpdated });
       store.tagsConfig.$patch({ tagId: null, autocompleteText: '' });
       notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
       if (!inputs.groupSynonymId) { return; }
       const response = await removeSynonymFromGroup({ groupId: inputs.groupId!, synonymId: inputs.groupSynonymId! });
-      await indexeddb.write(store, { groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
+      await writeToStoreAndDb(store, { groups: response.archivedGroup, synonymGroups: response.archivedSynonymGroups });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
@@ -222,13 +222,13 @@ export const useOutputs = (inputs: Inputs) => {
       const synonymId = inputs.tagsInSynonymGroup.length === 1 ? null : inputs.synonymId;
       const lastTag = inputs.tagsInSynonymGroup.length === 1;
       store.tagsConfig.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : inputs.autocompleteAction });
-      await indexeddb.write(store, { tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
+      await writeToStoreAndDb(store, { tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {
       const response = await archiveGroup({ groupId: inputs.groupId! });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-      await indexeddb.write(store, { synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
+      await writeToStoreAndDb(store, { synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
       notify.success('Group archived');
     },
     onCancelConfirmation: () => {

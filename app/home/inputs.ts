@@ -1,5 +1,4 @@
 import { useIsMounted, useIsomorphicLayoutEffect, useStore } from "@/utils/hooks";
-import { indexeddb } from "@/utils/indexed-db";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
@@ -8,6 +7,7 @@ import { HomeStore, initialState } from "./constants";
 import { redirect } from "next/navigation";
 import { initialize } from "../../actions/session";
 import { UserDTO } from "@/actions/types";
+import { initializeDb, readFromDb, writeToStoreAndDb } from "@/utils/storage-utils";
 
 
 export const useInputs = () => {
@@ -79,8 +79,8 @@ export const useDataInitializer = ({ store }: { store: HomeStore }) => {
 }
 
 const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
-  await indexeddb.initialize();
-  const databaseData = await indexeddb.read();
+  await initializeDb();
+  const databaseData = await readFromDb();
   const notesSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
   const after = notesSorted[0]?.dateUpdated;
   const apiResponse = await initialize({ ...session.user as UserDTO, after });
@@ -91,7 +91,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
       activeNoteId: apiResponse.firstNote.id,
     });
   }
-  await indexeddb.write(store, apiResponse);
+  await writeToStoreAndDb(store, apiResponse);
   const activeNoteId = notesSorted[0].id;
   const selectedTagIds = databaseData.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
   const synonymIds = databaseData.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId);

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { ButtonIcon } from '../button-icon';
 import { possible } from '../html';
-import { CloseIcon } from '@/utils/styles';
+import { CloseIcon } from '@/utils/style-utils';
 
 
 export const ClearTextButtonWrapper = styled(possible.div)`

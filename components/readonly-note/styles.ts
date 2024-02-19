@@ -1,4 +1,4 @@
-import { monoFontFamily } from "@/utils/styles";
+import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
 import { possible } from "../html";
 

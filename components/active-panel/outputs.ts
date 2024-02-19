@@ -1,7 +1,7 @@
-import { Inputs } from "./constants";
-import { indexeddb } from "@/utils/indexed-db";
 import { archiveNote, createNote, duplicateNote } from "@/actions/note";
 import { getNotesSorted } from "@/utils/app-utils";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
+import { Inputs } from "./constants";
 
 
 export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
@@ -9,7 +9,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await createNote({});
-      await indexeddb.write(store, { notes: apiResponse.note });
+      await writeToStoreAndDb(store, { notes: apiResponse.note });
       store.activePanel.loadingNote.$set(false);
       store.activeNoteId.$set(apiResponse.note.id);
       store.synonymIds.$clear();
@@ -20,7 +20,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     onClickConfirmRemoveNote: async () => {
       store.activePanel.$patch({ allowNotePersister: false, loadingNote: true })
       const apiResponse = await archiveNote({ noteId: store.$state.activeNoteId });
-      await indexeddb.write(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
+      await writeToStoreAndDb(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
       const newNoteId = getNotesSorted(store.$state.notes)[0].id;
       store.activeNoteId.$set(newNoteId);
@@ -37,7 +37,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     onClickDuplicateNote: async () => {
       store.activePanel.loadingNote.$set(true);
       const apiResponse = await duplicateNote({ noteId: store.$state.activeNoteId })
-      await indexeddb.write(store, { notes: apiResponse.noteCreated, noteTags: apiResponse.noteTagsCreated });
+      await writeToStoreAndDb(store, { notes: apiResponse.noteCreated, noteTags: apiResponse.noteTagsCreated });
       store.activePanel.loadingNote.$set(false);
       popupRef.current?.hide();
     },

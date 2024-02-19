@@ -1,8 +1,7 @@
 "use client";
-import { floatingUiDefaultOptions } from "@/utils/store-utils";
 import { useFloating } from "@floating-ui/react";
 import { ForwardedRef, useImperativeHandle, useMemo, useRef } from "react";
-import { Props, AutocompleteHandle, OptionBase } from "./constants";
+import { Props, AutocompleteHandle, OptionBase, floatingUiDefaultOptions } from "./constants";
 import { useForwardedRef } from "@/utils/hooks";
 
 export const useInputs = <Option extends OptionBase>(

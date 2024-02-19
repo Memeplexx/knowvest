@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styled from "styled-components";
 import { possible } from "../html";
-import { SearchIcon as BaseSearchIcon } from "@/utils/styles";
+import { SearchIcon as BaseSearchIcon } from "@/utils/style-utils";
 import { ButtonIcon } from "../button-icon";
 import { PiStudentFill } from 'react-icons/pi';
 

@@ -1,7 +1,7 @@
-import { Inputs } from "./constants";
-import { indexeddb } from "@/utils/indexed-db";
 import { viewNote } from "@/actions/note";
 import { NoteId } from "@/actions/types";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
+import { Inputs } from "./constants";
 
 
 export const useOutputs = ({ store, cardRef, props }: Inputs) => {
@@ -14,7 +14,7 @@ export const useOutputs = ({ store, cardRef, props }: Inputs) => {
       store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
       props.onSelectNote(noteId);
       const apiResponse = await viewNote({ noteId });
-      await indexeddb.write(store, { notes: apiResponse.note });
+      await writeToStoreAndDb(store, { notes: apiResponse.note });
       cardRef.current!.scrollToTop();
     }
   };

@@ -2,11 +2,11 @@ import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
-import { indexeddb } from "@/utils/indexed-db";
 import { ActivePanelStore } from "./constants";
 import { updateNoteTags } from "@/actions/notetag";
 import { updateNote } from "@/actions/note";
 import { NoteId, TagId } from "@/actions/types";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
 
 export const autocompleteExtension = (store: ActivePanelStore) => {
   return autocompletion({
@@ -32,7 +32,7 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
     if (Date.now() - timestamp < debounce) { return; }
     if (!store.$state.activePanel.allowNotePersister) { return; }
     const apiResponse = await updateNote({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
-    await indexeddb.write(store, { notes: apiResponse.updatedNote });
+    await writeToStoreAndDb(store, { notes: apiResponse.updatedNote });
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
@@ -87,7 +87,7 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
     const apiResponse = await updateNoteTags({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
-    await indexeddb.write(store, { noteTags: apiResponse.noteTags });
+    await writeToStoreAndDb(store, { noteTags: apiResponse.noteTags });
     const tagIds = apiResponse.noteTags.filter(nt => !nt.isArchived).map(nt => nt.tagId);
     const synonymIds = store.$state.tags.filter(t => tagIds.includes(t.id)).map(t => t.synonymId).distinct();
     store.synonymIds.$set(synonymIds);

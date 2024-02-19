@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ButtonIcon } from '../button-icon';
 import { possible } from '../html';
 import { Button } from '../button';
-import { mobileBreakPoint } from '@/utils/styles';
+import { mobileBreakPoint } from '@/utils/style-utils';
 
 
 

@@ -5,7 +5,7 @@ import { AutocompleteOptionType, Props } from './constants';
 import { useOutputs } from './outputs';
 import { useInputs } from './inputs';
 import { AutocompleteOption, AutocompleteOptionStatus, AutocompleteOptionLabel, AutocompleteOptionLeft, Container, CategoryTitle, CategoryWrapper, LeftContent, Result, RightContent, Tag, TagsOuterWrapper, TagsWrapper, MainContent, TabsWrapper, TabTitle, TabButton, CloseButton, TabsButtons } from './styles';
-import { CloseIcon } from '@/utils/styles';
+import { CloseIcon } from '@/utils/style-utils';
 
 
 export const SearchDialog = forwardRef(function SearchDialog(

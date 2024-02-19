@@ -1,4 +1,4 @@
-import { ClockIcon } from "@/utils/styles";
+import { ClockIcon } from "@/utils/style-utils";
 import styled from "styled-components";
 import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";

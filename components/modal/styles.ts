@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { animated } from "react-spring";
-import { defaultFontFamily, mobileBreakPoint } from "@/utils/styles";
+import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
 
 
 export const Background = styled(animated.div)`

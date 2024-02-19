@@ -23,7 +23,7 @@ import {
 } from './styles';
 import { Confirmation } from '../confirmation';
 import { AutocompleteOptionType, Props } from './constants';
-import { CloseIcon, PopupOption, PopupOptions, SettingsIcon } from '@/utils/styles';
+import { CloseIcon, PopupOption, PopupOptions, SettingsIcon } from '@/utils/style-utils';
 
 
 export const TagsConfig = forwardRef(function TagsConfig(

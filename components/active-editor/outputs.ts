@@ -1,9 +1,9 @@
 import { Inputs } from "./constants";
-import { indexeddb } from "@/utils/indexed-db";
 import { splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { ancestorMatches } from "@/utils/dom-utils";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
 
 
 export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => {
@@ -16,7 +16,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
         case 'BAD_REQUEST': return notify.error(apiResponse.fields.tagText);
         case 'CONFLICT': return notify.error(apiResponse.fields.tagText);
       }
-      await indexeddb.write(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+      await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
       store.synonymIds.$merge(store.tags.$find.id.$eq(apiResponse.tag.id).synonymId);
       store.activePanel.selection.$set('');
       codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0].anchor } });
@@ -34,7 +34,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       const range = codeMirror!.state.selection.ranges[0];
       store.activePanel.loadingSelection.$set(true);
       const apiResponse = await splitNote({ ...range, splitFromNoteId: store.$state.activeNoteId });
-      await indexeddb.write(store, apiResponse);
+      await writeToStoreAndDb(store, apiResponse);
       store.activePanel.$patch({
         loadingSelection: false,
         selection: '',
