@@ -12,7 +12,7 @@ export default function HistoryItems (
   return (
     <>
       <ListItemsWrapper
-        $showIf={inputs.stateInitialized && !!inputs.items.length}
+        showIf={inputs.stateInitialized && !!inputs.items.length}
         children={
           inputs.items.map(note => (
             <ListItem
