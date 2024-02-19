@@ -55,6 +55,6 @@ export const Body = styled(possible.div)`
   }
 `;
 
-export const LoaderPlacehlder = styled(Loader)`
+export const LoaderPlaceholder = styled(Loader)`
   margin-top: 70px;
 `;

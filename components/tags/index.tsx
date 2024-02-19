@@ -10,6 +10,7 @@ import {
   ActiveHeaderTag,
   Body,
   GroupHeaderTag,
+  LoaderPlaceholder,
   NoTagsPlaceholder,
   SettingsButton,
   SettingsIcon,
@@ -121,6 +122,10 @@ export const Tags = () => {
                   />
                 </>
               }
+            />
+            <LoaderPlaceholder
+              showIf={!inputs.stateInitialized}
+              opacity={0}
             />
           </>
         }

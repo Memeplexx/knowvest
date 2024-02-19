@@ -2,6 +2,7 @@ import { SettingsIcon as BaseSettingsIcon } from '@/utils/styles';
 import styled from 'styled-components';
 import { possible } from '../html';
 import { ButtonIcon } from '../button-icon';
+import { Loader } from '../loader';
 
 export const Tag = styled.div <{ selected: boolean, $first: boolean, $last: boolean, $show?: boolean }>`
   font-size: 12px;
@@ -82,4 +83,7 @@ export const NoTagsPlaceholder = styled(possible.div)`
   gap: 8px;
   font-size: 14px;
   flex: 1;
+`;
+
+export const LoaderPlaceholder = styled(Loader)`
 `;

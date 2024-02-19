@@ -33,7 +33,9 @@ export const Tabs = (
       }
       body={
         <Body
-          children={<Panel />}
+          children={
+            <Panel />
+          }
         />
       }
     />
