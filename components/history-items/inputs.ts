@@ -7,7 +7,7 @@ export const useInputs = (
   props: Props,
 ) => {
 
-  const { store, historyItems, activeNoteId, notes } = useStore(initialState);
+  const { store, historyItems, activeNoteId, notes, stateInitialized } = useStore(initialState);
 
   const items = useMemo(() => {
     return notes
@@ -29,6 +29,7 @@ export const useInputs = (
     props,
     store,
     items,
+    stateInitialized,
     ...historyItems,
   };
 }

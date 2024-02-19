@@ -38,7 +38,7 @@ export default function RelatedItems(
         }
       />
       <NoResultsWrapper
-        showIf={!inputs.items.length}
+        showIf={inputs.stateInitialized && !inputs.items.length}
         children={
           <>
             <NoResultsIcon />

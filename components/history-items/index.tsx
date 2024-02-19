@@ -39,7 +39,7 @@ export default function HistoryItems (
           ))}
       />
       <NoResultsWrapper
-        showIf={!inputs.items.length}
+        showIf={inputs.stateInitialized && !inputs.items.length}
         children={
           <>
             <NoResultsIcon />

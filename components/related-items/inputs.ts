@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 export const useInputs = (props: Props) => {
 
-  const { store, notes, tags, noteTags, synonymIds, activeNoteId } = useStore();
+  const { store, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized } = useStore();
 
   const items = useMemo(() => {
     const unArchivedNotes = notes.filter(n => !n.isArchived);
@@ -31,6 +31,7 @@ export const useInputs = (props: Props) => {
     props,
     store,
     items,
+    stateInitialized,
   }
 
 };
