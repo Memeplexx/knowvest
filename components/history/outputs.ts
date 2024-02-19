@@ -1,7 +1,7 @@
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
-import { viewNote } from "@/app/actions/note";
-import { NoteId } from "@/utils/types";
+import { viewNote } from "@/actions/note";
+import { NoteId } from "@/actions/types";
 
 
 export const useOutputs = ({ store, cardRef, props }: Inputs) => {

@@ -1,10 +1,10 @@
-import { Inputs } from './constants';
-import { ancestorMatches } from '@/utils/functions';
+import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '@/actions/group';
+import { addTagToSynonym, createTagToSynonym } from '@/actions/synonym';
+import { createTag, updateTag } from '@/actions/tag';
+import { GroupId, TagId } from '@/actions/types';
+import { ancestorMatches } from '@/utils/dom-utils';
 import { indexeddb } from '@/utils/indexed-db';
-import { addTagToSynonym, createTagToSynonym } from '@/app/actions/synonym';
-import { createTag, updateTag } from '@/app/actions/tag';
-import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '@/app/actions/group';
-import { TagId, GroupId } from '@/utils/types';
+import { Inputs } from './constants';
 
 
 export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {

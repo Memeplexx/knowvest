@@ -1,4 +1,4 @@
-import { FlashCardId } from "@/utils/types";
+import { FlashCardId } from "@/actions/types";
 import { useInputs } from "./inputs";
 
 export const initialState = {

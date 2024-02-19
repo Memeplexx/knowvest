@@ -1,5 +1,5 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { EntityToDto, FlashCardId, GroupId, NoteDTO, NoteId, SynonymDTO, SynonymId, TagDTO, TagId, UserId } from "@/utils/types";
+import { EntityToDto, FlashCardId, GroupId, NoteDTO, NoteId, SynonymDTO, SynonymId, TagDTO, TagId, UserId } from "@/actions/types";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { ZodNumberDef, ZodRawShape, ZodType, z } from "zod";

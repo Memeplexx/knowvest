@@ -1,7 +1,7 @@
 import { RepsertableObject, Store } from "olik";
-import { AppState, indexedDbState } from "./constants";
-import { WriteToIndexedDBArgs } from "./types";
+import { AppState, indexedDbState } from "./store-utils";
 
+export type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]: null | typeof indexedDbState[tableName] | typeof indexedDbState[tableName][0] }>;
 
 const openDatabase = () => indexedDB.open('knowvest', 1);
 const keysTyped = <O extends object>(obj: O) => Object.keys(obj) as Array<keyof O>;

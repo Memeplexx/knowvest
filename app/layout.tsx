@@ -1,7 +1,7 @@
 "use server";
 import '@/styles/application.css';
 import '@/styles/reset.css';
-import '@/utils/array-polyfills';
+import '@/utils/array-utils';
 import { NextAuthProvider } from '@/utils/nextauth.provider';
 import StyledComponentsRegistry from '@/utils/style-registry';
 import { SpeedInsights } from "@vercel/speed-insights/next";

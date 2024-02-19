@@ -1,11 +1,11 @@
 import { useMemo, useRef, type ForwardedRef, useState } from 'react';
 
-import { decide } from '@/utils/functions';
 import { useFloating } from '@floating-ui/react';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { Props, initialState, initialTransientState } from './constants';
 import { useNotifier } from '../notifier';
 import { useStore } from '@/utils/hooks';
+import { decide } from '@/utils/logic-utils';
 
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {

@@ -6,9 +6,7 @@ import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { Container, Message, Popup } from "./styles";
 
-export const useNotifier = () => {
-  return useContext(NotificationContext)!;
-}
+export const useNotifier = () => useContext(NotificationContext)!
 
 export function NotifierProvider(partialProps: Props) {
   const inputs = useInputs(partialProps);

@@ -1,7 +1,7 @@
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
-import { archiveNote, createNote, duplicateNote } from "@/app/actions/note";
-import { getNotesSorted } from "@/utils/functions";
+import { archiveNote, createNote, duplicateNote } from "@/actions/note";
+import { getNotesSorted } from "@/utils/app-utils";
 
 
 export const useOutputs = ({ store, notify, popupRef }: Inputs) => {

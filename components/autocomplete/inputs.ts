@@ -1,5 +1,5 @@
 "use client";
-import { floatingUiDefaultOptions } from "@/utils/constants";
+import { floatingUiDefaultOptions } from "@/utils/store-utils";
 import { useFloating } from "@floating-ui/react";
 import { ForwardedRef, useImperativeHandle, useMemo, useRef } from "react";
 import { Props, AutocompleteHandle, OptionBase } from "./constants";

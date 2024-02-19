@@ -1,8 +1,8 @@
 import dynamic from 'next/dynamic';
 import { createUseStoreHook } from 'olik-react';
 import { FunctionComponent, useEffect, useLayoutEffect, useMemo, useRef, useState, type ForwardedRef } from 'react';
-import { StoreContext } from './constants';
-import { EventMap } from './types';
+import { StoreContext } from './store-utils';
+import { EventMap } from '../actions/types';
 
 
 export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'keydown'>(

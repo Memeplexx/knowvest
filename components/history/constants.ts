@@ -1,4 +1,4 @@
-import { NoteId } from "@/utils/types";
+import { NoteId } from "@/actions/types";
 import { useInputs } from "./inputs";
 import { type HTMLAttributes } from 'react';
 

@@ -1,7 +1,7 @@
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
-import { archiveFlashCard, createFlashCard, updateFlashCardText } from "@/app/actions/flashcard";
-import { FlashCardId } from "@/utils/types";
+import { archiveFlashCard, createFlashCard, updateFlashCardText } from "@/actions/flashcard";
+import { FlashCardId } from "@/actions/types";
 
 export const useOutputs = ({ store, notify }: Inputs) => {
   return {

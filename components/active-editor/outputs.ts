@@ -1,9 +1,9 @@
 import { Inputs } from "./constants";
 import { indexeddb } from "@/utils/indexed-db";
-import { splitNote } from "@/app/actions/note";
-import { createTagFromActiveNote } from "@/app/actions/tag";
+import { splitNote } from "@/actions/note";
+import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/hooks";
-import { ancestorMatches } from "@/utils/functions";
+import { ancestorMatches } from "@/utils/dom-utils";
 
 
 export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => {

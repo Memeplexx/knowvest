@@ -1,4 +1,4 @@
-import { GroupId, SynonymId } from "@/utils/types";
+import { GroupId, SynonymId } from "@/actions/types";
 import { useInputs } from "./inputs";
 
 export type Inputs = ReturnType<typeof useInputs>;

@@ -1,8 +1,8 @@
 import { Inputs } from "./constants";
 import { onSelectGroup, onSelectSynonym } from "./shared";
 import { useEventHandlerForDocument } from "@/utils/hooks";
-import { ancestorMatches } from "@/utils/functions";
-import { SynonymId, GroupId, NoteId } from "@/utils/types";
+import { SynonymId, GroupId, NoteId } from "@/actions/types";
+import { ancestorMatches } from "@/utils/dom-utils";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store } = inputs;

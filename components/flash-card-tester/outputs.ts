@@ -1,8 +1,8 @@
-import { ancestorMatches } from "@/utils/functions";
 import { Inputs } from "./constants";
 import { useEventHandlerForDocument } from "@/utils/hooks";
 import { indexeddb } from "@/utils/indexed-db";
-import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/app/actions/flashcard";
+import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/actions/flashcard";
+import { ancestorMatches } from "@/utils/dom-utils";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store, notify, bodyRef, items } = inputs;

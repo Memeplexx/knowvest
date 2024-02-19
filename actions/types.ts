@@ -1,6 +1,5 @@
 import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym, type FlashCard, type User } from "@prisma/client";
-import { type indexedDbState } from "./constants";
-import { PossiblyBrandedPrimitive, type Brand } from "olik";
+import { type Brand } from "olik";
 import { MouseEvent } from "react";
 
 export type ValueOf<T> = T[keyof T];
@@ -17,7 +16,6 @@ export type EntityToDto<T>
   : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
   : T
 
-export type DecisionResult<X, H> = X extends (string | number | boolean | symbol | Record<string, unknown>) ? X : H;
 
 export type EventMap<T> = T extends 'click' ? MouseEvent<HTMLElement> : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
 
@@ -46,13 +44,6 @@ export interface TypedKeyboardEvent<T extends HTMLElement> extends React.Keyboar
   key: Keys,
   target: T,
 }
-
-export type DatelessObject<T> = T extends Date
-  ? string : T extends Array<infer E>
-  ? Array<DatelessObject<E>> : T extends PossiblyBrandedPrimitive
-  ? T : { [key in keyof T]: DatelessObject<T[key]> }
-
-export type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]: null | typeof indexedDbState[tableName] | typeof indexedDbState[tableName][0] }>;
 
 export type NoteId = Brand<number, 'NoteId'>;
 export type TagId = Brand<number, 'TagId'>;

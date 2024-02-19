@@ -1,5 +1,5 @@
 "use server";
-import { NoteDTO, NoteTagDTO } from "@/utils/types";
+import { NoteDTO, NoteTagDTO } from "@/actions/types";
 import { ApiError, receive, listTagsWithTagText, prisma, ZodNoteId } from "./_common";
 import { z } from "zod";
 

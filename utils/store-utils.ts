@@ -1,13 +1,7 @@
 import { UseFloatingOptions, flip, size, autoUpdate } from '@floating-ui/react';
 import { createContext } from 'react';
 import { Store } from 'olik';
-import { NoteDTO, TagDTO, NoteTagDTO, GroupDTO, SynonymGroupDTO, FlashCardDTO, NoteId, SynonymId } from './types';
-
-export const OrderTypes = {
-  Created: 'dateCreated',
-  Updated: 'dateUpdated',
-  Viewed: 'dateViewed',
-} as const;
+import { NoteDTO, TagDTO, NoteTagDTO, GroupDTO, SynonymGroupDTO, FlashCardDTO, NoteId, SynonymId } from '../actions/types';
 
 export const floatingUiDefaultOptions = {
   whileElementsMounted: autoUpdate,
@@ -44,6 +38,3 @@ export const initialAppState = {
   synonymIds: new Array<SynonymId>(),
   stateInitialized: false,
 };
-
-
-

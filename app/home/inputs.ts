@@ -5,10 +5,10 @@ import { useSession } from "next-auth/react";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { useRef } from "react";
 import { HomeStore, initialState } from "./constants";
-import { getNotesSorted } from "@/utils/functions";
+import { getNotesSorted } from "@/utils/app-utils";
 import { redirect } from "next/navigation";
-import { initialize } from "../actions/session";
-import { UserDTO } from "@/utils/types";
+import { initialize } from "../../actions/session";
+import { UserDTO } from "@/actions/types";
 
 
 export const useInputs = () => {

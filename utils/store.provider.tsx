@@ -1,5 +1,5 @@
 "use client";
-import { StoreContext, initialAppState } from '@/utils/constants'
+import { StoreContext, initialAppState } from '@/utils/store-utils'
 import { createStore } from 'olik';
 import { augmentOlikForReact } from 'olik-react';
 import { useMemo } from "react";

@@ -1,7 +1,6 @@
-import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-extensions';
+import { bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { oneDark } from '@/utils/codemirror-theme';
-import { AppState } from '@/utils/constants';
-import { highlightTagsInEditor } from '@/utils/functions';
+import { AppState } from '@/utils/store-utils';
 import { useStore } from '@/utils/hooks';
 import {
   closeBrackets,

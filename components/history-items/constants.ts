@@ -1,8 +1,8 @@
 import { useInputs } from "./inputs";
 import { type HTMLAttributes, RefObject } from 'react';
 import { Store } from "olik";
-import { AppState } from "@/utils/constants";
-import { NoteId } from "@/utils/types";
+import { AppState } from "@/utils/store-utils";
+import { NoteId } from "@/actions/types";
 
 export type Props = {
   innerRef: RefObject<HistoryItemsHandle>,

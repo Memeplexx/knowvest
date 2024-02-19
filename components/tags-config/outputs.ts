@@ -1,13 +1,13 @@
 import { useEventHandlerForDocument } from '@/utils/hooks';
 
 import { type ChangeEvent, type MouseEvent } from 'react';
-import { GroupId, SynonymId, TagId, TypedKeyboardEvent } from '@/utils/types';
+import { GroupId, SynonymId, TagId, TypedKeyboardEvent } from '@/actions/types';
 import { Inputs } from './constants';
 import { indexeddb } from '@/utils/indexed-db';
 import { useSharedFunctions } from './shared';
-import { removeTagFromItsCurrentSynonym } from '@/app/actions/synonym';
-import { archiveGroup, removeSynonymFromGroup } from '@/app/actions/group';
-import { archiveTag } from '@/app/actions/tag';
+import { removeTagFromItsCurrentSynonym } from '@/actions/synonym';
+import { archiveGroup, removeSynonymFromGroup } from '@/actions/group';
+import { archiveTag } from '@/actions/tag';
 
 
 export const useOutputs = (inputs: Inputs) => {
@@ -194,9 +194,7 @@ export const useOutputs = (inputs: Inputs) => {
       shared.doCancel(event.target);
     }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
-      if (event.key !== 'Escape') {
-        return;
-      }
+      if (event.key !== 'Escape') { return; }
       if (event.target.tagName === 'INPUT') {
         inputs.autocompleteRef.current?.blurInput();
         if (inputs.showAutocompleteOptions) {

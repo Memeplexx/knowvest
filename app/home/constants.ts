@@ -1,6 +1,6 @@
 import { useInputs } from "./inputs";
 import { Store } from "olik";
-import { AppState } from "@/utils/constants";
+import { AppState } from "@/utils/store-utils";
 
 
 export const initialState = {

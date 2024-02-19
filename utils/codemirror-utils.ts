@@ -1,85 +1,139 @@
-import { ChangeDesc, Range, StateEffect, StateField } from "@codemirror/state";
-import { Decoration, DecorationSet } from "@codemirror/view";
+import { NoteTagDTO, SynonymId, TagId } from "@/actions/types";
+import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
+import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import { Readable, Store } from "olik";
-import { DecisionResult, NoteDTO, NoteTagDTO, SynonymId, TagId } from "./types";
-import { AppState } from "./constants";
-import { ComponentType, ForwardedRef, forwardRef } from "react";
+import { AppState } from "./store-utils";
 
+export const bulletPointPlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  decorator = new MatchDecorator({
+    regexp: /\*\s/g,
+    decoration: () => Decoration.replace({
+      widget: new (class extends WidgetType {
+        toDOM() {
+          const wrap = document.createElement("span");
+          wrap.innerHTML = '• ';
+          return wrap;
+        }
+      })()
+    }),
+  });
+  constructor(view: EditorView) {
+    this.decorations = this.decorator.createDeco(view);
+  }
 
-
-/**
- * A construct for expressing conditional logic with the following advantages over conventional approaches:
- * * Unlike 'if' and 'ternary' statements, this is more readable when there are a lot of conditions.
- * * Unlike 'switch' statements, this can use an expression as a condition.
- * * Unlike both 'if' and 'switch' (and much like ternary statements),
- * this returns an individual result and doesn't oblige us to define any local variables.
- *
- * @example
- *
- * cont result = decide([
- *   {
- *     when: () => // some expression returning a boolean,
- *     then: () => // some result,
- *   },
- *   {
- *     when: () => // some expression returning a boolean,
- *     then: () => // some result,
- *   }
- * ])
- */
-export const decide = <X>(
-  decisions: { when(): boolean | null | undefined; then(): X }[],
-): DecisionResult<X, ReturnType<typeof decisions[0]['then']>> =>
-  decisions.findOrThrow(d => d.when()).then() as DecisionResult<X, ReturnType<typeof decisions[0]['then']>>;
-
-/**
- * A construct for expressing conditional logic with the following advantages over conventional approaches:
- * * Unlike 'if' and 'ternary' statements, this is more readable when there are a lot of conditions.
- * * Unlike both 'if' and 'switch' (and much like ternary statements),
- * this returns an individual result and doesn't oblige us to define any local variables.
- *
- * @example
- *
- * cont result = decideComparing(someValue, [
- *   {
- *     when: () => // something which may or may not equal someValue,
- *     then: () => // some result,
- *   },
- *   {
- *     when: () => // something which may or may not equal someValue,
- *     then: () => // some result,
- *   }
- * ])
- */
-export const decideComparing = <C, X, T extends { when(): C; then(): X }>(
-  toCompare: C,
-  decisions: T[],
-): DecisionResult<X, ReturnType<T['then']>> =>
-  decisions.findOrThrow(d => d.when() === toCompare).then() as DecisionResult<X, ReturnType<T['then']>>;
-
-/**
- * Checks whether an element or any of its ancestors matches a given condition.
- */
-export const ancestorMatches = (element: EventTarget | null, check: (element: HTMLElement) => boolean): boolean => {
-  const parentNode = (element as HTMLElement).parentNode as HTMLElement;
-  if (parentNode == null || parentNode.tagName === 'WINDOW') {
-    return false;
-  } else {
-    const checkResult = check(element as HTMLElement);
-    if (!checkResult) {
-      return ancestorMatches(parentNode, check);
-    } else {
-      return checkResult;
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = this.decorator.updateDeco(update, this.decorations);
     }
   }
-}
+}, {
+  decorations: v => v.decorations
+});
 
-export function pipe<A0, A1>(arg0: A0, arg1: (arg0: A0) => A1): A1;
-export function pipe<A0, A1, A2>(arg0: A0, arg1: (arg0: A0) => A1, arg2: (arg1: A1) => A2): A2;
-export function pipe(arg0: unknown, ...fns: Array<(arg: unknown) => unknown>) {
-  return fns.reduce((prev, curr) => curr(prev), arg0);
-}
+export const inlineNotePlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  decorator = new MatchDecorator({
+    regexp: /`[^`]+`/gm,
+    decoration: (x) => Decoration.replace({
+      widget: new (class extends WidgetType {
+        toDOM() {
+          const wrap = document.createElement("span");
+          wrap.className = 'cm-note-inline';
+          wrap.innerHTML = x[0].substring(1, x[0].length - 1);
+          return wrap;
+        }
+      })()
+    }),
+  });
+  constructor(view: EditorView) {
+    this.decorations = this.decorator.createDeco(view);
+  }
+
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = this.decorator.updateDeco(update, this.decorations);
+    }
+  }
+}, {
+  decorations: v => v.decorations
+});
+
+
+export const noteBlockPlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  codeBlockDeco(view: EditorView) {
+    const builder = new RangeSetBuilder<Decoration>()
+    let codeBlockOpened = false;
+    for (const { from, to } of view.visibleRanges) {
+      for (let pos = from; pos <= to;) {
+        const line = view.state.doc.lineAt(pos)
+        const text = line.text;
+        const isStartOfCodeBlock = /```.*/g.test(text);
+        if (isStartOfCodeBlock && !codeBlockOpened) {
+          codeBlockOpened = true;
+          builder.add(line.from, line.from, Decoration.line({ class: 'cm-note-multiline top' }));
+        } else if (codeBlockOpened) {
+          const isEndOfCodeBlock = /```/g.test(text);
+          if (isEndOfCodeBlock) {
+            builder.add(line.from, line.from, Decoration.line({ class: 'cm-note-multiline bottom' }));
+            codeBlockOpened = false;
+          } else {
+            builder.add(line.from, line.from, Decoration.line({ class: 'cm-note-multiline' }));
+          }
+        }
+        pos = line.to + 1;
+      }
+    }
+    return builder.finish()
+  }
+
+  constructor(view: EditorView) {
+    this.decorations = this.codeBlockDeco(view)
+  }
+
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = this.codeBlockDeco(update.view);
+    }
+  }
+}, {
+  decorations: v => v.decorations
+});
+
+
+export const titleFormatPlugin = ViewPlugin.fromClass(class {
+  decorations: DecorationSet;
+  headingDeco(view: EditorView) {
+    const builder = new RangeSetBuilder<Decoration>()
+    for (const { from, to } of view.visibleRanges) {
+      for (let pos = from; pos <= to;) {
+        const line = view.state.doc.lineAt(pos)
+        const text = line.text;
+        const isHeading = /^#{1,6}\s.*/g.test(text);
+        if (isHeading) {
+          const hashCount = text.match(/^#{1,6}/g)![0].length;
+          builder.add(line.from, line.to, Decoration.mark({ attributes: { class: `cm-h${hashCount}` } }));
+        }
+        pos = line.to + 1;
+      }
+    }
+    return builder.finish()
+  }
+
+  constructor(view: EditorView) {
+    this.decorations = this.headingDeco(view)
+  }
+
+  update(update: ViewUpdate) {
+    if (update.docChanged || update.viewportChanged || update.selectionSet) {
+      this.decorations = this.headingDeco(update.view);
+    }
+  }
+}, {
+  decorations: v => v.decorations,
+});
 
 export const highlightTagsInEditor = ({ editorView, store, synonymIds }: { editorView: EditorView, store: Store<AppState>, synonymIds: Readable<Array<SynonymId>> }) => {
 
@@ -197,26 +251,4 @@ export const highlightTagsInEditor = ({ editorView, store, synonymIds }: { edito
   });
   onChangeNoteTags(getData());
   return { unsubscribe: () => subscriptions.forEach(sub => sub.unsubscribe()) };
-}
-
-export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(
-  useInputs: (props: Props, forwardedRef: ForwardedRef<Handle>) => Inputs,
-  useOutputs: (inputs: Inputs) => Outputs,
-  render: (props: Props, inputs: Inputs, outputs: Outputs, forwardedRef: ForwardedRef<Handle>) => JSX.Element
-) => {
-  const Component = (
-    props: Props,
-    forwardedRef: ForwardedRef<Handle>
-  ) => {
-    const inputs = useInputs(props, forwardedRef);
-    const outputs = useOutputs(inputs);
-    return render(props, inputs, outputs, forwardedRef);
-  }
-  return forwardRef(Component) as ComponentType<Props>;
-}
-
-export const getNotesSorted = (notes: NoteDTO[]) => {
-  return notes
-      .filter(n => !n.isArchived)
-      .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime());
 }

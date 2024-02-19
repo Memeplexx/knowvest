@@ -1,6 +1,6 @@
 "use server";
 
-import '@/utils/array-polyfills';
+import '@/utils/array-utils';
 import { redirect } from 'next/navigation';
 import HomeInteractive from './page-interactive';
 import { getServerSession } from 'next-auth';

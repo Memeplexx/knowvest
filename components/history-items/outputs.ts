@@ -1,4 +1,4 @@
-import { NoteId } from "@/utils/types";
+import { NoteId } from "@/actions/types";
 import { Inputs } from "./constants";
 
 export const useOutputs = ({ store, props }: Inputs) => {

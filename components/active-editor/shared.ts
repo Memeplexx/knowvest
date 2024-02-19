@@ -4,9 +4,9 @@ import { EditorState, Range } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { indexeddb } from "@/utils/indexed-db";
 import { ActivePanelStore } from "./constants";
-import { updateNoteTags } from "@/app/actions/notetag";
-import { updateNote } from "@/app/actions/note";
-import { NoteId, TagId } from "@/utils/types";
+import { updateNoteTags } from "@/actions/notetag";
+import { updateNote } from "@/actions/note";
+import { NoteId, TagId } from "@/actions/types";
 
 export const autocompleteExtension = (store: ActivePanelStore) => {
   return autocompletion({
