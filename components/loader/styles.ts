@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { possible } from "../html";
 
-export const Container = styled(possible.div)<{ $showIf: boolean }>`
+export const Container = styled(possible.div)<{ $showIf: boolean, $opacityOverride?: number }>`
   transition: all 0.4s;
   cursor: not-allowed;
   display: flex;
@@ -12,7 +12,7 @@ export const Container = styled(possible.div)<{ $showIf: boolean }>`
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(255,255,255,0.4);
+  background-color: rgba(255,255,255,${p => p.$opacityOverride ?? 0.4});
   z-index: 5;
   pointer-events: none;
   opacity: 0;

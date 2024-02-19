@@ -1,6 +1,6 @@
 "use client";
 import { type ForwardedRef, forwardRef } from 'react';
-import { Actions, Body, Header, Heading, Loader, Wrapper } from './styles';
+import { Actions, Body, Header, Heading, LoaderPlacehlder, Wrapper } from './styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { CardHandle, Props } from './constants';
@@ -35,8 +35,9 @@ export const Card = forwardRef(function Card(
             children={props.body}
             onScroll={outputs.onBodyScroll}
           />
-          <Loader
-            isVisible={props.loading}
+          <LoaderPlacehlder
+            showIf={!!props.loading}
+            opacity={0.1}
           />
         </>
       }

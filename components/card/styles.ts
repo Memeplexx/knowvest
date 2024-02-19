@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { possible } from "../html";
-import { LoaderSkeleton } from "../loader-skeleton";
+import { Loader } from "../loader";
 
 
 export const Wrapper = styled(possible.div)`
@@ -55,6 +55,6 @@ export const Body = styled(possible.div)`
   }
 `;
 
-export const Loader = styled(LoaderSkeleton)`
+export const LoaderPlacehlder = styled(Loader)`
   margin-top: 70px;
 `;
