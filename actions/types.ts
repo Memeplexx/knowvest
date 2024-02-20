@@ -1,8 +1,5 @@
 import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym, type FlashCard, type User } from "@prisma/client";
 import { type Brand } from "olik";
-import { MouseEvent } from "react";
-
-export type ValueOf<T> = T[keyof T];
 
 export type EntityToDto<T>
   = T extends Note ? NoteDTO
@@ -15,35 +12,6 @@ export type EntityToDto<T>
   : T extends Array<infer E> ? Array<EntityToDto<E>>
   : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
   : T
-
-
-export type EventMap<T> = T extends 'click' ? MouseEvent<HTMLElement> : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
-
-export type Keys =
-  | 'Backspace'
-  | 'Tab'
-  | 'Enter'
-  | 'Shift'
-  | 'Control'
-  | 'Alt'
-  | 'CapsLock'
-  | 'Escape'
-  | 'Space'
-  | 'PageUp'
-  | 'PageDown'
-  | 'End'
-  | 'Home'
-  | 'ArrowLeft'
-  | 'ArrowUp'
-  | 'ArrowRight'
-  | 'ArrowDown'
-  | 'Insert'
-  | 'Delete';
-
-export interface TypedKeyboardEvent<T extends HTMLElement> extends React.KeyboardEvent<T> {
-  key: Keys,
-  target: T,
-}
 
 export type NoteId = Brand<number, 'NoteId'>;
 export type TagId = Brand<number, 'TagId'>;

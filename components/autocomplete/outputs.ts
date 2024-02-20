@@ -1,6 +1,6 @@
 import { ChangeEvent, KeyboardEvent, MouseEvent } from "react";
 import { OptionBase, Inputs } from "./constants";
-import { TypedKeyboardEvent } from "@/actions/types";
+import { TypedKeyboardEvent } from "@/utils/dom-utils";
 
 export const useOutputs = <Option extends OptionBase>({ props, options, inputRef, ...inputs }: Inputs<Option>) => {
   return {

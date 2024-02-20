@@ -1,5 +1,7 @@
-import { useIsomorphicLayoutEffect, useStore } from '@/utils/hooks';
+import { NoteDTO } from '@/actions/types';
 import { oneDark } from '@/utils/codemirror-theme';
+import { bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { useStore } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -7,8 +9,7 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useRef } from 'react';
 import { Props } from './constants';
-import { bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
-import { NoteDTO } from '@/actions/types';
+import { useIsomorphicLayoutEffect } from '@/utils/react-utils';
 
 
 export const useInputs = (props: Props) => {

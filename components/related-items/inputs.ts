@@ -1,6 +1,6 @@
-import { useStore } from "@/utils/hooks";
-import { Props } from "./constants";
+import { useStore } from "@/utils/store-utils";
 import { useMemo } from "react";
+import { Props } from "./constants";
 
 export const useInputs = (props: Props) => {
 

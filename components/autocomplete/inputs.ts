@@ -2,7 +2,7 @@
 import { useFloating } from "@floating-ui/react";
 import { ForwardedRef, useImperativeHandle, useMemo, useRef } from "react";
 import { Props, AutocompleteHandle, OptionBase, floatingUiDefaultOptions } from "./constants";
-import { useForwardedRef } from "@/utils/hooks";
+import { useForwardedRef } from "@/utils/react-utils";
 
 export const useInputs = <Option extends OptionBase>(
   props: Props<Option>,

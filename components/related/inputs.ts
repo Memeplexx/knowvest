@@ -1,7 +1,8 @@
-import { useComponentDownloader, useStore } from "@/utils/hooks";
+import { useStore } from "@/utils/store-utils";
 import { useMemo, useRef } from "react";
 import { CardHandle } from "../card/constants";
 import { Props } from "./constants";
+import { useComponentDownloader } from "@/utils/react-utils";
 
 export const useInputs = (props: Props) => {
 

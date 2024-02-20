@@ -1,12 +1,14 @@
 "use client";
 import { Store, createStore } from 'olik';
-import { augmentOlikForReact } from 'olik-react';
+import { augmentOlikForReact, createUseStoreHook } from 'olik-react';
 import { createContext, useMemo } from "react";
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '../actions/types';
 
 export type AppState = typeof initialAppState;
 
 export const StoreContext = createContext<Store<AppState> | undefined>(undefined);
+
+export const useStore = createUseStoreHook(StoreContext);
 
 export const indexedDbState = {
   tags: new Array<TagDTO>(),

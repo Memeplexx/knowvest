@@ -1,7 +1,7 @@
-import { Props, initialState, pageSize } from "./constants";
+import { useStore } from "@/utils/store-utils";
 import { formatDistanceToNow } from "date-fns";
 import { useImperativeHandle, useMemo } from "react";
-import {  useStore } from "@/utils/hooks";
+import { Props, initialState, pageSize } from "./constants";
 
 export const useInputs = (
   props: Props,

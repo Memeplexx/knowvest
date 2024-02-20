@@ -1,7 +1,7 @@
+import { useStore } from "@/utils/store-utils";
 import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
-import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
 import { AutocompleteHandle } from "../autocomplete/constants";
-import { useStore } from "@/utils/hooks";
+import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
 

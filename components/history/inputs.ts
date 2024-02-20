@@ -1,8 +1,9 @@
-import { useComponentDownloader, useStore } from "@/utils/hooks";
+import { useStore } from "@/utils/store-utils";
 import { useRef } from "react";
 import { CardHandle } from "../card/constants";
-import { Props } from "./constants";
 import { HistoryItemsHandle } from "../history-items/constants";
+import { Props } from "./constants";
+import { useComponentDownloader } from "@/utils/react-utils";
 
 
 export const useInputs = (props: Props) => {

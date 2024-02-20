@@ -1,6 +1,5 @@
 import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/actions/flashcard";
-import { ancestorMatches } from "@/utils/dom-utils";
-import { useEventHandlerForDocument } from "@/utils/hooks";
+import { ancestorMatches, useEventHandlerForDocument } from "@/utils/dom-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { Inputs } from "./constants";
 

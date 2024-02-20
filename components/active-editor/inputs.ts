@@ -1,7 +1,6 @@
-import { bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { oneDark } from '@/utils/codemirror-theme';
-import { AppState } from '@/utils/store-utils';
-import { useStore } from '@/utils/hooks';
+import { bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { AppState, useStore } from '@/utils/store-utils';
 import {
   closeBrackets,
   closeBracketsKeymap,
@@ -28,9 +27,9 @@ import {
 import { Store } from 'olik';
 import { useEffect, useRef } from 'react';
 import { initialState } from '../active-panel/constants';
+import { useNotifier } from '../notifier';
 import { ActivePanelStore } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
-import { useNotifier } from '../notifier';
 
 
 export const useInputs = () => {

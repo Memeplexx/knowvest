@@ -1,7 +1,7 @@
-import { usePropsWithDefaults } from "@/utils/hooks";
 import { useEffect, useState } from "react";
 import { Message, Props, defaultProps, snackbarStatus } from "./constants";
 import { ReferenceType, useFloating } from "@floating-ui/react";
+import { usePropsWithDefaults } from "@/utils/react-utils";
 
 export const useInputs = (incomingProps: Props) => {
 

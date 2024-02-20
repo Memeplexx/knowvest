@@ -1,8 +1,7 @@
 import { Inputs } from "./constants";
 import { splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
-import { useEventHandlerForDocument } from "@/utils/hooks";
-import { ancestorMatches } from "@/utils/dom-utils";
+import { ancestorMatches, useEventHandlerForDocument } from "@/utils/dom-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 
 

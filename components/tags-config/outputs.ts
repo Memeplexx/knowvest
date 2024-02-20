@@ -1,13 +1,12 @@
-import { useEventHandlerForDocument } from '@/utils/hooks';
-
 import { type ChangeEvent, type MouseEvent } from 'react';
-import { GroupId, SynonymId, TagId, TypedKeyboardEvent } from '@/actions/types';
+import { GroupId, SynonymId, TagId } from '@/actions/types';
 import { Inputs } from './constants';
 import { useSharedFunctions } from './shared';
 import { removeTagFromItsCurrentSynonym } from '@/actions/synonym';
 import { archiveGroup, removeSynonymFromGroup } from '@/actions/group';
 import { archiveTag } from '@/actions/tag';
 import { writeToStoreAndDb } from '@/utils/storage-utils';
+import { TypedKeyboardEvent, useEventHandlerForDocument } from '@/utils/dom-utils';
 
 
 export const useOutputs = (inputs: Inputs) => {
