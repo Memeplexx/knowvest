@@ -12,7 +12,7 @@ export const Background = styled(animated.div)`
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 4;
+  z-index: 5;
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
 `;
@@ -26,7 +26,7 @@ export const ForegroundWrapper = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
-  z-index: 4;
+  z-index: 5;
   pointer-events: none;
   filter: drop-shadow(0px 0px 15px rgba(0,0,0,1));
 `;
