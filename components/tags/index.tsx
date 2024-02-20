@@ -125,7 +125,6 @@ export const Tags = () => {
             />
             <LoaderPlaceholder
               showIf={!inputs.stateInitialized}
-              opacity={0}
             />
           </>
         }

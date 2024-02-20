@@ -7,7 +7,6 @@ export const Loader = (props: Props) => {
     <Container 
       className={props.className}
       $showIf={props.showIf}
-      $opacityOverride={props.opacity}
       children={<Spinner/>}
     />
   );

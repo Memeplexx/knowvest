@@ -3,11 +3,10 @@ import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, Setting
 import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
-import { Loader } from '../loader';
 import { Popup } from '../popup';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { CardWrapper, Wrapper } from './styles';
+import { CardWrapper, LoaderPlaceholder, Wrapper } from './styles';
 
 
 
@@ -85,7 +84,7 @@ export const ActivePanel = (
             body={inputs.ActiveEditor && <inputs.ActiveEditor />}
             loading={!inputs.ActiveEditor}
           />
-          <Loader
+          <LoaderPlaceholder
             showIf={inputs.activePanel.loadingNote}
           />
         </>

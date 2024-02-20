@@ -37,7 +37,6 @@ export const Card = forwardRef(function Card(
           />
           <LoaderPlaceholder
             showIf={!!props.loading}
-            opacity={0}
           />
         </>
       }

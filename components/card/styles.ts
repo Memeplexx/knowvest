@@ -57,4 +57,5 @@ export const Body = styled(possible.div)`
 
 export const LoaderPlaceholder = styled(Loader)`
   margin-top: 70px;
+  background-image: linear-gradient(to right, #242020, #191919);
 `;
