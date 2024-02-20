@@ -42,10 +42,10 @@ export const updateTag = receive({
 
   // Delete any noteTags which are associated with notes which no longer contain the tag's old text
   const noteTagsToBeArchived = await prisma.$queryRaw<NoteTag[]>(Prisma.sql`
-        SELECT nt.id FROM note_tag nt 
-          JOIN note n on nt.note_id = n.id 
-          WHERE n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${toUpdate.text}, '\\M');
-      `);
+    SELECT nt.id FROM note_tag nt 
+      JOIN note n on nt.note_id = n.id 
+      WHERE n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${toUpdate.text}, '\\M');
+  `);
   const noteTagIdsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
   await prisma.noteTag.updateMany({ where: { id: { in: noteTagIdsToBeArchived } }, data: { isArchived: true } });
 

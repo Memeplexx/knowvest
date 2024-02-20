@@ -11,7 +11,8 @@ export const prisma = new PrismaClient({
 export const pruneOrphanedSynonymsAndSynonymGroups = async () => {
   const orphanedSynonyms = await prisma.$queryRaw<SynonymDTO[]>(Prisma.sql`
     SELECT s.* FROM synonym s 
-      WHERE s.id NOT IN (SELECT t.synonym_id FROM tag t);`);
+      WHERE s.id NOT IN (SELECT t.synonym_id FROM tag t);
+  `);
   const synonymGroupsToArchive = await prisma.synonymGroup.findMany({
     where: { synonymId: { in: orphanedSynonyms.map(s => s.id) } }
   });
@@ -29,8 +30,7 @@ export const listNotesWithTagText = async ({ userId, tagText }: { userId: UserId
     SELECT n.* 
       FROM note n 
       WHERE n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${tagText}, '\\M');
-    `
-  );
+  `);
 }
 
 export const listTagsWithTagText = async ({ userId, noteText }: { userId: UserId, noteText: string }) => {
@@ -38,8 +38,7 @@ export const listTagsWithTagText = async ({ userId, noteText }: { userId: UserId
     SELECT t.*
       FROM tag t
       WHERE t.user_id = ${userId} AND ${noteText} ~* CONCAT('\\m', t.text, '\\M');
-    `
-  );
+  `);
 }
 
 export const receive = <T extends ZodRawShape>(spec: T) => {
