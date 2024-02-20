@@ -7,6 +7,7 @@ import { Popup } from '../popup';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { CardWrapper, LoaderPlaceholder, Wrapper } from './styles';
+import ActiveEditor from '../active-editor';
 
 
 
@@ -81,8 +82,8 @@ export const ActivePanel = (
                 />
               </>
             }
-            body={inputs.ActiveEditor && <inputs.ActiveEditor />}
-            loading={!inputs.ActiveEditor}
+            body={<ActiveEditor />}
+            loading={!inputs.stateInitialized}
           />
           <LoaderPlaceholder
             showIf={inputs.activePanel.loadingNote}
