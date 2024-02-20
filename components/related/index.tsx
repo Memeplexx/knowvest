@@ -1,5 +1,6 @@
 "use client";
 import { Card } from '../card';
+import RelatedItems from '../related-items';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -21,7 +22,8 @@ export const Related = (
           children={inputs.noteCountString}
         />
       )}
-      body={inputs.RelatedItems && <inputs.RelatedItems onSelectNote={outputs.onSelectNote} />}
+      // body={inputs.RelatedItems && <inputs.RelatedItems onSelectNote={outputs.onSelectNote} />}
+      body={<RelatedItems onSelectNote={outputs.onSelectNote} />}
       loading={!inputs.RelatedItems}
     />
   )
