@@ -72,7 +72,6 @@ export const Options = styled(possible.div)`
   z-index: 4;
   filter: drop-shadow(0px 38px 38px #000);
   background-image: linear-gradient(to right,#212121,#312c2c);
-  border: 0.5px solid #4b4b4b;
   display: flex;
   flex-direction: column;
 `;

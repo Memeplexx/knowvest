@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { possible } from "../html";
 
 export const Container = styled(possible.div)<{ $showIf: boolean }>`
-  transition: all 0.4s;
+  transition: all 0.4s 0.4s;
   cursor: not-allowed;
   display: flex;
   align-items: center;

@@ -45,7 +45,6 @@ export const PopupOptions = styled(possible.div)`
   filter: drop-shadow(0px 0px 38px #000);
   background-image: linear-gradient(to right,#212121,#312c2c);
   color: #FFF;
-  border: 0.5px solid #4b4b4b;
   max-width: 400px;
   z-index: 5;
   letter-spacing: 0;
@@ -67,7 +66,6 @@ export const PopupOption = styled(possible.button)`
     transform: scale(1.05);
     background-color: #323232;
     cursor: pointer;
-    border: 1px solid #4b4b4b;
     filter: drop-shadow(0px 0px 38px #000);
   }
   svg {

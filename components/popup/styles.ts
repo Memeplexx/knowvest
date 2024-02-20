@@ -19,7 +19,7 @@ export const ForegroundWrapper = styled(animated.div)`
   display: flex;
   z-index: 4;
   background-color: rgba(0, 0, 0, 0.1);
-  filter: drop-shadow(0px 0px 15px #000);
+  filter: drop-shadow(0px 0px 15px rgba(0,0,0,0.4));
   backdrop-filter: blur(2px);
 `;
 
@@ -30,7 +30,6 @@ export const Foreground = styled(animated.div)`
   ${defaultFontFamily.style};
   background-image: linear-gradient(to right,#212121,#312c2c);
   transform-origin: top right;
-  border: 0.5px solid #4b4b4b;
   max-width: 400px;
 `;
 
