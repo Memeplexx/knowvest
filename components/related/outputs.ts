@@ -1,16 +1,15 @@
-import { viewNote } from "@/actions/note";
 import { NoteId } from "@/actions/types";
-import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { Inputs } from "./constants";
+import { viewNote } from "@/actions/note";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
 
-
-export const useOutputs = ({ store, cardRef, props }: Inputs) => {
+export const useOutputs = ({ store, props, cardRef }: Inputs) => {
   return {
     onScrolledToBottom: () => {
-      store.historyItems.index.$add(1);
+      store.relatedItems.index.$add(1);
     },
     onSelectNote: async (noteId: NoteId) => {
-      store.historyItems.index.$set(0);
+      store.relatedItems.index.$set(0);
       const tagIds = store.noteTags.$filter.noteId.$eq(noteId).tagId;
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
       store.activeNoteId.$set(noteId);
@@ -20,6 +19,6 @@ export const useOutputs = ({ store, cardRef, props }: Inputs) => {
       const apiResponse = await viewNote({ noteId });
       await writeToStoreAndDb(store, { notes: apiResponse.note });
       cardRef.current!.scrollToTop();
-    }
+    },
   };
 }

@@ -1,7 +1,7 @@
 import { useStore } from "@/utils/store-utils";
 import { formatDistanceToNow } from "date-fns";
-import { useImperativeHandle, useMemo, useRef } from "react";
-import { HistoryItemsHandle, Props, initialState, pageSize } from "./constants";
+import { useMemo, useRef } from "react";
+import { Props, initialState, pageSize } from "./constants";
 import { CardHandle } from "../card/constants";
 
 export const useInputs = (
@@ -10,7 +10,6 @@ export const useInputs = (
 
   const { store, historyItems, activeNoteId, notes, stateInitialized } = useStore(initialState);
 
-  const listItemsRef = useRef<HistoryItemsHandle>(null);
   const cardRef = useRef<CardHandle>(null);
 
   const items = useMemo(() => {
@@ -25,10 +24,6 @@ export const useInputs = (
       }));
   }, [activeNoteId, historyItems.index, notes]);
 
-  useImperativeHandle(props.innerRef, () => ({
-    onScrollToBottom: function onScrollToBottom(){ store.historyItems.index.$add(1); },
-  }), [store]);
-
   return {
     props,
     store,
@@ -36,6 +31,5 @@ export const useInputs = (
     stateInitialized,
     ...historyItems,
     cardRef,
-    listItemsRef
   };
 }

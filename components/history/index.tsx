@@ -1,9 +1,9 @@
 "use client";
-import { useInputs } from './inputs';
-import { Props } from './constants';
-import { Header, Icon, Result, RightBorder, ListItem, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, LoaderPlaceholder } from './styles';
-import { useOutputs } from './outputs';
 import { Card } from '../card';
+import { Props } from './constants';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
+import { Header, Icon, ListItem, ListItemsWrapper, LoaderPlaceholder, NoResultsIcon, NoResultsWrapper, Result, RightBorder } from './styles';
 
 export function History(
   props: Props,
@@ -15,9 +15,7 @@ export function History(
       className={props.className}
       ref={inputs.cardRef}
       heading='Recent'
-      // body={inputs.HistoryItems && <inputs.HistoryItems onSelectNote={outputs.onSelectNote} innerRef={inputs.listItemsRef} />}
-      // loading={!inputs.HistoryItems}
-      onScrolledToBottom={inputs.listItemsRef.current?.onScrollToBottom}
+      onScrolledToBottom={outputs.onScrolledToBottom}
       body={
         <>
           <ListItemsWrapper
