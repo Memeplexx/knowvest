@@ -23,7 +23,7 @@ export const Header = styled(possible.div)`
   right: 0;
   left: 0;
   height: 67px;
-  z-index: 4;
+  z-index: 5;
   font-weight: 400;
   font-size: 19px;
   letter-spacing: 4px;
