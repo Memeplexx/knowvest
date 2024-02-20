@@ -1,7 +1,7 @@
 import { possible } from "@/components/html";
 import styled from "styled-components";
 import { ButtonIcon } from "../button-icon";
-import { TextAreaDebounced } from "../textarea-debounced";
+import { TextAreaDebounced } from "../debounced";
 
 
 export const Container = styled.div`

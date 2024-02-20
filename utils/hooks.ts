@@ -47,20 +47,6 @@ export const useForwardedRef = <T>(forwardedRef: ForwardedRef<T>) => {
   return targetRef
 }
 
-export const useDebounce = <T>(value: T, delay: number, action: () => void) => {
-  const valueRef = useRef(value);
-  const timestampRef = useRef(0);
-  timestampRef.current = Date.now();
-  const timeoutRef = useRef<number | NodeJS.Timeout>(0);
-  if (value === valueRef.current) { return; }
-  valueRef.current = value;
-  clearTimeout(timeoutRef.current);
-  timeoutRef.current = setTimeout(() => {
-    if (Date.now() < (timestampRef.current + delay)) { return; }
-    action();
-  }, delay)
-}
-
 export const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
