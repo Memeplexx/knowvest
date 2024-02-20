@@ -17,7 +17,7 @@ export const ForegroundWrapper = styled(animated.div)`
   align-items: center;
   justify-content: center;
   display: flex;
-  z-index: 4;
+  z-index: 5;
   background-color: rgba(0, 0, 0, 0.1);
   filter: drop-shadow(0px 0px 15px rgba(0,0,0,0.4));
   backdrop-filter: blur(2px);

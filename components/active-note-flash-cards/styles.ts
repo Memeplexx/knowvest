@@ -14,7 +14,7 @@ export const CreateNewButton = styled(ButtonIcon)`
   position: absolute;
   top: 16px;
   right: 16px;
-  z-index: 4;
+  z-index: 5;
 `;
 
 export const FlashCardWrapper = styled(possible.div)`
