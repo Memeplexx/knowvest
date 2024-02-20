@@ -45,7 +45,6 @@ export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexe
   });
 };
 
-
 export const readFromDb = () => {
   return new Promise<typeof indexedDbState>(resolveOuter => {
     const request = openDatabase();

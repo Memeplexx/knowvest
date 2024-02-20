@@ -1,34 +1,42 @@
+import { NoteId } from "@/actions/types";
 import { State } from "./constants";
+import { useSharedFunctions } from "./shared";
 
-export const useOutputs = (state: State) => ({
-  onClickHistoryToggle: () => {
-    state.store.home.$patch({
-      tagsExpanded: false,
-      similarExpanded: false,
-      historyExpanded: !state.store.home.historyExpanded.$state,
-    });
-  },
-  onClickSimilarToggle: () => {
-    state.store.home.$patch({
-      tagsExpanded: false,
-      historyExpanded: false,
-      similarExpanded: !state.store.home.similarExpanded.$state,
-    });
-  },
-  onClickTagsToggle: () => {
-    state.store.home.$patch({
-      historyExpanded: false,
-      similarExpanded: false,
-      tagsExpanded: !state.store.home.tagsExpanded.$state,
-    });
-  },
-  onClickHeaderToggle: () => {
-    state.store.home.headerExpanded.$toggle();
-  },
-  onClickRelatedNote: () => {
-    state.similarExpanded && state.store.home.similarExpanded.$set(false);
-  },
-  onClickHistoricalNote: () => {
-    state.historyExpanded && state.store.home.historyExpanded.$set(false);
-  },
-});
+export const useOutputs = (inputs: State) => {
+  const { store, similarExpanded, historyExpanded } = inputs;
+  const shared = useSharedFunctions(inputs);
+  return {
+    onClickHistoryToggle: () => {
+      store.home.$patch({
+        tagsExpanded: false,
+        similarExpanded: false,
+        historyExpanded: !store.home.historyExpanded.$state,
+      });
+    },
+    onClickSimilarToggle: () => {
+      store.home.$patch({
+        tagsExpanded: false,
+        historyExpanded: false,
+        similarExpanded: !store.home.similarExpanded.$state,
+      });
+    },
+    onClickTagsToggle: () => {
+      store.home.$patch({
+        historyExpanded: false,
+        similarExpanded: false,
+        tagsExpanded: !store.home.tagsExpanded.$state,
+      });
+    },
+    onClickHeaderToggle: () => {
+      store.home.headerExpanded.$toggle();
+    },
+    onClickRelatedNote: async (noteId: NoteId) => {
+      await shared.onSelectNote(noteId);
+      similarExpanded && store.home.similarExpanded.$set(false);
+    },
+    onClickHistoricalNote: async (noteId: NoteId) => {
+      await shared.onSelectNote(noteId);
+      historyExpanded && store.home.historyExpanded.$set(false);
+    },
+  }
+};
