@@ -28,6 +28,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
       store.synonymIds.$set(synonymIds);
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
+      notify.success('Note deleted');
       popupRef.current?.hide();
     },
     onClickCancelRemoveNote: () => {
