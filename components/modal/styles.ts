@@ -28,7 +28,7 @@ export const ForegroundWrapper = styled.div`
   display: flex;
   z-index: 4;
   pointer-events: none;
-  filter: drop-shadow(0px 0px 15px rgba(0,0,0,0.4));
+  filter: drop-shadow(0px 0px 15px rgba(0,0,0,1));
 `;
 
 export const Foreground = styled(animated.div)`
