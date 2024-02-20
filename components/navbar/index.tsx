@@ -7,7 +7,7 @@ import { SearchDialog } from '../search';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, RightContent, SearchButton, SearchIcon, UserButton, UserImage, Wrapper } from './styles';
+import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, LoaderPlaceholder, RightContent, SearchButton, SearchIcon, UserButton, UserImage, Wrapper } from './styles';
 import { FlashCardTester } from '../flash-card-tester';
 
 export const Navbar = (props: Props) => {
@@ -95,6 +95,9 @@ export const Navbar = (props: Props) => {
                   />
                 </>
               }
+            />
+            <LoaderPlaceholder
+              showIf={!inputs.stateInitialized}
             />
           </>
         }

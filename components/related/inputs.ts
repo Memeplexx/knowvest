@@ -1,16 +1,15 @@
 import { useStore } from "@/utils/store-utils";
 import { useMemo, useRef } from "react";
-import { CardHandle } from "../card/constants";
 import { Props } from "./constants";
-import { useComponentDownloader } from "@/utils/react-utils";
+import { CardHandle } from "../card/constants";
 
 export const useInputs = (props: Props) => {
 
-  const { store, activeNoteId, notes, tags, noteTags, synonymIds } = useStore();
+  const { store, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized } = useStore();
 
   const cardRef = useRef<CardHandle>(null);
 
-  const queriedNotes = useMemo(() => {
+  const items = useMemo(() => {
     const unArchivedNotes = notes.filter(n => !n.isArchived);
     const unArchivedTags = tags.filter(t => !t.isArchived);
     const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
@@ -33,17 +32,16 @@ export const useInputs = (props: Props) => {
   }, [activeNoteId, notes, tags, noteTags, synonymIds]);
 
   const noteCountString = useMemo(() => {
-    return `${queriedNotes.length} result${queriedNotes.length === 1 ? '' : 's'}`;
-  }, [queriedNotes]);
-
-  const RelatedItems = useComponentDownloader(() => import('../related-items'));
+    return `${items.length} result${items.length === 1 ? '' : 's'}`;
+  }, [items]);
 
   return {
     props,
     store,
-    cardRef,
-    RelatedItems,
+    items,
+    stateInitialized,
     noteCountString,
+    cardRef,
   }
 
 };

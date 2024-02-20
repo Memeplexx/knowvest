@@ -4,6 +4,7 @@ import { possible } from "../html";
 import { SearchIcon as BaseSearchIcon } from "@/utils/style-utils";
 import { ButtonIcon } from "../button-icon";
 import { PiStudentFill } from 'react-icons/pi';
+import { Loader } from "../loader";
 
 export const Wrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;
@@ -15,6 +16,7 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
   gap: 12px;
   background-image: linear-gradient(to right, #131313, #212121);
   margin-top: -60px;
+  position: relative;
   ${p => p.$show && `
     margin-top: 0;
   `}
@@ -66,4 +68,8 @@ export const FlashCardCount = styled.div`
   position: absolute;
   right: -5px;
   bottom: -5px;
+`;
+
+export const LoaderPlaceholder = styled(Loader)`
+  background-image: linear-gradient(to right, #242020, #191919);
 `;

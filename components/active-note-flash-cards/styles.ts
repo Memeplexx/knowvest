@@ -2,6 +2,7 @@ import { possible } from "@/components/html";
 import styled from "styled-components";
 import { ButtonIcon } from "../button-icon";
 import { TextAreaDebounced } from "../debounced";
+import { WiCloudyWindy } from "react-icons/wi";
 
 
 export const Container = styled.div`
@@ -62,4 +63,9 @@ export const DeleteButton = styled(ButtonIcon)`
     opacity: 1;
     background-color: #494949;
   }
+`;
+
+export const NoResultsIcon = styled(WiCloudyWindy)`
+  width: 64px;
+  height: auto;
 `;

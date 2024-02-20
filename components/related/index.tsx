@@ -1,17 +1,14 @@
 "use client";
 import { Card } from '../card';
-import RelatedItems from '../related-items';
 import { Props } from './constants';
 import { useInputs } from './inputs';
-import { useOutputs } from './outputs';
-import { NoteCount } from './styles';
+import { Header, Icon, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, Result, ListItem, NoteCount, LoaderPlaceholder } from './styles';
 
 
-export const Related = (
+export function Related(
   props: Props
-) => {
+) {
   const inputs = useInputs(props);
-  const outputs = useOutputs(inputs);
   return (
     <Card
       className={props.className}
@@ -22,9 +19,49 @@ export const Related = (
           children={inputs.noteCountString}
         />
       )}
-      // body={inputs.RelatedItems && <inputs.RelatedItems onSelectNote={outputs.onSelectNote} />}
-      body={<RelatedItems onSelectNote={outputs.onSelectNote} />}
-      loading={!inputs.RelatedItems}
+      body={
+        <>
+          <ListItemsWrapper
+            showIf={inputs.stateInitialized && !!inputs.items.length}
+            children={
+              inputs.items.map(note => (
+                <ListItem
+                  key={note.note.id}
+                  onClick={() => props.onSelectNote(note.note.id)}
+                  children={
+                    <>
+                      <Header
+                        children={
+                          <>
+                            {note.matches}
+                            <Icon />
+                          </>
+                        }
+                      />
+                      <Result
+                        note={note.note}
+                        synonymIds={inputs.store.synonymIds}
+                      />
+                    </>
+                  }
+                />
+              ))
+            }
+          />
+          <NoResultsWrapper
+            showIf={inputs.stateInitialized && !inputs.items.length}
+            children={
+              <>
+                <NoResultsIcon />
+                no related notes
+              </>
+            }
+          />
+          <LoaderPlaceholder
+            showIf={!inputs.stateInitialized}
+          />
+        </>
+      }
     />
   )
 }

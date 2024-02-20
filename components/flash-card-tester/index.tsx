@@ -4,8 +4,7 @@ import ReadonlyNote from "../readonly-note";
 import { Props } from "./constants";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { Body, Container, Footer, FooterRightContent, NextButton, NoResults, Question, ToggleViewButton } from "./styles";
-import { NoResultsIcon } from "../related-items/styles";
+import { Body, Container, Footer, FooterRightContent, NextButton, NoResults, NoResultsIcon, Question, ToggleViewButton } from "./styles";
 
 export const FlashCardTester = (props: Props) => {
   const inputs = useInputs(props);

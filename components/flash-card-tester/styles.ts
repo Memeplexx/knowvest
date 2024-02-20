@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Button } from "../button";
 import { possible } from "../html";
+import { WiCloudyWindy } from "react-icons/wi";
 
 export const Container = styled.div`
   width: 600px;
@@ -44,4 +45,9 @@ export const NoResults = styled(possible.div)`
   justify-content: center;
   flex-direction: column;
   color: grey;
+`;
+
+export const NoResultsIcon = styled(WiCloudyWindy)`
+  width: 64px;
+  height: auto;
 `;
