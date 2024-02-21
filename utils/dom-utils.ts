@@ -1,23 +1,7 @@
-
+export { };
 import { MouseEvent, useRef } from "react";
 import { useIsomorphicLayoutEffect } from "./react-utils";
 
-/**
- * Checks whether an element or any of its ancestors matches a given condition.
- */
-export const ancestorMatches = (element: EventTarget | null, check: (element: HTMLElement) => boolean): boolean => {
-  const parentNode = (element as HTMLElement).parentNode as HTMLElement;
-  if (parentNode == null || parentNode.tagName === 'WINDOW') {
-    return false;
-  } else {
-    const checkResult = check(element as HTMLElement);
-    if (!checkResult) {
-      return ancestorMatches(parentNode, check);
-    } else {
-      return checkResult;
-    }
-  }
-}
 
 export type Keys =
   | 'Backspace'
@@ -44,7 +28,7 @@ export interface TypedKeyboardEvent<T extends HTMLElement> extends React.Keyboar
   key: Keys,
   target: T,
 }
-export type EventMap<T> = T extends 'click' ? MouseEvent<HTMLElement> : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
+export type EventMap<T> = T extends 'click' ? MouseEvent<HTMLElement> & { target: HTMLElement } : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
 export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'keydown'>(
   type: Type,
   handler: (event: EventMap<Type>) => void
@@ -64,4 +48,37 @@ export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'key
     document.addEventListener(type, listener);
     return () => document.removeEventListener(type, listener);
   }, [type]);
+}
+
+const ancestorMatches = (element: EventTarget | null, check: (element: HTMLElement) => boolean): boolean => {
+  const parentNode = (element as HTMLElement).parentNode as HTMLElement;
+  if (parentNode == null || parentNode.tagName === 'WINDOW') {
+    return false;
+  } else {
+    const checkResult = check(element as HTMLElement);
+    if (!checkResult) {
+      return ancestorMatches(parentNode, check);
+    } else {
+      return checkResult;
+    }
+  }
+}
+
+EventTarget.prototype.hasAncestor = function (check: (element: HTMLElement) => boolean) {
+  return ancestorMatches(this, check);
+}
+
+typeof (Document) === 'undefined' ? null : Document.prototype.useClickEvent = function(eventHandler) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useEventHandlerForDocument('click', eventHandler);
+}
+
+typeof (Document) === 'undefined' ? null : Document.prototype.useKeyUpEvent = function(eventHandler) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useEventHandlerForDocument('keyup', eventHandler);
+}
+
+typeof (Document) === 'undefined' ? null : Document.prototype.useKeyDownEvent = function(eventHandler) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useEventHandlerForDocument('keydown', eventHandler);
 }

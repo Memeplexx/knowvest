@@ -20,3 +20,18 @@ declare module 'react' {
   ): (props: P & RefAttributes<T>) => ReactElement | null;
 
 }
+
+declare global {
+  interface EventTarget {
+    /**
+     * Checks whether an element or any of its ancestors matches a given condition.
+     */
+    hasAncestor: (check: (element: HTMLElement) => boolean) => boolean;
+  }
+
+  interface Document {
+    useClickEvent: (hander: (event: MouseEvent<HTMLElement> & { target: HTMLElement }) => void) => void;
+    useKeyUpEvent: (hander: (event: TypedKeyboardEvent<HTMLElement>) => void) => void;
+    useKeyDownEvent: (hander: (event: TypedKeyboardEvent<HTMLElement>) => void) => void;
+  }
+}

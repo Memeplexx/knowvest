@@ -2,7 +2,6 @@ import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '
 import { addTagToSynonym, createTagToSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
-import { ancestorMatches } from '@/utils/dom-utils';
 import { Inputs } from './constants';
 import { writeToStoreAndDb } from '@/utils/storage-utils';
 
@@ -94,7 +93,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     blurAutocompleteInput();
   }
   const doCancel = (eventTarget: EventTarget | null) => {
-    if (ancestorMatches(eventTarget, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
+    if (eventTarget?.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
       return;
     }
     if (store.tagsConfig.$state.showAutocompleteOptions) {

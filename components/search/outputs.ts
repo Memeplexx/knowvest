@@ -1,16 +1,16 @@
 import { Inputs } from "./constants";
 import { onSelectGroup, onSelectSynonym } from "./shared";
 import { SynonymId, GroupId, NoteId } from "@/actions/types";
-import { ancestorMatches, useEventHandlerForDocument } from "@/utils/dom-utils";
+import { useEventHandlerForDocument } from "@/utils/dom-utils";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
-      if ((event.target as HTMLElement).parentNode === null) { // element was removed from the DOM
+      if (event.target.parentNode === null) { // element was removed from the DOM
         return;
       }
-      if (ancestorMatches(event.target, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
+      if (event.target.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
         return;
       }
       if (inputs.showAutocompleteOptions) {

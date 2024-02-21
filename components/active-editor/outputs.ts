@@ -1,7 +1,7 @@
 import { Inputs } from "./constants";
 import { splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
-import { ancestorMatches, useEventHandlerForDocument } from "@/utils/dom-utils";
+import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 
 
@@ -54,7 +54,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       if (store.activePanel.selection.$state === '') { return; }
     },
     onDocumentClick: useEventHandlerForDocument('click', event => {
-      if (ancestorMatches(event.target, e => e === editorRef.current)) { return; }
+      if (event.target.hasAncestor(e => e === editorRef.current)) { return; }
       store.activePanel.selection.$set('');
     })
   };

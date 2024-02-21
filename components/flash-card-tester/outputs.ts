@@ -1,5 +1,5 @@
 import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/actions/flashcard";
-import { ancestorMatches, useEventHandlerForDocument } from "@/utils/dom-utils";
+import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { Inputs } from "./constants";
 
@@ -7,10 +7,10 @@ export const useOutputs = (inputs: Inputs) => {
   const { props, store, notify, bodyRef, items } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
-      if ((event.target as HTMLElement).parentNode === null) { // element was removed from the DOM
+      if (event.target.parentNode === null) { // element was removed from the DOM
         return;
       }
-      if (ancestorMatches(event.target, e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
+      if (event.target.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
         return;
       }
       if (bodyRef.current?.contains(event.target as HTMLElement)) {
