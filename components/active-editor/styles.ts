@@ -67,4 +67,7 @@ export const ActiveSelectionTagName = styled.div`
   font-weight: 600;
   font-size: 14px;
   text-align: end;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
