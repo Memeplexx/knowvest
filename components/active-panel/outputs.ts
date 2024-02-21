@@ -1,5 +1,4 @@
 import { archiveNote, createNote, duplicateNote } from "@/actions/note";
-import { getNotesSorted } from "@/utils/app-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { Inputs } from "./constants";
 
@@ -22,7 +21,9 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
       const apiResponse = await archiveNote({ noteId: store.$state.activeNoteId });
       await writeToStoreAndDb(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
-      const newNoteId = getNotesSorted(store.$state.notes)[0].id;
+      const newNoteId = store.$state.notes
+        .filter(n => !n.isArchived)
+        .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0].id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
