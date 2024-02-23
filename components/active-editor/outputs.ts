@@ -55,6 +55,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     },
     onDocumentClick: useEventHandlerForDocument('click', event => {
       if (event.target.hasAncestor(e => e === editorRef.current)) { return; }
+      if (store.activePanel.selection.$state === '') { return; }
       store.activePanel.selection.$set('');
     })
   };

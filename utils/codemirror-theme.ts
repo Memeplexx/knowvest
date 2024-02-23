@@ -112,8 +112,8 @@ export const oneDarkTheme = EditorView.theme({
   ".cm-highlight": {
     backgroundColor: "#b100b159",
     borderRadius: "10px",
-    padding: '1px 8px',
-    margin: '-1px -8px',
+    padding: '1px 6px',
+    margin: '-1px -6px',
     color: '#FFF',
     display: 'inline-block',
   },
@@ -123,8 +123,8 @@ export const oneDarkTheme = EditorView.theme({
   ".cm-highlight-2": {
     backgroundColor: "#00000059",
     borderRadius: "10px",
-    padding: '1px 8px',
-    margin: '-1px -8px',
+    padding: '1px 6px',
+    margin: '-1px -6px',
     color: '#FFF',
     display: 'inline-block',
   },
