@@ -1,7 +1,7 @@
-import { NoteDTO } from '@/actions/types';
+import { NoteDTO, NoteTagDTO, TagId } from '@/actions/types';
 import { oneDark } from '@/utils/codemirror-theme';
-import { bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
-import { useStore } from '@/utils/store-utils';
+import { ReviseEditorTagsArgs, bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { AppState, useStore } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -10,6 +10,7 @@ import { EditorView } from '@codemirror/view';
 import { useRef } from 'react';
 import { Props } from './constants';
 import { useIsomorphicLayoutEffect } from '@/utils/react-utils';
+import { listenToTagsForEditor } from '@/utils/data-utils';
 
 
 export const useInputs = (props: Props) => {
@@ -22,7 +23,7 @@ export const useInputs = (props: Props) => {
   useIsomorphicLayoutEffect(() => {
     if (props.showIf === false) { return; /* do not instantiate because component has been hidden */ }
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note! });
-    const changeListener = highlightTagsInEditor({ editorView: codeMirror.current!, store, synonymIds: props.synonymIds });
+    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, onChange: reviseEditorTags });
     return () => {
       codeMirror.current?.destroy();
       changeListener.unsubscribe();

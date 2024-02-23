@@ -1,5 +1,5 @@
 import { oneDark } from '@/utils/codemirror-theme';
-import { bulletPointPlugin, highlightTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { AppState, useStore } from '@/utils/store-utils';
 import {
   closeBrackets,
@@ -30,6 +30,7 @@ import { initialState } from '../active-panel/constants';
 import { useNotifier } from '../notifier';
 import { ActivePanelStore } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
+import { listenToTagsForEditor } from '@/utils/data-utils';
 
 
 export const useInputs = () => {
@@ -42,7 +43,7 @@ export const useInputs = () => {
   useEffect(() => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
-    const changeListener = highlightTagsInEditor({ editorView: codeMirror.current!, store, synonymIds: store.synonymIds });
+    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, onChange: reviseEditorTags });
     return () => {
       codeMirror.current?.destroy();
       changeListener.unsubscribe();

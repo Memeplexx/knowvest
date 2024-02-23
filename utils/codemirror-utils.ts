@@ -1,9 +1,7 @@
-import { NoteTagDTO, SynonymId, TagId } from "@/actions/types";
+import { TagId } from "@/actions/types";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { Readable, Store } from "olik";
-import { AppState } from "./store-utils";
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
   decorations: DecorationSet;
@@ -135,120 +133,87 @@ export const titleFormatPlugin = ViewPlugin.fromClass(class {
   decorations: v => v.decorations,
 });
 
-export const highlightTagsInEditor = ({ editorView, store, synonymIds }: { editorView: EditorView, store: Store<AppState>, synonymIds: Readable<Array<SynonymId>> }) => {
 
-  const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
-    try {
-      const from = change.mapPos(range.from);
-      const to = change.mapPos(range.to);
-      return from < to ? { from, to } : undefined
-    } catch (e) {
-      // can happen when the active note is changed
-      return;
-    }
+export type ReviseEditorTagsArgs = {
+  editorView: EditorView,
+  addTags: { from: number, to: number, tagId: TagId }[],
+  removeTags: { from: number, to: number, tagId: TagId }[]
+};
+
+const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
+  try {
+    const from = change.mapPos(range.from);
+    const to = change.mapPos(range.to);
+    return from < to ? { from, to } : undefined
+  } catch (e) {
+    // can happen when the active note is changed
+    return;
   }
+}
 
-  const addHighlight = StateEffect.define({ map: mapRange });
+const addHighlight = StateEffect.define({ map: mapRange });
 
-  const removeHighlight = StateEffect.define({ map: mapRange });
+const removeHighlight = StateEffect.define({ map: mapRange });
 
-  const highlight = Decoration.mark({ attributes: { class: 'cm-highlight' } });
+const highlight = Decoration.mark({ attributes: { class: 'cm-highlight' } });
 
-  const highlightedRanges = StateField.define({
-    create: () => Decoration.none,
-    update: (ranges, tr) => {
-      ranges = ranges.map(tr.changes)
-      for (const e of tr.effects) {
-        if (e.is(addHighlight)) {
-          ranges = addRange(ranges, e.value);
-        } else if (e.is(removeHighlight)) {
-          ranges = cutRange(ranges, e.value);
-        }
+const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
+  const leftover: Range<Decoration>[] = []
+  ranges.between(r.from, r.to, (from, to, deco) => {
+    if (from < r.from) leftover.push(deco.range(from, r.from))
+    if (to > r.to) leftover.push(deco.range(r.to, to))
+  })
+  return ranges.update({
+    filterFrom: r.from,
+    filterTo: r.to,
+    filter: () => false,
+    add: leftover
+  })
+}
+const addRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
+  ranges.between(r.from, r.to, (from, to) => {
+    if (from < r.from) r = { from, to: r.to }
+    if (to > r.to) r = { from: r.from, to }
+  })
+  return ranges.update({
+    filterFrom: r.from,
+    filterTo: r.to,
+    filter: () => false,
+    add: [highlight.range(r.from, r.to)]
+  })
+}
+
+const highlightedRanges = StateField.define({
+  create: () => Decoration.none,
+  update: (ranges, tr) => {
+    ranges = ranges.map(tr.changes)
+    for (const e of tr.effects) {
+      if (e.is(addHighlight)) {
+        ranges = addRange(ranges, e.value);
+      } else if (e.is(removeHighlight)) {
+        ranges = cutRange(ranges, e.value);
       }
-      return ranges
-    },
-    provide: field => EditorView.decorations.from(field)
-  });
-
-  const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
-    const leftover: Range<Decoration>[] = []
-    ranges.between(r.from, r.to, (from, to, deco) => {
-      if (from < r.from) leftover.push(deco.range(from, r.from))
-      if (to > r.to) leftover.push(deco.range(r.to, to))
-    })
-    return ranges.update({
-      filterFrom: r.from,
-      filterTo: r.to,
-      filter: () => false,
-      add: leftover
-    })
-  }
-  const addRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
-    ranges.between(r.from, r.to, (from, to) => {
-      if (from < r.from) r = { from, to: r.to }
-      if (to > r.to) r = { from: r.from, to }
-    })
-    return ranges.update({
-      filterFrom: r.from,
-      filterTo: r.to,
-      filter: () => false,
-      add: [highlight.range(r.from, r.to)]
-    })
-  }
-
-  let previousTagPositions = new Array<{ from: number; to: number; tagId: TagId }>();
-
-  const onChangeNoteTags = (noteTags: NoteTagDTO[]) => {
-    const docString = editorView.state.doc.toString() || '';
-    const tagPositions = noteTags
-      .map(nt => store.tags.$state.find(t => t.id === nt.tagId))
-      .filterTruthy()
-      .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
-        .map(m => m.index!)
-        .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })))
-      .distinct(t => t.tagId + ' ' + t.from);
-    const effects = [
-      ...previousTagPositions
-        .filter(tp => !tagPositions.some(t => t.tagId === tp.tagId && t.from === tp.from && t.to === tp.to))
-        .distinct(t => t.tagId + ' ' + t.from)
-        .map(t => removeHighlight.of({
-          ...t,
-          // if user deletes last character and char is inside tag, we will get an out of bounds error. This prevents that
-          to: Math.min(t.to, editorView.state.doc.length || Number.MAX_VALUE)
-        }) as StateEffect<unknown>),
-      ...tagPositions
-        .distinct(t => t.tagId + ' ' + t.from)
-        .map(t => addHighlight.of(t) as StateEffect<unknown>),
-    ];
-    if (!editorView.state.field(highlightedRanges, false)) {
-      effects.push(StateEffect.appendConfig.of([highlightedRanges]));
     }
-    editorView.dispatch({ effects });
-    previousTagPositions = tagPositions;
-  }
+    return ranges
+  },
+  provide: field => EditorView.decorations.from(field)
+});
 
-  const getData = () => {
-    const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
-    const groupSynonymIds = synonymGroups
-      .filter(sg => synonymIds.includes(sg.synonymId))
-      .distinct();
-    return [...synonymIds, ...groupSynonymIds]
-      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
-      .distinct(t => t.id)
-      .flatMap(t => noteTags.filter(nt => nt.tagId === t.id));
-  }
+export const reviseEditorTags = ({ editorView, addTags, removeTags }: ReviseEditorTagsArgs) => {
 
-  let called = Date.now();
-  const debounce = 100;
-  const subscriptions = [synonymIds, store.tags, store.noteTags, store.synonymGroups].map(item => {
-    return item.$onChange(async () => {
-      await setTimeout(() => {
-        if ((Date.now() - debounce) < called) { return; }
-        called = Date.now();
-        onChangeNoteTags(getData());
-      }, debounce);
-    });
-  });
-  onChangeNoteTags(getData());
-  return { unsubscribe: () => subscriptions.forEach(sub => sub.unsubscribe()) };
+  const effects = [
+    ...removeTags
+      .map(t => removeHighlight.of({
+        ...t,
+        // if user deletes last character and char is inside tag, we will get an out of bounds error. This prevents that
+        to: Math.min(t.to, editorView.state.doc.length || Number.MAX_VALUE)
+      }) as StateEffect<unknown>),
+    ...addTags
+      .map(t => addHighlight.of(t) as StateEffect<unknown>),
+  ];
+  if (!editorView.state.field(highlightedRanges, false)) {
+    effects.push(StateEffect.appendConfig.of([highlightedRanges]));
+  }
+  editorView.dispatch({ effects });
+
 }
