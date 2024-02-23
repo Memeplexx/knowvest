@@ -5,6 +5,8 @@ import { AppState } from "./store-utils";
 import { ReviseEditorTagsArgs } from "./codemirror-utils";
 
 
+export type tagType = 'primary' | 'secondary';
+
 const cache = {
   key: {
     synonymGroups: new Array<SynonymGroupDTO>(),
@@ -12,7 +14,7 @@ const cache = {
     tags: new Array<TagDTO>(),
     noteTags: new Array<NoteTagDTO>(),
   },
-  value: new Array<NoteTagDTO>
+  value: new Array<NoteTagDTO & { type: tagType }>
 };
 const getDataViaCache = (store: Store<AppState>) => {
   const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
@@ -21,45 +23,60 @@ const getDataViaCache = (store: Store<AppState>) => {
     .filter(sg => synonymIds.includes(sg.synonymId))
     .distinct();
   cache.key = { synonymGroups, synonymIds, tags, noteTags };
-  cache.value = [...synonymIds, ...groupSynonymIds]
+  const primary = [...synonymIds, ...groupSynonymIds]
     .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
     .distinct(t => t.id)
     .flatMap(t => noteTags.filter(nt => nt.tagId === t.id));
+  const primaryNoteTagIds = primary.map(nt => nt.id).distinct();
+  const secondary = noteTags
+    .filter(nt => !primaryNoteTagIds.includes(nt.id));
+  cache.value = [
+    ...primary.map(nt => ({ ...nt, type: 'primary' as const })),
+    ...secondary.map(nt => ({ ...nt, type: 'secondary' as const }))
+  ];
   return cache.value;
 }
 
-export const listenToTagsForEditor = ({ editorView, store, onChange }: { editorView: EditorView, store: Store<AppState>, onChange: (arg: ReviseEditorTagsArgs) => void }) => {
+export const listenToTagsForEditor = ({
+  editorView,
+  store,
+  reviseEditorTags
+}: {
+  editorView: EditorView,
+  store: Store<AppState>,
+  reviseEditorTags: (arg: ReviseEditorTagsArgs) => void
+}) => {
 
-  let previousTagPositions = new Array<{ from: number; to: number; tagId: TagId }>();
+  let previousTagPositions = new Array<{ from: number; to: number; tagId: TagId, type: tagType }>();
 
-  const onChangeNoteTags = (noteTags: NoteTagDTO[]) => {
+  const onChangeNoteTags = (noteTags: (NoteTagDTO & { type: tagType })[]) => {
     const docString = editorView.state.doc.toString() || '';
-    const tagPositions = noteTags
-      .map(nt => store.tags.$state.find(t => t.id === nt.tagId))
-      .filterTruthy()
-      .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
-        .map(m => m.index!)
-        .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id })))
-      .distinct(t => t.tagId + ' ' + t.from);
-
     const removeTags = previousTagPositions
-      .filter(tp => !tagPositions.some(t => t.tagId === tp.tagId && t.from === tp.from && t.to === tp.to))
       .distinct(t => t.tagId + ' ' + t.from)
       .map(t => ({
         ...t,
         // if user deletes last character and char is inside tag, we will get an out of bounds error. This prevents that
         to: Math.min(t.to, editorView.state.doc.length || Number.MAX_VALUE)
       }));
-    const addTags = tagPositions
-      .filter(tp => !previousTagPositions.some(t => t.tagId === tp.tagId && t.from === tp.from && t.to === tp.to))
+    const addTags = noteTags
+      .map(nt => {
+        const tag = store.tags.$state.find(t => t.id === nt.tagId);
+        return tag ? { ...tag, type: nt.type } : null;
+      })
+      .filterTruthy()
+      .flatMap(tag => [...docString.matchAll(new RegExp(`\\b(${tag.text})\\b`, 'ig'))]
+        .map(m => m.index!)
+        .map(index => ({ from: index, to: index + tag.text.length, tagId: tag.id, type: tag.type })))
       .distinct(t => t.tagId + ' ' + t.from);
-
-    onChange({ addTags, removeTags, editorView });
-    previousTagPositions = tagPositions;
+    reviseEditorTags({ addTags, removeTags, editorView });
+    previousTagPositions = addTags;
   }
 
-  const subscriptions = [store.synonymIds, store.tags, store.noteTags, store.synonymGroups]
-    .map(item => item.$onChange(() => onChangeNoteTags(getDataViaCache(store))));
+  const subscriptions = [store.writingNote, store.writingNoteTags, store.synonymIds, store.tags, store.noteTags, store.synonymGroups]
+    .map(item => item.$onChange(() => {
+      if (store.$state.writingNote || store.$state.writingNoteTags) { return; }
+      onChangeNoteTags(getDataViaCache(store));
+    }));
   onChangeNoteTags(getDataViaCache(store));
   return { unsubscribe: () => subscriptions.forEach(sub => sub.unsubscribe()) };
 }

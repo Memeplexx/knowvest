@@ -43,7 +43,7 @@ export const useInputs = () => {
   useEffect(() => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
-    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, onChange: reviseEditorTags });
+    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
     return () => {
       codeMirror.current?.destroy();
       changeListener.unsubscribe();

@@ -24,6 +24,8 @@ export const initialAppState = {
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
   stateInitialized: false,
+  writingNote: false,
+  writingNoteTags: false,
 };
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {

@@ -31,8 +31,10 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
     if (store.$state.activeNoteId !== activeNoteIdRef) { return; }
     if (Date.now() - timestamp < debounce) { return; }
     if (!store.$state.activePanel.allowNotePersister) { return; }
+    store.writingNote.$set(true);
     const apiResponse = await updateNote({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
     await writeToStoreAndDb(store, { notes: apiResponse.updatedNote });
+    store.writingNote.$set(false);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) { return; }
@@ -86,11 +88,13 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
     }
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
+    store.writingNoteTags.$set(true);
     const apiResponse = await updateNoteTags({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
     await writeToStoreAndDb(store, { noteTags: apiResponse.noteTags });
     const tagIds = apiResponse.noteTags.filter(nt => !nt.isArchived).map(nt => nt.tagId);
     const synonymIds = store.$state.tags.filter(t => !t.isArchived && tagIds.includes(t.id)).map(t => t.synonymId).distinct();
     store.synonymIds.$setUnique(synonymIds);
+    store.writingNoteTags.$set(false);
   });
 }
 

@@ -23,7 +23,7 @@ export const useInputs = (props: Props) => {
   useIsomorphicLayoutEffect(() => {
     if (props.showIf === false) { return; /* do not instantiate because component has been hidden */ }
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note! });
-    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, onChange: reviseEditorTags });
+    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
     return () => {
       codeMirror.current?.destroy();
       changeListener.unsubscribe();

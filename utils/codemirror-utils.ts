@@ -134,10 +134,12 @@ export const titleFormatPlugin = ViewPlugin.fromClass(class {
 });
 
 
+export type tagType = 'primary' | 'secondary';
+
 export type ReviseEditorTagsArgs = {
   editorView: EditorView,
-  addTags: { from: number, to: number, tagId: TagId }[],
-  removeTags: { from: number, to: number, tagId: TagId }[]
+  addTags: { from: number, to: number, tagId: TagId, type: tagType }[],
+  removeTags: { from: number, to: number, tagId: TagId, type: tagType }[]
 };
 
 const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
@@ -157,6 +159,8 @@ const removeHighlight = StateEffect.define({ map: mapRange });
 
 const highlight = Decoration.mark({ attributes: { class: 'cm-highlight' } });
 
+const highlight2 = Decoration.mark({ attributes: { class: 'cm-highlight-2' } });
+
 const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
   const leftover: Range<Decoration>[] = []
   ranges.between(r.from, r.to, (from, to, deco) => {
@@ -170,7 +174,7 @@ const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
     add: leftover
   })
 }
-const addRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
+const addRange = (ranges: DecorationSet, r: { from: number, to: number }, type: tagType) => {
   ranges.between(r.from, r.to, (from, to) => {
     if (from < r.from) r = { from, to: r.to }
     if (to > r.to) r = { from: r.from, to }
@@ -179,7 +183,7 @@ const addRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
     filterFrom: r.from,
     filterTo: r.to,
     filter: () => false,
-    add: [highlight.range(r.from, r.to)]
+    add: [(type === 'primary' ? highlight : highlight2).range(r.from, r.to)]
   })
 }
 
@@ -189,7 +193,7 @@ const highlightedRanges = StateField.define({
     ranges = ranges.map(tr.changes)
     for (const e of tr.effects) {
       if (e.is(addHighlight)) {
-        ranges = addRange(ranges, e.value);
+        ranges = addRange(ranges, e.value, (e.value as any).type);
       } else if (e.is(removeHighlight)) {
         ranges = cutRange(ranges, e.value);
       }
@@ -209,7 +213,9 @@ export const reviseEditorTags = ({ editorView, addTags, removeTags }: ReviseEdit
         to: Math.min(t.to, editorView.state.doc.length || Number.MAX_VALUE)
       }) as StateEffect<unknown>),
     ...addTags
-      .map(t => addHighlight.of(t) as StateEffect<unknown>),
+      .map(t => addHighlight.of(
+        t
+      ) as StateEffect<unknown>),
   ];
   if (!editorView.state.field(highlightedRanges, false)) {
     effects.push(StateEffect.appendConfig.of([highlightedRanges]));

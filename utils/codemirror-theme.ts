@@ -112,12 +112,23 @@ export const oneDarkTheme = EditorView.theme({
   ".cm-highlight": {
     backgroundColor: "#b100b159",
     borderRadius: "10px",
-    padding: '0 4px',
-    margin: '0 -4px',
+    padding: '1px 8px',
+    margin: '-1px -8px',
     color: '#FFF',
     display: 'inline-block',
   },
   ".cm-highlight >*": {
+    color: '#FFF!important',
+  },
+  ".cm-highlight-2": {
+    backgroundColor: "#00000059",
+    borderRadius: "10px",
+    padding: '1px 8px',
+    margin: '-1px -8px',
+    color: '#FFF',
+    display: 'inline-block',
+  },
+  ".cm-highlight-2 >*": {
     color: '#FFF!important',
   },
   ".cm-note-inline": {
