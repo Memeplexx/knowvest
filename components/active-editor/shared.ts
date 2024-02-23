@@ -16,7 +16,7 @@ export const autocompleteExtension = (store: ActivePanelStore) => {
         if (!context.explicit && !before) return null;
         return {
           from: before ? before.from : context.pos,
-          options: store.$state.tags.map(tag => ({ label: tag.text })),
+          options: store.$state.tags.filter(t => !t.isArchived).map(tag => ({ label: tag.text })),
           validFor: /^\w*$/,
         };
       }
