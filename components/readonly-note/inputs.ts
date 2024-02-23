@@ -1,7 +1,9 @@
-import { NoteDTO, NoteTagDTO, TagId } from '@/actions/types';
+import { NoteDTO } from '@/actions/types';
 import { oneDark } from '@/utils/codemirror-theme';
-import { ReviseEditorTagsArgs, bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
-import { AppState, useStore } from '@/utils/store-utils';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { listenToTagsForEditor } from '@/utils/data-utils';
+import { useIsomorphicLayoutEffect } from '@/utils/react-utils';
+import { useStore } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -9,8 +11,6 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useRef } from 'react';
 import { Props } from './constants';
-import { useIsomorphicLayoutEffect } from '@/utils/react-utils';
-import { listenToTagsForEditor } from '@/utils/data-utils';
 
 
 export const useInputs = (props: Props) => {

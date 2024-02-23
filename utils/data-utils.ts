@@ -1,21 +1,34 @@
-import { NoteTagDTO, TagId } from "@/actions/types";
+import { NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO, TagId } from "@/actions/types";
 import { EditorView } from "codemirror";
 import { Store } from "olik";
 import { AppState } from "./store-utils";
 import { ReviseEditorTagsArgs } from "./codemirror-utils";
 
-export const listenToTagsForEditor = ({ editorView, store, onChange }: { editorView: EditorView, store: Store<AppState>, onChange: (arg: ReviseEditorTagsArgs) => void }) => {
 
-  const getData = () => {
-    const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
-    const groupSynonymIds = synonymGroups
-      .filter(sg => synonymIds.includes(sg.synonymId))
-      .distinct();
-    return [...synonymIds, ...groupSynonymIds]
-      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
-      .distinct(t => t.id)
-      .flatMap(t => noteTags.filter(nt => nt.tagId === t.id));
-  }
+const cache = {
+  key: {
+    synonymGroups: new Array<SynonymGroupDTO>(),
+    synonymIds: new Array<SynonymId>(),
+    tags: new Array<TagDTO>(),
+    noteTags: new Array<NoteTagDTO>(),
+  },
+  value: new Array<NoteTagDTO>
+};
+const getDataViaCache = (store: Store<AppState>) => {
+  const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
+  if ((Object.keys(cache.key) as Array<keyof typeof cache.key>).every(k => cache.key[k] === store.$state[k])) { return cache.value; }
+  const groupSynonymIds = synonymGroups
+    .filter(sg => synonymIds.includes(sg.synonymId))
+    .distinct();
+  cache.key = { synonymGroups, synonymIds, tags, noteTags };
+  cache.value = [...synonymIds, ...groupSynonymIds]
+    .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
+    .distinct(t => t.id)
+    .flatMap(t => noteTags.filter(nt => nt.tagId === t.id));
+  return cache.value;
+}
+
+export const listenToTagsForEditor = ({ editorView, store, onChange }: { editorView: EditorView, store: Store<AppState>, onChange: (arg: ReviseEditorTagsArgs) => void }) => {
 
   let previousTagPositions = new Array<{ from: number; to: number; tagId: TagId }>();
 
@@ -45,17 +58,8 @@ export const listenToTagsForEditor = ({ editorView, store, onChange }: { editorV
     previousTagPositions = tagPositions;
   }
 
-  let called = Date.now();
-  const debounce = 100;
-  const subscriptions = [store.synonymIds, store.tags, store.noteTags, store.synonymGroups].map(item => {
-    return item.$onChange(async () => {
-      await setTimeout(() => {
-        if ((Date.now() - debounce) < called) { return; }
-        called = Date.now();
-        onChangeNoteTags(getData());
-      }, debounce);
-    });
-  });
-  onChangeNoteTags(getData());
+  const subscriptions = [store.synonymIds, store.tags, store.noteTags, store.synonymGroups]
+    .map(item => item.$onChange(() => onChangeNoteTags(getDataViaCache(store))));
+  onChangeNoteTags(getDataViaCache(store));
   return { unsubscribe: () => subscriptions.forEach(sub => sub.unsubscribe()) };
 }
