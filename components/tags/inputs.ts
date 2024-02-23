@@ -18,11 +18,11 @@ export const useInputs = () => {
       .map(tag => tag?.synonymId)
       .filterTruthy()
       .distinct()
-      .map(synonymId => tags.filter(t => t.synonymId === synonymId))
-      .map(tags => ({
-        synonymId: tags[0].synonymId,
-        selected: synonymIds.includes(tags[0].synonymId),
-        tags: tags.map((tag, index, array) => ({
+      .map(synonymId => unArchivedTags.filter(t => t.synonymId === synonymId))
+      .map(tgs => ({
+        synonymId: tgs[0].synonymId,
+        selected: synonymIds.includes(tgs[0].synonymId),
+        tags: tgs.map((tag, index, array) => ({
           ...tag,
           first: index === 0,
           last: index === array.length - 1,

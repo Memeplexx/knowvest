@@ -1,12 +1,12 @@
-import { type ChangeEvent, type MouseEvent } from 'react';
+import { archiveGroup, removeSynonymFromGroup } from '@/actions/group';
+import { removeTagFromItsCurrentSynonym } from '@/actions/synonym';
+import { archiveTag } from '@/actions/tag';
 import { GroupId, SynonymId, TagId } from '@/actions/types';
+import { TypedKeyboardEvent, useEventHandlerForDocument } from '@/utils/dom-utils';
+import { writeToStoreAndDb } from '@/utils/storage-utils';
+import { type ChangeEvent, type MouseEvent } from 'react';
 import { Inputs } from './constants';
 import { useSharedFunctions } from './shared';
-import { removeTagFromItsCurrentSynonym } from '@/actions/synonym';
-import { archiveGroup, removeSynonymFromGroup } from '@/actions/group';
-import { archiveTag } from '@/actions/tag';
-import { writeToStoreAndDb } from '@/utils/storage-utils';
-import { TypedKeyboardEvent, useEventHandlerForDocument } from '@/utils/dom-utils';
 
 
 export const useOutputs = (inputs: Inputs) => {
@@ -221,6 +221,7 @@ export const useOutputs = (inputs: Inputs) => {
       const synonymId = inputs.tagsInSynonymGroup.length === 1 ? null : inputs.synonymId;
       const lastTag = inputs.tagsInSynonymGroup.length === 1;
       store.tagsConfig.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : inputs.autocompleteAction });
+      synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
       await writeToStoreAndDb(store, { tags: apiResponse.tagArchived, noteTags: apiResponse.archivedNoteTags, synonymGroups: apiResponse.archivedSynonymGroups });
       notify.success('Tag archived');
     },

@@ -49,7 +49,7 @@ export const useOutputs = (inputs: Inputs) => {
       const tagIds = store.noteTags.$filter.noteId.$eq(noteId).tagId;
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
       store.activeNoteId.$set(noteId);
-      store.synonymIds.$set(synonymIds);
+      store.synonymIds.$setUnique(synonymIds);
       props.onHide();
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {

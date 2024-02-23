@@ -67,18 +67,3 @@ const ancestorMatches = (element: EventTarget | null, check: (element: HTMLEleme
 EventTarget.prototype.hasAncestor = function (check: (element: HTMLElement) => boolean) {
   return ancestorMatches(this, check);
 }
-
-typeof (Document) === 'undefined' ? null : Document.prototype.useClickEvent = function(eventHandler) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useEventHandlerForDocument('click', eventHandler);
-}
-
-typeof (Document) === 'undefined' ? null : Document.prototype.useKeyUpEvent = function(eventHandler) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useEventHandlerForDocument('keyup', eventHandler);
-}
-
-typeof (Document) === 'undefined' ? null : Document.prototype.useKeyDownEvent = function(eventHandler) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useEventHandlerForDocument('keydown', eventHandler);
-}

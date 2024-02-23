@@ -36,11 +36,9 @@ export const ListItem = styled.div`
   transition: all 0.2s;
   transition: all 0.4s;
   background-image: linear-gradient(to right, #242020, #191919);
-  border: 1px solid #161616;
   margin-bottom: -1px;
   &:hover {
     background-image: linear-gradient(to right,#252525,#2d2d2d);
-    border: 1px solid #3c3c3c;
     z-index: 2;
     ${Header}, ${Icon} {
       color: #fff;

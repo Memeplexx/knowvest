@@ -25,9 +25,9 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
         .filter(n => !n.isArchived)
         .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0].id;
       store.activeNoteId.$set(newNoteId);
-      const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
-      const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
-      store.synonymIds.$set(synonymIds);
+      const tagIds = store.noteTags.$filter.isArchived.$eq(false).$and.noteId.$eq(newNoteId).tagId;
+      const synonymIds = store.tags.$filter.isArchived.$eq(false).$and.id.$in(tagIds).synonymId;
+      store.synonymIds.$setUnique(synonymIds);
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
       notify.success('Note deleted');
       popupRef.current?.hide();

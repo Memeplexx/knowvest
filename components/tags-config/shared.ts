@@ -88,7 +88,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     const activeTagIdsToBeSelected = apiResponse.noteTagsCreated.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
     const activeSynonymIdsToBeSelected = store.$state.tags.filter(t => activeTagIdsToBeSelected.includes(t.id)).map(t => t.synonymId);
     await writeToStoreAndDb(store, { tags: apiResponse.tagUpdated, noteTags: [...apiResponse.archivedNoteTags, ...apiResponse.noteTagsCreated] });
-    store.synonymIds.$set([...store.$state.synonymIds.filter(id => !activeSynonymIdsToBeDeselected.includes(id)), ...activeSynonymIdsToBeSelected]);
+    store.synonymIds.$setUnique([...store.$state.synonymIds.filter(id => !activeSynonymIdsToBeDeselected.includes(id)), ...activeSynonymIdsToBeSelected]);
     notify.success('Tag updated');
     blurAutocompleteInput();
   }

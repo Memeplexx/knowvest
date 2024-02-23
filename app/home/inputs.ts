@@ -94,8 +94,8 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
   }
   await writeToStoreAndDb(store, apiResponse);
   const activeNoteId = notesSorted[0].id;
-  const selectedTagIds = databaseData.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
-  const synonymIds = databaseData.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId);
+  const selectedTagIds = databaseData.noteTags.filter(nt => !nt.isArchived && nt.noteId === activeNoteId).map(nt => nt.tagId);
+  const synonymIds = databaseData.tags.filter(t => !t.isArchived && selectedTagIds.includes(t.id)).map(t => t.synonymId);
   store.$patch({
     ...databaseData,
     activeNoteId,

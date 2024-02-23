@@ -17,7 +17,7 @@ export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexe
         if (!tableRecords.length) {
           return resolve();
         }
-        (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$withMany(tableRecords);
+        (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$with(tableRecords);
         const request = openDatabase();
         request.onsuccess = event => {
           const db = eventTarget(event).result;

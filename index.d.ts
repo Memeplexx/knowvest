@@ -28,10 +28,4 @@ declare global {
      */
     hasAncestor: (check: (element: HTMLElement) => boolean) => boolean;
   }
-
-  interface Document {
-    useClickEvent: (hander: (event: MouseEvent<HTMLElement> & { target: HTMLElement }) => void) => void;
-    useKeyUpEvent: (hander: (event: TypedKeyboardEvent<HTMLElement>) => void) => void;
-    useKeyDownEvent: (hander: (event: TypedKeyboardEvent<HTMLElement>) => void) => void;
-  }
 }
