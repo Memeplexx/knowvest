@@ -1,6 +1,6 @@
 "use server";
 import { string } from 'zod';
-import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, synonymId, tagId } from './_common';
+import { ApiError, receive, listNotesWithTagText, prisma, archiveAllEntitiesAssociatedWithAnyArchivedTags, synonymId, tagId } from './_common';
 
 
 export const removeTagFromItsCurrentSynonym = receive({
@@ -8,18 +8,18 @@ export const removeTagFromItsCurrentSynonym = receive({
 }).then(async ({ userId, tagId }) => {
 
   // Validation
-  const tag = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-  if (!tag) { throw new ApiError('NOT_FOUND', 'Tag could not be found'); }
+  const tagFound = await prisma.tag.findFirst({ where: { id: tagId, userId } });
+  if (!tagFound) { throw new ApiError('NOT_FOUND', 'Tag could not be found'); }
 
   // Create a new synonym and assign the tag to it
   const synonym = await prisma.synonym.create({ data: {} });
-  const tagUpdated = await prisma.tag.update({ where: { id: tagId }, data: { synonymId: synonym.id } });
+  const tag = await prisma.tag.update({ where: { id: tagId }, data: { synonymId: synonym.id } });
 
   // Archive any synonyms and synonym groups that are now orphaned
-  const { archivedSynonymGroups, archivedSynonyms } = await pruneOrphanedSynonymsAndSynonymGroups();
+  const archivedEntities = await archiveAllEntitiesAssociatedWithAnyArchivedTags(userId);
 
   // Populate and return response
-  return { status: 'TAG_MOVED_TO_NEW_SYNONYM', tagUpdated, archivedSynonymGroups, archivedSynonyms } as const;
+  return { status: 'TAG_MOVED_TO_NEW_SYNONYM', tag, ...archivedEntities } as const;
 });
 
 export const addTagToSynonym = receive({
@@ -41,11 +41,11 @@ export const addTagToSynonym = receive({
   await prisma.tag.updateMany({ where: { id: { in: allTagIdsAssociatedWithOldSynonym } }, data: { synonymId } });
 
   // Archive any synonyms and synonym groups that are now orphaned
-  const { archivedSynonymGroups, archivedSynonyms } = await pruneOrphanedSynonymsAndSynonymGroups();
+  const archivedEntities = await archiveAllEntitiesAssociatedWithAnyArchivedTags(userId);
 
   // Populate and return response
-  const tagsUpdated = await prisma.tag.findMany({ where: { id: { in: allTagIdsAssociatedWithOldSynonym } } });
-  return { status: 'TAGS_UPDATED', tagsUpdated, archivedSynonyms, archivedSynonymGroups } as const;
+  const tags = await prisma.tag.findMany({ where: { id: { in: allTagIdsAssociatedWithOldSynonym } } });
+  return { status: 'TAGS_UPDATED', tags, ...archivedEntities } as const;
 });
 
 export const createTagToSynonym = receive({

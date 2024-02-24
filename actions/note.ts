@@ -59,12 +59,12 @@ export const duplicateNote = receive({
 })
 
 export const splitNote = receive({
-  splitFromNoteId: noteId(),
+  noteId: noteId(),
   from: number(),
   to: number(),
-}).then(async ({ from, splitFromNoteId, to, userId }) => {
+}).then(async ({ from, noteId, to, userId }) => {
 
-  const note = await prisma.note.findFirst({ where: { id: splitFromNoteId } });
+  const note = await prisma.note.findFirst({ where: { id: noteId } });
   if (!note) { throw new ApiError('NOT_FOUND', 'Could not find note'); }
 
   // Create new note with the split text
@@ -77,14 +77,14 @@ export const splitNote = receive({
   await prisma.noteTag.createMany({ data: tagIdsToBeAssigned.map(tagId => ({ noteId: noteCreated.id, tagId })) });
 
   // Update the existing note by removing the split text
-  const noteUpdated = await prisma.note.update({ where: { id: splitFromNoteId }, data: { text: `${note.text.slice(0, from)}${note.text.slice(to)}`, dateUpdated: now, dateViewed: now } });
+  const noteUpdated = await prisma.note.update({ where: { id: noteId }, data: { text: `${note.text.slice(0, from)}${note.text.slice(to)}`, dateUpdated: now, dateViewed: now } });
 
   // Archive note tags that are no longer associated with the existing note
   const tagsUpdatedForExistingNote = await listTagsWithTagText({ userId, noteText: noteUpdated.text });
   const tagIdsUpdatedForExistingNote = tagsUpdatedForExistingNote.map(tag => tag.id);
-  const noteTagsForExistingNote = await prisma.noteTag.findMany({ where: { noteId: splitFromNoteId } }) as NoteTagDTO[];
+  const noteTagsForExistingNote = await prisma.noteTag.findMany({ where: { noteId: noteId } }) as NoteTagDTO[];
   const tagIdsToBeUnassignedFromExistingNote = noteTagsForExistingNote.map(noteTag => noteTag.tagId).filter(id => !tagIdsUpdatedForExistingNote.includes(id));
-  const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId: splitFromNoteId, tagId: { in: tagIdsToBeUnassignedFromExistingNote } } });
+  const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId: noteId, tagId: { in: tagIdsToBeUnassignedFromExistingNote } } });
   const idsOfNoteTagsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
   await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsToBeArchived } }, data: { isArchived: true } });
 

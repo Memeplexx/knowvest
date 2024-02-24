@@ -1,7 +1,8 @@
 "use server";
 import { NoteTag, Prisma } from "@prisma/client";
 import { string } from "zod";
-import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, tagId } from "./_common";
+import { ApiError, receive, listNotesWithTagText, prisma, archiveAllEntitiesAssociatedWithAnyArchivedTags, tagId } from "./_common";
+import { NoteTagDTO } from "./types";
 
 export const createTag = receive({
   text: string(),
@@ -9,8 +10,8 @@ export const createTag = receive({
 
   // Validate
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
-  const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId } });
-  if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; } ///////////////
+  const unArchivedTagWithSameName = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
+  if (unArchivedTagWithSameName) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
 
   // Create a new synonym for the new tag to belong to
   const synonym = await prisma.synonym.create({ data: {} });
@@ -21,9 +22,9 @@ export const createTag = receive({
   // Find notes which contain the tag text and create noteTags for them
   const notesWithTag = await listNotesWithTagText({ userId, tagText: text });
   await prisma.noteTag.createMany({ data: notesWithTag.map(note => ({ noteId: note.id, tagId: tag.id })) });
+  const noteTags = await prisma.noteTag.findMany({ where: { tagId: tag.id, noteId: { in: notesWithTag.map(nwt => nwt.id) } } });
 
   // Populate and return response
-  const noteTags = await prisma.noteTag.findMany({ where: { tagId: tag.id, noteId: { in: notesWithTag.map(nwt => nwt.id) } } });
   return { status: 'TAG_CREATED', tag, noteTags } as const;
 });
 
@@ -34,54 +35,49 @@ export const updateTag = receive({
 
   // Validate
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
-  const toUpdate = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-  if (!toUpdate) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
-  if (toUpdate.text === text) { return { status: 'TAG_UNCHANGED' } as const; }
-  const tagWithSameName = await prisma.tag.findFirst({ where: { text } });
-  if (tagWithSameName) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
+  const unArchivedTagToUpdate = await prisma.tag.findFirst({ where: { id: tagId, userId, isArchived: false } });
+  if (!unArchivedTagToUpdate) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
+  if (unArchivedTagToUpdate.text === text) { return { status: 'TAG_UNCHANGED' } as const; }
+  const unArchivedTagWithSameText = await prisma.tag.findFirst({ where: { text, isArchived: false } });
+  if (unArchivedTagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
 
-  // Delete any noteTags which are associated with notes which no longer contain the tag's old text
-  const noteTagsToBeArchived = await prisma.$queryRaw<NoteTag[]>(Prisma.sql`
+  // Archive any noteTags which are associated with notes which no longer contain the tag's old text
+  const noteTagIdsToBeArchived = (await prisma.$queryRaw<NoteTag[]>(Prisma.sql`
     SELECT nt.id FROM note_tag nt 
       JOIN note n on nt.note_id = n.id 
-      WHERE n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${toUpdate.text}, '\\M');
-  `);
-  const noteTagIdsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
+      WHERE n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${unArchivedTagToUpdate.text}, '\\M');
+  `)).map(nt => nt.id);
   await prisma.noteTag.updateMany({ where: { id: { in: noteTagIdsToBeArchived } }, data: { isArchived: true } });
+  const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: noteTagIdsToBeArchived } } });
 
   // Find notes which contain the tag text and create noteTags for them
   const notesWhichNeedNoteTagsCreated = await listNotesWithTagText({ userId, tagText: text });
   await prisma.noteTag.createMany({ data: notesWhichNeedNoteTagsCreated.map(note => ({ noteId: note.id, tagId })) });
+  const newNoteTags = await prisma.noteTag.findMany({ where: { tagId, noteId: { in: notesWhichNeedNoteTagsCreated.map(nwt => nwt.id) } } });
 
   // Update the tag text
-  const tagUpdated = await prisma.tag.update({ where: { id: tagId }, data: { text } });
+  const tag = await prisma.tag.update({ where: { id: tagId }, data: { text } });
 
   // Populate and return response
-  const noteTagsCreated = await prisma.noteTag.findMany({ where: { tagId, noteId: { in: notesWhichNeedNoteTagsCreated.map(nwt => nwt.id) } } });
-  const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: noteTagIdsToBeArchived } } });
-  return { status: 'TAG_UPDATED', tagUpdated, noteTagsCreated, archivedNoteTags } as const;
+  return { status: 'TAG_UPDATED', tag, noteTags: [...newNoteTags, ...archivedNoteTags] as NoteTagDTO[] } as const;
 });
 
 export const archiveTag = receive({
   tagId: tagId(),
-}).then(async ({ tagId }) => {
+}).then(async ({ tagId, userId }) => {
 
   // Validate
-  const tag = await prisma.tag.findFirst({ where: { id: tagId } });
-  if (!tag) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
-
-  // Archive any noteTags associated with the tag which is about to be archived
-  await prisma.noteTag.updateMany({ where: { tagId: tagId }, data: { isArchived: true } });
+  const unArchivedTag = await prisma.tag.findFirst({ where: { id: tagId, isArchived: false } });
+  if (!unArchivedTag) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
 
   // Archive the tag
-  const tagArchived = await prisma.tag.update({ where: { id: tagId }, data: { isArchived: true } });
+  const tag = await prisma.tag.update({ where: { id: tagId }, data: { isArchived: true } });
 
   // Archive any synonyms and synonym groups that are now orphaned
-  const { archivedSynonyms, archivedSynonymGroups } = await pruneOrphanedSynonymsAndSynonymGroups();
+  const archivedEntities = await archiveAllEntitiesAssociatedWithAnyArchivedTags(userId);
 
   // Populate and return response
-  const archivedNoteTags = await prisma.noteTag.findMany({ where: { tagId } });
-  return { status: 'TAG_ARCHIVED', tagArchived, archivedNoteTags, archivedSynonyms, archivedSynonymGroups } as const;
+  return { status: 'TAG_ARCHIVED', tag, ...archivedEntities } as const;
 });
 
 export const createTagFromActiveNote = receive({
@@ -90,8 +86,8 @@ export const createTagFromActiveNote = receive({
 
   // Validate
   if (!tagText.trim().length) { return { status: 'BAD_REQUEST', fields: { tagText: 'Tag name cannot be empty' } } as const; }
-  const tagWithSameName = await prisma.tag.findFirst({ where: { text: tagText, userId } });
-  if (tagWithSameName) { return { status: 'CONFLICT', fields: { tagText: 'A tag with this name already exists.' } } as const; }
+  const unArchivedTagWithSameName = await prisma.tag.findFirst({ where: { text: tagText, userId, isArchived: false } });
+  if (unArchivedTagWithSameName) { return { status: 'CONFLICT', fields: { tagText: 'A tag with this name already exists.' } } as const; }
 
   // Create a new synonym for the new tag to belong to
   const synonym = await prisma.synonym.create({ data: {} });

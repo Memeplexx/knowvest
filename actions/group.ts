@@ -64,10 +64,10 @@ export const removeSynonymFromGroup = receive({
   await prisma.synonymGroup.updateMany({ where: { id: { in: idsOfSynonymGroupsToBeArchived } }, data: { isArchived: true } });
 
   // Populate and return response
-  const archivedSynonymGroups = await prisma.synonymGroup.findMany({ where: { id: { in: idsOfSynonymGroupsToBeArchived } } });
+  const synonymGroups = await prisma.synonymGroup.findMany({ where: { id: { in: idsOfSynonymGroupsToBeArchived } } });
   const groupSynonymGroups = await prisma.synonymGroup.findMany({ where: { groupId } });
-  const archivedGroup = !groupSynonymGroups.length ? await prisma.group.update({ where: { id: groupId }, data: { isArchived: true } }) : null;
-  return { status: 'SYNONYM_REMOVED_FROM_GROUP', archivedSynonymGroups, archivedGroup } as const;
+  const group = !groupSynonymGroups.length ? await prisma.group.update({ where: { id: groupId }, data: { isArchived: true } }) : null;
+  return { status: 'SYNONYM_REMOVED_FROM_GROUP', synonymGroups, group } as const;
 });
 
 export const addSynonymToGroup = receive({

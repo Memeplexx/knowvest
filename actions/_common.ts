@@ -8,21 +8,35 @@ export const prisma = new PrismaClient({
   // log: ['query', 'info', 'warn', 'error'],
 });
 
-export const pruneOrphanedSynonymsAndSynonymGroups = async () => {
-  const orphanedSynonyms = await prisma.$queryRaw<SynonymDTO[]>(Prisma.sql`
-    SELECT s.* FROM synonym s 
-      WHERE s.id NOT IN (SELECT t.synonym_id FROM tag t);
-  `);
-  const synonymGroupsToArchive = await prisma.synonymGroup.findMany({
-    where: { synonymId: { in: orphanedSynonyms.map(s => s.id) } }
-  });
-  const orphanedSynonymGroupIds = synonymGroupsToArchive.map(sg => sg.id);
-  await prisma.synonymGroup.updateMany({ where: { id: { in: orphanedSynonymGroupIds } }, data: { isArchived: true } });
-  const archivedSynonymGroups = await prisma.synonymGroup.findMany({ where: { id: { in: orphanedSynonymGroupIds } } });
-  const orphanedSynonymIds = archivedSynonymGroups.map(sg => sg.synonymId);
-  await prisma.synonym.updateMany({ where: { id: { in: orphanedSynonymIds } }, data: { isArchived: true } });
-  const archivedSynonyms = await prisma.synonym.findMany({ where: { id: { in: orphanedSynonymGroupIds } } });
-  return { archivedSynonymGroups, archivedSynonyms } as const;
+export const archiveAllEntitiesAssociatedWithAnyArchivedTags = async (userId: UserId) => {
+
+  const noteTagIdsToArchive = (await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
+    SELECT nt.id FROM note_tag nt 
+      JOIN note n on nt.note_id = n.id
+      JOIN tag t on nt.tag_id = t.id
+      WHERE n.user_id = ${userId} AND nt.is_archived IS FALSE AND t.is_archived IS TRUE;
+  `)).map(nt => nt.id);
+  await prisma.noteTag.updateMany({ where: { id: { in: noteTagIdsToArchive } }, data: { isArchived: true } });
+  const noteTags = await prisma.noteTag.findMany({ where: { id: { in: noteTagIdsToArchive } } });
+
+  const synonymIdsToArchive = (await prisma.$queryRaw<SynonymDTO[]>(Prisma.sql`
+    SELECT DISTINCT s.id FROM synonym s 
+      JOIN tag t on t.synonym_id = s.id
+      WHERE t.user_id = ${userId} AND s.is_archived IS FALSE AND t.is_archived IS TRUE;
+  `)).map(s => s.id);
+  await prisma.synonym.updateMany({ where: { id: { in: synonymIdsToArchive } }, data: { isArchived: true } });
+  const synonyms = await prisma.synonym.findMany({ where: { id: { in: synonymIdsToArchive } } });
+
+  const synonymGroupIdsToArchive = (await prisma.$queryRaw<SynonymDTO[]>(Prisma.sql`
+    SELECT DISTINCT sg.id FROM synonym_group sg 
+      JOIN synonym s on sg.synonym_id = s.id
+      JOIN tag t on t.synonym_id = s.id
+      WHERE t.user_id = ${userId} AND sg.is_archived IS FALSE AND t.is_archived IS TRUE;
+  `)).map(sg => sg.id);
+  await prisma.synonymGroup.updateMany({ where: { id: { in: synonymGroupIdsToArchive } }, data: { isArchived: true } });
+  const synonymGroups = await prisma.synonymGroup.findMany({ where: { id: { in: synonymGroupIdsToArchive } } });
+
+  return { synonymGroups, synonyms, noteTags } as const;
 }
 
 export const listNotesWithTagText = async ({ userId, tagText }: { userId: UserId, tagText: string }) => {

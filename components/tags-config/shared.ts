@@ -83,11 +83,11 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
       case 'TAG_UNCHANGED': return notify.info('Tag unchanged')
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text)
     }
-    const activeTagIdsToBeDeselected = apiResponse.archivedNoteTags.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
+    const activeTagIdsToBeDeselected = apiResponse.noteTags.filter(nt => nt.isArchived).map(nt => nt.tagId);
     const activeSynonymIdsToBeDeselected = store.$state.tags.filter(t => activeTagIdsToBeDeselected.includes(t.id)).map(t => t.synonymId);
-    const activeTagIdsToBeSelected = apiResponse.noteTagsCreated.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
+    const activeTagIdsToBeSelected = apiResponse.noteTags.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
     const activeSynonymIdsToBeSelected = store.$state.tags.filter(t => activeTagIdsToBeSelected.includes(t.id)).map(t => t.synonymId);
-    await writeToStoreAndDb(store, { tags: apiResponse.tagUpdated, noteTags: [...apiResponse.archivedNoteTags, ...apiResponse.noteTagsCreated] });
+    await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
     store.synonymIds.$setUnique([...store.$state.synonymIds.filter(id => !activeSynonymIdsToBeDeselected.includes(id)), ...activeSynonymIdsToBeSelected]);
     notify.success('Tag updated');
     blurAutocompleteInput();
@@ -131,10 +131,10 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     if (!inputs.synonymId) { throw new Error(); }
     const selected = store.$state.tags.findOrThrow(t => t.id === tagId);
     const apiResponse = await addTagToSynonym({ tagId, synonymId: inputs.synonymId });
-    const synonymId = apiResponse.tagsUpdated[0].synonymId;
+    const synonymId = apiResponse.tags[0].synonymId;
     const groupHasMoreThanOneTag = store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
     const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
-    await writeToStoreAndDb(store, { tags: apiResponse.tagsUpdated, synonymGroups: apiResponse.archivedSynonymGroups });
+    await writeToStoreAndDb(store, { tags: apiResponse.tags, synonymGroups: apiResponse.synonymGroups, noteTags: apiResponse.noteTags });
     store.tagsConfig.$patch({ tagId, synonymId, autocompleteText: selected.text });
     groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && notify.success('Tag(s) added to synonyms');
   };

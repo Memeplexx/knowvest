@@ -32,7 +32,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onClickSplitNoteFromSelection: async () => {
       const range = codeMirror!.state.selection.ranges[0];
       store.activePanel.loadingSelection.$set(true);
-      const apiResponse = await splitNote({ ...range, splitFromNoteId: store.$state.activeNoteId });
+      const apiResponse = await splitNote({ ...range, noteId: store.$state.activeNoteId });
       await writeToStoreAndDb(store, apiResponse);
       store.activePanel.$patch({
         loadingSelection: false,
