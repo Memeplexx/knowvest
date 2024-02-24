@@ -33,7 +33,7 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
     if (!store.$state.activePanel.allowNotePersister) { return; }
     store.writingNote.$set(true);
     const apiResponse = await updateNote({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
-    await writeToStoreAndDb(store, { notes: apiResponse.updatedNote });
+    await writeToStoreAndDb(store, { notes: apiResponse.note });
     store.writingNote.$set(false);
   }
   return EditorView.updateListener.of(update => {

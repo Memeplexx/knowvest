@@ -12,4 +12,6 @@ export const initialState = {
   }
 }
 
+export const pageSize = 10;
+
 export type Inputs = ReturnType<typeof useInputs>;

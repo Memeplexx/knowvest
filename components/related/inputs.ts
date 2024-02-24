@@ -1,11 +1,11 @@
 import { useStore } from "@/utils/store-utils";
 import { useMemo, useRef } from "react";
-import { Props, initialState } from "./constants";
+import { Props, initialState, pageSize } from "./constants";
 import { CardHandle } from "../card/constants";
 
 export const useInputs = (props: Props) => {
 
-  const { store, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized } = useStore(initialState);
+  const { store, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized, relatedItems } = useStore(initialState);
 
   const cardRef = useRef<CardHandle>(null);
 
@@ -21,6 +21,7 @@ export const useInputs = (props: Props) => {
         count: noteTagGroup.length,
       }))
       .sort((a, b) => b.count - a.count)
+      .slice(0, (relatedItems.index + 1) * pageSize)
       .map(n => ({
         ...n,
         matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
