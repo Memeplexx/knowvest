@@ -15,7 +15,6 @@ export const useInputs = (
   const items = useMemo(() => {
     return notes
       .filter(note => activeNoteId !== note.id)
-      .filter(note => !note.isArchived)
       .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())
       .slice(0, (historyItems.index + 1) * pageSize)
       .map(note => ({

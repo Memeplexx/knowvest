@@ -23,7 +23,7 @@ export type NotTagId = Brand<number, 'NotTagId'>;
 export type SynonymGroupId = Brand<number, 'SynonymGroupId'>;
 
 type BrandedDto<T, P extends Partial<T>> = {
-  [key in keyof T]: P[key] extends number ? P[key] : T[key];
+  [key in keyof T /*as key extends 'isArchived' ? never : key*/]: P[key] extends number ? P[key] : T[key];
 };
 
 export type NoteDTO = BrandedDto<Note, {

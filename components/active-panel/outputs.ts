@@ -22,11 +22,10 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
       await writeToStoreAndDb(store, { notes: apiResponse.noteArchived, noteTags: apiResponse.archivedNoteTags })
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
       const newNoteId = store.$state.notes
-        .filter(n => !n.isArchived)
         .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0].id;
       store.activeNoteId.$set(newNoteId);
-      const tagIds = store.noteTags.$filter.isArchived.$isFalse().$and.noteId.$eq(newNoteId).tagId;
-      const synonymIds = store.tags.$filter.isArchived.$isFalse().$and.id.$in(tagIds).synonymId;
+      const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
+      const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
       store.synonymIds.$setUnique(synonymIds);
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);
       notify.success('Note deleted');

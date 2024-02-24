@@ -17,7 +17,15 @@ export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexe
         if (!tableRecords.length) {
           return resolve();
         }
-        (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$with(tableRecords);
+
+        // update records
+        const toUpdate = tableRecords.filter(r => !(r as typeof r & { isArchived: boolean }).isArchived);
+        !!toUpdate.length && (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$with(toUpdate);
+
+        // delete records
+        const toDelete = tableRecords.filter(r => (r as typeof r & { isArchived: boolean }).isArchived);
+        !!toDelete.length && store[tableName].$filter.id.$in(toDelete.map(r => r.id) as any).$delete();
+
         const request = openDatabase();
         request.onsuccess = event => {
           const db = eventTarget(event).result;
@@ -67,7 +75,7 @@ export const readFromDb = () => {
           }
         })
         Promise.all(objectStoreNames.map(readObjectStore))
-          .then(() => resolve(results))
+          .then(() => resolve(Object.keysTyped(results).mapToObject(k => k, k => results[k].filter(r => !(r as typeof r & { isArchived: boolean }).isArchived)) as typeof indexedDbState))
           .catch(error => reject(error))
           .finally(() => transaction.oncomplete = () => db.close());
       });

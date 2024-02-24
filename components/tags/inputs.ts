@@ -9,16 +9,14 @@ export const useInputs = () => {
   const [state, setState] = useState(initialTransientState)
 
   const tagsForActiveNote = useMemo(() => {
-    const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
-    const unArchivedTags = tags.filter(t => !t.isArchived);
-    return unArchivedNoteTags
+    return noteTags
       .filter(nt => nt.noteId === activeNoteId)
       .map(nt => nt.tagId)
-      .map(tagId => unArchivedTags.find(t => t.id === tagId))
+      .map(tagId => tags.find(t => t.id === tagId))
       .map(tag => tag?.synonymId)
       .filterTruthy()
       .distinct()
-      .map(synonymId => unArchivedTags.filter(t => t.synonymId === synonymId))
+      .map(synonymId => tags.filter(t => t.synonymId === synonymId))
       .map(tgs => ({
         synonymId: tgs[0].synonymId,
         selected: synonymIds.includes(tgs[0].synonymId),
@@ -36,25 +34,20 @@ export const useInputs = () => {
   }, [tagsForActiveNote]);
 
   const groupsWithSynonyms = useMemo(() => {
-    const unArchivedGroups = groups.filter(g => !g.isArchived);
-    const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
-    const unArchivedSynonymGroups = synonymGroups.filter(sg => !sg.isArchived);
-    const unArchivedTags = tags.filter(t => !t.isArchived);
-    return unArchivedNoteTags
+    return noteTags
       .filter(nt => nt.noteId === activeNoteId)
-      .flatMap(nt => unArchivedTags.filter(t => t.id === nt.tagId))
-      .flatMap(tag => unArchivedSynonymGroups.filter(sg => sg.synonymId === tag.synonymId))
+      .flatMap(nt => tags.filter(t => t.id === nt.tagId))
+      .flatMap(tag => synonymGroups.filter(sg => sg.synonymId === tag.synonymId))
       .groupBy(sg => sg.groupId)
-      .filter(group => !group[0].isArchived)
       .map(group => ({
         groupId: group[0].groupId,
-        groupName: unArchivedGroups.findOrThrow(g => g.id === group[0].groupId).name,
-        synonyms: unArchivedSynonymGroups
+        groupName: groups.findOrThrow(g => g.id === group[0].groupId).name,
+        synonyms: synonymGroups
           .filter(sg => sg.groupId === group[0].groupId)
           .map(sg => ({
             id: sg.synonymId,
             selected: synonymIds.includes(sg.synonymId),
-            tags: unArchivedTags
+            tags: tags
               .filter(t => t.synonymId === sg.synonymId)
               .map((tag, index, array) => ({
                 ...tag,

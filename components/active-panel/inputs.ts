@@ -11,7 +11,7 @@ export const useInputs = () => {
   const popupRef = useRef<PopupHandle>(null);
   const notify = useNotifier();
   const mayDeleteNote = useMemo(() => {
-    return notes.filter(n => !n.isArchived).length > 1;
+    return notes.length > 1;
   }, [notes])
   
   return {

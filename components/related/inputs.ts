@@ -10,19 +10,15 @@ export const useInputs = (props: Props) => {
   const cardRef = useRef<CardHandle>(null);
 
   const items = useMemo(() => {
-    const unArchivedNotes = notes.filter(n => !n.isArchived);
-    const unArchivedTags = tags.filter(t => !t.isArchived);
-    const unArchivedNoteTags = noteTags.filter(nt => !nt.isArchived);
     return synonymIds
-      .flatMap(synonymId => unArchivedTags.filter(t => t.synonymId === synonymId))
+      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
       .map(t => t.id)
       .distinct()
-      .flatMap(tagId => unArchivedNoteTags.filter(nt => nt.noteId !== activeNoteId && nt.tagId === tagId))
+      .flatMap(tagId => noteTags.filter(nt => nt.noteId !== activeNoteId && nt.tagId === tagId))
       .groupBy(n => n.noteId)
-      .filter(noteTagGroup => !noteTagGroup[0].isArchived)
       .map(noteTagGroup => ({
-        note: unArchivedNotes.findOrThrow(note => note.id === noteTagGroup[0].noteId),
-        count: noteTagGroup.filter(noteTag => !noteTag.isArchived).length,
+        note: notes.findOrThrow(note => note.id === noteTagGroup[0].noteId),
+        count: noteTagGroup.length,
       }))
       .sort((a, b) => b.count - a.count)
       .map(n => ({

@@ -11,7 +11,7 @@ export const useInputs = (props: Props) => {
   const bodyRef = useRef<HTMLDivElement>(null);
   const items = useMemo(() => {
     return flashCards
-      .filter(fc => !fc.isArchived && isAfter(new Date(), fc.nextQuestionDate))
+      .filter(fc => isAfter(new Date(), fc.nextQuestionDate))
       .map(fc => ({...fc, note: store.$state.notes.findOrThrow(n => n.id === fc.noteId)}));
   }, [flashCards, store]);
 

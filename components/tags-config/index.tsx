@@ -172,6 +172,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                     <BodyGroup
                       key={group.id}
                       $active={active}
+                      showIf={!!synonyms.length}
                       children={
                         <>
                           <BodyHeader

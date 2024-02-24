@@ -70,6 +70,7 @@ export class ApiError extends Error {
 
 export const ZodNoteId = z.number() as unknown as ZodType<NoteId, ZodNumberDef>;
 export const ZodTagId = z.number() as unknown as ZodType<TagId, ZodNumberDef>;
+export const tagId = () => z.number() as unknown as ZodType<TagId, ZodNumberDef>;
 export const ZodGroupId = z.number() as unknown as ZodType<GroupId, ZodNumberDef>;
 export const ZodSynonymId = z.number() as unknown as ZodType<SynonymId, ZodNumberDef>;
 export const ZodUserId = z.number() as unknown as ZodType<UserId, ZodNumberDef>;

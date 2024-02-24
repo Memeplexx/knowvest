@@ -9,7 +9,7 @@ export const useInputs = () => {
   const { store, navBar, flashCards, stateInitialized } = useStore(initialState);
   const { data: session } = useSession();
   const flashCardCount = useMemo(() => {
-    return flashCards.filter(f => !f.isArchived && isAfter(new Date(), f.nextQuestionDate)).length;
+    return flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length;
   }, [flashCards]);
 
   return {

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ForwardedRef } from 'react';
+import { useMemo, useRef, useState, type ForwardedRef, useEffect } from 'react';
 
 import { decide } from '@/utils/logic-utils';
 import { useStore } from '@/utils/store-utils';
@@ -25,8 +25,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const notify = useNotifier();
 
   const tagsInSynonymGroup = useMemo(() => {
-    const unArchivedTags = tags.filter(t => !t.isArchived);
-    return unArchivedTags
+    return tags
       .filter(tag => tag.synonymId === synonymId)
       .map((tag, index, array) => ({
         id: tag.id,
@@ -38,14 +37,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [autocompleteText, synonymId, tagId, tags]);
 
   const tagsInCustomGroups = useMemo(() => {
-    const unArchivedSynonymGroups = synonymGroups.filter(sg => !sg.isArchived);
-    const unArchivedGroups = groups.filter(g => !g.isArchived);
-    const unArchivedTags = tags.filter(t => !t.isArchived);
     return [
-      ...unArchivedSynonymGroups
+      ...synonymGroups
         .filter(synonymGroup => synonymGroup.synonymId === synonymId)
         .map(synonymGroup => ({
-          group: unArchivedGroups.findOrThrow(g => g.id === synonymGroup.groupId),
+          group: groups.findOrThrow(g => g.id === synonymGroup.groupId),
           synonyms: [
             !synonymId
               ? null
@@ -53,11 +49,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
                 synonymId,
                 tags: tagsInSynonymGroup,
               },
-            ...unArchivedSynonymGroups
+            ...synonymGroups
               .filter(sg => sg.groupId === synonymGroup.groupId && sg.synonymId !== synonymId)
               .map(sg => ({
                 synonymId: sg.synonymId,
-                tags: unArchivedTags
+                tags: tags
                   .filter(t => t.synonymId === sg.synonymId)
                   .map((tag, index, array) => ({
                     ...tag,
@@ -67,8 +63,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
               }))
           ].filterTruthy()
         })),
-      ...unArchivedGroups
-        .filter(group => !unArchivedSynonymGroups.some(sg => sg.groupId === group.id))
+      ...groups
+        .filter(group => !synonymGroups.some(sg => sg.groupId === group.id))
         .map(group => ({
           group,
           synonyms: [],
@@ -77,29 +73,25 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [groups, synonymGroups, synonymId, tags, tagsInSynonymGroup]);
 
   const tagSynonymGroupMap = useMemo(() => {
-    const unArchivedTags = tags.filter(t => !t.isArchived);
-    return unArchivedTags
+    return tags
       .groupBy(tag => tag.synonymId)
       .mapToObject(t => t[0].synonymId, tags => tags);
   }, [tags]);
 
   const autocompleteOptionsGroups = useMemo(() => {
-    const unArchivedGroups = groups.filter(g => !g.isArchived);
-    const unArchivedTags = tags.filter(t => !t.isArchived);
-    return unArchivedGroups
+    return groups
       .filter(group => !tagsInCustomGroups.some(t => t.group.id === group.id))
       .map(group => ({
         value: group.id,
         label: group.name,
         synonyms: synonymGroups
           .filter(sg => sg.groupId === group.id)
-          .flatMap(sg => unArchivedTags.filter(t => t.synonymId === sg.synonymId)),
+          .flatMap(sg => tags.filter(t => t.synonymId === sg.synonymId)),
       }));
   }, [groups, synonymGroups, tags, tagsInCustomGroups]);
 
   const autocompleteOptionsTags = useMemo(() => {
-    const unArchivedTags = tags.filter(t => !t.isArchived);
-    return unArchivedTags
+    return tags
       .filter(t => {
         if (groupId) {
           return t.synonymId !== synonymId && !synonymGroups

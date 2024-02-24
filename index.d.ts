@@ -28,4 +28,8 @@ declare global {
      */
     hasAncestor: (check: (element: HTMLElement) => boolean) => boolean;
   }
+
+  interface Object {
+    keysTyped: <O extends object>(obj: O) => Array<keyof O>;
+  }
 }

@@ -16,7 +16,7 @@ export const autocompleteExtension = (store: ActivePanelStore) => {
         if (!context.explicit && !before) return null;
         return {
           from: before ? before.from : context.pos,
-          options: store.$state.tags.filter(t => !t.isArchived).map(tag => ({ label: tag.text })),
+          options: store.$state.tags.map(tag => ({ label: tag.text })),
           validFor: /^\w*$/,
         };
       }
@@ -91,8 +91,8 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
     store.writingNoteTags.$set(true);
     const apiResponse = await updateNoteTags({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
     await writeToStoreAndDb(store, { noteTags: apiResponse.noteTags });
-    const tagIds = apiResponse.noteTags.filter(nt => !nt.isArchived).map(nt => nt.tagId);
-    const synonymIds = store.tags.$filter.isArchived.$isFalse().$and.id.$in(tagIds).synonymId;
+    const tagIds = apiResponse.noteTags.map(nt => nt.tagId);
+    const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
     store.synonymIds.$setUnique(synonymIds);
     store.writingNoteTags.$set(false);
   });

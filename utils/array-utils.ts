@@ -118,3 +118,6 @@ Array.prototype.aggregate = function () {
     average: () => this.reduce((prev, curr) => prev + curr, 0) / this.length,
   };
 };
+
+// Object.keys({})
+Object.keysTyped = Object.keys;

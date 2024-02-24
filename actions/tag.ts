@@ -1,16 +1,16 @@
 "use server";
 import { NoteTag, Prisma } from "@prisma/client";
-import { z } from "zod";
-import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, ZodTagId } from "./_common";
+import { string } from "zod";
+import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, ZodTagId, tagId } from "./_common";
 
 export const createTag = receive({
-  text: z.string(),
+  text: string(),
 }).then(async ({ userId, text }) => {
 
   // Validate
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId } });
-  if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
+  if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; } ///////////////
 
   // Create a new synonym for the new tag to belong to
   const synonym = await prisma.synonym.create({ data: {} });
@@ -28,8 +28,8 @@ export const createTag = receive({
 });
 
 export const updateTag = receive({
-  tagId: ZodTagId,
-  text: z.string(),
+  tagId: tagId(),
+  text: string(),
 }).then(async ({ userId, tagId, text }) => {
 
   // Validate
@@ -63,7 +63,7 @@ export const updateTag = receive({
 });
 
 export const archiveTag = receive({
-  tagId: ZodTagId,
+  tagId: tagId(),
 }).then(async ({ tagId }) => {
 
   // Validate
@@ -85,7 +85,7 @@ export const archiveTag = receive({
 });
 
 export const createTagFromActiveNote = receive({
-  tagText: z.string(),
+  tagText: string(),
 }).then(async ({ userId, tagText }) => {
 
   // Validate
