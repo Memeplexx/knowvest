@@ -84,10 +84,18 @@ const fetchItem = async <T, ID extends number | undefined>(id: ID, fetcher: (id:
   return await fetcher(id);
 };
 
-export const receive = <T extends Partial<{ noteId: NoteId, tagId: TagId, flashCardId: FlashCardId, synonymId: SynonymId, groupId: GroupId, [key: string]: unknown }>>() => <R>(processor: (a: processorArgs<T>) => R) => {
+export const receive = <T extends Partial<{
+  noteId: NoteId,
+  tagId: TagId,
+  flashCardId: FlashCardId,
+  synonymId: SynonymId,
+  synonymGroupId: SynonymGroupId,
+  groupId: GroupId,
+  [key: string]: unknown
+}>>() => <R>(processor: (a: processorArgs<T>) => R) => {
   return async (arg: T) => {
     const session = await getServerSession(authOptions);
-    const user = await prisma.user.findFirst({ where: { email: session!.user!.email! } });
+    const user = (await prisma.user.findFirst({ where: { email: session!.user!.email! } })) || {} as User;
     const userId = user?.id as UserId;
     const result = (await processor({
       ...arg,
@@ -98,6 +106,7 @@ export const receive = <T extends Partial<{ noteId: NoteId, tagId: TagId, flashC
       flashCard: await fetchItem(arg.flashCardId, id => prisma.flashCard.findFirstOrThrow({ where: { id, note: { userId } } })),
       group: await fetchItem(arg.groupId, id => prisma.group.findFirstOrThrow({ where: { id, userId } })),
       synonym: await fetchItem(arg.synonymId, id => prisma.synonym.findFirst({ where: { id, tag: { some: { userId } } } })),
+      synonymGroup: await fetchItem(arg.synonymGroupId, id => prisma.synonymGroup.findFirst({ where: { id, group: { userId } } })),
     } as processorArgs<T>));
     return result as EntityToDto<typeof result>;
   }

@@ -65,10 +65,6 @@ export const archiveTag = receive<{
   tagId: TagId,
 }>()(async ({ tagId, userId }) => {
 
-  // Validate
-  const unArchivedTag = await prisma.tag.findFirst({ where: { id: tagId, isArchived: false } });
-  if (!unArchivedTag) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
-
   // Archive the tag
   const tag = await prisma.tag.update({ where: { id: tagId }, data: { isArchived: true } });
 
