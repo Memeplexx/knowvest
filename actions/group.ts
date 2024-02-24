@@ -14,9 +14,9 @@ export const createGroup = receive({
   if (groupWithSameName) { throw new ApiError('CONFLICT', 'A group with this name already exists.'); }
 
   // Logic
-  const createdGroup = await prisma.group.create({ data: { name, userId } });
-  const createdSynonymGroup = !synonymId ? null : await prisma.synonymGroup.create({ data: { groupId: createdGroup.id, synonymId } });
-  return { status: 'GROUP_CREATED', createdGroup, createdSynonymGroup } as const;
+  const group = await prisma.group.create({ data: { name, userId } });
+  const synonymGroup = !synonymId ? null : await prisma.synonymGroup.create({ data: { groupId: group.id, synonymId } });
+  return { status: 'GROUP_CREATED', group, synonymGroup } as const;
 });
 
 export const updateGroup = receive({
@@ -25,13 +25,15 @@ export const updateGroup = receive({
 }).then(async ({ userId, groupId, name }) => {
 
   // Validation
+  const groupToUpdate = await prisma.group.findFirst({ where: { id: groupId } });
+  if (!groupToUpdate) { throw new ApiError('NOT_FOUND', 'Group not found'); }
   if (!name.trim().length) { return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const; }
   const anotherGroupWithSameName = await prisma.group.findFirst({ where: { name, userId, id: { not: groupId } } });
   if (anotherGroupWithSameName) { return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const; }
 
   // logic
-  const updatedGroup = await prisma.group.update({ where: { id: groupId }, data: { name } });
-  return { status: 'GROUP_UPDATED', updatedGroup } as const;
+  const group = await prisma.group.update({ where: { id: groupId }, data: { name } });
+  return { status: 'GROUP_UPDATED', group } as const;
 });
 
 export const archiveGroup = receive({
@@ -43,10 +45,10 @@ export const archiveGroup = receive({
   if (!groupToArchive) { throw new ApiError('NOT_FOUND', 'Group not found'); }
 
   // Logic
-  const synonymGroupsArchived = await prisma.synonymGroup.findMany({ where: { groupId } });
+  const synonymGroups = await prisma.synonymGroup.findMany({ where: { groupId } });
   await prisma.synonymGroup.updateMany({ where: { groupId }, data: { isArchived: true } });
-  const groupArchived = await prisma.group.update({ where: { id: groupId }, data: { isArchived: true } });
-  return { status: 'ARCHIVED', groupArchived, synonymGroupsArchived } as const;
+  const group = await prisma.group.update({ where: { id: groupId }, data: { isArchived: true } });
+  return { status: 'ARCHIVED', group, synonymGroups } as const;
 });
 
 export const removeSynonymFromGroup = receive({
@@ -55,6 +57,8 @@ export const removeSynonymFromGroup = receive({
 }).then(async ({ userId, groupId, synonymId }) => {
 
   // Validation
+  const groupFromGroupId = await prisma.group.findFirst({ where: { id: groupId } });
+  if (!groupFromGroupId) { throw new ApiError('NOT_FOUND', 'Group not found'); }
   const synonymToArchive = await prisma.synonym.findFirst({ where: { id: synonymId, tag: { some: { userId } } } });
   if (!synonymToArchive) { throw new ApiError('NOT_FOUND', 'Synonym not found'); }
 

@@ -228,7 +228,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickConfirmArchiveGroup: async () => {
       const response = await archiveGroup({ groupId: inputs.groupId! });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-      await writeToStoreAndDb(store, { synonymGroups: response.synonymGroupsArchived, groups: response.groupArchived });
+      await writeToStoreAndDb(store, { synonymGroups: response.synonymGroups, groups: response.group });
       notify.success('Group archived');
     },
     onCancelConfirmation: () => {

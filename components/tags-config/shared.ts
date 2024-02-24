@@ -58,7 +58,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.name);
     }
     store.tagsConfig.autocompleteText.$set('');
-    await writeToStoreAndDb(store, { groups: apiResponse.createdGroup, synonymGroups: apiResponse.createdSynonymGroup });
+    await writeToStoreAndDb(store, { groups: apiResponse.group, synonymGroups: apiResponse.synonymGroup });
     notify.success('Group created');
     blurAutocompleteInput();
   }
@@ -72,7 +72,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.name)
       case 'CONFLICT': return notify.error(apiResponse.message)
     }
-    await writeToStoreAndDb(store, { groups: apiResponse.updatedGroup });
+    await writeToStoreAndDb(store, { groups: apiResponse.group });
     notify.success('Group updated');
     blurAutocompleteInput();
   }
