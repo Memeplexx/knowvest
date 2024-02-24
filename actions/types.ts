@@ -12,48 +12,44 @@ export type FlashCardId = Brand<number, 'FlashCardId'>;
 export type NoteTagId = Brand<number, 'NoteTagId'>;
 export type SynonymGroupId = Brand<number, 'SynonymGroupId'>;
 
-type BrandedDto<T, P extends Partial<T>> = {
-  [key in keyof T]: P[key] extends Brand<number, string> ? P[key] : T[key];
-};
 
-export type NoteDTO = BrandedDto<Note, {
-  id: NoteId,
-  userId: UserId,
-}>;
-
-export type TagDTO = BrandedDto<Tag, {
-  id: TagId;
-  synonymId: SynonymId;
+export interface NoteDTO extends Note {
+  id: NoteId;
   userId: UserId;
-}>;
+}
 
-export type NoteTagDTO = BrandedDto<NoteTag, {
+export interface TagDTO extends Tag {
+  id: TagId;
+  userId: UserId;
+  synonymId: SynonymId;
+}
+
+export interface NoteTagDTO extends NoteTag {
   id: NoteTagId;
   noteId: NoteId;
   tagId: TagId;
-}>
+}
 
-export type GroupDTO = BrandedDto<Group, {
+export interface GroupDTO extends Group {
   id: GroupId;
   userId: UserId;
-}>
+}
 
-export type SynonymGroupDTO = BrandedDto<SynonymGroup, {
+export interface SynonymGroupDTO extends SynonymGroup {
   id: SynonymGroupId;
   groupId: GroupId;
   synonymId: SynonymId;
-}>
+}
 
-export type SynonymDTO = BrandedDto<Synonym, {
+export interface SynonymDTO extends Synonym {
   id: SynonymId;
-}>
+}
 
-export type UserDTO = BrandedDto<User, {
+export interface UserDTO extends User {
   id: UserId;
-}>
+}
 
-export type FlashCardDTO = BrandedDto<FlashCard, {
+export interface FlashCardDTO extends FlashCard {
   id: FlashCardId;
   noteId: NoteId;
-  note?: NoteDTO;
-}>
+}
