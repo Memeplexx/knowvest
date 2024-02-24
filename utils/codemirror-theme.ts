@@ -121,7 +121,7 @@ export const oneDarkTheme = EditorView.theme({
     color: '#FFF!important',
   },
   ".cm-highlight-2": {
-    backgroundColor: "#00000059",
+    backgroundColor: "#00b1b159",
     borderRadius: "10px",
     padding: '1px 6px',
     margin: '-1px -6px',

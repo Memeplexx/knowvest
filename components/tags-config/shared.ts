@@ -83,7 +83,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
       case 'TAG_UNCHANGED': return notify.info('Tag unchanged')
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text)
     }
-    const activeTagIdsToBeDeselected = apiResponse.noteTags.filter(nt => nt.isArchived).map(nt => nt.tagId);
+    const activeTagIdsToBeDeselected = apiResponse.noteTags.map(nt => nt.tagId);
     const activeSynonymIdsToBeDeselected = store.$state.tags.filter(t => activeTagIdsToBeDeselected.includes(t.id)).map(t => t.synonymId);
     const activeTagIdsToBeSelected = apiResponse.noteTags.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
     const activeSynonymIdsToBeSelected = store.$state.tags.filter(t => activeTagIdsToBeSelected.includes(t.id)).map(t => t.synonymId);
