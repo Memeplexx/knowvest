@@ -90,10 +90,8 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
     store.writingNoteTags.$set(true);
     const apiResponse = await updateNoteTags({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
-    await writeToStoreAndDb(store, { noteTags: apiResponse.noteTags });
-    const tagIds = apiResponse.noteTags.map(nt => nt.tagId);
-    const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
-    store.synonymIds.$setUnique(synonymIds);
+    await writeToStoreAndDb(store, apiResponse);
+    store.synonymIds.$setUnique(store.tags.$filter.id.$in(apiResponse.noteTags.map(nt => nt.tagId)).synonymId);
     store.writingNoteTags.$set(false);
   });
 }

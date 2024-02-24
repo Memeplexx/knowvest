@@ -4,12 +4,11 @@ import { AppState, indexedDbState } from "./store-utils";
 type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]: null | typeof indexedDbState[tableName] | typeof indexedDbState[tableName][0] }>;
 
 const openDatabase = () => indexedDB.open('knowvest', 1);
-const keysTyped = <O extends object>(obj: O) => Object.keys(obj) as Array<keyof O>;
 const eventTarget = (event: Event) => event.target as IDBOpenDBRequest;
 
 export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexedDBArgs) => {
   return new Promise<void>((resolve, reject) => {
-    keysTyped(records)
+    Object.keysTyped(records)
       .filter(tableName => !!indexedDbState[tableName])
       .forEach(function writeToDB(tableName, index, array) {
         const tableRecord = records[tableName]!;
@@ -95,7 +94,7 @@ export const initializeDb = () => {
     request.onupgradeneeded = (event) => {
       console.log('indexedDB: onupgradeneeded', event);
       const db = eventTarget(event).result;
-      keysTyped(indexedDbState)
+      Object.keysTyped(indexedDbState)
         .filter(tableName => !db.objectStoreNames.contains(tableName))
         .forEach(tableName => {
           console.log('Creating table:', tableName);
