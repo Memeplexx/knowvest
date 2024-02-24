@@ -1,13 +1,13 @@
 "use server";
-import { z } from 'zod';
+import { date, string } from 'zod';
 import { prisma, receive } from './_common';
 
 
 export const initialize = receive({
-  name: z.string(),
-  email: z.string().email(),
-  image: z.string().url().nullish(),
-  after: z.date().nullable(),
+  name: string(),
+  email: string().email(),
+  image: string().url().nullish(),
+  after: date().nullable(),
 }).then(async ({ after, email, name, image }) => {
 
   const userByEmail = await prisma.user.findFirst({ where: { email } });

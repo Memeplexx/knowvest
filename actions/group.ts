@@ -1,12 +1,11 @@
 "use server";
-import { z } from 'zod';
-
-import { ApiError, receive, listNotesWithTagText, prisma, ZodGroupId, ZodSynonymId } from './_common';
+import { string } from 'zod';
+import { ApiError, receive, listNotesWithTagText, prisma, groupId, synonymId } from './_common';
 
 
 export const createGroup = receive({
-  name: z.string(),
-  synonymId: ZodSynonymId.optional(),
+  name: string(),
+  synonymId: synonymId().optional(),
 }).then(async ({ userId, name, synonymId }) => {
 
   // Validation
@@ -21,8 +20,8 @@ export const createGroup = receive({
 });
 
 export const updateGroup = receive({
-  groupId: ZodGroupId,
-  name: z.string(),
+  groupId: groupId(),
+  name: string(),
 }).then(async ({ userId, groupId, name }) => {
 
   // Validation
@@ -36,7 +35,7 @@ export const updateGroup = receive({
 });
 
 export const archiveGroup = receive({
-  groupId: ZodGroupId,
+  groupId: groupId(),
 }).then(async ({ groupId }) => {
 
   // Validation
@@ -51,8 +50,8 @@ export const archiveGroup = receive({
 });
 
 export const removeSynonymFromGroup = receive({
-  synonymId: ZodSynonymId,
-  groupId: ZodGroupId,
+  synonymId: synonymId(),
+  groupId: groupId(),
 }).then(async ({ userId, groupId, synonymId }) => {
 
   // Validation
@@ -72,8 +71,8 @@ export const removeSynonymFromGroup = receive({
 });
 
 export const addSynonymToGroup = receive({
-  synonymId: ZodSynonymId,
-  groupId: ZodGroupId,
+  synonymId: synonymId(),
+  groupId: groupId(),
 }).then(async ({ userId, groupId, synonymId }) => {
 
   // Validation
@@ -96,9 +95,9 @@ export const addSynonymToGroup = receive({
 });
 
 export const createTagForGroup = receive({
-  text: z.string(),
-  groupId: ZodGroupId,
-  synonymId: ZodSynonymId,
+  text: string(),
+  groupId: groupId(),
+  synonymId: synonymId(),
 }).then(async ({ groupId, synonymId, text, userId }) => {
 
   // Validation

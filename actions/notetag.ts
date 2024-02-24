@@ -1,14 +1,12 @@
 "use server";
-import { z } from 'zod';
-
-import { receive, prisma, ApiError, ZodNoteId, ZodTagId } from './_common';
-
+import { array } from 'zod';
+import { receive, prisma, ApiError, noteId, tagId } from './_common';
 
 
 export const updateNoteTags = receive({
-  noteId: ZodNoteId,
-  addTagIds: z.array(ZodTagId),
-  removeTagIds: z.array(ZodTagId),
+  noteId: noteId(),
+  addTagIds: array(tagId()),
+  removeTagIds: array(tagId()),
 }).then(async ({ userId, addTagIds, noteId, removeTagIds }) => {
 
   // Validation

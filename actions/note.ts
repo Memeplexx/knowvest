@@ -1,7 +1,7 @@
 "use server";
 import { NoteDTO, NoteTagDTO } from "@/actions/types";
-import { ApiError, receive, listTagsWithTagText, prisma, ZodNoteId } from "./_common";
-import { z } from "zod";
+import { ApiError, receive, listTagsWithTagText, prisma, noteId } from "./_common";
+import { number, string } from "zod";
 
 
 export const createNote = receive({
@@ -16,7 +16,7 @@ export const createNote = receive({
 })
 
 export const archiveNote = receive({
-  noteId: ZodNoteId,
+  noteId: noteId(),
 }).then(async ({ noteId, userId }) => {
 
   // Validate
@@ -37,7 +37,7 @@ export const archiveNote = receive({
 })
 
 export const duplicateNote = receive({
-  noteId: ZodNoteId
+  noteId: noteId(),
 }).then(async ({ noteId, userId }) => {
 
   // Logic
@@ -59,9 +59,9 @@ export const duplicateNote = receive({
 })
 
 export const splitNote = receive({
-  splitFromNoteId: ZodNoteId,
-  from: z.number(),
-  to: z.number(),
+  splitFromNoteId: noteId(),
+  from: number(),
+  to: number(),
 }).then(async ({ from, splitFromNoteId, to, userId }) => {
 
   const note = await prisma.note.findFirst({ where: { id: splitFromNoteId } });
@@ -95,8 +95,8 @@ export const splitNote = receive({
 });
 
 export const updateNote = receive({
-  noteId: ZodNoteId,
-  text: z.string(),
+  noteId: noteId(),
+  text: string(),
 }).then(async ({ userId, noteId, text }) => {
 
   // Validation
@@ -112,7 +112,7 @@ export const updateNote = receive({
 });
 
 export const viewNote = receive({
-  noteId: ZodNoteId,
+  noteId: noteId(),
 }).then(async ({ userId, noteId }) => {
 
   // Validate

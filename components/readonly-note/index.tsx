@@ -7,10 +7,10 @@ export default function ReadonlyNote(
   props: Props
 ) {
   const inputs = useInputs(props);
-  const { showIf, synonymIds, ...remainingProps } = props;
+  const htmlProps = Object.keysTyped(props).filter(key => key !== 'note' && key !== 'synonymIds');
   return (
     <Wrapper
-      {...remainingProps}
+      {...htmlProps}
       ref={inputs.editorRef}
     />
   );

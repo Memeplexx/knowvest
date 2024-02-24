@@ -1,7 +1,7 @@
 "use server";
 import { NoteTag, Prisma } from "@prisma/client";
 import { string } from "zod";
-import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, ZodTagId, tagId } from "./_common";
+import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, tagId } from "./_common";
 
 export const createTag = receive({
   text: string(),

@@ -1,11 +1,11 @@
 "use server";
-import { receive, prisma, ApiError, ZodFlashCardId, ZodNoteId } from "./_common";
-import { z } from "zod";
+import { string } from "zod";
+import { receive, prisma, ApiError, noteId, flashCardId } from "./_common";
 import add from "date-fns/add";
 
 
 export const createFlashCard = receive({
-  noteId: ZodNoteId,
+  noteId: noteId(),
 }).then(async ({ userId, noteId }) => {
 
   // Validation
@@ -18,8 +18,8 @@ export const createFlashCard = receive({
 });
 
 export const updateFlashCardText = receive({
-  id: ZodFlashCardId,
-  text: z.string(),
+  id: flashCardId(),
+  text: string(),
 }).then(async ({ userId, id, text }) => {
 
   // Validation
@@ -32,7 +32,7 @@ export const updateFlashCardText = receive({
 });
 
 export const archiveFlashCard = receive({
-  id: ZodFlashCardId,
+  id: flashCardId(),
 }).then(async ({ userId, id }) => {
 
   // Validation
@@ -45,7 +45,7 @@ export const archiveFlashCard = receive({
 });
 
 export const answerFlashCardQuestionCorrectly = receive({
-  id: ZodFlashCardId,
+  id: flashCardId(),
 }).then(async ({ userId, id }) => {
 
   // Validation
@@ -60,7 +60,7 @@ export const answerFlashCardQuestionCorrectly = receive({
 });
 
 export const answerFlashCardQuestionIncorrectly = receive({
-  id: ZodFlashCardId,
+  id: flashCardId(),
 }).then(async ({ userId, id }) => {
 
   // Validation

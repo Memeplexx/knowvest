@@ -1,11 +1,10 @@
 "use server";
-import { z } from 'zod';
-
-import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, ZodSynonymId, ZodTagId } from './_common';
+import { string } from 'zod';
+import { ApiError, receive, listNotesWithTagText, prisma, pruneOrphanedSynonymsAndSynonymGroups, synonymId, tagId } from './_common';
 
 
 export const removeTagFromItsCurrentSynonym = receive({
-  tagId: ZodTagId,
+  tagId: tagId(),
 }).then(async ({ userId, tagId }) => {
 
   // Validation
@@ -24,8 +23,8 @@ export const removeTagFromItsCurrentSynonym = receive({
 });
 
 export const addTagToSynonym = receive({
-  tagId: ZodTagId,
-  synonymId: ZodSynonymId,
+  tagId: tagId(),
+  synonymId: synonymId(),
 }).then(async ({ userId, synonymId, tagId }) => {
 
   // Validate
@@ -50,8 +49,8 @@ export const addTagToSynonym = receive({
 });
 
 export const createTagToSynonym = receive({
-  text: z.string(),
-  synonymId: ZodSynonymId.nullable(),
+  text: string(),
+  synonymId: synonymId().nullable(),
 }).then(async ({ userId, synonymId, text }) => {
 
   // Validate
