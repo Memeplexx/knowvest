@@ -1,8 +1,7 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { EntityToDto, FlashCardId, GroupId, NoteDTO, NoteId, SynonymDTO, SynonymId, TagDTO, TagId, UserId } from "@/actions/types";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { FlashCardDTO, FlashCardId, GroupDTO, GroupId, NoteDTO, NoteId, NoteTagDTO, NoteTagId, SynonymDTO, SynonymGroupDTO, SynonymGroupId, SynonymId, TagDTO, TagId, UserId } from "@/actions/types";
+import { FlashCard, Group, Note, NoteTag, Prisma, PrismaClient, Synonym, SynonymGroup, Tag, User } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { ZodNumberDef, ZodRawShape, ZodType, z } from "zod";
 
 export const prisma = new PrismaClient({
   // log: ['query', 'info', 'warn', 'error'],
@@ -55,23 +54,52 @@ export const listTagsWithTagText = async ({ userId, noteText }: { userId: UserId
   `);
 }
 
-export const receive = <T extends ZodRawShape>(spec: T) => {
-  return {
-    then: <R>(processor: (a: z.infer<z.ZodObject<typeof spec>> & { userId: UserId }) => Promise<R>) => {
-      return async (arg: z.infer<z.ZodObject<typeof spec>>) => {
-        const parseResponse = z.object(spec).safeParse(arg);
-        if (!parseResponse.success) {
-          throw new ApiError('BAD_REQUEST', 'Invalid request');
-        } else {
-          const session = await getServerSession(authOptions);
-          const userId = (await prisma.user.findFirstOrThrow({ where: { email: session!.user!.email! } })).id as UserId;
-          return processor({
-            ...parseResponse.data,
-            userId,
-          }) as EntityToDto<R>;
-        }
-      }
-    }
+
+type Arg<T, Id, Name extends string, Entity> = { [P in keyof T as T[P] extends Id ? Name : never]: Entity }
+type processorArgs<T> = T
+  & Arg<T, NoteId, 'note', Note>
+  & Arg<T, TagId, 'tag', Tag>
+  & Arg<T, FlashCardId, 'flashCard', FlashCard>
+  & Arg<T, SynonymId, 'synonym', Synonym>
+  & Arg<T, SynonymGroupId, 'synonymGroup', SynonymGroup>
+  & Arg<T, NoteTagId, 'noteTag', NoteTag>
+  & Arg<T, GroupId, 'group', Group>
+  & { userId: UserId, user: User }
+  ;
+
+export type EntityToDto<T>
+  = T extends Note ? NoteDTO
+  : T extends FlashCard ? FlashCardDTO
+  : T extends Tag ? TagDTO
+  : T extends NoteTag ? NoteTagDTO
+  : T extends Group ? GroupDTO
+  : T extends SynonymGroup ? SynonymGroupDTO
+  : T extends Synonym ? SynonymDTO
+  : T extends Array<infer E> ? Array<EntityToDto<E>>
+  : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
+  : T
+
+const fetchItem = async <T, ID extends number | undefined>(id: ID, fetcher: (id: ID) => Promise<T | null>) => {
+  if (!id) { return null as T; }
+  return await fetcher(id);
+};
+
+export const receive = <T extends Partial<{ noteId: NoteId, tagId: TagId, flashCardId: FlashCardId, synonymId: SynonymId, groupId: GroupId, [key: string]: unknown }>>() => <R>(processor: (a: processorArgs<T>) => R) => {
+  return async (arg: T) => {
+    const session = await getServerSession(authOptions);
+    const user = await prisma.user.findFirst({ where: { email: session!.user!.email! } });
+    const userId = user?.id as UserId;
+    const result = (await processor({
+      ...arg,
+      userId,
+      user,
+      note: await fetchItem(arg.noteId, id => prisma.note.findFirstOrThrow({ where: { id, userId } })),
+      tag: await fetchItem(arg.tagId, id => prisma.tag.findFirstOrThrow({ where: { id, userId } })),
+      flashCard: await fetchItem(arg.flashCardId, id => prisma.flashCard.findFirstOrThrow({ where: { id, note: { userId } } })),
+      group: await fetchItem(arg.groupId, id => prisma.group.findFirstOrThrow({ where: { id, userId } })),
+      synonym: await fetchItem(arg.synonymId, id => prisma.synonym.findFirst({ where: { id, tag: { some: { userId } } } })),
+    } as processorArgs<T>));
+    return result as EntityToDto<typeof result>;
   }
 }
 
@@ -81,10 +109,3 @@ export class ApiError extends Error {
     Object.setPrototypeOf(this, ApiError.prototype);
   }
 }
-
-export const noteId = () => z.number() as unknown as ZodType<NoteId, ZodNumberDef>;
-export const tagId = () => z.number() as unknown as ZodType<TagId, ZodNumberDef>;
-export const groupId = () => z.number() as unknown as ZodType<GroupId, ZodNumberDef>;
-export const synonymId = () => z.number() as unknown as ZodType<SynonymId, ZodNumberDef>;
-export const userId = () => z.number() as unknown as ZodType<UserId, ZodNumberDef>;
-export const flashCardId = () => z.number() as unknown as ZodType<FlashCardId, ZodNumberDef>;

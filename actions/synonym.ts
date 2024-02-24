@@ -1,15 +1,11 @@
 "use server";
-import { string } from 'zod';
-import { ApiError, receive, listNotesWithTagText, prisma, archiveAllEntitiesAssociatedWithAnyArchivedTags, synonymId, tagId } from './_common';
+import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listNotesWithTagText, prisma, receive } from './_common';
+import { SynonymId, TagId } from './types';
 
 
-export const removeTagFromItsCurrentSynonym = receive({
-  tagId: tagId(),
-}).then(async ({ userId, tagId }) => {
-
-  // Validation
-  const tagFound = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-  if (!tagFound) { throw new ApiError('NOT_FOUND', 'Tag could not be found'); }
+export const removeTagFromItsCurrentSynonym = receive<{
+  tagId: TagId,
+}>()(async ({ userId, tagId }) => {
 
   // Create a new synonym and assign the tag to it
   const synonym = await prisma.synonym.create({ data: {} });
@@ -22,19 +18,13 @@ export const removeTagFromItsCurrentSynonym = receive({
   return { status: 'TAG_MOVED_TO_NEW_SYNONYM', tag, ...archivedEntities } as const;
 });
 
-export const addTagToSynonym = receive({
-  tagId: tagId(),
-  synonymId: synonymId(),
-}).then(async ({ userId, synonymId, tagId }) => {
-
-  // Validate
-  const tagToUpdate = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-  if (!tagToUpdate) { throw new ApiError('NOT_FOUND', 'Tag could not be found'); }
-  const synonym = await prisma.synonym.findFirst({ where: { id: synonymId, tag: { some: { userId } } } });
-  if (!synonym) { throw new ApiError('NOT_FOUND', 'Synonym could not be found'); }
+export const addTagToSynonym = receive<{
+  tagId: TagId,
+  synonymId: SynonymId,
+}>()(async ({ userId, synonymId, tag }) => {
 
   // Find all tags that are currently associated with the same synonym as the tag to be updated
-  const allTagsAssociatedWithOldSynonym = await prisma.tag.findMany({ where: { synonymId: tagToUpdate.synonymId } });
+  const allTagsAssociatedWithOldSynonym = await prisma.tag.findMany({ where: { synonymId: tag.synonymId } });
   const allTagIdsAssociatedWithOldSynonym = allTagsAssociatedWithOldSynonym.map(tag => tag.id);
 
   // Update the above tags to be associated with the new synonym
@@ -48,10 +38,10 @@ export const addTagToSynonym = receive({
   return { status: 'TAGS_UPDATED', tags, ...archivedEntities } as const;
 });
 
-export const createTagToSynonym = receive({
-  text: string(),
-  synonymId: synonymId().nullable(),
-}).then(async ({ userId, synonymId, text }) => {
+export const createTagToSynonym = receive<{
+  text: string,
+  synonymId?: SynonymId,
+}>()(async ({ userId, synonymId, text }) => {
 
   // Validate
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }

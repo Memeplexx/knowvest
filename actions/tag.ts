@@ -1,12 +1,11 @@
 "use server";
 import { NoteTag, Prisma } from "@prisma/client";
-import { string } from "zod";
-import { ApiError, receive, listNotesWithTagText, prisma, archiveAllEntitiesAssociatedWithAnyArchivedTags, tagId } from "./_common";
-import { NoteTagDTO } from "./types";
+import { ApiError, archiveAllEntitiesAssociatedWithAnyArchivedTags, listNotesWithTagText, prisma, receive } from "./_common";
+import { NoteTagDTO, TagId } from "./types";
 
-export const createTag = receive({
-  text: string(),
-}).then(async ({ userId, text }) => {
+export const createTag = receive<{
+  text: string,
+}>()(async ({ userId, text }) => {
 
   // Validate
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
@@ -28,10 +27,10 @@ export const createTag = receive({
   return { status: 'TAG_CREATED', tag, noteTags } as const;
 });
 
-export const updateTag = receive({
-  tagId: tagId(),
-  text: string(),
-}).then(async ({ userId, tagId, text }) => {
+export const updateTag = receive<{
+  tagId: TagId,
+  text: string,
+}>()(async ({ userId, tagId, text }) => {
 
   // Validate
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
@@ -62,9 +61,9 @@ export const updateTag = receive({
   return { status: 'TAG_UPDATED', tag, noteTags: [...newNoteTags, ...archivedNoteTags] as NoteTagDTO[] } as const;
 });
 
-export const archiveTag = receive({
-  tagId: tagId(),
-}).then(async ({ tagId, userId }) => {
+export const archiveTag = receive<{
+  tagId: TagId,
+}>()(async ({ tagId, userId }) => {
 
   // Validate
   const unArchivedTag = await prisma.tag.findFirst({ where: { id: tagId, isArchived: false } });
@@ -80,9 +79,9 @@ export const archiveTag = receive({
   return { status: 'TAG_ARCHIVED', tag, ...archivedEntities } as const;
 });
 
-export const createTagFromActiveNote = receive({
-  tagText: string(),
-}).then(async ({ userId, tagText }) => {
+export const createTagFromActiveNote = receive<{
+  tagText: string,
+}>()(async ({ userId, tagText }) => {
 
   // Validate
   if (!tagText.trim().length) { return { status: 'BAD_REQUEST', fields: { tagText: 'Tag name cannot be empty' } } as const; }

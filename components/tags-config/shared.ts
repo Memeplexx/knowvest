@@ -10,7 +10,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const completeCreateTagForSynonym = async () => {
     const apiResponse = await createTagToSynonym({
       text: inputs.autocompleteText.trim(),
-      synonymId: inputs.synonymId
+      synonymId: inputs.synonymId === null ? undefined : inputs.synonymId,
     });
     switch (apiResponse.status) {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text);

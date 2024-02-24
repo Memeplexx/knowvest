@@ -1,17 +1,15 @@
 "use server";
-import { array } from 'zod';
-import { receive, prisma, ApiError, noteId, tagId } from './_common';
+import { ApiError, prisma, receive } from './_common';
+import { NoteId, TagId } from './types';
 
 
-export const updateNoteTags = receive({
-  noteId: noteId(),
-  addTagIds: array(tagId()),
-  removeTagIds: array(tagId()),
-}).then(async ({ userId, addTagIds, noteId, removeTagIds }) => {
+export const updateNoteTags = receive<{
+  noteId: NoteId,
+  addTagIds: TagId[],
+  removeTagIds: TagId[],
+}>()(async ({ userId, addTagIds, noteId, removeTagIds }) => {
 
   // Validation
-  const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!note) { throw new ApiError('NOT_FOUND', 'Note not found'); }
   await [...addTagIds, ...removeTagIds].map(async tagId => {
     const tag = await prisma.tag.findFirst({ where: { id: tagId, userId } });
     if (!tag) { throw new ApiError('NOT_FOUND', 'Tag not found'); }

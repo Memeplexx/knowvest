@@ -1,11 +1,10 @@
 "use server";
-import { NoteDTO, NoteTagDTO } from "@/actions/types";
-import { ApiError, receive, listTagsWithTagText, prisma, noteId } from "./_common";
-import { number, string } from "zod";
+import { NoteDTO, NoteId, NoteTagDTO } from "@/actions/types";
+import { ApiError, listTagsWithTagText, prisma, receive } from "./_common";
 
 
-export const createNote = receive({
-}).then(async ({ userId }) => {
+export const createNote = receive(
+)(async ({ userId }) => {
 
   // Create a new note
   const now = new Date();
@@ -15,13 +14,9 @@ export const createNote = receive({
   return { status: 'NOTE_CREATED', note } as const;
 })
 
-export const archiveNote = receive({
-  noteId: noteId(),
-}).then(async ({ noteId, userId }) => {
-
-  // Validate
-  const noteToArchive = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!noteToArchive) { throw new ApiError('NOT_FOUND', 'Note not found'); }
+export const archiveNote = receive<{
+  noteId: NoteId
+}>()(async ({ noteId }) => {
 
   // Archive all note tags associated with the note that is being archived
   const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId } })
@@ -36,13 +31,9 @@ export const archiveNote = receive({
   return { status: 'NOTE_ARCHIVED', noteArchived, archivedNoteTags } as const;
 })
 
-export const duplicateNote = receive({
-  noteId: noteId(),
-}).then(async ({ noteId, userId }) => {
-
-  // Logic
-  const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!note) { throw new ApiError('NOT_FOUND', 'Note not found'); }
+export const duplicateNote = receive<{
+  noteId: NoteId,
+}>()(async ({ noteId, userId, note }) => {
 
   // Create a new note with the same text as the note being duplicated
   const now = new Date();
@@ -58,14 +49,11 @@ export const duplicateNote = receive({
   return { status: 'NOTE_DUPLICATED', noteCreated, noteTagsCreated } as const;
 })
 
-export const splitNote = receive({
-  noteId: noteId(),
-  from: number(),
-  to: number(),
-}).then(async ({ from, noteId, to, userId }) => {
-
-  const note = await prisma.note.findFirst({ where: { id: noteId } });
-  if (!note) { throw new ApiError('NOT_FOUND', 'Could not find note'); }
+export const splitNote = receive<{
+  noteId: NoteId,
+  from: number,
+  to: number,
+}>()(async ({ from, noteId, to, userId, note }) => {
 
   // Create new note with the split text
   const now = new Date();
@@ -94,14 +82,10 @@ export const splitNote = receive({
   return { status: 'NOTE_SPLIT', notes: [noteCreated, noteUpdated] as NoteDTO[], noteTags: [...newNoteTags, ...archivedNoteTags] as NoteTagDTO[] } as const;
 });
 
-export const updateNote = receive({
-  noteId: noteId(),
-  text: string(),
-}).then(async ({ userId, noteId, text }) => {
-
-  // Validation
-  const note = await prisma.note.findFirst({ where: { id: noteId, userId } });
-  if (!note) { throw new ApiError('NOT_FOUND', 'Note not found'); }
+export const updateNote = receive<{
+  noteId: NoteId,
+  text: string,
+}>()(async ({ noteId, text }) => {
 
   // Update note
   const now = new Date();
@@ -111,9 +95,9 @@ export const updateNote = receive({
   return { status: 'NOTE_UPDATED', updatedNote } as const;
 });
 
-export const viewNote = receive({
-  noteId: noteId(),
-}).then(async ({ userId, noteId }) => {
+export const viewNote = receive<{
+  noteId: NoteId
+}>()(async ({ userId, noteId }) => {
 
   // Validate
   const noteToView = await prisma.note.findFirst({ where: { id: noteId, userId } });
