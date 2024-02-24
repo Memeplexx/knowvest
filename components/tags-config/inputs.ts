@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ForwardedRef, useEffect } from 'react';
+import { useMemo, useRef, useState, type ForwardedRef } from 'react';
 
 import { decide } from '@/utils/logic-utils';
 import { useStore } from '@/utils/store-utils';

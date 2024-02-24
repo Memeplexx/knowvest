@@ -19,8 +19,8 @@ export const updateFlashCardText = receive<{
 }>()(async ({ flashCardId, text }) => {
 
   // Logic
-  const flashCardUpdated = await prisma.flashCard.update({ where: { id: flashCardId }, data: { text } });
-  return { status: 'FLASH CARD UPDATED', flashCard: flashCardUpdated };
+  const flashCard = await prisma.flashCard.update({ where: { id: flashCardId }, data: { text } });
+  return { status: 'FLASH CARD UPDATED', flashCard };
 });
 
 export const archiveFlashCard = receive<{
@@ -28,8 +28,8 @@ export const archiveFlashCard = receive<{
 }>()(async ({ flashCardId }) => {
 
   // Logic
-  const flashCardUpdated = await prisma.flashCard.update({ where: { id: flashCardId }, data: { isArchived: true } });
-  return { status: 'FLASH CARD ARCHIVED', flashCard: flashCardUpdated };
+  const flashCard = await prisma.flashCard.update({ where: { id: flashCardId }, data: { isArchived: true } });
+  return { status: 'FLASH CARD ARCHIVED', flashCard };
 });
 
 export const answerFlashCardQuestionCorrectly = receive<{
