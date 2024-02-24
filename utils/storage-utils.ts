@@ -18,13 +18,13 @@ export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexe
           return resolve();
         }
 
-        // update records
+        // update records in store
         const toUpdate = tableRecords.filter(r => !(r as typeof r & { isArchived: boolean }).isArchived);
         !!toUpdate.length && (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$with(toUpdate);
 
-        // delete records
-        const toDelete = tableRecords.filter(r => (r as typeof r & { isArchived: boolean }).isArchived);
-        !!toDelete.length && store[tableName].$filter.id.$in(toDelete.map(r => r.id) as any).$delete();
+        // delete records from store
+        const toDelete = tableRecords.filter(r => (r as typeof r & { isArchived: boolean }).isArchived).map(r => r.id);
+        !!toDelete.length && store[tableName].$filter.id.$in(toDelete as any).$delete();
 
         const request = openDatabase();
         request.onsuccess = event => {

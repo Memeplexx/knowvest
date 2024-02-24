@@ -22,13 +22,13 @@ export const archiveNote = receive<{
   const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId } })
   const idsOfNoteTagsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
   await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsToBeArchived } }, data: { isArchived: true } });
-  const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: idsOfNoteTagsToBeArchived } } }) as NoteTagDTO[];
+  const noteTags = await prisma.noteTag.findMany({ where: { id: { in: idsOfNoteTagsToBeArchived } } }) as NoteTagDTO[];
 
   // Archive note
-  const noteArchived = await prisma.note.update({ where: { id: noteId }, data: { isArchived: true } }) as NoteDTO;
+  const note = await prisma.note.update({ where: { id: noteId }, data: { isArchived: true } }) as NoteDTO;
 
   // Populate and return response
-  return { status: 'NOTE_ARCHIVED', noteArchived, archivedNoteTags } as const;
+  return { status: 'NOTE_ARCHIVED', note, noteTags } as const;
 })
 
 export const duplicateNote = receive<{
@@ -40,13 +40,12 @@ export const duplicateNote = receive<{
   const noteCreated = await prisma.note.create({ data: { userId, text: note.text, dateUpdated: now, dateViewed: now } }) as NoteDTO;
 
   // Create new note tags with the same tag ids as the note being duplicated
-  const noteTags = await prisma.noteTag.findMany({ where: { noteId } });
-  const noteTagTagIds = noteTags.map(nt => nt.tagId);
+  const noteTagTagIds = (await prisma.noteTag.findMany({ where: { noteId } })).map(nt => nt.tagId);
   await prisma.noteTag.createMany({ data: noteTagTagIds.map(tagId => ({ noteId: noteCreated.id, tagId })) });
 
   // Populate and return response
-  const noteTagsCreated = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } } }) as NoteTagDTO[];
-  return { status: 'NOTE_DUPLICATED', noteCreated, noteTagsCreated } as const;
+  const noteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } } }) as NoteTagDTO[];
+  return { status: 'NOTE_DUPLICATED', note: noteCreated, noteTags } as const;
 })
 
 export const splitNote = receive<{
@@ -89,10 +88,10 @@ export const updateNote = receive<{
 
   // Update note
   const now = new Date();
-  const updatedNote = await prisma.note.update({ where: { id: noteId }, data: { text, dateUpdated: now, dateViewed: now } });
+  const note = await prisma.note.update({ where: { id: noteId }, data: { text, dateUpdated: now, dateViewed: now } });
 
   // Populate and return response
-  return { status: 'NOTE_UPDATED', updatedNote } as const;
+  return { status: 'NOTE_UPDATED', note } as const;
 });
 
 export const viewNote = receive<{
