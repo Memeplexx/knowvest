@@ -48,7 +48,7 @@ export const listUnArchivedNoteIdsWithTagText = async ({ userId, tagText }: { us
 
 export const listUnArchivedTagIdsWithTagText = async ({ userId, noteText }: { userId: UserId, noteText: string }) => {
   return (await prisma.$queryRaw<TagDTO[]>(Prisma.sql`
-    SELECT t.*
+    SELECT t.id
       FROM tag t
       WHERE t.is_archived IS FALSE AND t.user_id = ${userId} AND ${noteText} ~* CONCAT('\\m', t.text, '\\M');
   `)).map(t => t.id);

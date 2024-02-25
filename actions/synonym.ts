@@ -24,8 +24,7 @@ export const addTagToSynonym = receive<{
 }>()(async ({ userId, synonymId, tag }) => {
 
   // Find all tags that are currently associated with the same synonym as the tag to be updated
-  const allTagsAssociatedWithOldSynonym = await prisma.tag.findMany({ where: { synonymId: tag.synonymId } });
-  const allTagIdsAssociatedWithOldSynonym = allTagsAssociatedWithOldSynonym.map(tag => tag.id);
+  const allTagIdsAssociatedWithOldSynonym = (await prisma.tag.findMany({ where: { synonymId: tag.synonymId }, select: { id: true } })).map(t => t.id as TagId);
 
   // Update the above tags to be associated with the new synonym
   await prisma.tag.updateMany({ where: { id: { in: allTagIdsAssociatedWithOldSynonym } }, data: { synonymId } });

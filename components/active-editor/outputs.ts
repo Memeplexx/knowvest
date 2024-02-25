@@ -24,8 +24,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onClickFilterNotesFromSelection: () => {
       const { from, to } = codeMirror!.state.selection.ranges[0];
       const selection = codeMirror!.state.doc.sliceString(from, to);
-      const selectionToLowerCase = selection.toLowerCase();
-      store.synonymIds.$setUnique(store.tags.$filter.text.$isContainedInIgnoreCase(selectionToLowerCase).synonymId);
+      store.synonymIds.$setUnique(store.tags.$filter.text.$isContainedInIgnoreCase(selection).synonymId);
       store.activePanel.selection.$set('');
       notify.success(`Filtered related notes`);
     },

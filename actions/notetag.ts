@@ -19,7 +19,7 @@ export const updateNoteTags = receive<{
   if (addTagIds.length) {
 
     // ... and if there are any existing archived note tags, then unarchive them
-    const existingNoteTags = await prisma.noteTag.findMany({ where: { noteId, tagId: { in: addTagIds } } });
+    const existingNoteTags = await prisma.noteTag.findMany({ where: { noteId, tagId: { in: addTagIds } }, select: { tagId: true, id: true } });
     if (existingNoteTags.length) {
       await prisma.noteTag.updateMany({ where: { id: { in: existingNoteTags.map(noteTag => noteTag.id) } }, data: { isArchived: false } });
     }

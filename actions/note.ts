@@ -1,5 +1,5 @@
 "use server";
-import { NoteDTO, NoteId, NoteTagDTO } from "@/actions/types";
+import { NoteDTO, NoteId, NoteTagDTO, NoteTagId, TagId } from "@/actions/types";
 import { ApiError, listUnArchivedTagIdsWithTagText, prisma, receive } from "./_common";
 
 
@@ -19,8 +19,7 @@ export const archiveNote = receive<{
 }>()(async ({ noteId }) => {
 
   // Archive all note tags associated with the note that is being archived
-  const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId } })
-  const idsOfNoteTagsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
+  const idsOfNoteTagsToBeArchived = (await prisma.noteTag.findMany({ where: { noteId }, select: { id: true } })).map(nt => nt.id);
   await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsToBeArchived } }, data: { isArchived: true } });
   const noteTags = await prisma.noteTag.findMany({ where: { id: { in: idsOfNoteTagsToBeArchived } } }) as NoteTagDTO[];
 
@@ -40,7 +39,7 @@ export const duplicateNote = receive<{
   const noteCreated = await prisma.note.create({ data: { userId, text: note.text, dateUpdated: now, dateViewed: now } }) as NoteDTO;
 
   // Create new note tags with the same tag ids as the note being duplicated
-  const noteTagTagIds = (await prisma.noteTag.findMany({ where: { noteId } })).map(nt => nt.tagId);
+  const noteTagTagIds = (await prisma.noteTag.findMany({ where: { noteId }, select: { tagId: true } })).map(nt => nt.tagId);
   await prisma.noteTag.createMany({ data: noteTagTagIds.map(tagId => ({ noteId: noteCreated.id, tagId })) });
 
   // Populate and return response
@@ -69,10 +68,9 @@ export const splitNote = receive<{
 
   // Archive note tags that are no longer associated with the existing note
   const tagIdsUpdatedForExistingNote = await listUnArchivedTagIdsWithTagText({ userId, noteText: noteUpdated.text });
-  const noteTagsForExistingNote = await prisma.noteTag.findMany({ where: { noteId: noteId } }) as NoteTagDTO[];
-  const tagIdsToBeUnassignedFromExistingNote = noteTagsForExistingNote.map(noteTag => noteTag.tagId).filter(id => !tagIdsUpdatedForExistingNote.includes(id));
-  const noteTagsToBeArchived = await prisma.noteTag.findMany({ where: { noteId: noteId, tagId: { in: tagIdsToBeUnassignedFromExistingNote } } });
-  const idsOfNoteTagsToBeArchived = noteTagsToBeArchived.map(nt => nt.id);
+  const tagIdsForExistingNote = (await prisma.noteTag.findMany({ where: { noteId }, select: { tagId: true } })).map(nt => nt.tagId as TagId);
+  const tagIdsToBeUnassignedFromExistingNote = tagIdsForExistingNote.filter(tagId => !tagIdsUpdatedForExistingNote.includes(tagId));
+  const idsOfNoteTagsToBeArchived = (await prisma.noteTag.findMany({ where: { noteId, tagId: { in: tagIdsToBeUnassignedFromExistingNote } }, select: { id: true } })).map(nt => nt.id as NoteTagId);
   await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsToBeArchived } }, data: { isArchived: true } });
 
   // Populate and return response
