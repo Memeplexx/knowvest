@@ -1,5 +1,5 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNotesWithTagText, prisma, receive } from './_common';
+import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNoteIdsWithTagText, prisma, receive } from './_common';
 import { SynonymId, TagId } from './types';
 
 
@@ -57,7 +57,7 @@ export const createTagForSynonym = receive<{
   const tag = await prisma.tag.create({ data: { text, synonymId: synonym.id, userId } });
 
   // Create new note tags
-  const noteIdsWithTagText = (await listUnArchivedNotesWithTagText({ userId, tagText: text })).map(n => n.id);
+  const noteIdsWithTagText = await listUnArchivedNoteIdsWithTagText({ userId, tagText: text });
   if (noteIdsWithTagText.length) {
     await prisma.noteTag.createMany({ data: noteIdsWithTagText.map(noteId => ({ noteId, tagId: tag.id }))});
   }

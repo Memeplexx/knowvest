@@ -38,20 +38,20 @@ export const archiveAllEntitiesAssociatedWithAnyArchivedTags = async (userId: Us
   return { synonymGroups, synonyms, noteTags } as const;
 }
 
-export const listUnArchivedNotesWithTagText = async ({ userId, tagText }: { userId: UserId, tagText: string }) => {
-  return await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
-    SELECT n.* 
+export const listUnArchivedNoteIdsWithTagText = async ({ userId, tagText }: { userId: UserId, tagText: string }) => {
+  return (await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
+    SELECT n.id 
       FROM note n 
       WHERE n.is_archived IS FALSE AND n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${tagText}, '\\M');
-  `);
+  `)).map(n => n.id);
 }
 
-export const listUnArchivedTagsWithTagText = async ({ userId, noteText }: { userId: UserId, noteText: string }) => {
-  return await prisma.$queryRaw<TagDTO[]>(Prisma.sql`
+export const listUnArchivedTagIdsWithTagText = async ({ userId, noteText }: { userId: UserId, noteText: string }) => {
+  return (await prisma.$queryRaw<TagDTO[]>(Prisma.sql`
     SELECT t.*
       FROM tag t
       WHERE t.is_archived IS FALSE AND t.user_id = ${userId} AND ${noteText} ~* CONCAT('\\m', t.text, '\\M');
-  `);
+  `)).map(t => t.id);
 }
 
 

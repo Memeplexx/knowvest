@@ -1,5 +1,5 @@
 "use server";
-import { ApiError, listUnArchivedNotesWithTagText, prisma, receive } from './_common';
+import { ApiError, listUnArchivedNoteIdsWithTagText, prisma, receive } from './_common';
 import { GroupId, SynonymId } from './types';
 
 
@@ -93,7 +93,7 @@ export const createTagForGroup = receive<{
   const synonymGroup = await prisma.synonymGroup.create({ data: { groupId, synonymId } });
 
   // Create new note tags as required
-  const noteIdsWithTagText = (await listUnArchivedNotesWithTagText({ userId, tagText: text })).map(n => n.id);
+  const noteIdsWithTagText = await listUnArchivedNoteIdsWithTagText({ userId, tagText: text });
   if (noteIdsWithTagText.length) {
     await prisma.noteTag.createMany({ data: noteIdsWithTagText.map(noteId => ({ noteId, tagId: tag.id })) });
   }
