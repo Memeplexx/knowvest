@@ -1,5 +1,5 @@
 "use server";
-import { ApiError, listNotesWithTagText, prisma, receive } from './_common';
+import { ApiError, listUnArchivedNotesWithTagText, prisma, receive } from './_common';
 import { GroupId, SynonymId } from './types';
 
 
@@ -10,7 +10,7 @@ export const createGroup = receive<{
 
   // Validation
   if (!name.trim().length) { return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const; }
-  const groupWithSameName = await prisma.group.findFirst({ where: { name, userId } });
+  const groupWithSameName = await prisma.group.findFirst({ where: { name, userId, isArchived: false } });
   if (groupWithSameName) { throw new ApiError('CONFLICT', 'A group with this name already exists.'); }
 
   // Logic
@@ -26,7 +26,7 @@ export const updateGroup = receive<{
 
   // Validation
   if (!name.trim().length) { return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const; }
-  const anotherGroupWithSameName = await prisma.group.findFirst({ where: { name, userId, id: { not: groupId } } });
+  const anotherGroupWithSameName = await prisma.group.findFirst({ where: { name, userId, id: { not: groupId }, isArchived: false } });
   if (anotherGroupWithSameName) { return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const; }
 
   // logic
@@ -39,8 +39,9 @@ export const archiveGroup = receive<{
 }>()(async ({ groupId }) => {
 
   // Logic
-  const synonymGroups = await prisma.synonymGroup.findMany({ where: { groupId } });
   await prisma.synonymGroup.updateMany({ where: { groupId }, data: { isArchived: true } });
+  const synonymGroups = await prisma.synonymGroup.findMany({ where: { groupId } });
+
   const group = await prisma.group.update({ where: { id: groupId }, data: { isArchived: true } });
   return { status: 'ARCHIVED', group, synonymGroups } as const;
 });
@@ -67,16 +68,12 @@ export const addSynonymToGroup = receive<{
   groupId: GroupId,
 }>()(async ({ groupId, synonymId }) => {
 
-  // Logic
-  const existingSynonymGroup = await prisma.synonymGroup.findFirst({ where: { synonymId, groupId } });
-  if (existingSynonymGroup) {
-    await prisma.synonymGroup.update({ where: { id: existingSynonymGroup.id }, data: { isArchived: false } })
-  } else {
-    await prisma.synonymGroup.create({ data: { groupId, synonymId } });
-  }
+  // Add, else create synonym group
+  const synonymGroup 
+    = (await prisma.synonymGroup.findFirst({ where: { synonymId, groupId } }))
+    ?? (await prisma.synonymGroup.create({ data: { groupId, synonymId } }));
 
   // Populate and return response
-  const synonymGroup = await prisma.synonymGroup.findFirstOrThrow({ where: { groupId, synonymId } });
   return { status: 'SYNONYM_ADDED_TO_GROUP', synonymGroup } as const;
 });
 
@@ -88,46 +85,21 @@ export const createTagForGroup = receive<{
 
   // Validation
   if (!text.trim()) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
-  const tagWithSameName = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
-  if (tagWithSameName) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
+  const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
+  if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
 
-  // If a tag with the same text exists then un archive it, otherwise create a new tag
-  const tagAlreadyCreated = await prisma.tag.findFirst({ where: { text, userId } });
-  if (tagAlreadyCreated) {
-    await prisma.tag.update({ where: { id: tagAlreadyCreated.id }, data: { isArchived: false } });
-  } else {
-    await prisma.tag.create({ data: { text, synonymId, userId } });
+  // Create a new tag and synonym htoup. Do not un-archive any existing tag with the same text
+  const tag = await prisma.tag.create({ data: { text, synonymId, userId } });
+  const synonymGroup = await prisma.synonymGroup.create({ data: { groupId, synonymId } });
+
+  // Create new note tags as required
+  const noteIdsWithTagText = (await listUnArchivedNotesWithTagText({ userId, tagText: text })).map(n => n.id);
+  if (noteIdsWithTagText.length) {
+    await prisma.noteTag.createMany({ data: noteIdsWithTagText.map(noteId => ({ noteId, tagId: tag.id })) });
   }
-  const tag = await prisma.tag.findFirstOrThrow({ where: { text, userId, synonymId } });
-
-  // If a synonym group with the same groupId and synonymId already exists then un archive it, otherwise create a new synonym group
-  const synonymGroupAlreadyCreated = await prisma.synonymGroup.findFirst({ where: { groupId, synonymId } });
-  if (synonymGroupAlreadyCreated) {
-    await prisma.synonymGroup.update({ where: { id: synonymGroupAlreadyCreated.id }, data: { isArchived: false } });
-  } else {
-    await prisma.synonymGroup.create({ data: { groupId, synonymId } });
-  }
-
-  // Finds all notes that contain the tag text, then...
-  const notesWithTagText = await listNotesWithTagText({ userId, tagText: text });
-  const noteIdsWithTagText = notesWithTagText.map(note => note.id);
-
-  // ... If any of the note tags already exist then un archive them, otherwise create new note tags
-  const noteTagsAlreadyCreated = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText }, tag: { text } } });
-  const idsOfNoteTagsAlreadyCreated = noteTagsAlreadyCreated.map(nt => nt.id);
-  if (noteTagsAlreadyCreated.length) {
-    await prisma.noteTag.updateMany({ where: { id: { in: idsOfNoteTagsAlreadyCreated } }, data: { isArchived: false } });
-  }
-
-  // ... If any new note tags need to be created then create them
-  const newNoteTagsToBeCreated = notesWithTagText.filter(nt => !idsOfNoteTagsAlreadyCreated.includes(nt.id));
-  if (newNoteTagsToBeCreated.length) {
-    await prisma.noteTag.createMany({ data: newNoteTagsToBeCreated.map(note => ({ noteId: note.id, tagId: tag.id })) });
-  }
+  const noteTags = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText } } });
 
   // Populate and return response
-  const synonymGroup = await prisma.synonymGroup.findFirstOrThrow({ where: { groupId, synonymId } });
-  const noteTags = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText } } });
   return { status: 'TAG_CREATED', tag, noteTags, synonymGroup } as const;
 });
 

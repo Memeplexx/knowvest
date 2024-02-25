@@ -1,6 +1,6 @@
 "use server";
 import { NoteDTO, NoteId, NoteTagDTO } from "@/actions/types";
-import { ApiError, listTagsWithTagText, prisma, receive } from "./_common";
+import { ApiError, listUnArchivedTagsWithTagText, prisma, receive } from "./_common";
 
 
 export const createNote = receive(
@@ -59,15 +59,17 @@ export const splitNote = receive<{
   const noteCreated = await prisma.note.create({ data: { userId, text: note.text.slice(from, to), dateUpdated: now, dateViewed: now } });
 
   // Create new note tags for the new note
-  const tagsToBeAssigned = await listTagsWithTagText({ userId, noteText: noteCreated.text });
+  const tagsToBeAssigned = await listUnArchivedTagsWithTagText({ userId, noteText: noteCreated.text });
   const tagIdsToBeAssigned = tagsToBeAssigned.map(tag => tag.id);
-  await prisma.noteTag.createMany({ data: tagIdsToBeAssigned.map(tagId => ({ noteId: noteCreated.id, tagId })) });
+  if (tagIdsToBeAssigned.length) {
+    await prisma.noteTag.createMany({ data: tagIdsToBeAssigned.map(tagId => ({ noteId: noteCreated.id, tagId })) });
+  }
 
   // Update the existing note by removing the split text
   const noteUpdated = await prisma.note.update({ where: { id: noteId }, data: { text: `${note.text.slice(0, from)}${note.text.slice(to)}`, dateUpdated: now, dateViewed: now } });
 
   // Archive note tags that are no longer associated with the existing note
-  const tagsUpdatedForExistingNote = await listTagsWithTagText({ userId, noteText: noteUpdated.text });
+  const tagsUpdatedForExistingNote = await listUnArchivedTagsWithTagText({ userId, noteText: noteUpdated.text });
   const tagIdsUpdatedForExistingNote = tagsUpdatedForExistingNote.map(tag => tag.id);
   const noteTagsForExistingNote = await prisma.noteTag.findMany({ where: { noteId: noteId } }) as NoteTagDTO[];
   const tagIdsToBeUnassignedFromExistingNote = noteTagsForExistingNote.map(noteTag => noteTag.tagId).filter(id => !tagIdsUpdatedForExistingNote.includes(id));

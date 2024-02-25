@@ -1,5 +1,5 @@
 import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '@/actions/group';
-import { addTagToSynonym, createTagToSynonym } from '@/actions/synonym';
+import { addTagToSynonym, createTagForSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
 import { Inputs } from './constants';
@@ -8,7 +8,7 @@ import { writeToStoreAndDb } from '@/utils/storage-utils';
 
 export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const completeCreateTagForSynonym = async () => {
-    const apiResponse = await createTagToSynonym({
+    const apiResponse = await createTagForSynonym({
       text: inputs.autocompleteText.trim(),
       synonymId: inputs.synonymId === null ? undefined : inputs.synonymId,
     });

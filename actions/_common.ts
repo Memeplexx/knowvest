@@ -38,7 +38,7 @@ export const archiveAllEntitiesAssociatedWithAnyArchivedTags = async (userId: Us
   return { synonymGroups, synonyms, noteTags } as const;
 }
 
-export const listNotesWithTagText = async ({ userId, tagText }: { userId: UserId, tagText: string }) => {
+export const listUnArchivedNotesWithTagText = async ({ userId, tagText }: { userId: UserId, tagText: string }) => {
   return await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
     SELECT n.* 
       FROM note n 
@@ -46,7 +46,7 @@ export const listNotesWithTagText = async ({ userId, tagText }: { userId: UserId
   `);
 }
 
-export const listTagsWithTagText = async ({ userId, noteText }: { userId: UserId, noteText: string }) => {
+export const listUnArchivedTagsWithTagText = async ({ userId, noteText }: { userId: UserId, noteText: string }) => {
   return await prisma.$queryRaw<TagDTO[]>(Prisma.sql`
     SELECT t.*
       FROM tag t
