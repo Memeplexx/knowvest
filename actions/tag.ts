@@ -1,6 +1,6 @@
 "use server";
 import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNoteIdsWithTagText, prisma, receive } from "./_common";
-import { NoteTagDTO, TagId } from "./types";
+import { TagId } from "./types";
 
 export const createTag = receive<{
   text: string,
@@ -57,7 +57,7 @@ export const updateTag = receive<{
   const tagUpdated = await prisma.tag.update({ where: { id: tagId }, data: { text } });
 
   // Populate and return response
-  return { status: 'TAG_UPDATED', tag: tagUpdated, noteTags: [...createdNoteTags, ...archivedNoteTags] as NoteTagDTO[] } as const;
+  return { status: 'TAG_UPDATED', tag: tagUpdated, noteTags: new Array(...createdNoteTags, ...archivedNoteTags) } as const;
 });
 
 export const archiveTag = receive<{

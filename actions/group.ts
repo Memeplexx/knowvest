@@ -1,6 +1,6 @@
 "use server";
 import { ApiError, listUnArchivedNoteIdsWithTagText, prisma, receive } from './_common';
-import { GroupId, SynonymId } from './types';
+import { GroupId, SynonymGroupId, SynonymId } from './types';
 
 
 export const createGroup = receive<{
@@ -52,8 +52,7 @@ export const removeSynonymFromGroup = receive<{
 }>()(async ({ groupId, synonymId }) => {
 
   // Update synonym groups
-  const synonymGroupsToBeArchived = await prisma.synonymGroup.findMany({ where: { synonymId, groupId } });
-  const idsOfSynonymGroupsToBeArchived = synonymGroupsToBeArchived.map(sg => sg.id);
+  const idsOfSynonymGroupsToBeArchived = (await prisma.synonymGroup.findMany({ where: { synonymId, groupId }, select: { id: true } })).map(sg => sg.id as SynonymGroupId);
   await prisma.synonymGroup.updateMany({ where: { id: { in: idsOfSynonymGroupsToBeArchived } }, data: { isArchived: true } });
 
   // Populate and return response
