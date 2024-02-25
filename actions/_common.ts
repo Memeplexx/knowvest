@@ -42,7 +42,7 @@ export const listNotesWithTagText = async ({ userId, tagText }: { userId: UserId
   return await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
     SELECT n.* 
       FROM note n 
-      WHERE n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${tagText}, '\\M');
+      WHERE n.is_archived IS FALSE AND n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${tagText}, '\\M');
   `);
 }
 
@@ -50,7 +50,7 @@ export const listTagsWithTagText = async ({ userId, noteText }: { userId: UserId
   return await prisma.$queryRaw<TagDTO[]>(Prisma.sql`
     SELECT t.*
       FROM tag t
-      WHERE t.user_id = ${userId} AND ${noteText} ~* CONCAT('\\m', t.text, '\\M');
+      WHERE t.is_archived IS FALSE AND t.user_id = ${userId} AND ${noteText} ~* CONCAT('\\m', t.text, '\\M');
   `);
 }
 
@@ -105,8 +105,8 @@ export const receive = <T extends Partial<{
       tag: await fetchItem(arg.tagId, id => prisma.tag.findFirstOrThrow({ where: { id, userId } })),
       flashCard: await fetchItem(arg.flashCardId, id => prisma.flashCard.findFirstOrThrow({ where: { id, note: { userId } } })),
       group: await fetchItem(arg.groupId, id => prisma.group.findFirstOrThrow({ where: { id, userId } })),
-      synonym: await fetchItem(arg.synonymId, id => prisma.synonym.findFirst({ where: { id, tag: { some: { userId } } } })),
-      synonymGroup: await fetchItem(arg.synonymGroupId, id => prisma.synonymGroup.findFirst({ where: { id, group: { userId } } })),
+      synonym: await fetchItem(arg.synonymId, id => prisma.synonym.findFirstOrThrow({ where: { id, tag: { some: { userId } } } })),
+      synonymGroup: await fetchItem(arg.synonymGroupId, id => prisma.synonymGroup.findFirstOrThrow({ where: { id, group: { userId } } })),
     } as processorArgs<T>));
     return result as EntityToDto<typeof result>;
   }

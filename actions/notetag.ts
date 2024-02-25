@@ -23,7 +23,7 @@ export const updateNoteTags = receive<{
     if (existingNoteTags.length) {
       await prisma.noteTag.updateMany({ where: { id: { in: existingNoteTags.map(noteTag => noteTag.id) } }, data: { isArchived: false } });
     }
-
+    
     // ... and if there are any tags that need to be created, then create them
     if (existingNoteTags.length < addTagIds.length) {
       const tagIdsOfNoteTagsJustCreated = existingNoteTags.map(noteTag => noteTag.tagId);
