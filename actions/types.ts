@@ -13,43 +13,43 @@ export type NoteTagId = Brand<number, 'NoteTagId'>;
 export type SynonymGroupId = Brand<number, 'SynonymGroupId'>;
 
 
-export interface NoteDTO extends Note {
+export interface NoteDTO extends Omit<Note, 'isArchived'> {
   id: NoteId;
   userId: UserId;
 }
 
-export interface TagDTO extends Tag {
+export interface TagDTO extends Omit<Tag, 'isArchived'> {
   id: TagId;
   userId: UserId;
   synonymId: SynonymId;
 }
 
-export interface NoteTagDTO extends NoteTag {
+export interface NoteTagDTO extends Omit<NoteTag, 'isArchived'> {
   id: NoteTagId;
   noteId: NoteId;
   tagId: TagId;
 }
 
-export interface GroupDTO extends Group {
+export interface GroupDTO extends Omit<Group, 'isArchived'> {
   id: GroupId;
   userId: UserId;
 }
 
-export interface SynonymGroupDTO extends SynonymGroup {
+export interface SynonymGroupDTO extends Omit<SynonymGroup, 'isArchived'> {
   id: SynonymGroupId;
   groupId: GroupId;
   synonymId: SynonymId;
 }
 
-export interface SynonymDTO extends Synonym {
+export interface SynonymDTO extends Omit<Synonym, 'isArchived'> {
   id: SynonymId;
 }
 
-export interface UserDTO extends User {
+export interface UserDTO extends Omit<User, 'isArchived'> {
   id: UserId;
 }
 
-export interface FlashCardDTO extends FlashCard {
+export interface FlashCardDTO extends Omit<FlashCard, 'isArchived'> {
   id: FlashCardId;
   noteId: NoteId;
 }

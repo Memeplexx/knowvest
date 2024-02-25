@@ -79,37 +79,22 @@ export type EntityToDto<T>
   : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
   : T
 
-const fetchItem = async <T, ID extends number | undefined>(id: ID, fetcher: (id: ID) => Promise<T | null>) => {
-  if (!id) { return null as T; }
-  return await fetcher(id);
-};
-
-export const receive = <T extends Partial<{
-  noteId: NoteId,
-  tagId: TagId,
-  flashCardId: FlashCardId,
-  synonymId: SynonymId,
-  synonymGroupId: SynonymGroupId,
-  groupId: GroupId,
-  [key: string]: unknown
-}>>() => <R>(processor: (a: processorArgs<T>) => R) => {
-  return async (arg: T) => {
-    const session = await getServerSession(authOptions);
-    const user = (await prisma.user.findFirst({ where: { email: session!.user!.email! } })) || {} as User;
-    const userId = user?.id as UserId;
-    const result = (await processor({
-      ...arg,
-      userId,
-      user,
-      note: await fetchItem(arg.noteId, id => prisma.note.findFirstOrThrow({ where: { id, userId } })),
-      tag: await fetchItem(arg.tagId, id => prisma.tag.findFirstOrThrow({ where: { id, userId } })),
-      flashCard: await fetchItem(arg.flashCardId, id => prisma.flashCard.findFirstOrThrow({ where: { id, note: { userId } } })),
-      group: await fetchItem(arg.groupId, id => prisma.group.findFirstOrThrow({ where: { id, userId } })),
-      synonym: await fetchItem(arg.synonymId, id => prisma.synonym.findFirstOrThrow({ where: { id, tag: { some: { userId } } } })),
-      synonymGroup: await fetchItem(arg.synonymGroupId, id => prisma.synonymGroup.findFirstOrThrow({ where: { id, group: { userId } } })),
-    } as processorArgs<T>));
-    return result as EntityToDto<typeof result>;
-  }
+export const receive = <T extends Record<string, unknown>>() => <R>(processor: (a: processorArgs<T>) => R) => async (arg: T) => {
+  const session = await getServerSession(authOptions);
+  const user = (await prisma.user.findFirst({ where: { email: session!.user!.email! } })) || {} as User;
+  const userId = user?.id as UserId;
+  const result = (await processor({
+    ...arg,
+    userId,
+    user,
+    note: !arg.noteId ? null : await prisma.note.findFirstOrThrow({ where: { id: arg.noteId, userId } }),
+    tag: !arg.tagId ? null : await prisma.tag.findFirstOrThrow({ where: { id: arg.tagId, userId } }),
+    flashCard: !arg.flashCardId ? null : prisma.flashCard.findFirstOrThrow({ where: { id: arg.flashCardId, note: { userId } } }),
+    group: !arg.groupId ? null : prisma.group.findFirstOrThrow({ where: { id: arg.groupId, userId } }),
+    synonym: !arg.synonymId ? null : prisma.synonym.findFirstOrThrow({ where: { id: arg.synonymId, tag: { some: { userId } } } }),
+    synonymGroup: !arg.synonymGroupId ? null : prisma.synonymGroup.findFirstOrThrow({ where: { id: arg.synonymGroupId, group: { userId } } }),
+  } as processorArgs<T>));
+  return result as EntityToDto<typeof result>;
 }
 
 export class ApiError extends Error {
