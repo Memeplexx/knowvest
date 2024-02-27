@@ -1,25 +1,26 @@
 "use server";
 import { NoteId, NoteTagId, TagId } from "@/actions/types";
-import { listUnArchivedTagIdsWithTagText, prisma, receive, validateNoteId } from "./_common";
+import { getUserId, listUnArchivedTagIdsWithTagText, prisma, receive, validateNoteId } from "./_common";
 
 
 export const createNote = receive(
-)(async ({ userId }) => {
+  )(async () => {
 
   // Create a new note
   const now = new Date();
+  const userId = await getUserId();
   const note = await prisma.note.create({ data: { userId, text: '', dateUpdated: now, dateViewed: now } });
 
   // Populate and return response
   return { status: 'NOTE_CREATED', note } as const;
-})
+});
 
 export const archiveNote = receive<{
   noteId: NoteId
-}>()(async ({ noteId, userId }) => {
-
+}>()(async ({ noteId }) => {
+  
   // Validate
-  await validateNoteId({ noteId, userId });
+  await validateNoteId(noteId);
 
   // Archive all note tags associated with the note that is being archived
   const idsOfNoteTagsToBeArchived = (await prisma.noteTag.findMany({ where: { noteId }, select: { id: true } })).map(nt => nt.id);
@@ -31,14 +32,15 @@ export const archiveNote = receive<{
 
   // Populate and return response
   return { status: 'NOTE_ARCHIVED', note, noteTags } as const;
-})
+});
 
 export const duplicateNote = receive<{
   noteId: NoteId,
-}>()(async ({ noteId, userId }) => {
+}>()(async ({ noteId }) => {
 
   // Validate
-  const note = await validateNoteId({ noteId, userId });
+  const userId = await getUserId();
+  const note = await validateNoteId(noteId);
 
   // Create a new note with the same text as the note being duplicated
   const now = new Date();
@@ -49,18 +51,19 @@ export const duplicateNote = receive<{
   await prisma.noteTag.createMany({ data: noteTagTagIds.map(tagId => ({ noteId: noteCreated.id, tagId })) });
 
   // Populate and return response
-  const noteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } } });
+  const noteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } }});
   return { status: 'NOTE_DUPLICATED', note: noteCreated, noteTags } as const;
-})
+});
 
 export const splitNote = receive<{
   noteId: NoteId,
   from: number,
   to: number,
-}>()(async ({ from, to, noteId, userId }) => {
-
+}>()(async ({ from, to, noteId }) => {
+  
   // Validate
-  const note = await validateNoteId({ noteId, userId });
+  const userId = await getUserId();
+  const note = await validateNoteId(noteId);
 
   // Create new note with the split text
   const now = new Date();
@@ -91,10 +94,10 @@ export const splitNote = receive<{
 export const updateNote = receive<{
   noteId: NoteId,
   text: string,
-}>()(async ({ noteId, userId, text }) => {
+}>()(async ({ noteId, text }) => {
 
   // Validate
-  await validateNoteId({ noteId, userId });
+  await validateNoteId(noteId);
 
   // Update note
   const now = new Date();
@@ -106,14 +109,14 @@ export const updateNote = receive<{
 
 export const viewNote = receive<{
   noteId: NoteId
-}>()(async ({ noteId, userId }) => {
+}>()(async ({ noteId }) => {
 
   // Validate
-  await validateNoteId({ noteId, userId });
+  await validateNoteId(noteId);
 
   // Update note
   const note = await prisma.note.update({ where: { id: noteId }, data: { dateViewed: new Date() } });
 
   // Populate and return response
   return { status: 'NOTE_VIEWED', note } as const;
-})
+});

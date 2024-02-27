@@ -7,10 +7,10 @@ export const updateNoteTags = receive<{
   noteId: NoteId,
   addTagIds: TagId[],
   removeTagIds: TagId[],
-}>()(async ({ userId, addTagIds, noteId, removeTagIds }) => {
+}>()(async ({ addTagIds, noteId, removeTagIds }) => {
 
   // Validation
-  await [...addTagIds, ...removeTagIds].map(async tagId => await validateTagId({ tagId, userId }));
+  await [...addTagIds, ...removeTagIds].map(async tagId => await validateTagId(tagId));
 
   // If there are any tags to be added...
   if (addTagIds.length) {

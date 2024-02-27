@@ -1,32 +1,34 @@
 "use server";
-import { ApiError, listUnArchivedNoteIdsWithTagText, prisma, receive, validateGroupId, validateSynonymId } from './_common';
+import { ApiError, getUserId, listUnArchivedNoteIdsWithTagText, prisma, receive, validateGroupId, validateSynonymId } from './_common';
 import { GroupId, SynonymGroupId, SynonymId } from './types';
 
 
 export const createGroup = receive<{
   name: string,
   synonymId: SynonymId,
-}>()(async ({ userId, name, synonymId }) => {
+}>()(async ({ name, synonymId }) => {
 
   // Validate
-  await validateSynonymId({ synonymId, userId });
+  await validateSynonymId(synonymId);
+  const userId = await getUserId();
   if (!name.trim().length) { return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const; }
   const groupWithSameName = await prisma.group.findFirst({ where: { name, userId, isArchived: false } });
   if (groupWithSameName) { throw new ApiError('CONFLICT', 'A group with this name already exists.'); }
 
   // Logic
   const group = await prisma.group.create({ data: { name, userId } });
-  const synonymGroup = !synonymId ? null : await prisma.synonymGroup.create({ data: { groupId: group.id, synonymId } });
+  const synonymGroup = await prisma.synonymGroup.create({ data: { groupId: group.id, synonymId } });
   return { status: 'GROUP_CREATED', group, synonymGroup } as const;
 });
 
 export const updateGroup = receive<{
   groupId: GroupId,
   name: string,
-}>()(async ({ userId, groupId, name }) => {
+}>()(async ({ groupId, name }) => {
 
   // Validate
-  await validateGroupId({ groupId, userId });
+  await validateGroupId(groupId);
+  const userId = await getUserId();
   if (!name.trim().length) { return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const; }
   const anotherGroupWithSameName = await prisma.group.findFirst({ where: { name, userId, id: { not: groupId }, isArchived: false } });
   if (anotherGroupWithSameName) { return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const; }
@@ -38,10 +40,10 @@ export const updateGroup = receive<{
 
 export const archiveGroup = receive<{
   groupId: GroupId
-}>()(async ({ groupId, userId }) => {
+}>()(async ({ groupId }) => {
 
   // Validate
-  await validateGroupId({ groupId, userId });
+  await validateGroupId(groupId);
 
   // Logic
   await prisma.synonymGroup.updateMany({ where: { groupId }, data: { isArchived: true } });
@@ -54,11 +56,11 @@ export const archiveGroup = receive<{
 export const removeSynonymFromGroup = receive<{
   synonymId: SynonymId,
   groupId: GroupId,
-}>()(async ({ groupId, synonymId, userId }) => {
+}>()(async ({ groupId, synonymId }) => {
 
   // Validate
-  await validateGroupId({ groupId, userId });
-  await validateSynonymId({ synonymId, userId });
+  await validateGroupId(groupId);
+  await validateSynonymId(synonymId);
 
   // Update synonym groups
   const idsOfSynonymGroupsToBeArchived = (await prisma.synonymGroup.findMany({ where: { synonymId, groupId }, select: { id: true } })).map(sg => sg.id as SynonymGroupId);
@@ -74,14 +76,14 @@ export const removeSynonymFromGroup = receive<{
 export const addSynonymToGroup = receive<{
   synonymId: SynonymId,
   groupId: GroupId,
-}>()(async ({ groupId, synonymId, userId }) => {
+}>()(async ({ groupId, synonymId }) => {
 
   // Validate
-  await validateGroupId({ groupId, userId });
-  await validateSynonymId({ synonymId, userId });
+  await validateGroupId(groupId);
+  await validateSynonymId(synonymId);
 
   // Add, else create synonym group
-  const synonymGroup 
+  const synonymGroup
     = (await prisma.synonymGroup.findFirst({ where: { synonymId, groupId, isArchived: false } }))
     ?? (await prisma.synonymGroup.create({ data: { groupId, synonymId } }));
 
@@ -93,11 +95,12 @@ export const createTagForGroup = receive<{
   text: string,
   groupId: GroupId,
   synonymId: SynonymId,
-}>()(async ({ groupId, synonymId, text, userId }) => {
+}>()(async ({ groupId, synonymId, text }) => {
 
   // Validate
-  await validateGroupId({ groupId, userId });
-  await validateSynonymId({ synonymId, userId });
+  const userId = await getUserId();
+  await validateGroupId(groupId);
+  await validateSynonymId(synonymId);
   if (!text.trim()) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
   if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }

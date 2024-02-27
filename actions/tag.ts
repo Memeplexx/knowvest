@@ -1,12 +1,13 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNoteIdsWithTagText, prisma, receive, validateTagId } from "./_common";
+import { archiveAllEntitiesAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, receive, validateTagId } from "./_common";
 import { TagId } from "./types";
 
 export const createTag = receive<{
   text: string,
-}>()(async ({ userId, text }) => {
+}>()(async ({ text }) => {
 
   // Validate
+  const userId = await getUserId();
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   const unArchivedTagWithSameName = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
   if (unArchivedTagWithSameName) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
@@ -31,10 +32,11 @@ export const createTag = receive<{
 export const updateTag = receive<{
   tagId: TagId,
   text: string,
-}>()(async ({ userId, tagId, text }) => {
+}>()(async ({ tagId, text }) => {
 
   // Validate
-  const tag = await validateTagId({ tagId, userId });
+  const userId = await getUserId();
+  const tag = await validateTagId(tagId);
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   if (tag.text === text) { return { status: 'TAG_UNCHANGED' } as const; }
   const unArchivedTagWithSameText = await prisma.tag.findFirst({ where: { text, isArchived: false } });
@@ -63,10 +65,11 @@ export const updateTag = receive<{
 
 export const archiveTag = receive<{
   tagId: TagId,
-}>()(async ({ tagId, userId }) => {
+}>()(async ({ tagId }) => {
 
   // Validate
-  await validateTagId({ tagId, userId });
+  await validateTagId(tagId);
+  const userId = await getUserId();
 
   // Archive the tag
   const tag = await prisma.tag.update({ where: { id: tagId }, data: { isArchived: true } });
@@ -80,9 +83,10 @@ export const archiveTag = receive<{
 
 export const createTagFromActiveNote = receive<{
   tagText: string,
-}>()(async ({ userId, tagText }) => {
+}>()(async ({ tagText }) => {
 
   // Validate
+  const userId = await getUserId();
   if (!tagText.trim().length) { return { status: 'BAD_REQUEST', fields: { tagText: 'Tag name cannot be empty' } } as const; }
   const unArchivedTagWithSameName = await prisma.tag.findFirst({ where: { text: tagText, userId, isArchived: false } });
   if (unArchivedTagWithSameName) { return { status: 'CONFLICT', fields: { tagText: 'A tag with this name already exists.' } } as const; }
