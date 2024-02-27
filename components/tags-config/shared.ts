@@ -122,7 +122,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     const synonymId = apiResponse.tags[0].synonymId;
     const groupHasMoreThanOneTag = store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
     const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
-    await writeToStoreAndDb(store, { tags: apiResponse.tags, synonymGroups: apiResponse.synonymGroups, noteTags: apiResponse.noteTags });
+    await writeToStoreAndDb(store, { tags: apiResponse.tags, synonymGroups: apiResponse.synonymGroups });
     store.tagsConfig.$patch({ tagId, synonymId, autocompleteText: selected.text });
     groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && notify.success('Tag(s) added to synonyms');
   };

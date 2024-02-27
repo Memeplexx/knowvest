@@ -1,5 +1,5 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateTagId } from "./_common";
+import { archiveNoteTagsAssociatedWithAnyArchivedTags, archiveSynonymGroupsAssociatedWithAnyArchivedTags, archiveSynonymsAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateTagId } from "./_common";
 import { TagId } from "./types";
 
 
@@ -69,10 +69,12 @@ export const archiveTag = (tagId: TagId) => respond(async () => {
   const tag = await prisma.tag.update({ where: { id: tagId }, data: { isArchived: true } });
 
   // Archive any synonyms and synonym groups that are now orphaned
-  const archivedEntities = await archiveAllEntitiesAssociatedWithAnyArchivedTags(userId);
+  const synonyms = await archiveSynonymsAssociatedWithAnyArchivedTags(userId);
+  const synonymGroups = await archiveSynonymGroupsAssociatedWithAnyArchivedTags(userId);
+  const noteTags = await archiveNoteTagsAssociatedWithAnyArchivedTags(userId);
 
   // Populate and return response
-  return { status: 'TAG_ARCHIVED', tag, ...archivedEntities } as const;
+  return { status: 'TAG_ARCHIVED', tag, synonyms, synonymGroups, noteTags } as const;
 });
 
 export const createTagFromActiveNote = (tagText: string) => respond(async () => {

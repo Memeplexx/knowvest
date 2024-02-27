@@ -1,5 +1,5 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateSynonymId, validateTagId } from './_common';
+import { archiveSynonymGroupsAssociatedWithAnyArchivedTags, archiveSynonymsAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateSynonymId, validateTagId } from './_common';
 import { SynonymId, TagId } from './types';
 
 
@@ -15,10 +15,11 @@ export const removeTagFromItsCurrentSynonym = (tagId: TagId) => respond(async ()
   const tag = await prisma.tag.update({ where: { id: tagId }, data: { synonymId: synonym.id } });
 
   // Archive any synonyms and synonym groups that are now orphaned
-  const archivedEntities = await archiveAllEntitiesAssociatedWithAnyArchivedTags(userId);
+  const synonyms = await archiveSynonymsAssociatedWithAnyArchivedTags(userId);
+  const synonymGroups = await archiveSynonymGroupsAssociatedWithAnyArchivedTags(userId);
 
   // Populate and return response
-  return { status: 'TAG_MOVED_TO_NEW_SYNONYM', tag, ...archivedEntities } as const;
+  return { status: 'TAG_MOVED_TO_NEW_SYNONYM', tag, synonyms, synonymGroups } as const;
 });
 
 export const addTagToSynonym = (synonymId: SynonymId, tagId: TagId) => respond(async () => {
@@ -35,11 +36,12 @@ export const addTagToSynonym = (synonymId: SynonymId, tagId: TagId) => respond(a
   await prisma.tag.updateMany({ where: { id: { in: allTagIdsAssociatedWithOldSynonym } }, data: { synonymId } });
 
   // Archive any synonyms and synonym groups that are now orphaned
-  const archivedEntities = await archiveAllEntitiesAssociatedWithAnyArchivedTags(userId);
+  const synonyms = await archiveSynonymsAssociatedWithAnyArchivedTags(userId);
+  const synonymGroups = await archiveSynonymGroupsAssociatedWithAnyArchivedTags(userId);
 
   // Populate and return response
   const tags = await prisma.tag.findMany({ where: { id: { in: allTagIdsAssociatedWithOldSynonym } } });
-  return { status: 'TAGS_UPDATED', tags, ...archivedEntities } as const;
+  return { status: 'TAGS_UPDATED', tags, synonyms, synonymGroups } as const;
 });
 
 export const createTagForSynonym = ({ synonymId, text }: { synonymId?: SynonymId, text: string }) => respond(async () => {

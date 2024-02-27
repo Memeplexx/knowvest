@@ -75,7 +75,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickRemoveTagFromSynonyms: async () => {
       if (!inputs.tagId) { return; }
       const apiResponse = await removeTagFromItsCurrentSynonym(inputs.tagId);
-      await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroups, tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+      await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroups, tags: apiResponse.tag });
       store.tagsConfig.$patch({ tagId: null, autocompleteText: '' });
       notify.success('Tag removed from synonyms');
     },
