@@ -11,6 +11,7 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useRef } from 'react';
 import { Props } from './constants';
+import { Highlighter } from '@lezer/highlight';
 
 
 export const useInputs = (props: Props) => {
@@ -41,7 +42,7 @@ export const instantiateCodeMirror = ({ editor, note }: { editor: HTMLDivElement
     doc: note.text,
     parent: editor,
     extensions: [
-      syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+      syntaxHighlighting(defaultHighlightStyle as Highlighter, { fallback: true }),
       markdown({ codeLanguages: languages }),
       EditorState.readOnly.of(true),
       EditorView.lineWrapping,

@@ -22,13 +22,13 @@ export const useOutputs = (inputs: Inputs) => {
       store.flashCardTester.showQuestions.$toggle();
     },
     onClickWrongAnswer: async () => {
-      const flashCardId = items[0].id;
+      const flashCardId = items[0]!.id;
       const apiResponse = await answerFlashCardQuestionIncorrectly(flashCardId);
       await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
       notify.success('Better luck next time...');
     },
     onClickRightAnswer: async () => {
-      const flashCardId = items[0].id;
+      const flashCardId = items[0]!.id;
       const apiResponse = await answerFlashCardQuestionCorrectly(flashCardId);
       await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
       notify.success('Nice one!');

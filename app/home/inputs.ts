@@ -82,8 +82,8 @@ export const useDataInitializer = ({ store }: { store: HomeStore }) => {
 const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
   await initializeDb();
   const databaseData = await readFromDb();
-  const notesSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
-  const after = notesSorted[0]?.dateUpdated;
+  const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
+  const after = notesFromDbSorted[0]?.dateUpdated ?? null;
   const apiResponse = await initialize({ ...session.user as UserDTO, after });
   if (apiResponse.status === 'USER_CREATED') {
     return store.$patch({
@@ -93,8 +93,8 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
     });
   }
   await writeToStoreAndDb(store, apiResponse);
-  const activeNoteId = notesSorted[0]?.id // Database might be empty. If so, use the first note from the API response
-    ?? apiResponse.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0].id;
+  const activeNoteId = notesFromDbSorted[0]?.id // Database might be empty. If so, use the first note from the API response
+    ?? apiResponse.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]!.id;
   const selectedTagIds = databaseData.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
   const synonymIds = databaseData.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId);
   store.$patch({

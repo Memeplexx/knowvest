@@ -75,7 +75,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const tagSynonymGroupMap = useMemo(() => {
     return tags
       .groupBy(tag => tag.synonymId)
-      .mapToObject(t => t[0].synonymId, tags => tags);
+      .mapToObject(t => t[0]!.synonymId, tags => tags);
   }, [tags]);
 
   const autocompleteOptionsGroups = useMemo(() => {
@@ -113,7 +113,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       ? autocompleteOptionsGroups
       : autocompleteOptionsTags).map(option => ({
         ...option,
-        synonyms: option.synonyms.map(synonym => synonym.text).join(', '),
+        synonyms: option.synonyms!.map(synonym => synonym.text).join(', '),
       }));
   }, [autocompleteOptionsGroups, autocompleteOptionsTags, autocompleteAction]);
 

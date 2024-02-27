@@ -89,7 +89,7 @@ Array.prototype.remove = function <T>(elementFinder: (el: T) => boolean) {
     .map((e, i) => { if (elementFinder(e)) { return i; } return undefined; })
     .filter(e => e !== undefined) as number[];
   for (let i = indicesToRemove.length - 1; i >= 0; i--) {
-    this.splice(indicesToRemove[i], 1);
+    this.splice(indicesToRemove[i]!, 1);
   }
 };
 

@@ -31,6 +31,7 @@ import { useNotifier } from '../notifier';
 import { ActivePanelStore } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { listenToTagsForEditor } from '@/utils/data-utils';
+import { Highlighter } from '@lezer/highlight';
 
 
 export const useInputs = () => {
@@ -68,7 +69,7 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
       history(),
       dropCursor(),
       indentOnInput(),
-      syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+      syntaxHighlighting(defaultHighlightStyle as Highlighter, { fallback: true }),
       markdown({ codeLanguages: languages }),
       bracketMatching(),
       closeBrackets(),

@@ -17,7 +17,7 @@ export const useInputs = (props: Props) => {
       .flatMap(tagId => noteTags.filter(nt => nt.noteId !== activeNoteId && nt.tagId === tagId))
       .groupBy(n => n.noteId)
       .map(noteTagGroup => ({
-        note: notes.findOrThrow(note => note.id === noteTagGroup[0].noteId),
+        note: notes.findOrThrow(note => note.id === noteTagGroup[0]!.noteId),
         count: noteTagGroup.length,
       }))
       .sort((a, b) => b.count - a.count)

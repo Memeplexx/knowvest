@@ -117,7 +117,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     if (!inputs.synonymId) { throw new Error(); }
     const selected = store.$state.tags.findOrThrow(t => t.id === tagId);
     const apiResponse = await addTagToSynonym(inputs.synonymId, tagId);
-    const synonymId = apiResponse.tags[0].synonymId;
+    const synonymId = apiResponse.tags[0]!.synonymId;
     const groupHasMoreThanOneTag = store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
     const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
     await writeToStoreAndDb(store, { tags: apiResponse.tags, synonymGroups: apiResponse.synonymGroups });

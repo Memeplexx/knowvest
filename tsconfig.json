@@ -18,6 +18,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "exactOptionalPropertyTypes": true,
+    "noErrorTruncation": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
     "paths": {
       "@/*": [
         "./*"

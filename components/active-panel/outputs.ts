@@ -22,7 +22,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
       await writeToStoreAndDb(store, { notes: apiResponse.note, noteTags: apiResponse.noteTags })
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
       const newNoteId = store.$state.notes
-        .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0].id;
+        .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0]!.id;
       store.activeNoteId.$set(newNoteId);
       const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;

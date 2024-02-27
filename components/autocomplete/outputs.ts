@@ -15,7 +15,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
     onChangeInput: (event: ChangeEvent<HTMLInputElement>) => {
       props.onInputTextChange(event.target.value.toLowerCase());
     },
-    onKeyDownInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
+    onKeyDownInput: (event: TypedKeyboardEvent<HTMLInputElement>): true | void => {
       if (event.key !== 'ArrowDown') { return; }
       if (!options.length) { return true; }
       (inputs.optionsPopupRef.current?.firstChild as HTMLElement)?.focus();
@@ -33,7 +33,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
       }
       props.onShowOptionsChange(false);
     },
-    onKeyDownOption: (event: KeyboardEvent<HTMLElement>) => {
+    onKeyDownOption: (event: KeyboardEvent<HTMLElement>): true | void => {
       if (event.key === 'ArrowDown') {
         event.preventDefault(); // prevents undesirable scrolling behavior
         if (!options.length) { return true; }

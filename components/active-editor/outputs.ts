@@ -18,18 +18,18 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
       store.synonymIds.$merge(store.tags.$find.id.$eq(apiResponse.tag.id).synonymId);
       store.activePanel.selection.$set('');
-      codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0].anchor } });
+      codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0]!.anchor } });
       notify.success(`Tag "${apiResponse.tag.text}" created`);
     },
     onClickFilterNotesFromSelection: () => {
-      const { from, to } = codeMirror!.state.selection.ranges[0];
+      const { from, to } = codeMirror!.state.selection.ranges[0]!;
       const selection = codeMirror!.state.doc.sliceString(from, to);
       store.synonymIds.$setUnique(store.tags.$filter.text.$isContainedInIgnoreCase(selection).synonymId);
       store.activePanel.selection.$set('');
       notify.success(`Filtered related notes`);
     },
     onClickSplitNoteFromSelection: async () => {
-      const range = codeMirror!.state.selection.ranges[0];
+      const range = codeMirror!.state.selection.ranges[0]!;
       store.activePanel.loadingSelection.$set(true);
       const apiResponse = await splitNote(range.from, range.to, store.$state.activeNoteId);
       await writeToStoreAndDb(store, apiResponse);
@@ -41,7 +41,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
         changes: {
           from: 0,
           to: codeMirror.state.doc.length,
-          insert: store.$state.notes.find(n => n.id === store.$state.activeNoteId)?.text,
+          insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
         },
       })
       notify.success(`Note split`);

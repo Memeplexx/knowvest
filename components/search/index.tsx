@@ -98,7 +98,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                     children={
                                       inputs.selectedSynonymTags.map(tags => (
                                         <Fragment
-                                          key={tags[0].synonymId}
+                                          key={tags[0]!.synonymId}
                                           children={
                                             <>
                                               {tags.map(tag =>

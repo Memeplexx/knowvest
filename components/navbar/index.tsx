@@ -33,7 +33,7 @@ export const Navbar = (props: Props) => {
         }
       />
       <Wrapper
-        $show={props.showIf}
+        $show={props.showIf ?? false}
         children={
           <>
             <ImageLogo

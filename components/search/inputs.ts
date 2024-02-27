@@ -15,11 +15,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
       ...tags
         .groupBy(tags => tags.synonymId)
         .map(tags => ({
-          value: `${tags[0].synonymId}-synonym`,
+          value: `${tags[0]!.synonymId}-synonym`,
           type: 'synonym',
           label: tags.map(t => t.text).join(', '),
-          id: tags[0].synonymId,
-          selected: selectedSynonymIds.includes(tags[0].synonymId),
+          id: tags[0]!.synonymId,
+          selected: selectedSynonymIds.includes(tags[0]!.synonymId),
         } as AutocompleteOptionType)),
       ...groups
         .map(group => ({

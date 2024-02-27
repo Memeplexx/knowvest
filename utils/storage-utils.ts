@@ -1,6 +1,7 @@
 import { RepsertableObject, Store } from "olik";
 import { AppState, indexedDbState } from "./store-utils";
 
+
 type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]: null | typeof indexedDbState[tableName] | typeof indexedDbState[tableName][0] }>;
 
 const openDatabase = () => indexedDB.open('knowvest', 1);

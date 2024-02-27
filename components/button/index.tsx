@@ -11,7 +11,7 @@ export const Button = forwardRef(function Button(
   return (
     <Wrapper
       {...remainingProps}
-      $highlighted={highlighted}
+      $highlighted={highlighted ?? false}
       ref={ref}
       children={props.children}
     />

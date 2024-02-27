@@ -18,8 +18,8 @@ export const useInputs = () => {
       .distinct()
       .map(synonymId => tags.filter(t => t.synonymId === synonymId))
       .map(tgs => ({
-        synonymId: tgs[0].synonymId,
-        selected: synonymIds.includes(tgs[0].synonymId),
+        synonymId: tgs[0]!.synonymId,
+        selected: synonymIds.includes(tgs[0]!.synonymId),
         tags: tgs.map((tag, index, array) => ({
           ...tag,
           first: index === 0,
@@ -40,10 +40,10 @@ export const useInputs = () => {
       .flatMap(tag => synonymGroups.filter(sg => sg.synonymId === tag.synonymId))
       .groupBy(sg => sg.groupId)
       .map(group => ({
-        groupId: group[0].groupId,
-        groupName: groups.findOrThrow(g => g.id === group[0].groupId).name,
+        groupId: group[0]!.groupId,
+        groupName: groups.findOrThrow(g => g.id === group[0]!.groupId).name,
         synonyms: synonymGroups
-          .filter(sg => sg.groupId === group[0].groupId)
+          .filter(sg => sg.groupId === group[0]!.groupId)
           .map(sg => ({
             id: sg.synonymId,
             selected: synonymIds.includes(sg.synonymId),
