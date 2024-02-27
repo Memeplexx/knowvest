@@ -23,7 +23,7 @@ export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexe
 
         // delete records from store
         const toDelete = tableRecords.filter(r => (r as typeof r & { isArchived: boolean }).isArchived).map(r => r.id);
-        !!toDelete.length && store[tableName].$filter.id.$in(toDelete as any).$delete();
+        !!toDelete.length && (store[tableName] as unknown as Store<{ id: number }[]>).$filter.id.$in(toDelete).$delete();
 
         const request = openDatabase();
         request.onsuccess = event => {

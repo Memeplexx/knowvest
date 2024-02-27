@@ -44,6 +44,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     const apiResponse = await createGroup(inputs.autocompleteText.trim(), inputs.synonymId);
     switch (apiResponse.status) {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.name);
+      case 'CONFLICT': return notify.error(apiResponse.message);
     }
     store.tagsConfig.autocompleteText.$set('');
     await writeToStoreAndDb(store, { groups: apiResponse.group, synonymGroups: apiResponse.synonymGroup });

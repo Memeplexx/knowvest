@@ -1,5 +1,5 @@
 "use server";
-import { ApiError, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateGroupId, validateSynonymId } from './_common';
+import { getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateGroupId, validateSynonymId } from './_common';
 import { GroupId, SynonymGroupId, SynonymId } from './types';
 
 
@@ -10,7 +10,7 @@ export const createGroup = (name: string, synonymId: SynonymId) => respond(async
   const userId = await getUserId();
   if (!name.trim().length) { return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const; }
   const groupWithSameName = await prisma.group.findFirst({ where: { name, userId, isArchived: false } });
-  if (groupWithSameName) { throw new ApiError('CONFLICT', 'A group with this name already exists.'); }
+  if (groupWithSameName) { return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const; }
 
   // Logic
   const group = await prisma.group.create({ data: { name, userId } });

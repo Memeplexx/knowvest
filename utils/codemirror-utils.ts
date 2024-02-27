@@ -193,7 +193,7 @@ const highlightedRanges = StateField.define({
     ranges = ranges.map(tr.changes)
     for (const e of tr.effects) {
       if (e.is(addHighlight)) {
-        ranges = addRange(ranges, e.value, (e.value as any).type);
+        ranges = addRange(ranges, e.value, (e.value as unknown as { type: tagType }).type);
       } else if (e.is(removeHighlight)) {
         ranges = cutRange(ranges, e.value);
       }
