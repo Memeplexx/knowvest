@@ -93,7 +93,8 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
     });
   }
   await writeToStoreAndDb(store, apiResponse);
-  const activeNoteId = notesSorted[0].id;
+  const activeNoteId = notesSorted[0]?.id // Database might be empty. If so, use the first note from the API response
+    ?? apiResponse.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0].id;
   const selectedTagIds = databaseData.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
   const synonymIds = databaseData.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId);
   store.$patch({
