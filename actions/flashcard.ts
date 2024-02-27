@@ -14,7 +14,7 @@ export const createFlashCard = async (noteId: NoteId) => respond(async () => {
   return { status: 'FLASH CARD CREATED', flashCard } as const;
 });
 
-export const updateFlashCardText = async ({ flashCardId, text }: { flashCardId: FlashCardId, text: string }) => respond(async () => {
+export const updateFlashCardText = async (flashCardId: FlashCardId, text: string) => respond(async () => {
 
   // Validate
   await validateFlashCardId(flashCardId);

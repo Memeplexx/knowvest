@@ -10,7 +10,7 @@ export const useOutputs = ({ store, notify }: Inputs) => {
       await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
     },
     onChangeFlashCardText: async (flashCardId: FlashCardId, text: string) => {
-      const apiResponse = await updateFlashCardText({ flashCardId, text });
+      const apiResponse = await updateFlashCardText(flashCardId, text);
       await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
     },
     onClickRequestDeleteFlashCard: (id: FlashCardId) => {

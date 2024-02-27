@@ -44,7 +44,7 @@ export const addTagToSynonym = (synonymId: SynonymId, tagId: TagId) => respond(a
   return { status: 'TAGS_UPDATED', tags, synonyms, synonymGroups } as const;
 });
 
-export const createTagForSynonym = ({ synonymId, text }: { synonymId?: SynonymId, text: string }) => respond(async () => {
+export const createTagForSynonym = (text: string, synonymId?: SynonymId) => respond(async () => {
 
   // Validate
   const userId = await getUserId();

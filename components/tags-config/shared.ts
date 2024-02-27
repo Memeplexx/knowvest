@@ -8,10 +8,7 @@ import { writeToStoreAndDb } from '@/utils/storage-utils';
 
 export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const completeCreateTagForSynonym = async () => {
-    const apiResponse = await createTagForSynonym({
-      text: inputs.autocompleteText.trim(),
-      synonymId: inputs.synonymId === null ? undefined : inputs.synonymId,
-    });
+    const apiResponse = await createTagForSynonym(inputs.autocompleteText.trim(), inputs.synonymId === null ? undefined : inputs.synonymId);
     switch (apiResponse.status) {
       case 'BAD_REQUEST': return notify.error(apiResponse.fields.text);
     }
