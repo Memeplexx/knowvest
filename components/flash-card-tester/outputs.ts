@@ -13,7 +13,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (event.target.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
         return;
       }
-      if (bodyRef.current?.contains(event.target as HTMLElement)) {
+      if (bodyRef.current?.contains(event.target)) {
         return;
       }
       props.onHide();

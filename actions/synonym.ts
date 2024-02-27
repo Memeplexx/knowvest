@@ -3,7 +3,6 @@ import { archiveSynonymGroupsAssociatedWithAnyArchivedTags, archiveSynonymsAssoc
 import { SynonymId, TagId } from './types';
 
 
-
 export const removeTagFromItsCurrentSynonym = (tagId: TagId) => respond(async () => {
 
   // Validate

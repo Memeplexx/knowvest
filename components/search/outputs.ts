@@ -16,7 +16,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (inputs.showAutocompleteOptions) {
         return store.search.showAutocompleteOptions.$set(false);
       }
-      if (inputs.bodyRef.current?.contains(event.target as HTMLElement)) {
+      if (inputs.bodyRef.current?.contains(event.target)) {
         return;
       }
       props.onHide();

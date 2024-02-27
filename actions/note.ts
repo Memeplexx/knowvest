@@ -1,6 +1,7 @@
 "use server";
 import { NoteId, NoteTagId, TagId } from "@/actions/types";
 import { getUserId, listUnArchivedTagIdsWithTagText, prisma, respond, validateNoteId } from "./_common";
+import { Note, NoteTag } from "@prisma/client";
 
 
 export const createNote = () => respond(async () => {
@@ -79,7 +80,7 @@ export const splitNote = (from: number, to: number, noteId: NoteId) => respond(a
   // Populate and return response
   const archivedNoteTags = await prisma.noteTag.findMany({ where: { id: { in: idsOfNoteTagsToBeArchived } } });
   const newNoteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: tagIdsToBeAssigned } } });
-  return { status: 'NOTE_SPLIT', notes: new Array(noteCreated, noteUpdated), noteTags: new Array(...newNoteTags, ...archivedNoteTags) } as const;
+  return { status: 'NOTE_SPLIT', notes: [noteCreated, noteUpdated] as Note[], noteTags: [...newNoteTags, ...archivedNoteTags] as NoteTag[] } as const;
 });
 
 export const updateNote = (noteId: NoteId, text: string) => respond(async () => {

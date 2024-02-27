@@ -2,7 +2,6 @@
 import { prisma, respond } from './_common';
 
 
-
 export const initialize = ({ name, email, image, after }: {
   name: string,
   email: string,

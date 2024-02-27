@@ -1,4 +1,5 @@
 "use server";
+import { NoteTag } from "@prisma/client";
 import { archiveNoteTagsAssociatedWithAnyArchivedTags, archiveSynonymGroupsAssociatedWithAnyArchivedTags, archiveSynonymsAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateTagId } from "./_common";
 import { TagId } from "./types";
 
@@ -56,7 +57,7 @@ export const updateTag = (tagId: TagId, text: string) => respond(async () => {
   const tagUpdated = await prisma.tag.update({ where: { id: tagId }, data: { text } });
 
   // Populate and return response
-  return { status: 'TAG_UPDATED', tag: tagUpdated, noteTags: new Array(...createdNoteTags, ...archivedNoteTags) } as const;
+  return { status: 'TAG_UPDATED', tag: tagUpdated, noteTags: [...createdNoteTags, ...archivedNoteTags] as NoteTag[] } as const;
 });
 
 export const archiveTag = (tagId: TagId) => respond(async () => {
