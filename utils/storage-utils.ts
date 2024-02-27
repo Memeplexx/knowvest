@@ -5,7 +5,7 @@ import { AppState, indexedDbState } from "./store-utils";
 type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]: null | typeof indexedDbState[tableName] | typeof indexedDbState[tableName][0] }>;
 
 const openDatabase = () => indexedDB.open('knowvest', 1);
-const eventTarget = (event: Event) => event.target as IDBOpenDBRequest;
+const eventTarget = <T = IDBOpenDBRequest>(event: Event) => event.target as T;
 
 export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexedDBArgs) => {
   return new Promise<void>((resolve, reject) => {
@@ -62,12 +62,11 @@ export const readFromDb = () => {
       const readDatabasePromise = new Promise<typeof indexedDbState>((resolve, reject) => {
         const transaction = db.transaction(objectStoreNames, 'readonly');
         const results = { ...indexedDbState };
-        const readObjectStore = (tableName: keyof typeof indexedDbState) => new Promise<void>((resolveObjectStore, rejectObjectStore) => {
+        const readObjectStore = <T extends keyof typeof indexedDbState>(tableName: T) => new Promise<void>((resolveObjectStore, rejectObjectStore) => {
           const objectStore = transaction.objectStore(tableName);
           const getAllRequest = objectStore.getAll();
           getAllRequest.onsuccess = event => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            results[tableName] = eventTarget(event).result as any;
+            results[tableName] = eventTarget<{ result: (typeof indexedDbState)[T]}>(event).result;
             resolveObjectStore();
           };
           getAllRequest.onerror = event => {
