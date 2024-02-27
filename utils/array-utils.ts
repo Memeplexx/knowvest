@@ -119,5 +119,4 @@ Array.prototype.aggregate = function () {
   };
 };
 
-// Object.keys({})
 Object.keysTyped = Object.keys;
