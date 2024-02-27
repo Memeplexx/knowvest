@@ -27,7 +27,6 @@ export const Tags = () => {
     <>
       <Modal
         showIf={inputs.showConfigDialog}
-        onBackdropClick={outputs.onHideDialog}
         children={
           <TagsConfig
             onHide={outputs.onHideDialog}

@@ -17,7 +17,6 @@ export const Navbar = (props: Props) => {
     <>
       <Modal
         showIf={inputs.showSearchDialog}
-        onClose={outputs.onHideSearchDialog}
         children={
           <SearchDialog
             onHide={outputs.onHideSearchDialog}
