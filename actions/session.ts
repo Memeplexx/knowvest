@@ -1,13 +1,14 @@
 "use server";
-import { prisma, receive } from './_common';
+import { prisma, respond } from './_common';
 
 
-export const initialize = receive<{
+
+export const initialize = ({ name, email, image, after }: {
   name: string,
   email: string,
   image: string | null,
   after: Date | null,
-}>()(async ({ after, email, name, image }) => {
+}) => respond(async () => {
 
   const userByEmail = await prisma.user.findFirst({ where: { email } });
 

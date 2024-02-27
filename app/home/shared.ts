@@ -10,7 +10,7 @@ export const useSharedFunctions = ({ store }: State) => ({
     store.activeNoteId.$set(noteId);
     store.synonymIds.$setUnique(synonymIds);
     store.notes.$find.id.$eq(noteId).dateViewed.$set(new Date());
-    const apiResponse = await viewNote({ noteId });
+    const apiResponse = await viewNote(noteId);
     await writeToStoreAndDb(store, { notes: apiResponse.note });
   }
 });

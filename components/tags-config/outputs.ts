@@ -74,14 +74,14 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickRemoveTagFromSynonyms: async () => {
       if (!inputs.tagId) { return; }
-      const apiResponse = await removeTagFromItsCurrentSynonym({ tagId: inputs.tagId });
+      const apiResponse = await removeTagFromItsCurrentSynonym(inputs.tagId);
       await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroups, tags: apiResponse.tag, noteTags: apiResponse.noteTags });
       store.tagsConfig.$patch({ tagId: null, autocompleteText: '' });
       notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
       if (!inputs.groupSynonymId) { return; }
-      const response = await removeSynonymFromGroup({ groupId: inputs.groupId!, synonymId: inputs.groupSynonymId! });
+      const response = await removeSynonymFromGroup(inputs.groupId!, inputs.groupSynonymId!);
       await writeToStoreAndDb(store, { groups: response.group, synonymGroups: response.synonymGroups });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
@@ -217,7 +217,7 @@ export const useOutputs = (inputs: Inputs) => {
       shared.blurAutocompleteInput();
     },
     onClickConfirmArchiveTag: async () => {
-      const apiResponse = await archiveTag({ tagId: inputs.tagId! });
+      const apiResponse = await archiveTag(inputs.tagId!);
       const synonymId = inputs.tagsInSynonymGroup.length === 1 ? null : inputs.synonymId;
       const lastTag = inputs.tagsInSynonymGroup.length === 1;
       store.tagsConfig.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : inputs.autocompleteAction });
@@ -226,7 +226,7 @@ export const useOutputs = (inputs: Inputs) => {
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {
-      const response = await archiveGroup({ groupId: inputs.groupId! });
+      const response = await archiveGroup(inputs.groupId!);
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
       await writeToStoreAndDb(store, { synonymGroups: response.synonymGroups, groups: response.group });
       notify.success('Group archived');

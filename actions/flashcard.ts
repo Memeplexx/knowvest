@@ -1,12 +1,10 @@
 "use server";
 import add from "date-fns/add";
-import { prisma, receive, validateFlashCardId, validateNoteId } from "./_common";
+import { prisma, respond, validateFlashCardId, validateNoteId } from "./_common";
 import { FlashCardId, NoteId } from "./types";
 
 
-export const createFlashCard = receive<{
-  noteId: NoteId,
-}>()(async ({ noteId }) => {
+export const createFlashCard = async (noteId: NoteId) => respond(async () => {
 
   // Validate
   await validateNoteId(noteId);
@@ -16,10 +14,7 @@ export const createFlashCard = receive<{
   return { status: 'FLASH CARD CREATED', flashCard } as const;
 });
 
-export const updateFlashCardText = receive<{
-  flashCardId: FlashCardId,
-  text: string,
-}>()(async ({ flashCardId, text }) => {
+export const updateFlashCardText = async ({ flashCardId, text }: { flashCardId: FlashCardId, text: string }) => respond(async () => {
 
   // Validate
   await validateFlashCardId(flashCardId);
@@ -29,9 +24,8 @@ export const updateFlashCardText = receive<{
   return { status: 'FLASH CARD UPDATED', flashCard };
 });
 
-export const archiveFlashCard = receive<{
-  flashCardId: FlashCardId,
-}>()(async ({ flashCardId }) => {
+
+export const archiveFlashCard = async (flashCardId: FlashCardId) => respond(async () => {
 
   // Validate
   await validateFlashCardId(flashCardId);
@@ -41,9 +35,8 @@ export const archiveFlashCard = receive<{
   return { status: 'FLASH CARD ARCHIVED', flashCard };
 });
 
-export const answerFlashCardQuestionCorrectly = receive<{
-  flashCardId: FlashCardId,
-}>()(async ({ flashCardId }) => {
+
+export const answerFlashCardQuestionCorrectly = async (flashCardId: FlashCardId) => respond(async () => {
 
   // Validate
   const flashCard = await validateFlashCardId(flashCardId);
@@ -55,9 +48,7 @@ export const answerFlashCardQuestionCorrectly = receive<{
   return { status: 'FLASH CARD UPDATED', flashCard: flashCardUpdated };
 });
 
-export const answerFlashCardQuestionIncorrectly = receive<{
-  flashCardId: FlashCardId,
-}>()(async ({ flashCardId }) => {
+export const answerFlashCardQuestionIncorrectly = async (flashCardId: FlashCardId) => respond(async () => {
 
   // Validate
   await validateFlashCardId(flashCardId);

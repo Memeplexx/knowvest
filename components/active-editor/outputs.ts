@@ -9,7 +9,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
   return {
     onClickCreateNewTagFromSelection: async () => {
       store.activePanel.loadingSelection.$set(true);
-      const apiResponse = await createTagFromActiveNote({ tagText: store.activePanel.selection.$state });
+      const apiResponse = await createTagFromActiveNote(store.activePanel.selection.$state);
       store.activePanel.loadingSelection.$set(false);
       switch (apiResponse.status) {
         case 'BAD_REQUEST': return notify.error(apiResponse.fields.tagText);
@@ -31,7 +31,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onClickSplitNoteFromSelection: async () => {
       const range = codeMirror!.state.selection.ranges[0];
       store.activePanel.loadingSelection.$set(true);
-      const apiResponse = await splitNote({ ...range, noteId: store.$state.activeNoteId });
+      const apiResponse = await splitNote(range.from, range.to, store.$state.activeNoteId);
       await writeToStoreAndDb(store, apiResponse);
       store.activePanel.$patch({
         loadingSelection: false,

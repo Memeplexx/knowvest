@@ -1,10 +1,9 @@
 "use server";
 import { NoteId, NoteTagId, TagId } from "@/actions/types";
-import { getUserId, listUnArchivedTagIdsWithTagText, prisma, receive, validateNoteId } from "./_common";
+import { getUserId, listUnArchivedTagIdsWithTagText, prisma, respond, validateNoteId } from "./_common";
 
 
-export const createNote = receive(
-)(async () => {
+export const createNote = () => respond(async () => {
 
   // Create a new note
   const now = new Date();
@@ -15,9 +14,7 @@ export const createNote = receive(
   return { status: 'NOTE_CREATED', note } as const;
 });
 
-export const archiveNote = receive<{
-  noteId: NoteId
-}>()(async ({ noteId }) => {
+export const archiveNote = (noteId: NoteId) => respond(async () => {
 
   // Validate
   await validateNoteId(noteId);
@@ -34,9 +31,7 @@ export const archiveNote = receive<{
   return { status: 'NOTE_ARCHIVED', note, noteTags } as const;
 });
 
-export const duplicateNote = receive<{
-  noteId: NoteId,
-}>()(async ({ noteId }) => {
+export const duplicateNote = (noteId: NoteId) => respond(async () => {
 
   // Validate
   const userId = await getUserId();
@@ -55,11 +50,7 @@ export const duplicateNote = receive<{
   return { status: 'NOTE_DUPLICATED', note: noteCreated, noteTags } as const;
 });
 
-export const splitNote = receive<{
-  noteId: NoteId,
-  from: number,
-  to: number,
-}>()(async ({ from, to, noteId }) => {
+export const splitNote = (from: number, to: number, noteId: NoteId) => respond(async () => {
 
   // Validate
   const userId = await getUserId();
@@ -91,10 +82,7 @@ export const splitNote = receive<{
   return { status: 'NOTE_SPLIT', notes: new Array(noteCreated, noteUpdated), noteTags: new Array(...newNoteTags, ...archivedNoteTags) } as const;
 });
 
-export const updateNote = receive<{
-  noteId: NoteId,
-  text: string,
-}>()(async ({ noteId, text }) => {
+export const updateNote = (noteId: NoteId, text: string) => respond(async () => {
 
   // Validate
   await validateNoteId(noteId);
@@ -107,9 +95,7 @@ export const updateNote = receive<{
   return { status: 'NOTE_UPDATED', note } as const;
 });
 
-export const viewNote = receive<{
-  noteId: NoteId
-}>()(async ({ noteId }) => {
+export const viewNote = (noteId: NoteId) => respond(async () => {
 
   // Validate
   await validateNoteId(noteId);

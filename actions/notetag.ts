@@ -1,13 +1,9 @@
 "use server";
-import { prisma, receive, validateTagId } from './_common';
+import { prisma, respond, validateTagId } from './_common';
 import { NoteId, TagId } from './types';
 
 
-export const updateNoteTags = receive<{
-  noteId: NoteId,
-  addTagIds: TagId[],
-  removeTagIds: TagId[],
-}>()(async ({ addTagIds, noteId, removeTagIds }) => {
+export const updateNoteTags = async (noteId: NoteId, addTagIds: TagId[], removeTagIds: TagId[]) => respond(async () => {
 
   // Validation
   await [...addTagIds, ...removeTagIds].map(async tagId => await validateTagId(tagId));
@@ -20,7 +16,7 @@ export const updateNoteTags = receive<{
     if (existingNoteTags.length) {
       await prisma.noteTag.updateMany({ where: { id: { in: existingNoteTags.map(noteTag => noteTag.id) } }, data: { isArchived: false } });
     }
-    
+
     // ... and if there are any tags that need to be created, then create them
     if (existingNoteTags.length < addTagIds.length) {
       const tagIdsOfNoteTagsJustCreated = existingNoteTags.map(noteTag => noteTag.tagId);

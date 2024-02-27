@@ -32,7 +32,7 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
     if (Date.now() - timestamp < debounce) { return; }
     if (!store.$state.activePanel.allowNotePersister) { return; }
     store.writingNote.$set(true);
-    const apiResponse = await updateNote({ noteId: store.$state.activeNoteId, text: update.state.doc.toString() });
+    const apiResponse = await updateNote(store.$state.activeNoteId, update.state.doc.toString());
     await writeToStoreAndDb(store, { notes: apiResponse.note });
     store.writingNote.$set(false);
   }
@@ -89,7 +89,7 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
     const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
     store.writingNoteTags.$set(true);
-    const apiResponse = await updateNoteTags({ addTagIds, removeTagIds, noteId: store.$state.activeNoteId });
+    const apiResponse = await updateNoteTags(store.$state.activeNoteId, addTagIds, removeTagIds);
     await writeToStoreAndDb(store, apiResponse);
     store.synonymIds.$setUnique(store.tags.$filter.id.$in(apiResponse.noteTags.map(nt => nt.tagId)).synonymId);
     store.writingNoteTags.$set(false);

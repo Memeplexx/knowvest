@@ -7,7 +7,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
   return {
     onClickCreateNote: async () => {
       store.activePanel.loadingNote.$set(true);
-      const apiResponse = await createNote({});
+      const apiResponse = await createNote();
       await writeToStoreAndDb(store, { notes: apiResponse.note });
       store.activePanel.loadingNote.$set(false);
       store.activeNoteId.$set(apiResponse.note.id);
@@ -18,7 +18,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     },
     onClickConfirmRemoveNote: async () => {
       store.activePanel.$patch({ allowNotePersister: false, loadingNote: true })
-      const apiResponse = await archiveNote({ noteId: store.$state.activeNoteId });
+      const apiResponse = await archiveNote(store.$state.activeNoteId);
       await writeToStoreAndDb(store, { notes: apiResponse.note, noteTags: apiResponse.noteTags })
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
       const newNoteId = store.$state.notes
@@ -37,7 +37,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     },
     onClickDuplicateNote: async () => {
       store.activePanel.loadingNote.$set(true);
-      const apiResponse = await duplicateNote({ noteId: store.$state.activeNoteId })
+      const apiResponse = await duplicateNote(store.$state.activeNoteId)
       await writeToStoreAndDb(store, { notes: apiResponse.note, noteTags: apiResponse.noteTags });
       store.activePanel.loadingNote.$set(false);
       popupRef.current?.hide();

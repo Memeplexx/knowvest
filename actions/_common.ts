@@ -66,8 +66,11 @@ export type EntityToDto<T>
   : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
   : T
 
-export const receive = <T extends Record<string, unknown>>() => <R>(processor: (a: T) => R) => async (arg: T) => {
-  const result = (await processor(arg));
+/**
+ * Returns a response where all entities are mapped to DTOs
+ */
+export const respond = async <T, R>(processor: () => R) => {
+  const result = (await processor());
   return result as EntityToDto<typeof result>;
 }
 

@@ -1,11 +1,10 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, receive, validateSynonymId, validateTagId } from './_common';
+import { archiveAllEntitiesAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateSynonymId, validateTagId } from './_common';
 import { SynonymId, TagId } from './types';
 
 
-export const removeTagFromItsCurrentSynonym = receive<{
-  tagId: TagId,
-}>()(async ({ tagId }) => {
+
+export const removeTagFromItsCurrentSynonym = (tagId: TagId) => respond(async () => {
 
   // Validate
   await validateTagId(tagId);
@@ -22,10 +21,7 @@ export const removeTagFromItsCurrentSynonym = receive<{
   return { status: 'TAG_MOVED_TO_NEW_SYNONYM', tag, ...archivedEntities } as const;
 });
 
-export const addTagToSynonym = receive<{
-  tagId: TagId,
-  synonymId: SynonymId,
-}>()(async ({ synonymId, tagId }) => {
+export const addTagToSynonym = (synonymId: SynonymId, tagId: TagId) => respond(async () => {
 
   // Validate
   const userId = await getUserId();
@@ -46,10 +42,7 @@ export const addTagToSynonym = receive<{
   return { status: 'TAGS_UPDATED', tags, ...archivedEntities } as const;
 });
 
-export const createTagForSynonym = receive<{
-  text: string,
-  synonymId?: SynonymId,
-}>()(async ({ synonymId, text }) => {
+export const createTagForSynonym = ({ synonymId, text }: { synonymId?: SynonymId, text: string }) => respond(async () => {
 
   // Validate
   const userId = await getUserId();

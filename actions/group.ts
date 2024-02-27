@@ -1,12 +1,9 @@
 "use server";
-import { ApiError, getUserId, listUnArchivedNoteIdsWithTagText, prisma, receive, validateGroupId, validateSynonymId } from './_common';
+import { ApiError, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateGroupId, validateSynonymId } from './_common';
 import { GroupId, SynonymGroupId, SynonymId } from './types';
 
 
-export const createGroup = receive<{
-  name: string,
-  synonymId: SynonymId,
-}>()(async ({ name, synonymId }) => {
+export const createGroup = (name: string, synonymId: SynonymId) => respond(async () => {
 
   // Validate
   await validateSynonymId(synonymId);
@@ -21,10 +18,7 @@ export const createGroup = receive<{
   return { status: 'GROUP_CREATED', group, synonymGroup } as const;
 });
 
-export const updateGroup = receive<{
-  groupId: GroupId,
-  name: string,
-}>()(async ({ groupId, name }) => {
+export const updateGroup = (groupId: GroupId, name: string) => respond(async () => {
 
   // Validate
   await validateGroupId(groupId);
@@ -38,9 +32,7 @@ export const updateGroup = receive<{
   return { status: 'GROUP_UPDATED', group } as const;
 });
 
-export const archiveGroup = receive<{
-  groupId: GroupId
-}>()(async ({ groupId }) => {
+export const archiveGroup = (groupId: GroupId) => respond(async () => {
 
   // Validate
   await validateGroupId(groupId);
@@ -52,10 +44,7 @@ export const archiveGroup = receive<{
   return { status: 'ARCHIVED', group, synonymGroups } as const;
 });
 
-export const removeSynonymFromGroup = receive<{
-  synonymId: SynonymId,
-  groupId: GroupId,
-}>()(async ({ groupId, synonymId }) => {
+export const removeSynonymFromGroup = (groupId: GroupId, synonymId: SynonymId) => respond(async () => {
 
   // Validate
   await validateGroupId(groupId);
@@ -72,10 +61,7 @@ export const removeSynonymFromGroup = receive<{
   return { status: 'SYNONYM_REMOVED_FROM_GROUP', synonymGroups, group } as const;
 });
 
-export const addSynonymToGroup = receive<{
-  synonymId: SynonymId,
-  groupId: GroupId,
-}>()(async ({ groupId, synonymId }) => {
+export const addSynonymToGroup = (groupId: GroupId, synonymId: SynonymId) => respond(async () => {
 
   // Validate
   await validateGroupId(groupId);
@@ -90,11 +76,7 @@ export const addSynonymToGroup = receive<{
   return { status: 'SYNONYM_ADDED_TO_GROUP', synonymGroup } as const;
 });
 
-export const createTagForGroup = receive<{
-  text: string,
-  groupId: GroupId,
-  synonymId: SynonymId,
-}>()(async ({ groupId, synonymId, text }) => {
+export const createTagForGroup = (text: string, groupId: GroupId, synonymId: SynonymId) => respond(async () => {
 
   // Validate
   const userId = await getUserId();

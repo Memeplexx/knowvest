@@ -1,10 +1,9 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, receive, validateTagId } from "./_common";
+import { archiveAllEntitiesAssociatedWithAnyArchivedTags, getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateTagId } from "./_common";
 import { TagId } from "./types";
 
-export const createTag = receive<{
-  text: string,
-}>()(async ({ text }) => {
+
+export const createTag = (text: string) => respond(async () => {
 
   // Validate
   const userId = await getUserId();
@@ -29,10 +28,7 @@ export const createTag = receive<{
   return { status: 'TAG_CREATED', tag, noteTags } as const;
 });
 
-export const updateTag = receive<{
-  tagId: TagId,
-  text: string,
-}>()(async ({ tagId, text }) => {
+export const updateTag = (tagId: TagId, text: string) => respond(async () => {
 
   // Validate
   const userId = await getUserId();
@@ -63,9 +59,7 @@ export const updateTag = receive<{
   return { status: 'TAG_UPDATED', tag: tagUpdated, noteTags: new Array(...createdNoteTags, ...archivedNoteTags) } as const;
 });
 
-export const archiveTag = receive<{
-  tagId: TagId,
-}>()(async ({ tagId }) => {
+export const archiveTag = (tagId: TagId) => respond(async () => {
 
   // Validate
   await validateTagId(tagId);
@@ -81,9 +75,7 @@ export const archiveTag = receive<{
   return { status: 'TAG_ARCHIVED', tag, ...archivedEntities } as const;
 });
 
-export const createTagFromActiveNote = receive<{
-  tagText: string,
-}>()(async ({ tagText }) => {
+export const createTagFromActiveNote = (tagText: string) => respond(async () => {
 
   // Validate
   const userId = await getUserId();
