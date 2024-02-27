@@ -4,7 +4,7 @@ import { getUserId, listUnArchivedTagIdsWithTagText, prisma, receive, validateNo
 
 
 export const createNote = receive(
-  )(async () => {
+)(async () => {
 
   // Create a new note
   const now = new Date();
@@ -18,7 +18,7 @@ export const createNote = receive(
 export const archiveNote = receive<{
   noteId: NoteId
 }>()(async ({ noteId }) => {
-  
+
   // Validate
   await validateNoteId(noteId);
 
@@ -51,7 +51,7 @@ export const duplicateNote = receive<{
   await prisma.noteTag.createMany({ data: noteTagTagIds.map(tagId => ({ noteId: noteCreated.id, tagId })) });
 
   // Populate and return response
-  const noteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } }});
+  const noteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } } });
   return { status: 'NOTE_DUPLICATED', note: noteCreated, noteTags } as const;
 });
 
@@ -60,7 +60,7 @@ export const splitNote = receive<{
   from: number,
   to: number,
 }>()(async ({ from, to, noteId }) => {
-  
+
   // Validate
   const userId = await getUserId();
   const note = await validateNoteId(noteId);

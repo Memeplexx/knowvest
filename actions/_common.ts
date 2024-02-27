@@ -79,17 +79,17 @@ const validateId = async <R>(entityName: string, query: (user: { email: string }
 }
 
 export const validateFlashCardId = async (flashCardId: FlashCardId) =>
-  await validateId('Flash Card', async user => await prisma.flashCard.findFirst({ where: { id: flashCardId, note: { user } } }));
+  await validateId('Flash Card', async user => await prisma.flashCard.findFirst({ where: { id: flashCardId, note: { user }, isArchived: false } }));
 export const validateGroupId = async (groupId: GroupId) =>
-  await validateId('Group', async user => await prisma.group.findFirst({ where: { id: groupId, user } }));
+  await validateId('Group', async user => await prisma.group.findFirst({ where: { id: groupId, user, isArchived: false } }));
 export const validateSynonymId = async (synonymId: SynonymId) =>
-  await validateId('Synonym', async user => prisma.synonym.findFirstOrThrow({ where: { id: synonymId, tag: { some: { user } } } }));
+  await validateId('Synonym', async user => prisma.synonym.findFirstOrThrow({ where: { id: synonymId, tag: { some: { user } }, isArchived: false } }));
 export const validateSynonymGroupId = async (synonymGroupId: SynonymGroupId) =>
-  await validateId('Synonym Group', async user => prisma.synonymGroup.findFirstOrThrow({ where: { id: synonymGroupId, group: { user } } }));
+  await validateId('Synonym Group', async user => prisma.synonymGroup.findFirstOrThrow({ where: { id: synonymGroupId, group: { user }, isArchived: false } }));
 export const validateNoteId = async (noteId: NoteId) =>
-  await validateId('Note', async user => prisma.note.findFirstOrThrow({ where: { id: noteId, user } }));
+  await validateId('Note', async user => prisma.note.findFirstOrThrow({ where: { id: noteId, user, isArchived: false } }));
 export const validateTagId = async (tagId: TagId) =>
-  await validateId('Tag', async user => prisma.tag.findFirstOrThrow({ where: { id: tagId, user } }));
+  await validateId('Tag', async user => prisma.tag.findFirstOrThrow({ where: { id: tagId, user, isArchived: false } }));
 export const getUserId = async () => {
   const session = await getServerSession(authOptions);
   const result = await prisma.user.findFirst({ where: { email: session!.user!.email! } });

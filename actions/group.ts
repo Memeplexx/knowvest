@@ -48,7 +48,6 @@ export const archiveGroup = receive<{
   // Logic
   await prisma.synonymGroup.updateMany({ where: { groupId }, data: { isArchived: true } });
   const synonymGroups = await prisma.synonymGroup.findMany({ where: { groupId } });
-
   const group = await prisma.group.update({ where: { id: groupId }, data: { isArchived: true } });
   return { status: 'ARCHIVED', group, synonymGroups } as const;
 });
