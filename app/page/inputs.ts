@@ -21,7 +21,7 @@ export const useInputs = () => {
     if (!state.initialized || !searchParams?.has('session-expired')) { return; }
     router.replace('/');
     notifier.info('Your session expired. Please sign in again');
-  }, [searchParams, state.initialized, router]);
+  }, [searchParams, state.initialized, router, notifier]);
 
   return {
     ...state,

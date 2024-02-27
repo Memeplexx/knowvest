@@ -26,7 +26,7 @@ export const useInputs = (props: Props) => {
         ...n,
         matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
       }));
-  }, [activeNoteId, notes, tags, noteTags, synonymIds]);
+  }, [activeNoteId, notes, tags, noteTags, synonymIds, relatedItems.index]);
 
   const noteCountString = useMemo(() => {
     return `${items.length} result${items.length === 1 ? '' : 's'}`;

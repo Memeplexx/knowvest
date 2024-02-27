@@ -1,6 +1,6 @@
+import { FlashCardDTO, FlashCardId, GroupDTO, GroupId, NoteDTO, NoteId, NoteTagDTO, SynonymDTO, SynonymGroupDTO, SynonymGroupId, SynonymId, TagDTO, TagId, UserId } from "@/actions/types";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { FlashCardDTO, FlashCardId, GroupDTO, GroupId, NoteDTO, NoteId, NoteTagDTO, NoteTagId, SynonymDTO, SynonymGroupDTO, SynonymGroupId, SynonymId, TagDTO, TagId, UserId } from "@/actions/types";
-import { FlashCard, Group, Note, NoteTag, Prisma, PrismaClient, Synonym, SynonymGroup, Tag, User } from "@prisma/client";
+import { FlashCard, Group, Note, NoteTag, Prisma, PrismaClient, Synonym, SynonymGroup, Tag } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export const prisma = new PrismaClient({
@@ -12,7 +12,9 @@ export const archiveNoteTagsAssociatedWithAnyArchivedTags = async (userId: UserI
   SELECT nt.id FROM note_tag nt 
     JOIN note n on nt.note_id = n.id
     JOIN tag t on nt.tag_id = t.id
-    WHERE n.user_id = ${userId} AND nt.is_archived IS FALSE AND t.is_archived IS TRUE;
+    WHERE n.user_id = ${userId} 
+    AND nt.is_archived IS FALSE 
+    AND t.is_archived IS TRUE;
 `)).map(nt => nt.id);
   await prisma.noteTag.updateMany({ where: { id: { in: noteTagIdsToArchive } }, data: { isArchived: true } });
   return await prisma.noteTag.findMany({ where: { id: { in: noteTagIdsToArchive } } });
@@ -69,7 +71,9 @@ export const listUnArchivedNoteIdsWithTagText = async ({ userId, tagText }: { us
   return (await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
     SELECT n.id 
       FROM note n 
-      WHERE n.is_archived IS FALSE AND n.user_id = ${userId} AND n.text ~* CONCAT('\\m', ${tagText}, '\\M');
+      WHERE n.is_archived IS FALSE 
+      AND n.user_id = ${userId} 
+      AND n.text ~* CONCAT('\\m', ${tagText}, '\\M');
   `)).map(n => n.id);
 }
 
@@ -77,7 +81,9 @@ export const listUnArchivedTagIdsWithTagText = async ({ userId, noteText }: { us
   return (await prisma.$queryRaw<TagDTO[]>(Prisma.sql`
     SELECT t.id
       FROM tag t
-      WHERE t.is_archived IS FALSE AND t.user_id = ${userId} AND ${noteText} ~* CONCAT('\\m', t.text, '\\M');
+      WHERE t.is_archived IS FALSE 
+      AND t.user_id = ${userId} 
+      AND ${noteText} ~* CONCAT('\\m', t.text, '\\M');
   `)).map(t => t.id);
 }
 
@@ -96,7 +102,7 @@ export type EntityToDto<T>
 /**
  * Returns a response where all entities are mapped to DTOs
  */
-export const respond = async <T, R>(processor: () => R) => {
+export const respond = async <R>(processor: () => R) => {
   const result = (await processor());
   return result as EntityToDto<typeof result>;
 }
