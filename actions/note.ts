@@ -1,6 +1,6 @@
 "use server";
 import { NoteId, NoteTagId, TagId } from "@/actions/types";
-import { listUnArchivedTagIdsWithTagText, prisma, receive } from "./_common";
+import { listUnArchivedTagIdsWithTagText, prisma, receive, validateNoteId } from "./_common";
 
 
 export const createNote = receive(
@@ -16,7 +16,10 @@ export const createNote = receive(
 
 export const archiveNote = receive<{
   noteId: NoteId
-}>()(async ({ noteId }) => {
+}>()(async ({ noteId, userId }) => {
+
+  // Validate
+  await validateNoteId({ noteId, userId });
 
   // Archive all note tags associated with the note that is being archived
   const idsOfNoteTagsToBeArchived = (await prisma.noteTag.findMany({ where: { noteId }, select: { id: true } })).map(nt => nt.id);
@@ -32,7 +35,10 @@ export const archiveNote = receive<{
 
 export const duplicateNote = receive<{
   noteId: NoteId,
-}>()(async ({ noteId, userId, note }) => {
+}>()(async ({ noteId, userId }) => {
+
+  // Validate
+  const note = await validateNoteId({ noteId, userId });
 
   // Create a new note with the same text as the note being duplicated
   const now = new Date();
@@ -51,7 +57,10 @@ export const splitNote = receive<{
   noteId: NoteId,
   from: number,
   to: number,
-}>()(async ({ from, noteId, to, userId, note }) => {
+}>()(async ({ from, to, noteId, userId }) => {
+
+  // Validate
+  const note = await validateNoteId({ noteId, userId });
 
   // Create new note with the split text
   const now = new Date();
@@ -82,7 +91,10 @@ export const splitNote = receive<{
 export const updateNote = receive<{
   noteId: NoteId,
   text: string,
-}>()(async ({ noteId, text }) => {
+}>()(async ({ noteId, userId, text }) => {
+
+  // Validate
+  await validateNoteId({ noteId, userId });
 
   // Update note
   const now = new Date();
@@ -94,7 +106,10 @@ export const updateNote = receive<{
 
 export const viewNote = receive<{
   noteId: NoteId
-}>()(async ({ noteId }) => {
+}>()(async ({ noteId, userId }) => {
+
+  // Validate
+  await validateNoteId({ noteId, userId });
 
   // Update note
   const note = await prisma.note.update({ where: { id: noteId }, data: { dateViewed: new Date() } });

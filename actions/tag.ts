@@ -1,5 +1,5 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNoteIdsWithTagText, prisma, receive } from "./_common";
+import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNoteIdsWithTagText, prisma, receive, validateTagId } from "./_common";
 import { TagId } from "./types";
 
 export const createTag = receive<{
@@ -31,9 +31,10 @@ export const createTag = receive<{
 export const updateTag = receive<{
   tagId: TagId,
   text: string,
-}>()(async ({ userId, tagId, text, tag }) => {
+}>()(async ({ userId, tagId, text }) => {
 
   // Validate
+  const tag = await validateTagId({ tagId, userId });
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   if (tag.text === text) { return { status: 'TAG_UNCHANGED' } as const; }
   const unArchivedTagWithSameText = await prisma.tag.findFirst({ where: { text, isArchived: false } });
@@ -63,6 +64,9 @@ export const updateTag = receive<{
 export const archiveTag = receive<{
   tagId: TagId,
 }>()(async ({ tagId, userId }) => {
+
+  // Validate
+  await validateTagId({ tagId, userId });
 
   // Archive the tag
   const tag = await prisma.tag.update({ where: { id: tagId }, data: { isArchived: true } });

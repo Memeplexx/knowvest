@@ -54,19 +54,6 @@ export const listUnArchivedTagIdsWithTagText = async ({ userId, noteText }: { us
   `)).map(t => t.id);
 }
 
-
-type Arg<T, Id, Name extends string, Entity> = { [P in keyof T as T[P] extends Id ? Name : never]: Entity }
-type processorArgs<T> = T
-  & Arg<T, NoteId, 'note', Note>
-  & Arg<T, TagId, 'tag', Tag>
-  & Arg<T, FlashCardId, 'flashCard', FlashCard>
-  & Arg<T, SynonymId, 'synonym', Synonym>
-  & Arg<T, SynonymGroupId, 'synonymGroup', SynonymGroup>
-  & Arg<T, NoteTagId, 'noteTag', NoteTag>
-  & Arg<T, GroupId, 'group', Group>
-  & { userId: UserId, user: User }
-  ;
-
 export type EntityToDto<T>
   = T extends Note ? NoteDTO
   : T extends FlashCard ? FlashCardDTO
@@ -79,22 +66,45 @@ export type EntityToDto<T>
   : T extends { [key: string]: unknown } ? { [key in keyof T]: EntityToDto<T[key]> }
   : T
 
-export const receive = <T extends Record<string, unknown>>() => <R>(processor: (a: processorArgs<T>) => R) => async (arg: T) => {
+export const receive = <T extends Record<string, unknown>>() => <R>(processor: (a: T & { userId: UserId }) => R) => async (arg: T) => {
   const session = await getServerSession(authOptions);
   const user = (await prisma.user.findFirst({ where: { email: session!.user!.email! } })) || {} as User;
   const userId = user?.id as UserId;
   const result = (await processor({
     ...arg,
     userId,
-    user,
-    note: !arg.noteId ? null : await prisma.note.findFirstOrThrow({ where: { id: arg.noteId, userId } }),
-    tag: !arg.tagId ? null : await prisma.tag.findFirstOrThrow({ where: { id: arg.tagId, userId } }),
-    flashCard: !arg.flashCardId ? null : prisma.flashCard.findFirstOrThrow({ where: { id: arg.flashCardId, note: { userId } } }),
-    group: !arg.groupId ? null : prisma.group.findFirstOrThrow({ where: { id: arg.groupId, userId } }),
-    synonym: !arg.synonymId ? null : prisma.synonym.findFirstOrThrow({ where: { id: arg.synonymId, tag: { some: { userId } } } }),
-    synonymGroup: !arg.synonymGroupId ? null : prisma.synonymGroup.findFirstOrThrow({ where: { id: arg.synonymGroupId, group: { userId } } }),
-  } as processorArgs<T>));
+  }));
   return result as EntityToDto<typeof result>;
+}
+
+const validateId = async <R>(entityName: string, query: () => Promise<R>) => {
+  const result = await query();
+  if (!result) { throw new ApiError('NOT_FOUND', `${entityName} not found`); }
+  return result;
+}
+
+export const validateFlashCardId = async ({ flashCardId, userId }: { flashCardId: FlashCardId, userId: UserId }) => {
+  return validateId('Flash Card', async () => await prisma.flashCard.findFirst({ where: { id: flashCardId, note: { userId } } }));
+}
+
+export const validateGroupId = async ({ groupId, userId }: { groupId: GroupId, userId: UserId }) => {
+  return validateId('Group', async () => await prisma.group.findFirst({ where: { id: groupId, userId } }));
+}
+
+export const validateSynonymId = async ({ synonymId, userId }: { synonymId: SynonymId, userId: UserId }) => {
+  return validateId('Synonym', async () => prisma.synonym.findFirstOrThrow({ where: { id: synonymId, tag: { some: { userId } } } }));
+}
+
+export const validateSynonymGroupId = async ({ synonymGroupId, userId }: { synonymGroupId: SynonymGroupId, userId: UserId }) => {
+  return validateId('Synonym Group', async () => prisma.synonymGroup.findFirstOrThrow({ where: { id: synonymGroupId, group: { userId } } }));
+}
+
+export const validateNoteId = async ({ noteId, userId }: { noteId: NoteId, userId: UserId }) => {
+  return validateId('Note', async () => prisma.note.findFirstOrThrow({ where: { id: noteId, userId } }));
+}
+
+export const validateTagId = async ({ tagId, userId }: { tagId: TagId, userId: UserId }) => {
+  return validateId('Tag', async () => prisma.tag.findFirstOrThrow({ where: { id: tagId, userId } }));
 }
 
 export class ApiError extends Error {

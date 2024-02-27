@@ -12,7 +12,7 @@ export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexe
       .filter(tableName => !!indexedDbState[tableName])
       .forEach(function writeToDB(tableName, index, array) {
         const tableRecord = records[tableName]!;
-        const tableRecords = Array.isArray(tableRecord) ? tableRecord : [tableRecord];
+        const tableRecords = Array.isArray(tableRecord) ? tableRecord : tableRecord === null ? [] : [tableRecord];
         if (!tableRecords.length) {
           return resolve();
         }

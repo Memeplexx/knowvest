@@ -1,5 +1,5 @@
 "use server";
-import { ApiError, prisma, receive } from './_common';
+import { prisma, receive, validateTagId } from './_common';
 import { NoteId, TagId } from './types';
 
 
@@ -10,10 +10,7 @@ export const updateNoteTags = receive<{
 }>()(async ({ userId, addTagIds, noteId, removeTagIds }) => {
 
   // Validation
-  await [...addTagIds, ...removeTagIds].map(async tagId => {
-    const tag = await prisma.tag.findFirst({ where: { id: tagId, userId } });
-    if (!tag) { throw new ApiError('NOT_FOUND', 'Tag not found'); }
-  });
+  await [...addTagIds, ...removeTagIds].map(async tagId => await validateTagId({ tagId, userId }));
 
   // If there are any tags to be added...
   if (addTagIds.length) {

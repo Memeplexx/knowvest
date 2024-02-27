@@ -1,12 +1,15 @@
 "use server";
 import add from "date-fns/add";
-import { prisma, receive } from "./_common";
+import { prisma, receive, validateFlashCardId, validateNoteId } from "./_common";
 import { FlashCardId, NoteId } from "./types";
 
 
 export const createFlashCard = receive<{
   noteId: NoteId,
-}>()(async ({ noteId }) => {
+}>()(async ({ noteId, userId }) => {
+
+  // Validate
+  await validateNoteId({ noteId, userId });
 
   // Logic
   const flashCard = await prisma.flashCard.create({ data: { noteId, text: '', cleanRunCount: 0, nextQuestionDate: add(new Date(), { days: 1 }) } });
@@ -16,7 +19,10 @@ export const createFlashCard = receive<{
 export const updateFlashCardText = receive<{
   flashCardId: FlashCardId,
   text: string,
-}>()(async ({ flashCardId, text }) => {
+}>()(async ({ flashCardId, userId, text }) => {
+
+  // Validate
+  await validateFlashCardId({ flashCardId, userId });
 
   // Logic
   const flashCard = await prisma.flashCard.update({ where: { id: flashCardId }, data: { text } });
@@ -25,7 +31,10 @@ export const updateFlashCardText = receive<{
 
 export const archiveFlashCard = receive<{
   flashCardId: FlashCardId,
-}>()(async ({ flashCardId }) => {
+}>()(async ({ flashCardId, userId }) => {
+
+  // Validate
+  await validateFlashCardId({ flashCardId, userId });
 
   // Logic
   const flashCard = await prisma.flashCard.update({ where: { id: flashCardId }, data: { isArchived: true } });
@@ -34,7 +43,10 @@ export const archiveFlashCard = receive<{
 
 export const answerFlashCardQuestionCorrectly = receive<{
   flashCardId: FlashCardId,
-}>()(async ({ flashCardId, flashCard }) => {
+}>()(async ({ flashCardId, userId }) => {
+
+  // Validate
+  const flashCard = await validateFlashCardId({ flashCardId, userId });
 
   // Logic
   const cleanRunCount = flashCard.cleanRunCount + 1;
@@ -45,7 +57,10 @@ export const answerFlashCardQuestionCorrectly = receive<{
 
 export const answerFlashCardQuestionIncorrectly = receive<{
   flashCardId: FlashCardId,
-}>()(async ({ flashCardId }) => {
+}>()(async ({ flashCardId, userId }) => {
+
+  // Validate
+  await validateFlashCardId({ flashCardId, userId });
 
   // Logic
   const cleanRunCount = 0;

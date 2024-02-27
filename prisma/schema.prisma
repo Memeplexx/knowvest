@@ -70,7 +70,6 @@ model SynonymGroup {
   synonym     Synonym  @relation(fields: [synonymId], references: [id])
   dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
   isArchived  Boolean  @default(false) @map("is_archived")
-  @@unique([groupId, synonymId])
 
   @@map("synonym_group")
 }
@@ -84,7 +83,6 @@ model NoteTag {
   assignedAt  DateTime @default(now()) @map("assigned_at")
   dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
   isArchived  Boolean  @default(false) @map("is_archived")
-  @@unique([noteId, tagId])
 
   @@map("note_tag")
 }

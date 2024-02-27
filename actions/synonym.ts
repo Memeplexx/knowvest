@@ -1,11 +1,14 @@
 "use server";
-import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNoteIdsWithTagText, prisma, receive } from './_common';
+import { archiveAllEntitiesAssociatedWithAnyArchivedTags, listUnArchivedNoteIdsWithTagText, prisma, receive, validateSynonymId, validateTagId } from './_common';
 import { SynonymId, TagId } from './types';
 
 
 export const removeTagFromItsCurrentSynonym = receive<{
   tagId: TagId,
 }>()(async ({ userId, tagId }) => {
+
+  // Validate
+  await validateTagId({ tagId, userId });
 
   // Create a new synonym and assign the tag to it
   const synonym = await prisma.synonym.create({ data: {} });
@@ -21,7 +24,11 @@ export const removeTagFromItsCurrentSynonym = receive<{
 export const addTagToSynonym = receive<{
   tagId: TagId,
   synonymId: SynonymId,
-}>()(async ({ userId, synonymId, tag }) => {
+}>()(async ({ userId, synonymId, tagId }) => {
+
+  // Validate
+  const tag = await validateTagId({ tagId, userId });
+  await validateSynonymId({ synonymId, userId });
 
   // Find all tags that are currently associated with the same synonym as the tag to be updated
   const allTagIdsAssociatedWithOldSynonym = (await prisma.tag.findMany({ where: { synonymId: tag.synonymId }, select: { id: true } })).map(t => t.id as TagId);
@@ -43,6 +50,7 @@ export const createTagForSynonym = receive<{
 }>()(async ({ userId, synonymId, text }) => {
 
   // Validate
+  !!synonymId && await validateSynonymId({ synonymId, userId });
   if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
   const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
   if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
