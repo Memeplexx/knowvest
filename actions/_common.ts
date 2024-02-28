@@ -10,8 +10,8 @@ export const prisma = new PrismaClient({
 export const archiveNoteTagsAssociatedWithAnyArchivedTags = async (userId: UserId) => {
   const noteTagIdsToArchive = (await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
   SELECT nt.id FROM note_tag nt 
-    JOIN note n on nt.note_id = n.id
-    JOIN tag t on nt.tag_id = t.id
+    JOIN note n ON nt.note_id = n.id
+    JOIN tag t ON nt.tag_id = t.id
     WHERE n.user_id = ${userId} 
     AND nt.is_archived IS FALSE 
     AND t.is_archived IS TRUE;
@@ -25,7 +25,7 @@ export const archiveSynonymsAssociatedWithAnyArchivedTags = async (userId: UserI
     SELECT DISTINCT s.id 
       FROM synonym s 
       WHERE s.is_archived IS FALSE 
-      AND s.id in (
+      AND s.id IN (
         SELECT synonym_id 
         FROM (
           SELECT t.synonym_id, count(t)
@@ -102,10 +102,7 @@ export type EntityToDto<T>
 /**
  * Returns a response where all entities are mapped to DTOs
  */
-export const respond = async <R>(processor: () => R) => {
-  const result = (await processor());
-  return result as EntityToDto<typeof result>;
-}
+export const respond = async <R>(processor: () => R) => await processor() as EntityToDto<Awaited<R>>;
 
 const validateId = async <R>(entityName: string, query: (user: { email: string }) => Promise<R>) => {
   const session = await getServerSession(authOptions);

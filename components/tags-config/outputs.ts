@@ -82,7 +82,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickRemoveSynonymFromCustomGroup: async () => {
       if (!inputs.groupSynonymId) { return; }
       if (!inputs.groupId) { throw new Error(); }
-      const response = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId!);
+      const response = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId);
       await writeToStoreAndDb(store, { groups: response.group, synonymGroups: response.synonymGroups });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
@@ -150,11 +150,11 @@ export const useOutputs = (inputs: Inputs) => {
         .$find.groupId.$eq(inputs.groupId).$and.synonymId.$eq(inputs.groupSynonymId)
         .synonymId;
       store.tagsConfig.$patch({
+        autocompleteAction: 'addSynonymsToActiveSynonyms',
         tagId: null,
         groupId: null,
         synonymId,
         groupSynonymId: null,
-        autocompleteAction: 'addSynonymsToActiveSynonyms',
       });
     },
     onClickStartOver: (event: MouseEvent) => {

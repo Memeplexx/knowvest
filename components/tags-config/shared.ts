@@ -78,7 +78,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     notify.success('Tag updated');
     blurAutocompleteInput();
   }
-  const doCancel = (eventTarget: EventTarget | null) => {
+  const doCancel = (eventTarget: EventTarget) => {
     if (eventTarget?.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
       return;
     }
@@ -111,7 +111,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
   const onAutocompleteSelectedWhileNothingIsSelected = async ({ tagId }: { tagId: TagId }) => {
     const synonymId = store.tags.$find.id.$eq(tagId).synonymId;
     const autocompleteText = store.tags.$find.id.$eq(tagId).text;
-    store.tagsConfig.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: /*'addSynonymsToActiveGroup'*/'addSynonymsToActiveSynonyms' });
+    store.tagsConfig.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: 'addSynonymsToActiveSynonyms' });
   }
   const onAutocompleteSelectedWhileSynonymIsSelected = async ({ tagId }: { tagId: TagId }) => {
     if (!inputs.synonymId) { throw new Error(); }

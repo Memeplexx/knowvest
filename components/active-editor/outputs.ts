@@ -47,7 +47,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       notify.success(`Note split`);
     },
     onClickTextEditorWrapper: () => {
-      editorRef.current?.focus();
+      editorRef.current!.focus();
     },
     onBlurTextEditor: () => {
       if (store.activePanel.selection.$state === '') { return; }
