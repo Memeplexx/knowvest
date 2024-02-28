@@ -50,7 +50,7 @@ const useHeaderExpander = (store: HomeStore) => {
     listener();
     window.addEventListener('resize', listener)
     return () => window.removeEventListener('resize', listener);
-  }, []);
+  }, [store]);
 }
 
 const useLogoutUserIfSessionExpired = () => {
