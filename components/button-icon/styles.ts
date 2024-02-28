@@ -16,7 +16,6 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
     height: auto;
   }
   ${p => p.selected && `
-    pointer-events: none;
     background-color: #000;
   `}
   ${p => p.selected && `
