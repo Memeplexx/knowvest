@@ -5,7 +5,7 @@ import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { connectOlikDevtoolsToStore } from "olik/devtools";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { initialize } from "../../actions/session";
 import { HomeStore, initialState } from "./constants";
 import { useIsMounted, useIsomorphicLayoutEffect } from "@/utils/react-utils";
@@ -38,13 +38,13 @@ const useInitializeOlikDevtools = () => {
 }
 
 const useHeaderExpander = (store: HomeStore) => {
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     const listener = () => {
-      const { headerExpanded: headerContracted } = store.$state.home;
-      if (window.innerWidth >= 1000 && headerContracted) {
-        store.home.headerExpanded.$set(false);
-      } else if (window.innerWidth < 1000 && !headerContracted) {
+      const { headerExpanded } = store.$state.home;
+      if (window.innerWidth >= 1000 && !headerExpanded) {
         store.home.headerExpanded.$set(true);
+      } else if (window.innerWidth < 1000 && headerExpanded) {
+        store.home.headerExpanded.$set(false);
       }
     }
     listener();

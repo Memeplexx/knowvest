@@ -15,7 +15,7 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
   justify-content: space-between;
   gap: 12px;
   background-image: linear-gradient(to right, #131313, #212121);
-  margin-top: -60px;
+  margin-top: -64px;
   position: relative;
   ${p => p.$show && `
     margin-top: 0;

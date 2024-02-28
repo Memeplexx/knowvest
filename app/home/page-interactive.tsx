@@ -15,8 +15,7 @@ export default function HomeInteractive() {
   return (
     <>
       <Navbar
-        // showIf={inputs.headerExpanded}
-        showIf={true}
+        showIf={inputs.headerExpanded}
       />
       <BodyWrapper
         children={

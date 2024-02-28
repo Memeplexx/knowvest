@@ -10,31 +10,37 @@ export const useOutputs = (inputs: State) => {
     onClickHistoryToggle: () => {
       store.home.$patch({
         ...initialState.home,
+        headerExpanded: store.home.headerExpanded.$state,
         historyExpanded: !store.home.historyExpanded.$state,
       });
     },
     onClickSimilarToggle: () => {
       store.home.$patch({
         ...initialState.home,
+        headerExpanded: store.home.headerExpanded.$state,
         similarExpanded: !store.home.similarExpanded.$state,
       });
     },
     onClickTagsToggle: () => {
       store.home.$patch({
         ...initialState.home,
+        headerExpanded: store.home.headerExpanded.$state,
         tagsExpanded: !store.home.tagsExpanded.$state,
       });
     },
     onClickHeaderToggle: () => {
-      store.home.headerExpanded.$toggle();
+      store.home.$patch({
+        ...initialState.home,
+        headerExpanded: !store.home.headerExpanded.$state,
+      });
     },
     onClickRelatedNote: async (noteId: NoteId) => {
-      await shared.onSelectNote(noteId);
       similarExpanded && store.home.similarExpanded.$set(false);
+      await shared.onSelectNote(noteId);
     },
     onClickHistoricalNote: async (noteId: NoteId) => {
-      await shared.onSelectNote(noteId);
       historyExpanded && store.home.historyExpanded.$set(false);
+      await shared.onSelectNote(noteId);
     },
   }
 };
