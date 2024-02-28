@@ -111,7 +111,9 @@ export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: 
         }
       },
     );
-    codeMirror.focus();
+    if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      codeMirror.focus();
+    }
   };
   updateEditorText();
   store.activeNoteId.$onChange(updateEditorText);

@@ -37,10 +37,10 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
         loadingSelection: false,
         selection: '',
       })
-      codeMirror?.dispatch({
+      codeMirror!.dispatch({
         changes: {
           from: 0,
-          to: codeMirror.state.doc.length,
+          to: codeMirror!.state.doc.length,
           insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
         },
       })

@@ -69,7 +69,7 @@ export const TabsPanel = styled(Tabs) <{ $expanded: boolean }>`
     bottom: 0;
     top: 0;
     transform: translateY(${p => p.$expanded ? '0' : `calc(100% + ${gap})`});
-    z-index: ${p => p.$expanded ? 4 : 0};
+    z-index: ${p => p.$expanded ? 5 : 0};
   }
 `;
 
