@@ -1,5 +1,4 @@
 "use server";
-
 import '@/utils/polyfills';
 import { redirect } from 'next/navigation';
 import HomeInteractive from './page-interactive';

@@ -15,7 +15,7 @@ const BaseToggleButton = styled(ButtonIcon) <{ selected?: boolean }>`
   width: 32px;
   height: 32px;
   position: fixed;
-  z-index: 3;
+  z-index: 8;
   background-color: ${p => p.selected ? '#FFF' : '#000'};
   color: ${p => p.selected ? '#000' : '#FFF'};
   transition: 0.4s transform;
