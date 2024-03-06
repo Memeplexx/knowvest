@@ -159,9 +159,9 @@ export const editorHasTextUpdater = (store: ActivePanelStore) => {
   return EditorView.updateListener.of(function editorHasTextUpdater(update) {
     if (!update.docChanged) { return; }
     if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
-      store.activePanel.editorHasText.$set(false);
+      setTimeout(() => store.activePanel.editorHasText.$set(false));
     } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {
-      store.activePanel.editorHasText.$set(true);
+      setTimeout(() => store.activePanel.editorHasText.$set(true));
     }
   });
 }

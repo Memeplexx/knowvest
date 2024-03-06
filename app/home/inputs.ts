@@ -1,14 +1,13 @@
 import { UserDTO } from "@/actions/types";
+import { useIsMounted, useIsomorphicLayoutEffect } from "@/utils/react-utils";
 import { initializeDb, readFromDb, writeToStoreAndDb } from "@/utils/storage-utils";
 import { useStore } from "@/utils/store-utils";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { connectOlikDevtoolsToStore } from "olik/devtools";
 import { useEffect, useRef } from "react";
 import { initialize } from "../../actions/session";
 import { HomeStore, initialState } from "./constants";
-import { useIsMounted, useIsomorphicLayoutEffect } from "@/utils/react-utils";
 
 
 export const useInputs = () => {
@@ -19,22 +18,12 @@ export const useInputs = () => {
 
   useLogoutUserIfSessionExpired();
 
-  useInitializeOlikDevtools();
-
   useHeaderExpander(store);
 
   return {
     store,
     ...home,
   }
-}
-
-const useInitializeOlikDevtools = () => {
-  useIsomorphicLayoutEffect(() => {
-    if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      connectOlikDevtoolsToStore({ trace: true });
-    }
-  }, []);
 }
 
 const useHeaderExpander = (store: HomeStore) => {
@@ -66,7 +55,7 @@ export const useDataInitializer = ({ store }: { store: HomeStore }) => {
   const { data: session } = useSession();
   const mounted = useIsMounted();
   const initializingData = useRef(false);
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     if (!session) { return; }
     if (!mounted) { return; }
     if (initializingData.current) { return; }
@@ -96,7 +85,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
   const activeNoteId = notesFromDbSorted[0]?.id // Database might be empty. If so, use the first note from the API response
     ?? apiResponse.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime())[0]!.id;
   const selectedTagIds = databaseData.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);
-  const synonymIds = databaseData.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId);
+  const synonymIds = databaseData.tags.filter(t => selectedTagIds.includes(t.id)).map(t => t.synonymId).distinct();
   store.$patch({
     ...databaseData,
     activeNoteId,

@@ -19,7 +19,7 @@
     "jsx": "preserve",
     "incremental": true,
     "exactOptionalPropertyTypes": true,
-    "noErrorTruncation": true,
+    "noErrorTruncation": false,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
