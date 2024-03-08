@@ -22,7 +22,7 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
       await writeToStoreAndDb(store, apiResponse)
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
       const mostRecentlyViewedNoteId = store.$state.notes
-        .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0]!.id;
+        .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, store.$state.notes[0])!.id;
       store.activeNoteId.$set(mostRecentlyViewedNoteId);
       const tagIds = store.noteTags.$filter.noteId.$eq(mostRecentlyViewedNoteId).tagId;
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
