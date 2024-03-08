@@ -219,9 +219,10 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickConfirmArchiveTag: async () => {
       const apiResponse = await archiveTag(inputs.tagId!);
-      const synonymId = inputs.tagsInSynonymGroup.length === 1 ? null : inputs.synonymId;
-      const lastTag = inputs.tagsInSynonymGroup.length === 1;
-      store.tagsConfig.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction: lastTag ? null : inputs.autocompleteAction });
+      const isLastTag = inputs.tagsInSynonymGroup.length === 1;
+      const synonymId = isLastTag ? null : inputs.synonymId;
+      const autocompleteAction = isLastTag ? null : inputs.autocompleteAction;
+      store.tagsConfig.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
       synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
       await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroups });
       notify.success('Tag archived');

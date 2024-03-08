@@ -15,7 +15,7 @@ import {
   indentOnInput,
   syntaxHighlighting
 } from '@codemirror/language';
-import { languages } from '@codemirror/language-data';
+import { languages as codeLanguages } from '@codemirror/language-data';
 import { lintKeymap } from '@codemirror/lint';
 import {
   EditorView,
@@ -70,7 +70,7 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
       dropCursor(),
       indentOnInput(),
       syntaxHighlighting(defaultHighlightStyle as Highlighter, { fallback: true }),
-      markdown({ codeLanguages: languages }),
+      markdown({ codeLanguages }),
       bracketMatching(),
       closeBrackets(),
       rectangularSelection(),

@@ -19,12 +19,12 @@ export const useOutputs = ({ store, notify, popupRef }: Inputs) => {
     onClickConfirmRemoveNote: async () => {
       store.activePanel.$patch({ allowNotePersister: false, loadingNote: true })
       const apiResponse = await archiveNote(store.$state.activeNoteId);
-      await writeToStoreAndDb(store, { notes: apiResponse.note, noteTags: apiResponse.noteTags })
+      await writeToStoreAndDb(store, apiResponse)
       store.activePanel.$patch({ loadingNote: false, confirmDelete: false });
-      const newNoteId = store.$state.notes
+      const mostRecentlyViewedNoteId = store.$state.notes
         .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())[0]!.id;
-      store.activeNoteId.$set(newNoteId);
-      const tagIds = store.noteTags.$filter.noteId.$eq(newNoteId).tagId;
+      store.activeNoteId.$set(mostRecentlyViewedNoteId);
+      const tagIds = store.noteTags.$filter.noteId.$eq(mostRecentlyViewedNoteId).tagId;
       const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
       store.synonymIds.$setUnique(synonymIds);
       setTimeout(() => store.activePanel.allowNotePersister.$set(true), 500);

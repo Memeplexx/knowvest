@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, MouseEvent } from "react";
+import { ChangeEvent, MouseEvent } from "react";
 import { OptionBase, Inputs } from "./constants";
 import { TypedKeyboardEvent } from "@/utils/dom-utils";
 
@@ -33,7 +33,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
       }
       props.onShowOptionsChange(false);
     },
-    onKeyDownOption: (event: KeyboardEvent<HTMLElement>): true | void => {
+    onKeyDownOption: (event: TypedKeyboardEvent<HTMLElement>): true | void => {
       if (event.key === 'ArrowDown') {
         event.preventDefault(); // prevents undesirable scrolling behavior
         if (!options.length) { return true; }
@@ -48,7 +48,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
         }
       }
     },
-    onKeyUpOption: (value: Option['value'], event: KeyboardEvent<HTMLElement>) => {
+    onKeyUpOption: (value: Option['value'], event: TypedKeyboardEvent<HTMLElement>) => {
       if (event.key !== 'Enter') { return; }
       props.onValueChange(value);
     },
