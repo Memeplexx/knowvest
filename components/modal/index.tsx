@@ -14,6 +14,7 @@ export const Modal = (
   return !inputs.showInternal ? <></> : createPortal(
     <>
       <Background
+        data-id='backdrop'
         style={inputs.backgroundAnimations}
         ref={inputs.backdropRef}
         onClick={outputs.onClickBackdrop}

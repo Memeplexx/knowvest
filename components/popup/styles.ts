@@ -8,7 +8,7 @@ export const Floating = styled.div`
   filter: drop-shadow(0px 0px 38px #000);
 `;
 
-export const ForegroundWrapper = styled(animated.div)`
+export const Background = styled(animated.div)`
   position: fixed;
   top: 0;
   right: 0;

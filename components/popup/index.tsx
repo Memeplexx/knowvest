@@ -1,6 +1,6 @@
 "use client";
 import { createPortal } from 'react-dom';
-import { Floating, Foreground, ForegroundWrapper } from './styles';
+import { Floating, Foreground, Background } from './styles';
 import { useInputs } from './inputs';
 import { PopupHandle, Props } from './constants';
 import { useOutputs } from './outputs';
@@ -23,7 +23,8 @@ export const Popup = forwardRef(function Popup(
         !inputs.showInternal
           ? <></>
           : createPortal(
-            <ForegroundWrapper
+            <Background
+              data-id='backdrop'
               style={inputs.backgroundAnimations}
               onClick={outputs.onClickBackdrop}
               children={
