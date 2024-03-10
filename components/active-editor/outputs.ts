@@ -49,9 +49,6 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onClickTextEditorWrapper: () => {
       editorRef.current!.focus();
     },
-    onBlurTextEditor: () => {
-      if (store.activePanel.selection.$state === '') { return; }
-    },
     onDocumentClick: useEventHandlerForDocument('click', event => {
       if (event.target.hasAncestor(editorRef.current)) { return; }
       if (store.activePanel.selection.$state === '') { return; }

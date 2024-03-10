@@ -15,7 +15,6 @@ export default function ActiveEditor() {
         <>
           <TextEditor
             ref={inputs.editorRef}
-            onBlur={outputs.onBlurTextEditor}
           />
           <ActiveSelection
             showIf={!!inputs.selection}
