@@ -53,12 +53,12 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       if (store.activePanel.selection.$state === '') { return; }
     },
     onDocumentClick: useEventHandlerForDocument('click', event => {
-      if (event.target.hasAncestor(e => e === editorRef.current)) { return; }
+      if (event.target.hasAncestor(editorRef.current)) { return; }
       if (store.activePanel.selection.$state === '') { return; }
       store.activePanel.selection.$set('');
     }),
     onDocumentKeyDown: useEventHandlerForDocument('keydown', event => {
-      if (event.target.hasAncestor(e => e === editorRef.current)) { return; }
+      if (event.target.hasAncestor(editorRef.current)) { return; }
       if (event.key.startsWith('F') || event.ctrlKey || event.altKey || event.metaKey) { return; }
       if (event.target.hasAncestor(e => !!e.querySelector('[data-id=backdrop]'))) { return; }
       codeMirror!.focus();

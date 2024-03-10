@@ -16,7 +16,7 @@ declare global {
     /**
      * Checks whether an element or any of its ancestors matches a given condition.
      */
-    hasAncestor: (check: (element: HTMLElement) => boolean) => boolean;
+    hasAncestor: (check: HTMLElement | null | ((element: HTMLElement) => boolean)) => boolean;
   }
 
   interface Object {

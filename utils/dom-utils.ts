@@ -64,6 +64,6 @@ const ancestorMatches = (element: EventTarget | null, check: (element: HTMLEleme
   }
 }
 
-EventTarget.prototype.hasAncestor = function (check: (element: HTMLElement) => boolean) {
-  return ancestorMatches(this, check);
+EventTarget.prototype.hasAncestor = function (check) {
+  return ancestorMatches(this, typeof check === 'function' ? check : (element) => element === check);
 }
