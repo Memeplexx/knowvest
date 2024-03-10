@@ -1,12 +1,12 @@
+import { updateNote } from "@/actions/note";
+import { updateNoteTags } from "@/actions/notetag";
+import { NoteId, TagId } from "@/actions/types";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range, TransactionSpec } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { ActivePanelStore } from "./constants";
-import { updateNoteTags } from "@/actions/notetag";
-import { updateNote } from "@/actions/note";
-import { NoteId, TagId } from "@/actions/types";
-import { writeToStoreAndDb } from "@/utils/storage-utils";
 
 export const autocompleteExtension = (store: ActivePanelStore) => {
   return autocompletion({

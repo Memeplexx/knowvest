@@ -1,5 +1,6 @@
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { listenToTagsForEditor } from '@/utils/data-utils';
 import { AppState, useStore } from '@/utils/store-utils';
 import {
   closeBrackets,
@@ -24,23 +25,22 @@ import {
   keymap,
   rectangularSelection
 } from '@codemirror/view';
+import { Highlighter } from '@lezer/highlight';
 import { Store } from 'olik';
 import { useEffect, useRef } from 'react';
 import { initialState } from '../active-panel/constants';
 import { useNotifier } from '../notifier';
 import { ActivePanelStore } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
-import { listenToTagsForEditor } from '@/utils/data-utils';
-import { Highlighter } from '@lezer/highlight';
 
 
 export const useInputs = () => {
 
-  const { store, notes, activePanel } = useStore<typeof initialState & typeof initialState>();
+  const { store, notes, activePanel } = useStore<typeof initialState>();
   const mayDeleteNote = !!notes.length;
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
-
+  
   useEffect(() => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
     updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });

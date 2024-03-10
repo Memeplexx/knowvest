@@ -65,7 +65,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       codeMirror!.dispatch(
         {
           selection: {
-            anchor: codeMirror!.state.doc.length
+            anchor: codeMirror!.state.selection.ranges[0]!.anchor,
           }
         },
       );
