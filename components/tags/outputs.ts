@@ -18,7 +18,7 @@ export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote, setSt
       if (synonyms.some(s => s.selected)) {
         store.synonymIds.$filter.$in(synonymIds).$delete();
       } else {
-        store.synonymIds.$push(synonymIds);
+        store.synonymIds.$pushMany(synonymIds);
       }
     },
     onChangeAllActiveTagsSelected: () => {
@@ -26,7 +26,7 @@ export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote, setSt
       if (tagsForActiveNote.some(s => s.selected)) {
         store.synonymIds.$filter.$in(synonymIds).$delete();
       } else {
-        store.synonymIds.$push(synonymIds);
+        store.synonymIds.$pushMany(synonymIds);
       }
     },
     onShowDialog: () => {
