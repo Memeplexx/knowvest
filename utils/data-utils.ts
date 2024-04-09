@@ -37,13 +37,13 @@ const getDataViaCache = (store: Store<AppState>) => {
   return cache.value;
 }
 
-export const listenToTagsForEditor = ({
+export const listenToTagsForEditor = <S extends AppState>({
   editorView,
   store,
   reviseEditorTags
 }: {
   editorView: EditorView,
-  store: Store<AppState>,
+  store: Store<S>,
   reviseEditorTags: (arg: ReviseEditorTagsArgs) => void
 }) => {
 

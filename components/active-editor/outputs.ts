@@ -58,6 +58,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       if (event.target.hasAncestor(editorRef.current)) { return; }
       if (event.key.startsWith('F') || event.ctrlKey || event.altKey || event.metaKey) { return; }
       if (event.target.hasAncestor(e => !!e.querySelector('[data-id=backdrop]'))) { return; }
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') { return; }
       codeMirror!.focus();
       codeMirror!.dispatch(
         {

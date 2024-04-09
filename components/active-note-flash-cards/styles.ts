@@ -53,7 +53,7 @@ export const NoResults = styled(possible.div)`
   color: grey;
 `;
 
-export const DeleteButton = styled(ButtonIcon)`
+export const DeleteButton = styled(possible.element(ButtonIcon))`
   position: absolute;
   right: 0;
   top: 0;

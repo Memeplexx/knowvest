@@ -21,7 +21,7 @@ export const Tabs = (
                   key={option.label}
                   children={option.label}
                   ref={inputs.tabsRef[option.label]}
-                  onClick={() => inputs.setState({ selected: option.label })}
+                  onClick={() => inputs.set({ selected: option.label })}
                 />
               ))}
               <Underline

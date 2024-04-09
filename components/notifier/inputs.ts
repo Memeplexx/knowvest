@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Message, Props, defaultProps, snackbarStatus } from "./constants";
 import { ReferenceType, useFloating } from "@floating-ui/react";
-import { usePropsWithDefaults } from "@/utils/react-utils";
+import { usePropsWithDefaults, useRecord } from "@/utils/react-utils";
 
 export const useInputs = (incomingProps: Props) => {
 
@@ -9,50 +9,52 @@ export const useInputs = (incomingProps: Props) => {
 
   const props = usePropsWithDefaults(incomingProps, defaultProps);
   
-  const [state, setState] = useState({
+  const localState = useRecord({
     message: '',
     status: 'info' as snackbarStatus,
     initialized: false,
     messages: new Array<Message>(),
   });
 
+  const { initialized, message, set } = localState;
+  const { animationDuration, maxCount, displayDuration } = props;
   useEffect(() => {
 
     // mark component as initialized so that portal can snackbar can be added to DOM body element
-    if (!state.initialized) {
-      return setState(s => ({ ...s, initialized: true }));
+    if (!initialized) {
+      return set({ initialized: true });
     }
 
     // message will be an empty string on initialization or when the message is cleared
-    if (!state.message) {
+    if (!message) {
       return;
     }
 
     // if we get to this point, we know that the message text is not empty, so we can push the message onto the messages queue
     const ts = Date.now();
-    setState(s => ({ ...s, messages: s.messages.length > props.maxCount ? s.messages.slice(s.messages.length - props.maxCount) : [...s.messages, { text: s.message, ts, show: false }] }));
+    set(s => ({ messages: s.messages.length > maxCount ? s.messages.slice(s.messages.length - maxCount) : [...s.messages, { text: s.message, ts, show: false }] }));
     requestAnimationFrame(() => requestAnimationFrame(() => { // needed for animation to work
-      setState(s => ({ ...s, messages: s.messages.map(message => message.ts === ts ? { ...message, show: true } : message) }));
+      set(s => ({ messages: s.messages.map(message => message.ts === ts ? { ...message, show: true } : message) }));
     }));
 
     // hide the message after the display duration
     setTimeout(() => {
 
       // hide the message
-      setState(s => ({ ...s, messages: s.messages.map(message => message.ts === ts ? { ...message, show: false } : message) }));
+      set(s => ({ messages: s.messages.map(message => message.ts === ts ? { ...message, show: false } : message) }));
 
       // after message was animated out of view, remove it from the list of messages
       setTimeout(() => {
-        setState(s => ({ ...s, message: '', messages: s.messages.filter(message => message.ts !== ts) }));
-      }, props.animationDuration);
-    }, props.displayDuration);
+        set(s => ({ message: '', messages: s.messages.filter(message => message.ts !== ts) }));
+      }, animationDuration);
+    }, displayDuration);
     
-  }, [props, state.initialized, state.message]);
+  }, [animationDuration, displayDuration, initialized, set, maxCount, message]);
 
   return {
     ...props,
-    ...state,
-    setState,
+    ...localState,
+    initialized,
     floatingRef,
   };
 }

@@ -11,7 +11,7 @@ import { useSharedFunctions } from './shared';
 
 export const useOutputs = (inputs: Inputs) => {
   const shared = useSharedFunctions(inputs);
-  const { store, notify, setState } = inputs;
+  const { store, notify, set } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       store.tagsConfig.$patch({
@@ -258,10 +258,10 @@ export const useOutputs = (inputs: Inputs) => {
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      setState({ hoveringGroupId, hoveringSynonymId });
+      set({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      setState({ hoveringGroupId: null, hoveringSynonymId: null });
+      set({ hoveringGroupId: null, hoveringSynonymId: null });
     },
     onShowAutocompleteOptionsChange: (showAutocompleteOptions: boolean) => {
       store.tagsConfig.showAutocompleteOptions.$set(showAutocompleteOptions)

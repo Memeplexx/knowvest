@@ -48,7 +48,7 @@ export const Tags = () => {
                 <>
                   <ActiveHeaderTag
                     $show={!inputs.tagsForActiveNote.length}
-                    selected={inputs.allActiveTagsSelected}
+                    $selected={inputs.allActiveTagsSelected}
                     onClick={outputs.onChangeAllActiveTagsSelected}
                     children='Active'
                     $first={true}
@@ -62,7 +62,7 @@ export const Tags = () => {
                           children={synonyms.tags.map(tag => (
                             <Tag
                               key={tag.id}
-                              selected={synonyms.selected}
+                              $selected={synonyms.selected}
                               $first={tag.first}
                               $last={tag.last}
                               children={tag.text}
@@ -83,7 +83,7 @@ export const Tags = () => {
                 children={
                   <>
                     <GroupHeaderTag
-                      selected={!!inputs.allGroupTagsSelected.get(group.groupId)}
+                      $selected={!!inputs.allGroupTagsSelected.get(group.groupId)}
                       onClick={() => outputs.onChangeAllGroupTagsSelected(group.groupId)}
                       children={`Group: ${group.groupName}`}
                       $first={true}
@@ -97,7 +97,7 @@ export const Tags = () => {
                             children={tag.text}
                             $first={tag.first}
                             $last={tag.last}
-                            selected={(inputs.hoveringGroupId === group.groupId && inputs.hoveringSynonymId === synonym.id) || synonym.selected}
+                            $selected={(inputs.hoveringGroupId === group.groupId && inputs.hoveringSynonymId === synonym.id) || synonym.selected}
                             onMouseOver={() => outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
                             onMouseOut={outputs.onMouseOutGroupTag}
                             onClick={() => outputs.onClickSynonym(synonym.id)}

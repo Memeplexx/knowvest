@@ -1,57 +1,50 @@
-export type DecisionResult<X, H> = X extends (string | number | boolean | symbol | Record<string, unknown>) ? X : H;
-
-/**
- * A construct for expressing conditional logic with the following advantages over conventional approaches:
- * * Unlike 'if' and 'ternary' statements, this is more readable when there are a lot of conditions.
- * * Unlike 'switch' statements, this can use an expression as a condition.
- * * Unlike both 'if' and 'switch' (and much like ternary statements),
- * this returns an individual result and doesn't oblige us to define any local variables.
- *
- * @example
- *
- * cont result = decide([
- *   {
- *     when: () => // some expression returning a boolean,
- *     then: () => // some result,
- *   },
- *   {
- *     when: () => // some expression returning a boolean,
- *     then: () => // some result,
- *   }
- * ])
- */
-export const decide = <X>(
-  decisions: { when(): boolean | null | undefined; then(): X }[],
-): DecisionResult<X, ReturnType<typeof decisions[0]['then']>> =>
-  decisions.findOrThrow(d => d.when()).then() as DecisionResult<X, ReturnType<typeof decisions[0]['then']>>;
-
-/**
- * A construct for expressing conditional logic with the following advantages over conventional approaches:
- * * Unlike 'if' and 'ternary' statements, this is more readable when there are a lot of conditions.
- * * Unlike both 'if' and 'switch' (and much like ternary statements),
- * this returns an individual result and doesn't oblige us to define any local variables.
- *
- * @example
- *
- * cont result = decideComparing(someValue, [
- *   {
- *     when: () => // something which may or may not equal someValue,
- *     then: () => // some result,
- *   },
- *   {
- *     when: () => // something which may or may not equal someValue,
- *     then: () => // some result,
- *   }
- * ])
- */
-export const decideComparing = <C, X, T extends { when(): C; then(): X }>(
-  toCompare: C,
-  decisions: T[],
-): DecisionResult<X, ReturnType<T['then']>> =>
-  decisions.findOrThrow(d => d.when() === toCompare).then() as DecisionResult<X, ReturnType<T['then']>>;
-
 export function pipe<A0, A1>(arg0: A0, arg1: (arg0: A0) => A1): A1;
 export function pipe<A0, A1, A2>(arg0: A0, arg1: (arg0: A0) => A1, arg2: (arg1: A1) => A2): A2;
 export function pipe(arg0: unknown, ...fns: Array<(arg: unknown) => unknown>) {
   return fns.reduce((prev, curr) => curr(prev), arg0);
+}
+
+export const is = {
+	recordOrArray: (val: unknown): val is object => {
+		return typeof (val) === 'object' && val !== null && !(val instanceof Date);
+	},
+	number: (val: unknown): val is number => {
+		return typeof (val) === 'number';
+	},
+	boolean: (val: unknown): val is boolean => {
+		return typeof (val) === 'boolean';
+	},
+	string: (val: unknown): val is string => {
+		return typeof (val) === 'string';
+	},
+	primitive: (val: unknown): val is string | number | boolean => {
+		return typeof (val) === 'string' || typeof (val) === 'number' || typeof (val) === 'boolean';
+	},
+	undefined: (val: unknown): val is undefined => {
+		return val === undefined;
+	},
+	null: (val: unknown): val is null => {
+		return val === null;
+	},
+	date: (val: unknown): val is Date => {
+		return val instanceof Date;
+	},
+	record: (val: unknown): val is Record<string, unknown> => {
+		return typeof (val) === 'object' && val !== null && !Array.isArray(val) && !(val instanceof Date);
+	},
+	array: <T>(val: unknown): val is Array<T> => {
+		return Array.isArray(val);
+	},
+	function: <A extends Array<unknown>, R>(val: unknown): val is (...a: A) => R => {
+		return typeof (val) === 'function';
+	},
+	nullOrUndefined: (val: unknown): val is null | undefined => {
+		return val === null || val === undefined;
+	},
+	scalar: (val: unknown): val is 'number' | 'string' | 'boolean' | 'date' | 'null' | 'undefined' => {
+		return typeof (val) === 'string' || typeof (val) === 'number' || typeof (val) === 'boolean' || val === null || val === undefined || val instanceof Date;
+	},
+	htmlElement: (val: unknown): val is HTMLElement => {
+		return val instanceof HTMLElement;
+	},
 }

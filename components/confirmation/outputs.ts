@@ -1,7 +1,6 @@
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 
-export const useOutputs = (inputs: Inputs) => {
-  const { props, state, setState } = inputs;
+export const useOutputs = (props: Props, inputs: Inputs) => {
   return {
     onClickCancel: () => {
       props.onClose?.();
@@ -10,10 +9,10 @@ export const useOutputs = (inputs: Inputs) => {
       props.onClose?.();
     },
     onMouseLeaveButton: () => {
-      setState({ selection: 'none' });
+      inputs.set({ selection: 'none' });
     },
     onClose: () => {
-      if (state.selection === 'confirm') {
+      if (inputs.selection === 'confirm') {
         props.onConfirm?.();
       }
     }

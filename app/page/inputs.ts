@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useNotifier } from "@/components/notifier";
+import { useRecord } from "@/utils/react-utils";
 
 export const useInputs = () => {
 
@@ -8,27 +9,24 @@ export const useInputs = () => {
   const searchParams = useSearchParams();
   const notifier = useNotifier();
 
-  const [state, setState] = useState({
+  const localState = useRecord({
     showLoader: false,
     initialized: false,
   });
 
   useEffect(() => {
-    setState(s => ({ ...s, initialized: true }));
-  }, []);
+    localState.set({ initialized: true });
+  }, [localState]);
 
   const notify = useRef(() => {
     notifier.info('Your session expired. Please sign in again');
   });
 
   useEffect(() => {
-    if (!state.initialized || !searchParams?.has('session-expired')) { return; }
+    if (!localState.initialized || !searchParams?.has('session-expired')) { return; }
     router.replace('/');
     notify.current();
-  }, [searchParams, state.initialized, router]);
+  }, [searchParams, localState.initialized, router]);
 
-  return {
-    ...state,
-    setState,
-  };
+  return localState;
 }

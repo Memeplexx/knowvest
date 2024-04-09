@@ -1,16 +1,17 @@
 "use client";
 
-import { ForwardedRef, useImperativeHandle, useRef, useState } from "react";
+import { ForwardedRef, useImperativeHandle, useRef } from "react";
 import { useSpring } from "react-spring";
 import { PopupHandle, Props, animationDuration } from "./constants";
 import { useFloating } from "@floating-ui/react";
+import { useRecord } from "@/utils/react-utils";
 
 export const useInputs = (
   props: Props,
   forwardedRef: ForwardedRef<PopupHandle>
 ) => {
 
-  const [state, setState] = useState({
+  const state = useRecord({
     showInternal: false,
     show: false,
   });
@@ -30,11 +31,11 @@ export const useInputs = (
   });
 
   if (state.show && !state.showInternal) {
-    setState(s => ({ ...s, showInternal: true }));
+    state.set(s => ({ ...s, showInternal: true }));
   } else if (!state.show && state.showInternal && !isClosingRef.current) {
     isClosingRef.current = true;
     setTimeout(() => {
-      setState({ showInternal: false, show: false });
+      state.set({ showInternal: false, show: false });
       isClosingRef.current = false;
     }, animationDuration);
   }
@@ -42,13 +43,12 @@ export const useInputs = (
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'bottom-end' });
 
   useImperativeHandle(forwardedRef, () => ({
-    hide: function hide(){ setState(s => ({ ...s, show: false })); }
-  }), []);
+    hide: function hide(){ state.set({ show: false }); }
+  }), [state]);
 
   return {
     floatingRef,
     ...state,
-    setState,
     backgroundAnimations,
     foregroundAnimations,
     props,

@@ -1,9 +1,9 @@
 export { };
 
 declare module 'react' {
-  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-    showIf?: boolean;
-  }
+  // interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+  //   showIf?: boolean;
+  // }
 
   function forwardRef<T, P>(
     render: (props: P, ref: Ref<T>) => ReactElement | null

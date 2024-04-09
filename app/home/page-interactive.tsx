@@ -8,7 +8,6 @@ import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { BodyWrapper, HistoryPanel, CenterPanel, ActivePane, TabsPanel, RelatedPanel, ExpandHistoryToggleButton, ExpandTagsToggleButton, ExpandHeaderToggleButton, ExpandRelatedToggleButton } from './styles';
 
-
 export default function HomeInteractive() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);

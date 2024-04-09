@@ -1,13 +1,14 @@
 import { UserDTO } from "@/actions/types";
 import { useIsMounted, useIsomorphicLayoutEffect } from "@/utils/react-utils";
 import { initializeDb, readFromDb, writeToStoreAndDb } from "@/utils/storage-utils";
-import { useStore } from "@/utils/store-utils";
+import { AppState, useStore } from "@/utils/store-utils";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { initialize } from "../../actions/session";
 import { HomeStore, initialState } from "./constants";
+import { Store } from "olik";
 
 
 export const useInputs = () => {
@@ -81,7 +82,7 @@ const initializeData = async ({ session, store }: { session: Session, store: Hom
       activeNoteId: apiResponse.firstNote.id,
     });
   }
-  await writeToStoreAndDb(store, apiResponse);
+  await writeToStoreAndDb(store as Store<AppState>, apiResponse);
   const activeNoteId = notesFromDbSorted[0]?.id // Database might be empty. If so, use the first note from the API response
     ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id;
   const selectedTagIds = databaseData.noteTags.filter(nt => nt.noteId === activeNoteId).map(nt => nt.tagId);

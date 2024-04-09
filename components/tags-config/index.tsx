@@ -112,10 +112,10 @@ export const TagsConfig = forwardRef(function TagsConfig(
                         children={inputs.tagsInSynonymGroup.map(tag =>
                           <Tag
                             key={tag.id}
-                            selected={tag.selected}
                             ref={tag.id === inputs.tagId ? inputs.selectedTagRef : null}
                             onClick={e => outputs.onClickTagSynonym(tag.id, e)}
                             children={tag.text}
+                            $selected={tag.selected}
                             $first={tag.first}
                             $last={tag.last}
                           />
@@ -203,7 +203,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                 <Tag
                                   key={tag.id}
                                   ref={active && inputs.groupSynonymId === inputs.synonymId ? inputs.selectedTagRef : null}
-                                  selected={(inputs.hoveringGroupId === group.id && inputs.hoveringSynonymId === synonymId) || (active && inputs.groupSynonymId === synonymId)}
+                                  $selected={(inputs.hoveringGroupId === group.id && inputs.hoveringSynonymId === synonymId) || (active && inputs.groupSynonymId === synonymId)}
                                   children={tag.text}
                                   $first={tag.first}
                                   $last={tag.last}

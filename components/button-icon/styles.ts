@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { possible } from "../html";
 import { mobileBreakPoint } from "@/utils/style-utils";
 
@@ -15,10 +15,10 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean }>`
     width: auto;
     height: auto;
   }
-  ${p => p.selected && `
+  ${p => p.selected && css`
     background-color: #000;
   `}
-  ${p => p.selected && `
+  ${p => p.selected && css`
     opacity: 0.5;
   `}
   @media (min-width: ${mobileBreakPoint}) {

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { possible } from "../html";
 import { mobileBreakPoint } from "@/utils/style-utils";
 
@@ -10,10 +10,10 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighte
   display: flex;
   align-items: center;
   color: #ffb1fc;
-  ${p => p.selected && `
+  ${p => p.selected && css`
     background-color: #000;
   `}
-  ${p => p.disabled && `
+  ${p => p.disabled && css`
     opacity: 0.5;
     pointer-events: none;
   `}
@@ -29,7 +29,7 @@ export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighte
       transform: scale(1);
     }
   }
-  ${p => p.$highlighted && `
+  ${p => p.$highlighted && css`
     --border-size: 1px;
     --border-angle: 0turn;
     background-image: conic-gradient(from var(--border-angle), #213, #112 50%, #213), conic-gradient(from var(--border-angle), transparent 20%, #08f, #f03);

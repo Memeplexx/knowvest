@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { ButtonIcon } from '../button-icon';
 import { possible } from '../html';
@@ -15,7 +15,7 @@ export const ClearTextButtonWrapper = styled(possible.div)`
   align-items: center;
 `;
 
-export const ClearTextButton = styled(ButtonIcon)`
+export const ClearTextButton = styled(possible.element(ButtonIcon))`
 `;
 
 export const ClearIcon = styled(CloseIcon)`
@@ -24,13 +24,9 @@ export const ClearIcon = styled(CloseIcon)`
   height: auto;
 `;
 
-export const Container = styled.div<{ disabled?: boolean }>`
+export const Container = styled.div`
   position: relative;
   display: flex;
-  ${p => p.disabled && `
-    pointer-events: none;
-    cursor: not-allowed;
-  `}
 `;
 
 export const Input = styled(possible.input)<{ $hasError: boolean }>`
@@ -61,7 +57,7 @@ export const ErrorMsg = styled(possible.div)`
   position: absolute;
   transition: 0.2s all;
   font-size: 12px;
-  ${p => p.showIf && `
+  ${p => p.showIf && css`
     bottom: -22px;
   `}
 `;

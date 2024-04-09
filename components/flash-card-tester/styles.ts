@@ -28,7 +28,7 @@ export const Footer = styled(possible.div)`
 export const ToggleViewButton = styled(Button)`
 `;
 
-export const NextButton = styled(Button)`
+export const NextButton = styled(possible.element(Button))`
   gap: 8px;
   border: 1px solid grey;
 `;

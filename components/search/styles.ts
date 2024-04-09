@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";
 import { Button } from "../button";
@@ -130,15 +130,15 @@ export const Tag = styled(possible.button) <{ $hovered: boolean, $first?: boolea
   background-color: #000;
   color: #FFF;
   cursor: pointer;
-  ${p => p.$hovered && `
+  ${p => p.$hovered && css`
     background-color: #FFF;
     color: #000;
   `}
-  ${p => p.$first && `
+  ${p => p.$first && css`
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
   `}
-  ${p => p.$last && `
+  ${p => p.$last && css`
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     margin-right: 12px;

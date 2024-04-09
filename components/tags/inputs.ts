@@ -1,12 +1,13 @@
 import { useStore } from "@/utils/store-utils";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { initialState, initialTransientState } from "./constants";
+import { useRecord } from "@/utils/react-utils";
 
 export const useInputs = () => {
 
   const { store, tagsComponent, tags, synonymIds, noteTags, activeNoteId, groups, synonymGroups, stateInitialized } = useStore(initialState);
 
-  const [state, setState] = useState(initialTransientState)
+  const state = useRecord(initialTransientState)
 
   const tagsForActiveNote = useMemo(() => {
     return noteTags
@@ -72,6 +73,5 @@ export const useInputs = () => {
     allGroupTagsSelected,
     allActiveTagsSelected,
     ...state,
-    setState,
   };
 };

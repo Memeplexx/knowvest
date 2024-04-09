@@ -1,7 +1,7 @@
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { listenToTagsForEditor } from '@/utils/data-utils';
-import { AppState, useStore } from '@/utils/store-utils';
+import { useStore } from '@/utils/store-utils';
 import {
   closeBrackets,
   closeBracketsKeymap,
@@ -26,7 +26,6 @@ import {
   rectangularSelection
 } from '@codemirror/view';
 import { Highlighter } from '@lezer/highlight';
-import { Store } from 'olik';
 import { useEffect, useRef } from 'react';
 import { initialState } from '../active-panel/constants';
 import { useNotifier } from '../notifier';
@@ -43,7 +42,7 @@ export const useInputs = () => {
   
   useEffect(() => {
     codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
-    updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store });
+    updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store: store as ActivePanelStore });
     const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
     return () => {
       codeMirror.current?.destroy();
@@ -93,7 +92,7 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
   });
 }
 
-export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: Store<AppState>, codeMirror: EditorView }) => {
+export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: ActivePanelStore, codeMirror: EditorView }) => {
   const updateEditorText = () => {
     const { notes, activeNoteId } = store.$state;
     if (!notes.length || !activeNoteId) { return; }

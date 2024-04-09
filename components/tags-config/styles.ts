@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ButtonIcon } from '../button-icon';
 import { possible } from '../html';
 import { Button } from '../button';
@@ -19,7 +19,7 @@ export const BodyHeader = styled(possible.div)`
   min-height: 40px;
 `;
 
-export const SettingsButton = styled(ButtonIcon) <{ selected: boolean, $show: boolean }>`
+export const SettingsButton = styled(ButtonIcon) <{ $show: boolean }>`
   opacity: ${p => p.$show ? 1 : 0};
 `;
 
@@ -39,10 +39,12 @@ export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
   column-gap: 16px;
   row-gap: 8px;
   display: flex;
-  background-color: ${p => p.$active ? 'rgba(0,0,0,0.1)' : ''};
   padding: 24px;
   margin: 0 -24px;
   pointer-events: all;
+  ${p => p.$active && css`
+    background-color: rgba(0,0,0,0.1);
+  `}
   &:hover {
     ${SettingsButton} {
       opacity: 1;
@@ -57,7 +59,7 @@ export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
 export const PageTitle = styled.div`
 `;
 
-export const FooterButton = styled(Button)`
+export const FooterButton = styled(possible.element(Button))`
 `;
 
 export const Container = styled(possible.div)`
@@ -98,7 +100,7 @@ export const TagGroup = styled(possible.div)`
   row-gap: 12px;
 `;
 
-export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $last: boolean }>`
+export const Tag = styled(possible.div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
   font-size: 12px;
   height: 20px;
   display: flex;
@@ -112,16 +114,16 @@ export const Tag = styled(possible.div) <{ selected: boolean, $first: boolean, $
     background-color: rgba(255, 255, 255, 0.6);
     z-index: 1;
   }
-  ${p => p.selected && `
+  ${p => p.$selected && css`
     background-color: #FFF;
     color: #000;
     z-index: 1;
   `}
-  ${p => p.$first && `
+  ${p => p.$first && css`
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
   `}
-  ${p => p.$last && `
+  ${p => p.$last && css`
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     margin-right: 12px;

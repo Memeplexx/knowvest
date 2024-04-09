@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { possible } from "../html";
 import { SearchIcon as BaseSearchIcon } from "@/utils/style-utils";
 import { ButtonIcon } from "../button-icon";
@@ -17,7 +17,7 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
   background-image: linear-gradient(to right, #131313, #212121);
   margin-top: -64px;
   position: relative;
-  ${p => p.$show && `
+  ${p => p.$show && css`
     margin-top: 0;
   `}
 `;

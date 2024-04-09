@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState, type ForwardedRef } from 'react';
+import { useMemo, useRef, type ForwardedRef } from 'react';
 
-import { decide } from '@/utils/logic-utils';
+import { useRecord } from '@/utils/react-utils';
 import { useStore } from '@/utils/store-utils';
 import { useFloating } from '@floating-ui/react';
 import { AutocompleteHandle } from '../autocomplete/constants';
@@ -13,7 +13,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState);
   const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = tagsConfig;
 
-  const [state, setState] = useState(initialTransientState)
+  const localState = useRecord(initialTransientState)
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
   const settingsButtonRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
@@ -118,24 +118,10 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [autocompleteOptionsGroups, autocompleteOptionsTags, autocompleteAction]);
 
   const pageTitle = useMemo(() => {
-    return decide([
-      {
-        when: () => !!tagId,
-        then: () => 'Update selected Tag',
-      },
-      {
-        when: () => !!synonymId,
-        then: () => 'Search for Tag to add to active Group',
-      },
-      {
-        when: () => !!groupId,
-        then: () => 'Search for Tag to add to selected Group',
-      },
-      {
-        when: () => true,
-        then: () => 'Search for Tag or create a new Tag',
-      },
-    ])
+    if (tagId) return 'Update selected Tag';
+    if (synonymId) return 'Search for Tag to add to active Group';
+    if (groupId) return 'Search for Tag to add to selected Group';
+    return 'Search for Tag or create a new Tag';
   }, [groupId, synonymId, tagId]);
 
   const selectedGroupSelectedSynonym = useMemo(() => {
@@ -160,7 +146,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     notify,
     props,
     store,
-    ...state,
-    setState,
+    ...localState,
   };
 }

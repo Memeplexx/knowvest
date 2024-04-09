@@ -4,7 +4,7 @@ import { Inputs } from "./constants";
 export const useOutputs = (inputs: Inputs) => {
   return {
     onClickSignIn: async () => {
-      inputs.setState(s => ({ ...s, showLoader: true }));
+      inputs.set({ showLoader: true });
       await signIn();
     },
   };

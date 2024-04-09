@@ -7,7 +7,7 @@ type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]
 const openDatabase = () => indexedDB.open('knowvest', 1);
 const eventTarget = <T = IDBOpenDBRequest>(event: Event) => event.target as T;
 
-export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexedDBArgs) => {
+export const writeToStoreAndDb = <S extends AppState>(store: Store<S>, records: WriteToIndexedDBArgs) => {
   return new Promise<void>((resolve, reject) => {
     Object.keysTyped(records)
       .filter(tableName => !!indexedDbState[tableName])
@@ -20,7 +20,7 @@ export const writeToStoreAndDb = (store: Store<AppState>, records: WriteToIndexe
 
         // update records in store
         const toUpdate = tableRecords.filter(r => !(r as typeof r & { isArchived: boolean }).isArchived);
-        !!toUpdate.length && (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$with(toUpdate);
+        !!toUpdate.length && (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$with(toUpdate as Array<{ id: number }>);
 
         // delete records from store
         const toDelete = tableRecords.filter(r => (r as typeof r & { isArchived: boolean }).isArchived).map(r => r.id);

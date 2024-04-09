@@ -1,10 +1,10 @@
 import { SettingsIcon as BaseSettingsIcon } from '@/utils/style-utils';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { possible } from '../html';
 import { ButtonIcon } from '../button-icon';
 import { Loader } from '../loader';
 
-export const Tag = styled.div <{ selected: boolean, $first: boolean, $last: boolean, $show?: boolean }>`
+export const Tag = styled.div <{ $selected: boolean, $first: boolean, $last: boolean, $show?: boolean }>`
   font-size: 12px;
   height: 20px;
   align-items: center;
@@ -12,19 +12,19 @@ export const Tag = styled.div <{ selected: boolean, $first: boolean, $last: bool
   transition: all 0.2s;
   cursor: pointer;
   display: flex;
-  ${p => p.$show && `
+  ${p => p.$show && css`
     display: none;
   `}
-  ${p => p.selected && `
+  ${p => p.$selected && css`
     background-color: #b100b159;
     z-index: 1;
   `}
-  ${p => p.$first && `
+  ${p => p.$first && css`
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     padding-left: 8px;
   `}
-  ${p => p.$last && `
+  ${p => p.$last && css`
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     margin-right: 12px;
@@ -42,7 +42,7 @@ export const ActiveHeaderTag = styled(Tag)`
 export const GroupHeaderTag = styled(Tag)`
 `;
 
-export const SettingsButton = styled(ButtonIcon)`
+export const SettingsButton = styled(possible.element(ButtonIcon))`
   position: absolute;
   top: 16px;
   right: 16px;
