@@ -1,7 +1,7 @@
+import { GroupId, NoteId, SynonymId } from "@/actions/types";
+import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { Inputs } from "./constants";
 import { onSelectGroup, onSelectSynonym } from "./shared";
-import { SynonymId, GroupId, NoteId } from "@/actions/types";
-import { useEventHandlerForDocument } from "@/utils/dom-utils";
 
 export const useOutputs = (inputs: Inputs) => {
   const { props, store } = inputs;
@@ -10,7 +10,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (event.target.parentNode === null) { // element was removed from the DOM
         return;
       }
-      if (event.target.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
+      if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT')) {
         return;
       }
       if (inputs.showAutocompleteOptions) {

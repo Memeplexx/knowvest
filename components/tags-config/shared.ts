@@ -79,7 +79,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     blurAutocompleteInput();
   }
   const doCancel = (eventTarget: EventTarget) => {
-    if (eventTarget?.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
+    if (eventTarget?.hasAncestorWithTagNames('BUTTON', 'INPUT')) {
       return;
     }
     if (store.tagsConfig.$state.showAutocompleteOptions) {

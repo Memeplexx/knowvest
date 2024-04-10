@@ -10,7 +10,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (event.target.parentNode === null) { // element was removed from the DOM
         return;
       }
-      if (event.target.hasAncestor(e => ['BUTTON', 'INPUT'].includes(e.tagName))) {
+      if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT')) {
         return;
       }
       if (bodyRef.current?.contains(event.target)) {

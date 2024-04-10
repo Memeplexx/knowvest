@@ -1,22 +1,27 @@
 export { };
 
 declare module 'react' {
-  // interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
-  //   showIf?: boolean;
-  // }
-
   function forwardRef<T, P>(
     render: (props: P, ref: Ref<T>) => ReactElement | null
   ): (props: P & RefAttributes<T>) => ReactElement | null;
-
 }
+
+type TagNames = 'BUTTON' | 'INPUT';
 
 declare global {
   interface EventTarget {
     /**
+     * Checks whether an element or any of its ancestors have a tag name that matches any of the provided tag names.
+     */
+    hasAncestorWithTagNames<Array extends readonly [...TagNames[]]>(...tagNames: Array): boolean;
+    /**
+     * Checks whether an element or any of its ancestors equals the provided element.
+     */
+    hasAncestor(check: HTMLElement | null): boolean;
+    /**
      * Checks whether an element or any of its ancestors matches a given condition.
      */
-    hasAncestor: (check: HTMLElement | null | ((element: HTMLElement) => boolean)) => boolean;
+    hasAncestorMatching(check: ((element: HTMLElement) => boolean)): boolean;
   }
 
   interface Object {

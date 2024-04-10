@@ -48,3 +48,5 @@ export const is = {
 		return val instanceof HTMLElement;
 	},
 }
+
+export const tupleIncludes = <Element extends string, Array extends readonly [...Element[]]>(element: Element, tuple: Array) => tuple.some(f => element.includes(f));

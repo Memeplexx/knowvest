@@ -80,8 +80,8 @@ export const useOutputs = (inputs: Inputs) => {
       notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
-      if (!inputs.groupSynonymId) { return; }
-      if (!inputs.groupId) { throw new Error(); }
+      if (!inputs.groupSynonymId) return;
+      if (!inputs.groupId) throw new Error();
       const response = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId);
       await writeToStoreAndDb(store, { groups: response.group, synonymGroups: response.synonymGroups });
       store.tagsConfig.$patch({ tagId: null, groupId: null, groupSynonymId: null });

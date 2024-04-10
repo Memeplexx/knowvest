@@ -1,6 +1,7 @@
 export { };
 import { MouseEvent, useRef } from "react";
 import { useIsomorphicLayoutEffect } from "./react-utils";
+import { tupleIncludes } from "./logic-utils";
 
 
 export type Keys =
@@ -64,6 +65,14 @@ const ancestorMatches = (element: EventTarget | null, check: (element: HTMLEleme
   }
 }
 
+EventTarget.prototype.hasAncestorWithTagNames = function (...check) {
+  return ancestorMatches(this, e => tupleIncludes(e.tagName, check));
+}
+
 EventTarget.prototype.hasAncestor = function (check) {
-  return ancestorMatches(this, typeof check === 'function' ? check : (element) => element === check);
+  return ancestorMatches(this, (element) => element === check);
+}
+
+EventTarget.prototype.hasAncestorMatching = function (check) {
+  return ancestorMatches(this, check);
 }
