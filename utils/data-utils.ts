@@ -18,7 +18,7 @@ const cache = {
 };
 const getDataViaCache = (store: Store<AppState>) => {
   const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
-  if ((Object.keys(cache.key) as Array<keyof typeof cache.key>).every(k => cache.key[k] === store.$state[k])) { return cache.value; }
+  if ((Object.keys(cache.key) as Array<keyof typeof cache.key>).every(k => cache.key[k] === store.$state[k])) return cache.value;
   const groupSynonymIds = synonymGroups
     .filter(sg => synonymIds.includes(sg.synonymId))
     .distinct();
@@ -74,7 +74,7 @@ export const listenToTagsForEditor = <S extends AppState>({
 
   const subscriptions = [store.writingNote, store.writingNoteTags, store.synonymIds, store.tags, store.noteTags, store.synonymGroups]
     .map(item => item.$onChange(() => {
-      if (store.$state.writingNote || store.$state.writingNoteTags) { return; }
+      if (store.$state.writingNote || store.$state.writingNoteTags) return;
       onChangeNoteTags(getDataViaCache(store));
     }));
   onChangeNoteTags(getDataViaCache(store));

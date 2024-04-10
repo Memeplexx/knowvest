@@ -48,9 +48,9 @@ export const createTagForSynonym = (text: string, synonymId?: SynonymId) => resp
   // Validate
   const userId = await getUserId();
   !!synonymId && await validateSynonymId(synonymId);
-  if (!text.trim().length) { return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const; }
+  if (!text.trim().length) return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const;
   const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
-  if (tagWithSameText) { return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const; }
+  if (tagWithSameText) return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const;
 
   // Either create a new synonym if the synonymId is null, else find the existing synonym
   const synonym = !synonymId

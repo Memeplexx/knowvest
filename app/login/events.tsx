@@ -8,7 +8,7 @@ export const LoginEvents = () => {
   useEffect(() => {
     const clickListener = async (event: MouseEvent) => {
       const providerId = (event.target as HTMLElement).closest('[data-provider-id]')?.getAttribute('data-provider-id');
-      if (!providerId) { return; }
+      if (!providerId) return;
       setLoading(true);
       await signIn(providerId);
     }

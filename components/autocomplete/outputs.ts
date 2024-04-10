@@ -8,7 +8,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
       props.onInputFocused();
     },
     onClickOption: (value: Option['value'], event: MouseEvent) => {
-      if (event.detail === 0) { return; } /* handled by onKeyUpInput */
+      if (event.detail === 0) return; /* handled by onKeyUpInput */
       props.onValueChange(value);
       props.onShowOptionsChange(false);
     },
@@ -16,13 +16,13 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
       props.onInputTextChange(event.target.value.toLowerCase());
     },
     onKeyDownInput: (event: TypedKeyboardEvent<HTMLInputElement>): true | void => {
-      if (event.key !== 'ArrowDown') { return; }
-      if (!options.length) { return true; }
+      if (event.key !== 'ArrowDown') return;
+      if (!options.length) return true;
       (inputs.optionsPopupRef.current?.firstChild as HTMLElement)?.focus();
       event.preventDefault(); // prevents undesirable scrolling behavior
     },
     onKeyUpInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
-      if (event.key !== 'Enter') { return; }
+      if (event.key !== 'Enter') return;
       inputs.containerRef.current?.blur();
       const inputValueToLowerCase = inputRef.current!.value.toLowerCase();
       const selectedOption = options.find(o => o.label.toLowerCase() === inputValueToLowerCase);
@@ -36,9 +36,10 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
     onKeyDownOption: (event: TypedKeyboardEvent<HTMLElement>): true | void => {
       if (event.key === 'ArrowDown') {
         event.preventDefault(); // prevents undesirable scrolling behavior
-        if (!options.length) { return true; }
+        if (!options.length) return true;
         (document.activeElement?.nextElementSibling as HTMLElement)?.focus();
-      } else if (event.key === 'ArrowUp') {
+      }
+      if (event.key === 'ArrowUp') {
         event.preventDefault(); // prevents undesirable scrolling behavior
         const previousElement = document.activeElement?.previousElementSibling as HTMLElement;
         if (previousElement) {
@@ -49,7 +50,7 @@ export const useOutputs = <Option extends OptionBase>({ props, options, inputRef
       }
     },
     onKeyUpOption: (value: Option['value'], event: TypedKeyboardEvent<HTMLElement>) => {
-      if (event.key !== 'Enter') { return; }
+      if (event.key !== 'Enter') return;
       props.onValueChange(value);
     },
     onClickClearText: () => {

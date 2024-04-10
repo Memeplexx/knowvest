@@ -95,7 +95,7 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
 export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: ActivePanelStore, codeMirror: EditorView }) => {
   const updateEditorText = () => {
     const { notes, activeNoteId } = store.$state;
-    if (!notes.length || !activeNoteId) { return; }
+    if (!notes.length || !activeNoteId) return;
     codeMirror.dispatch(
       {
         changes: {

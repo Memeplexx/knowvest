@@ -1,8 +1,8 @@
-import { Inputs } from "./constants";
 import { splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
+import { Inputs } from "./constants";
 
 
 export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => {
@@ -11,10 +11,10 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       store.activePanel.loadingSelection.$set(true);
       const apiResponse = await createTagFromActiveNote(store.activePanel.selection.$state);
       store.activePanel.loadingSelection.$set(false);
-      switch (apiResponse.status) {
-        case 'BAD_REQUEST': return notify.error(apiResponse.fields.tagText);
-        case 'CONFLICT': return notify.error(apiResponse.fields.tagText);
-      }
+      if (apiResponse.status === 'BAD_REQUEST')
+        return notify.error(apiResponse.fields.tagText);
+      if (apiResponse.status === 'CONFLICT')
+        return notify.error(apiResponse.fields.tagText);
       await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
       store.synonymIds.$merge(store.tags.$find.id.$eq(apiResponse.tag.id).synonymId);
       store.activePanel.selection.$set('');
@@ -56,9 +56,9 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     }),
     onDocumentKeyDown: useEventHandlerForDocument('keydown', event => {
       if (event.target.hasAncestor(editorRef.current)) return;
-      if (event.key.startsWith('F') || event.ctrlKey || event.altKey || event.metaKey) { return; }
-      if (event.target.hasAncestorMatching(e => !!e.querySelector('[data-id=backdrop]'))) { return; }
-      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') { return; }
+      if (event.key.startsWith('F') || event.ctrlKey || event.altKey || event.metaKey) return;
+      if (event.target.hasAncestorMatching(e => !!e.querySelector('[data-id=backdrop]'))) return;
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
       codeMirror!.focus();
       codeMirror!.dispatch(
         {

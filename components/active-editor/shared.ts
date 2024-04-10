@@ -28,17 +28,17 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
   let timestamp = Date.now();
   let activeNoteIdRef = store.$state.activeNoteId;
   const doNoteUpdate = async (update: ViewUpdate) => {
-    if (store.$state.activeNoteId !== activeNoteIdRef) { return; }
-    if (Date.now() - timestamp < debounce) { return; }
-    if (!store.$state.activePanel.allowNotePersister) { return; }
+    if (store.$state.activeNoteId !== activeNoteIdRef) return;
+    if (Date.now() - timestamp < debounce) return;
+    if (!store.$state.activePanel.allowNotePersister) return;
     store.writingNote.$set(true);
     const apiResponse = await updateNote(store.$state.activeNoteId, update.state.doc.toString());
     await writeToStoreAndDb(store, { notes: apiResponse.note });
     store.writingNote.$set(false);
   }
   return EditorView.updateListener.of(update => {
-    if (!update.docChanged) { return; }
-    if (!store.$state.activePanel.allowNotePersister) { return; }
+    if (!update.docChanged) return;
+    if (!store.$state.activePanel.allowNotePersister) return;
     timestamp = Date.now();
     setTimeout(() => doNoteUpdate(update), debounce)
     activeNoteIdRef = store.$state.activeNoteId;
@@ -61,7 +61,7 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
   });
   let initializing = true;
   return EditorView.updateListener.of(async update => {
-    if (!initializing && !update.docChanged) { return; }
+    if (!initializing && !update.docChanged) return;
     initializing = false;
     const activeNoteText = update.state.doc.toString();
     if (previousActiveNoteId !== store.$state.activeNoteId) {
@@ -104,11 +104,11 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
       this.decorations = this.getDecorations(view)
     }
     updateSelection = (value: string) => {
-      if (store.$state.activePanel.selection === value) { return; }
+      if (store.$state.activePanel.selection === value) return;
       store.activePanel.selection.$set(value);
     }
     update(update: ViewUpdate) {
-      if (!update.selectionSet) { return; }
+      if (!update.selectionSet) return;
       this.decorations = this.getDecorations(update.view)
     }
     private getDecorations(view: EditorView) {
@@ -118,7 +118,7 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
           from: range.from,
           to: range.to,
           enter: (node) => {
-            if (node.type.name !== 'Document') { return; }
+            if (node.type.name !== 'Document') return;
             const documentText = view.state.doc.toString();
             if (view.state.selection.main.from === view.state.selection.main.to) {
               this.updateSelection('');
@@ -157,7 +157,7 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
 
 export const editorHasTextUpdater = (store: ActivePanelStore) => {
   return EditorView.updateListener.of(function editorHasTextUpdater(update) {
-    if (!update.docChanged) { return; }
+    if (!update.docChanged) return;
     if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
       setTimeout(() => store.activePanel.editorHasText.$set(false));
     } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {

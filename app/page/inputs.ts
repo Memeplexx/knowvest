@@ -23,7 +23,7 @@ export const useInputs = () => {
   });
 
   useEffect(() => {
-    if (!localState.initialized || !searchParams?.has('session-expired')) { return; }
+    if (!localState.initialized || !searchParams?.has('session-expired')) return;
     router.replace('/');
     notify.current();
   }, [searchParams, localState.initialized, router]);

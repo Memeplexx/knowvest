@@ -57,10 +57,10 @@ export const useDataInitializer = ({ store }: { store: HomeStore }) => {
   const mounted = useIsMounted();
   const initializingData = useRef(false);
   useEffect(() => {
-    if (!session) { return; }
-    if (!mounted) { return; }
-    if (initializingData.current) { return; }
-    if (store.stateInitialized.$state) { return; }
+    if (!session) return;
+    if (!mounted) return;
+    if (initializingData.current) return;
+    if (store.stateInitialized.$state) return;
     initializingData.current = true;
     initializeData({ session, store })
       .then(() => initializingData.current = false)

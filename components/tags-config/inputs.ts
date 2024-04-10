@@ -125,7 +125,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   }, [groupId, synonymId, tagId]);
 
   const selectedGroupSelectedSynonym = useMemo(() => {
-    if (!groupId || !synonymId) { return ''; }
+    if (!groupId || !synonymId) return '';
     return tagsInCustomGroups.findOrThrow(t => t.group.id === groupId).synonyms.find(s => s.synonymId === synonymId)?.tags || '';
   }, [groupId, synonymId, tagsInCustomGroups]);
 

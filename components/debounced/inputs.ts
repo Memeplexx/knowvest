@@ -17,7 +17,7 @@ export const useInputs = (props: Props) => {
     valueRef.current = localState.value;
     clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
-      if (Date.now() < (timestampRef.current + actualDebounceTime)) { return; }
+      if (Date.now() < (timestampRef.current + actualDebounceTime)) return;
       onChangeDebounced(localState.value);
     }, actualDebounceTime)
   }

@@ -74,7 +74,7 @@ export const useComponentDownloader = <P>(importer: () => Promise<{ default: Fun
   const isMounted = useIsMounted();
   const importerRef = useRef(importer);
   const component = useMemo(() => {
-    if (!isMounted) { return null; }
+    if (!isMounted) return null;
     return dynamic(importerRef.current);
   }, [isMounted]);
   return component;

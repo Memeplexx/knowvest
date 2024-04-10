@@ -33,7 +33,7 @@ export const useOutputs = ({ store, groupsWithSynonyms, tagsForActiveNote, set }
       store.tagsComponent.showConfigDialog.$set(true);
     },
     onHideDialog: () => {
-      if (!store.$state.tagsComponent.showConfigDialog) { return; }
+      if (!store.$state.tagsComponent.showConfigDialog) return;
       store.tagsComponent.showConfigDialog.$set(false);
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {

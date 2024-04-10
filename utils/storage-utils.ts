@@ -32,7 +32,7 @@ export const writeToStoreAndDb = <S extends AppState>(store: Store<S>, records: 
           const transaction = db.transaction([tableName], 'readwrite');
           const objectStore = transaction.objectStore(tableName);
           tableRecords.forEach(record => {
-            if (record === null) { return; }
+            if (record === null) return;
             const addRequest = objectStore.put(record);
             addRequest.onerror = error => {
               console.error('Error adding data: ', error);
