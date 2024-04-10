@@ -3,6 +3,7 @@ import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { Inputs } from "./constants";
+import { tupleIncludes } from "@/utils/logic-utils";
 
 
 export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => {
@@ -55,10 +56,14 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       store.activePanel.selection.$set('');
     }),
     onDocumentKeyDown: useEventHandlerForDocument('keydown', event => {
-      if (event.target.hasAncestor(editorRef.current)) return;
-      if (event.key.startsWith('F') || event.ctrlKey || event.altKey || event.metaKey) return;
-      if (event.target.hasAncestorMatching(e => !!e.querySelector('[data-id=backdrop]'))) return;
-      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+      if (event.target.hasAncestor(editorRef.current)) 
+        return;
+      if (event.key.startsWith('F') || event.ctrlKey || event.altKey || event.metaKey) 
+        return;
+      if (event.target.hasAncestorMatching(e => !!e.querySelector('[data-id=backdrop]'))) 
+        return;
+      if (tupleIncludes(event.target.tagName, ['INPUT', 'TEXTAREA']))
+        return;
       codeMirror!.focus();
       codeMirror!.dispatch(
         {

@@ -142,7 +142,8 @@ export const useOutputs = (inputs: Inputs) => {
       shared.focusAutocompleteInput();
     },
     onClickUpdateGroupSynonym: () => {
-      if (!inputs.groupId || !inputs.groupSynonymId) { throw new Error(); }
+      if (!inputs.groupId || !inputs.groupSynonymId) 
+        throw new Error();
       const synonymId = store.synonymGroups
         .$find.groupId.$eq(inputs.groupId).$and.synonymId.$eq(inputs.groupSynonymId)
         .synonymId;
@@ -189,7 +190,8 @@ export const useOutputs = (inputs: Inputs) => {
       shared.doCancel(event.target);
     }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
-      if (event.key !== 'Escape') return;
+      if (event.key !== 'Escape')
+        return;
       if (event.target.tagName === 'INPUT') {
         inputs.autocompleteRef.current?.blurInput();
         if (inputs.showAutocompleteOptions) {

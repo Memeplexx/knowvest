@@ -27,7 +27,7 @@ export type Keys =
 
 export interface TypedKeyboardEvent<T extends HTMLElement> extends React.KeyboardEvent<T> {
   key: Keys,
-  target: T,
+  target: Omit<T, 'tagName'> & { tagName: 'INPUT' | 'TEXTAREA' | 'DIV' },
 }
 export type EventMap<T> = T extends 'click' ? MouseEvent<HTMLElement> & { target: HTMLElement } : T extends 'keyup' | 'keydown' ? TypedKeyboardEvent<HTMLElement> : never;
 export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'keydown'>(

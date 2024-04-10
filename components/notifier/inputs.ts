@@ -21,14 +21,12 @@ export const useInputs = (incomingProps: Props) => {
   useEffect(() => {
 
     // mark component as initialized so that portal can snackbar can be added to DOM body element
-    if (!initialized) {
+    if (!initialized)
       return set({ initialized: true });
-    }
 
     // message will be an empty string on initialization or when the message is cleared
-    if (!message) {
+    if (!message)
       return;
-    }
 
     // if we get to this point, we know that the message text is not empty, so we can push the message onto the messages queue
     const ts = Date.now();
