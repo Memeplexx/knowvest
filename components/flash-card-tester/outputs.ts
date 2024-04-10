@@ -7,15 +7,12 @@ export const useOutputs = (inputs: Inputs) => {
   const { props, store, notify, bodyRef, items } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
-      if (event.target.parentNode === null) { // element was removed from the DOM
+      if (event.target.parentNode === null) // element was removed from the DOM
         return;
-      }
-      if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT')) {
+      if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT'))
         return;
-      }
-      if (bodyRef.current?.contains(event.target)) {
+      if (bodyRef.current?.contains(event.target))
         return;
-      }
       props.onHide();
     }),
     onToggleView: () => {

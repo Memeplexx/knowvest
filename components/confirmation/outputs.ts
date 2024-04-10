@@ -12,9 +12,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       inputs.set({ selection: 'none' });
     },
     onClose: () => {
-      if (inputs.selection === 'confirm') {
+      if (inputs.selection === 'confirm')
         props.onConfirm?.();
-      }
     }
   };
 }

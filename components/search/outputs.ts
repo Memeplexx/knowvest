@@ -54,7 +54,8 @@ export const useOutputs = (inputs: Inputs) => {
       store.search.showAutocompleteOptions.$set(true);
     },
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
-      if (event.key !== 'Escape') return;
+      if (event.key !== 'Escape') 
+        return;
       if (inputs.showAutocompleteOptions)
         return store.search.showAutocompleteOptions.$set(false);
       props.onHide();

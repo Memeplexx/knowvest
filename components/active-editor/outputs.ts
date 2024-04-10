@@ -51,8 +51,10 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
       editorRef.current!.focus();
     },
     onDocumentClick: useEventHandlerForDocument('click', event => {
-      if (event.target.hasAncestor(editorRef.current)) return;
-      if (store.activePanel.selection.$state === '') return;
+      if (event.target.hasAncestor(editorRef.current))
+        return;
+      if (store.activePanel.selection.$state === '')
+        return;
       store.activePanel.selection.$set('');
     }),
     onDocumentKeyDown: useEventHandlerForDocument('keydown', event => {
