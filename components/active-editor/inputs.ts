@@ -31,24 +31,27 @@ import { initialState } from '../active-panel/constants';
 import { useNotifier } from '../notifier';
 import { ActivePanelStore } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
+import { NoteId } from '@/actions/types';
 
 
 export const useInputs = () => {
 
-  const { store, notes, activePanel } = useStore<typeof initialState>();
+  const { store, notes, activePanel, activeNoteId } = useStore<typeof initialState>();
   const mayDeleteNote = !!notes.length;
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
-  
+
   useEffect(() => {
-    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store });
-    updateEditorWhenActiveIdChanges({ codeMirror: codeMirror.current!, store: store as ActivePanelStore });
+    if (!activeNoteId) return;
+    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store, activeNoteId });
+    return () => codeMirror.current?.destroy();
+  }, [store, activeNoteId]);
+
+  useEffect(() => {
+    if (!activeNoteId) return;
     const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
-    return () => {
-      codeMirror.current?.destroy();
-      changeListener.unsubscribe();
-    }
-  }, [store]);
+    return () => changeListener.unsubscribe();
+  }, [store, activeNoteId]);
 
   return {
     store,
@@ -60,9 +63,9 @@ export const useInputs = () => {
   };
 }
 
-export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElement, store: ActivePanelStore }) => {
-  return new EditorView({
-    doc: '',
+export const instantiateCodeMirror = ({ editor, store, activeNoteId }: { editor: HTMLDivElement, store: ActivePanelStore, activeNoteId: NoteId }) => {
+  const result = new EditorView({
+    doc: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text,
     parent: editor,
     extensions: [
       history(),
@@ -90,31 +93,8 @@ export const instantiateCodeMirror = ({ editor, store }: { editor: HTMLDivElemen
       oneDark,
     ],
   });
+  result.dispatch({ selection: { anchor: result.state.doc.length } });
+  if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
+    result.focus();
+  return result;
 }
-
-export const updateEditorWhenActiveIdChanges = ({ codeMirror, store }: { store: ActivePanelStore, codeMirror: EditorView }) => {
-  const updateEditorText = () => {
-    const { notes, activeNoteId } = store.$state;
-    if (!notes.length || !activeNoteId) return;
-    codeMirror.dispatch(
-      {
-        changes: {
-          from: 0,
-          to: codeMirror.state.doc.length,
-          insert: notes.findOrThrow(n => n.id === activeNoteId).text,
-        },
-      },
-      {
-        selection: {
-          anchor: codeMirror.state.doc.length
-        }
-      },
-    );
-    if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      codeMirror.focus();
-    }
-  };
-  updateEditorText();
-  store.activeNoteId.$onChange(updateEditorText);
-}
-

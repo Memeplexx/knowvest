@@ -204,7 +204,6 @@ const highlightedRanges = StateField.define({
 });
 
 export const reviseEditorTags = ({ editorView, addTags, removeTags }: ReviseEditorTagsArgs) => {
-
   const effects = [
     ...removeTags
       .map(t => removeHighlight.of({
