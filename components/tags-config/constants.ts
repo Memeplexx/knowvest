@@ -1,5 +1,6 @@
 import { SynonymId, TagId, GroupId } from "@/actions/types";
 import { useInputs } from "./inputs";
+import { useOutputs } from "./outputs";
 
 export const initialState = {
   tagsConfig: {
@@ -56,6 +57,10 @@ export type Props = {
 };
 
 export type Inputs = ReturnType<typeof useInputs>;
+
+export type Outputs = ReturnType<typeof useOutputs>;
+
+export type FragmentProps = { inputs: Inputs, outputs: Outputs };
 
 export type AutocompleteOptionType = {
   value: TagId | GroupId | null,
