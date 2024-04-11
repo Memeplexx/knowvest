@@ -89,7 +89,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                 />
 
                 <BodyGroup
-                  showIf={!!inputs.tagsInSynonymGroup.length}
+                  if={!!inputs.tagsInSynonymGroup.length}
                   $active={!inputs.groupId}
                   children={
                     <>
@@ -122,7 +122,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                         )}
                       />
                       <PopupOptions
-                        showIf={inputs.modal === 'synonymOptions'}
+                        if={inputs.modal === 'synonymOptions'}
                         ref={inputs.synonymOptionsRef}
                         style={inputs.floatingRef.floatingStyles}
                         onClick={outputs.onClickHideOptionsForSynonyms}
@@ -137,17 +137,17 @@ export const TagsConfig = forwardRef(function TagsConfig(
                               children='Add these Synonyms to Group'
                             />
                             <PopupOption
-                              showIf={!!inputs.tagId && inputs.tagsInSynonymGroup.length > 1}
+                              if={!!inputs.tagId && inputs.tagsInSynonymGroup.length > 1}
                               onClick={outputs.onClickRemoveTagFromSynonyms}
                               children='Remove selection from these Synonyms'
                             />
                             <PopupOption
-                              showIf={!!inputs.tagId}
+                              if={!!inputs.tagId}
                               children='Rename selection to something else'
                               onClick={outputs.onClickRenameTag}
                             />
                             <PopupOption
-                              showIf={!!inputs.tagId}
+                              if={!!inputs.tagId}
                               onClick={outputs.onClickConfirmDeleteTag}
                               children='Delete selection'
                             />
@@ -155,7 +155,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                         }
                       />
                       <Confirmation
-                        showIf={inputs.modal === 'confirmDeleteTag'}
+                        if={inputs.modal === 'confirmDeleteTag'}
                         onClose={outputs.onCancelConfirmation}
                         onConfirm={outputs.onClickConfirmArchiveTag}
                         title='Delete Tag Requested'
@@ -170,9 +170,9 @@ export const TagsConfig = forwardRef(function TagsConfig(
                   .map(e => ({ ...e, active: inputs.groupId === e.group.id }))
                   .map(({ group, synonyms, active }) => (
                     <BodyGroup
+                      if={!!synonyms.length}
                       key={group.id}
                       $active={active}
-                      showIf={!!synonyms.length}
                       children={
                         <>
                           <BodyHeader
@@ -215,7 +215,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             ))}
                           />
                           <PopupOptions
-                            showIf={active && inputs.modal === 'groupOptions'}
+                            if={active && inputs.modal === 'groupOptions'}
                             ref={active && inputs.modal === 'groupOptions' ? inputs.floatingRef.refs.setFloating : null}
                             style={inputs.floatingRef.floatingStyles}
                             onClick={outputs.onClickHideOptionsForGroup}
@@ -226,12 +226,12 @@ export const TagsConfig = forwardRef(function TagsConfig(
                                   children='Add to this Group'
                                 />
                                 <PopupOption
-                                  showIf={!!inputs.groupSynonymId && synonyms.length > 1}
+                                  if={!!inputs.groupSynonymId && synonyms.length > 1}
                                   onClick={outputs.onClickRemoveSynonymFromCustomGroup}
                                   children='Remove selection from Group'
                                 />
                                 <PopupOption
-                                  showIf={!!inputs.groupSynonymId && inputs.groupSynonymId !== inputs.synonymId}
+                                  if={!!inputs.groupSynonymId && inputs.groupSynonymId !== inputs.synonymId}
                                   onClick={outputs.onClickUpdateGroupSynonym}
                                   children='Update selection'
                                 />
@@ -243,7 +243,7 @@ export const TagsConfig = forwardRef(function TagsConfig(
                             }
                           />
                           <Confirmation
-                            showIf={inputs.modal === 'confirmDeleteGroup'}
+                            if={inputs.modal === 'confirmDeleteGroup'}
                             onClose={outputs.onCancelConfirmation}
                             onConfirm={outputs.onClickConfirmArchiveGroup}
                             title='Delete Group Requested'
@@ -260,8 +260,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
           <Footer
             children={
               <FooterButton
+                if={!!inputs.synonymId}
                 onClick={outputs.onClickStartOver}
-                showIf={!!inputs.synonymId}
                 children='Start over'
                 aria-label='Start over'
                 title='Manage a new tag'

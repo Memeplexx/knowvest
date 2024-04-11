@@ -18,10 +18,10 @@ export const Popup = styled.div`
   ${defaultFontFamily.style};
 `;
 
-export const Message = styled.div<{ $index: number, $animation: number, $gap: number, $status: snackbarStatus, $showIf: boolean }>`
+export const Message = styled.div<{ $index: number, $animation: number, $gap: number, $status: snackbarStatus, $if: boolean }>`
   transition: ${p => p.$animation}ms all;
   position: absolute;
-  transform: translateY(-${p => !p.$showIf ? 0 : ((p.$index + 1) * p.$gap)}px) translateX(-50%);
+  transform: translateY(-${p => !p.$if ? 0 : ((p.$index + 1) * p.$gap)}px) translateX(-50%);
   background-color: ${p => snackbarStatuses[p.$status].color};
   z-index: 1;
   color: #FFF;

@@ -2,7 +2,7 @@ import { MouseEvent, ReactNode } from "react";
 import { useInputs } from "./inputs";
 
 export type Props = {
-  showIf?: boolean;
+  if?: boolean;
   onClose?: () => void;
   onBackdropClick?: (event: MouseEvent) => void;
   children: ReactNode | undefined,

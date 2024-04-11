@@ -26,7 +26,7 @@ export const Tags = () => {
   return (
     <>
       <Modal
-        showIf={inputs.showConfigDialog}
+        if={inputs.showConfigDialog}
         children={
           <TagsConfig
             onHide={outputs.onHideDialog}
@@ -34,7 +34,7 @@ export const Tags = () => {
         }
       />
       <SettingsButton
-        showIf={!!inputs.tagsForActiveNote.length}
+        if={!!inputs.tagsForActiveNote.length}
         children={<SettingsIcon />}
         onClick={outputs.onShowDialog}
         aria-label='Settings'
@@ -43,7 +43,7 @@ export const Tags = () => {
         children={
           <>
             <TagsSection
-              showIf={inputs.stateInitialized}
+              if={inputs.stateInitialized}
               children={
                 <>
                   <ActiveHeaderTag
@@ -78,8 +78,8 @@ export const Tags = () => {
             />
             {inputs.groupsWithSynonyms.map(group => (
               <TagsSection
+                if={inputs.stateInitialized}
                 key={group.groupId}
-                showIf={inputs.stateInitialized}
                 children={
                   <>
                     <GroupHeaderTag
@@ -110,7 +110,7 @@ export const Tags = () => {
               />
             ))}
             <NoTagsPlaceholder
-              showIf={inputs.stateInitialized && !inputs.tagsForActiveNote.length}
+              if={inputs.stateInitialized && !inputs.tagsForActiveNote.length}
               children={
                 <>
                   No tags associated with active note
@@ -124,7 +124,7 @@ export const Tags = () => {
               }
             />
             <LoaderPlaceholder
-              showIf={!inputs.stateInitialized}
+              if={!inputs.stateInitialized}
             />
           </>
         }

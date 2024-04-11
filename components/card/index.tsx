@@ -36,7 +36,7 @@ export const Card = forwardRef(function Card(
             onScroll={outputs.onBodyScroll}
           />
           <LoaderPlaceholder
-            showIf={!!props.loading}
+            if={!!props.loading}
           />
         </>
       }

@@ -19,7 +19,7 @@ export function History(
       body={
         <>
           <ListItemsWrapper
-            showIf={inputs.stateInitialized && !!inputs.items.length}
+            if={inputs.stateInitialized && !!inputs.items.length}
             children={
               inputs.items.map(note => (
                 <ListItem
@@ -46,7 +46,7 @@ export function History(
               ))}
           />
           <NoResultsWrapper
-            showIf={inputs.stateInitialized && !inputs.items.length}
+            if={inputs.stateInitialized && !inputs.items.length}
             children={
               <>
                 <NoResultsIcon />
@@ -55,7 +55,7 @@ export function History(
             }
           />
           <LoaderPlaceholder
-            showIf={!inputs.stateInitialized}
+            if={!inputs.stateInitialized}
           />
         </>
       }

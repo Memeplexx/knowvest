@@ -15,15 +15,15 @@ export const FlashCardTester = (props: Props) => {
       children={
         <>
           <Body
-            showIf={!!inputs.items.length}
+            if={!!inputs.items.length}
             children={
               <>
                 <Question
-                  showIf={inputs.showQuestions}
+                  if={inputs.showQuestions}
                   children={inputs.items[0]?.text}
                 />
                 <ReadonlyNote
-                  showIf={!inputs.showQuestions}
+                  if={!inputs.showQuestions}
                   note={inputs.items[0]?.note ?? null}
                   synonymIds={inputs.store.synonymIds}
                 />
@@ -31,7 +31,7 @@ export const FlashCardTester = (props: Props) => {
             }
           />
           <Footer
-            showIf={!!inputs.items.length}
+            if={!!inputs.items.length}
             children={
               <>
                 <ToggleViewButton
@@ -42,7 +42,7 @@ export const FlashCardTester = (props: Props) => {
                   children={
                     <>
                       <NextButton
-                        showIf={inputs.showQuestions}
+                        if={inputs.showQuestions}
                         onClick={outputs.onClickWrongAnswer}
                         children={
                           <>
@@ -52,7 +52,7 @@ export const FlashCardTester = (props: Props) => {
                         }
                       />
                       <NextButton
-                        showIf={inputs.showQuestions}
+                        if={inputs.showQuestions}
                         onClick={outputs.onClickRightAnswer}
                         children={
                           <>
@@ -68,7 +68,7 @@ export const FlashCardTester = (props: Props) => {
             }
           />
           <NoResults
-            showIf={!inputs.items.length}
+            if={!inputs.items.length}
             children={
               <>
                 <NoResultsIcon />

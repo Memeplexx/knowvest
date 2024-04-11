@@ -16,7 +16,7 @@ export const Navbar = (props: Props) => {
   return (
     <>
       <Modal
-        showIf={inputs.showSearchDialog}
+        if={inputs.showSearchDialog}
         children={
           <SearchDialog
             onHide={outputs.onHideSearchDialog}
@@ -24,7 +24,7 @@ export const Navbar = (props: Props) => {
         }
       />
       <Modal
-        showIf={inputs.showFlashCardsDialog}
+        if={inputs.showFlashCardsDialog}
         onClose={outputs.onHideFlashCardsDialog}
         children={
           <FlashCardTester
@@ -33,7 +33,7 @@ export const Navbar = (props: Props) => {
         }
       />
       <Wrapper
-        $show={!!props.showIf}
+        $show={!!props.if}
         children={
           <>
             <ImageLogo
@@ -96,7 +96,7 @@ export const Navbar = (props: Props) => {
               }
             />
             <LoaderPlaceholder
-              showIf={!inputs.stateInitialized}
+              if={!inputs.stateInitialized}
             />
           </>
         }

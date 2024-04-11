@@ -17,7 +17,7 @@ export default function PageInteractive() {
       />
       {!inputs.initialized ? <></> : createPortal(
         <Loader
-          showIf={inputs.showLoader}
+          if={inputs.showLoader}
         />,
         document.body
       )}

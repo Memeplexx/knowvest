@@ -17,7 +17,7 @@ export const LoginEvents = () => {
   }, [])
   return (
     <Loader
-      showIf={loading}
+      if={loading}
     />
   )
 }

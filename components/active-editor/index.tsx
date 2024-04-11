@@ -18,7 +18,7 @@ export default function ActiveEditor() {
             ref={inputs.editorRef}
           />
           <ActiveSelection
-            showIf={!!inputs.selection}
+            if={!!inputs.selection}
             children={
               <>
                 <ActiveSelectionTagName
@@ -64,7 +64,7 @@ export default function ActiveEditor() {
                   }
                 />
                 <Loader
-                  showIf={inputs.loadingSelection}
+                  if={inputs.loadingSelection}
                 />
               </>
             }

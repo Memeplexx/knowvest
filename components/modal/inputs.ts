@@ -4,27 +4,27 @@ import { Props, animationDuration } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const [showInternal, setShowInternal] = useState(props.showIf);
+  const [showInternal, setShowInternal] = useState(props.if);
 
   const backdropRef = useRef<HTMLDivElement>(null);
 
   const isClosingRef = useRef(false);
 
   const backgroundAnimations = useSpring({
-    opacity: props.showIf ? 1 : 0,
+    opacity: props.if ? 1 : 0,
     config: { duration: animationDuration },
   });
 
   const foregroundAnimations = useSpring({
-    opacity: props.showIf ? 1 : 0,
-    transform: `scale(${props.showIf ? 1 : 1.4})`,
-    filter: `blur(${props.showIf ? 0 : 20}px)`,
+    opacity: props.if ? 1 : 0,
+    transform: `scale(${props.if ? 1 : 1.4})`,
+    filter: `blur(${props.if ? 0 : 20}px)`,
     config: { duration: animationDuration },
   });
 
-  if (props.showIf && !showInternal) {
+  if (props.if && !showInternal) {
     setShowInternal(true);
-  } else if (!props.showIf && showInternal && !isClosingRef.current) {
+  } else if (!props.if && showInternal && !isClosingRef.current) {
     isClosingRef.current = true;
     setTimeout(() => {
       setShowInternal(false);

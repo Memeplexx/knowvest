@@ -1,6 +1,6 @@
 "use client";
 import { TypedKeyboardEvent } from "@/utils/dom-utils";
-import { ButtonHTMLAttributes, ComponentType, ForwardedRef, Fragment, HTMLAttributes, InputHTMLAttributes, ReactNode, forwardRef } from "react";
+import { ButtonHTMLAttributes, ComponentType, ForwardedRef, HTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, forwardRef } from "react";
 
 
 type ReplaceKeyboardEvents<E extends HTMLElement, A extends HTMLAttributes<E>> = {
@@ -9,63 +9,69 @@ type ReplaceKeyboardEvents<E extends HTMLElement, A extends HTMLAttributes<E>> =
     : A[key]
 };
 
+export type IfProps = { if?: boolean };
+
 export type ButtonProps = ReplaceKeyboardEvents<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>;
 
 export type InputProps = ReplaceKeyboardEvents<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>;
 
+export type TextAreaProps = ReplaceKeyboardEvents<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>;
+
 export type DivProps = ReplaceKeyboardEvents<HTMLDivElement, HTMLAttributes<HTMLDivElement>>;
 
-type ShowIf = { showIf?: boolean };
+export type SpanProps = ReplaceKeyboardEvents<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>;
+
+export type ElementProps = ReplaceKeyboardEvents<HTMLElement, HTMLAttributes<HTMLElement>>;
+
+const stripUnKnownProps = function <P extends { children?: ReactNode } & IfProps>(props: P) {
+  return (Object.keys(props) as Array<keyof P>)
+    .reduce((acc, key) => { if (key !== 'if' && key !== 'children') { acc[key] = props[key]; } return acc; }, {} as P);
+}
 
 export const possible = {
   div: forwardRef(function Div(
-    { children, showIf, ...props }: DivProps & ShowIf,
+    props: DivProps & IfProps,
     ref?: ForwardedRef<HTMLDivElement>,
   ) {
-    return showIf === false ? null : <div ref={ref} data-testid={props.className} {...props}>{children}</div>;
+    if (props.if === false) return null;
+    return <div ref={ref} {...stripUnKnownProps(props)}>{props.children}</div>;
+  }),
+  span: forwardRef(function Span(
+    props: SpanProps & IfProps,
+    ref?: ForwardedRef<HTMLSpanElement>,
+  ) {
+    if (props.if === false) return null;
+    return <span ref={ref} {...stripUnKnownProps(props)}>{props.children}</span>;
   }),
   input: forwardRef(function Input(
-    { children, showIf, ...props }: InputProps & ShowIf,
+    props: InputProps & IfProps,
     ref?: ForwardedRef<HTMLInputElement>
   ) {
-    return showIf === false ? null : <input ref={ref} data-testid={props.className} {...props}>{children}</input>;
+    if (props.if === false) return null;
+    return <input ref={ref} {...stripUnKnownProps(props)}>{props.children}</input>;
+  }),
+  textarea: forwardRef(function TextArea(
+    props: TextAreaProps & IfProps,
+    ref?: ForwardedRef<HTMLTextAreaElement>
+  ) {
+    if (props.if === false) return null;
+    return <textarea ref={ref} {...stripUnKnownProps(props)}>{props.children}</textarea>;
   }),
   button: forwardRef(function Button(
-    { children, showIf, ...props }: ButtonProps & ShowIf,
+    props: ButtonProps & IfProps,
     ref?: ForwardedRef<HTMLButtonElement>
   ) {
-    return showIf === false ? null : <button ref={ref} data-testid={props.className} {...props}>{children}</button>;
+    if (props.if === false) return null;
+    return <button ref={ref} {...stripUnKnownProps(props)}>{props.children}</button>;
   }),
   element: function Element<P>(ComponentType: ComponentType<P>) {
     return forwardRef(function Element(
-      { children, showIf, ...props }: P & { children?: React.ReactNode } & ShowIf,
+      props: P & { children?: React.ReactNode } & IfProps,
       ref?: ForwardedRef<HTMLElement>
     ) {
-      return showIf === false ? null : <ComponentType ref={ref} {...props as P}>{children}</ComponentType>;
+      if (props.if === false) return null;
+      return <ComponentType ref={ref} {...stripUnKnownProps(props)}>{props.children}</ComponentType>;
     });
-  },
-  fragment: ({ showIf, children }: { showIf: boolean, children?: ReactNode }) => {
-    return showIf === false ? null : <Fragment children={children} />
   },
 }
 
-export const RenderedList = function <T>(
-  { showIf, list, item }: { list: T[], item: (item: T, index: number) => JSX.Element } & { showIf?: boolean },
-) {
-  return showIf === false ? null : (
-    <>
-      {list.map((it, index) => item(it, index))}
-    </>
-  )
-};
-
-export const RenderedListInDiv = forwardRef(function RenderList<T>(
-  { showIf, list, item, ...props }: HTMLAttributes<HTMLDivElement> & { list: T[], item: (item: T, index: number) => JSX.Element } & ShowIf,
-  ref?: ForwardedRef<HTMLDivElement>,
-) {
-  return showIf === false ? null : (
-    <div ref={ref} data-testid={props.className} {...props}>
-      {list.map((it, index) => item(it, index))}
-    </div>
-  )
-})

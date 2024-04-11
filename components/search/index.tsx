@@ -20,7 +20,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
       children={
         <>
           <TabsWrapper
-            showIf={inputs.screenIsNarrow}
+            if={inputs.screenIsNarrow}
             children={
               <>
                 <TabTitle
@@ -50,7 +50,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
             children={
               <>
                 <LeftContent
-                  showIf={inputs.showSearchPane}
+                  if={inputs.showSearchPane}
                   children={
                     <>
                       <Autocomplete<AutocompleteOptionType>
@@ -79,7 +79,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                     </>
                                   }
                                 />
-                                <div/>
+                                <div />
                               </>
                             }
                           />
@@ -99,22 +99,18 @@ export const SearchDialog = forwardRef(function SearchDialog(
                                       inputs.selectedSynonymTags.map(tags => (
                                         <Fragment
                                           key={tags[0]!.synonymId}
-                                          children={
-                                            <>
-                                              {tags.map(tag =>
-                                                <Tag
-                                                  key={tag.id}
-                                                  $hovered={tag.synonymId === inputs.hoveredSynonymId}
-                                                  onClick={() => outputs.onClickSelectedSynonym(tag.synonymId)}
-                                                  children={tag.text}
-                                                  $first={tag.first}
-                                                  $last={tag.last}
-                                                  onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
-                                                  onMouseOut={outputs.onMouseOutSelectedSynonym}
-                                                />
-                                              )}
-                                            </>
-                                          }
+                                          children={tags.map(tag =>
+                                            <Tag
+                                              key={tag.id}
+                                              $hovered={tag.synonymId === inputs.hoveredSynonymId}
+                                              onClick={() => outputs.onClickSelectedSynonym(tag.synonymId)}
+                                              children={tag.text}
+                                              $first={tag.first}
+                                              $last={tag.last}
+                                              onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
+                                              onMouseOut={outputs.onMouseOutSelectedSynonym}
+                                            />
+                                          )}
                                         />
                                       ))
                                     }
@@ -157,7 +153,7 @@ export const SearchDialog = forwardRef(function SearchDialog(
                   }
                 />
                 <RightContent
-                  showIf={inputs.showResultsPane}
+                  if={inputs.showResultsPane}
                   children={inputs.notesByTags.map(note => (
                     <Result
                       key={note.id}

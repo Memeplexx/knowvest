@@ -28,7 +28,7 @@ export function NotifierProvider(partialProps: Props) {
                 inputs.messages.map((message, index) => (
                   <Message
                     key={message.ts}
-                    $showIf={message.show}
+                    $if={message.show}
                     $index={index}
                     $animation={inputs.animationDuration}
                     $gap={inputs.stackGap}

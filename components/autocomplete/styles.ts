@@ -57,7 +57,7 @@ export const ErrorMsg = styled(possible.div)`
   position: absolute;
   transition: 0.2s all;
   font-size: 12px;
-  ${p => p.showIf && css`
+  ${p => p.if && css`
     bottom: -22px;
   `}
 `;

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { useInputs } from "./inputs";
 
 export interface Props {
-  showIf: boolean;
+  if: boolean;
   title?: ReactNode;
   message?: ReactNode;
   confirmText?: ReactNode;

@@ -20,7 +20,7 @@ export const ActiveNoteFlashCards = () => {
         children={
           <>
             <FlashCardWrapper
-              showIf={!!inputs.items.length}
+              if={!!inputs.items.length}
               children={
                 inputs.items.map(item => (
                   <FlashCard
@@ -34,12 +34,12 @@ export const ActiveNoteFlashCards = () => {
                           rows={4}
                         />
                         <DeleteButton
-                          showIf={!!item.text}
+                          if={!!item.text}
                           children={<DeleteIcon />}
                           onClick={() => outputs.onClickRequestDeleteFlashCard(item.id)}
                         />
                         <Confirmation
-                          showIf={!!inputs.confirmDeleteId}
+                          if={!!inputs.confirmDeleteId}
                           onClose={outputs.onCancelRemoveFlashCard}
                           onConfirm={() => outputs.onConfirmRemoveFlashCard(item.id)}
                           title='Delete note requested'
@@ -52,7 +52,7 @@ export const ActiveNoteFlashCards = () => {
               }
             />
             <NoResults
-              showIf={!inputs.items.length}
+              if={!inputs.items.length}
               children={
                 <>
                   <NoResultsIcon />

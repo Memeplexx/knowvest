@@ -33,7 +33,7 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
           <ClearTextButtonWrapper
             children={
               <ClearTextButton
-                showIf={!!props.inputText.trim() && !props.disabled}
+                if={!!props.inputText.trim() && !props.disabled}
                 onClick={outputs.onClickClearText}
                 title="Clear text"
                 aria-label='Clear text'
@@ -42,13 +42,13 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             }
           />
           <ErrorMsg
-            showIf={!!props.error}
+            if={!!props.error}
             children={props.error}
           />
           <Options
             ref={inputs.floatingRef.refs.setFloating}
             style={inputs.floatingRef.floatingStyles}
-            showIf={props.showOptions}
+            if={props.showOptions}
             children={
               inputs.options.map(option => (
                 <OptionItem
