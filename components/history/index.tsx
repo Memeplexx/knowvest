@@ -20,30 +20,29 @@ export function History(
         <>
           <ListItemsWrapper
             if={inputs.stateInitialized && !!inputs.items.length}
-            children={
-              inputs.items.map(note => (
-                <ListItem
-                  key={note.id}
-                  onClick={() => outputs.onSelectNote(note.id)}
-                  children={
-                    <>
-                      <Header
-                        children={
-                          <>
-                            {note.date}
-                            <Icon />
-                          </>
-                        }
-                      />
-                      <Result
-                        note={note}
-                        synonymIds={inputs.store.synonymIds}
-                      />
-                      <RightBorder />
-                    </>
-                  }
-                />
-              ))}
+            children={inputs.items.map(note => (
+              <ListItem
+                key={note.id}
+                onClick={() => outputs.onSelectNote(note.id)}
+                children={
+                  <>
+                    <Header
+                      children={
+                        <>
+                          {note.date}
+                          <Icon />
+                        </>
+                      }
+                    />
+                    <Result
+                      note={note}
+                      synonymIds={inputs.store.synonymIds}
+                    />
+                    <RightBorder />
+                  </>
+                }
+              />
+            ))}
           />
           <NoResultsWrapper
             if={inputs.stateInitialized && !inputs.items.length}
