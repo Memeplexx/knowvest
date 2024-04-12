@@ -23,7 +23,7 @@ export const useInputs = (props: Props) => {
   }
   return {
     ...otherProps,
-    onChange: (e: React.ChangeEvent<{ value: string }>) => localState.set({value: e.target.value }),
+    onChange: (e: React.ChangeEvent<{ value: string }>) => localState.set({ value: e.target.value }),
     ...localState,
   }
 }

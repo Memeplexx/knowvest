@@ -111,9 +111,8 @@ export const useOutputs = (inputs: Inputs) => {
       store.tagsConfig.autocompleteText.$set(value);
     },
     onAutocompleteInputFocused: () => {
-      if (!inputs.tagId && !inputs.showAutocompleteOptions) {
+      if (!inputs.tagId && !inputs.showAutocompleteOptions)
         store.tagsConfig.showAutocompleteOptions.$set(true);
-      }
     },
     onAutocompleteInputCancel: () => {
       const autocompleteText = !inputs.tagId ? '' : store.tags.$find.id.$eq(inputs.tagId).text;
@@ -197,9 +196,8 @@ export const useOutputs = (inputs: Inputs) => {
         return;
       if (event.target.tagName === 'INPUT') {
         inputs.autocompleteRef.current?.blurInput();
-        if (inputs.showAutocompleteOptions) {
+        if (inputs.showAutocompleteOptions)
           store.tagsConfig.showAutocompleteOptions.$set(false)
-        }
         return;
       }
       shared.doCancel(event.target);
