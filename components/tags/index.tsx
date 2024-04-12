@@ -47,7 +47,7 @@ export const Tags = () => {
             <SynonymsFragment
               {...fragmentProps}
             />
-            <GroupsWithSynonymsFragment
+            <GroupSynonymsFragment
               {...fragmentProps}
             />
             <PlaceholderFragment
@@ -121,7 +121,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
   )
 }
 
-const GroupsWithSynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
+const GroupSynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
     <>
       {inputs.groupsWithSynonyms.map(group => (
