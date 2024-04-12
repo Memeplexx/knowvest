@@ -4,7 +4,7 @@ import { possible } from '../html';
 import { ButtonIcon } from '../button-icon';
 import { Loader } from '../loader';
 
-export const Tag = styled.div <{ $selected: boolean, $first: boolean, $last: boolean, $show?: boolean }>`
+export const Tag = styled(possible.div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
   font-size: 12px;
   height: 20px;
   align-items: center;
@@ -12,9 +12,6 @@ export const Tag = styled.div <{ $selected: boolean, $first: boolean, $last: boo
   transition: all 0.2s;
   cursor: pointer;
   display: flex;
-  ${p => p.$show && css`
-    display: none;
-  `}
   ${p => p.$selected && css`
     background-color: #b100b159;
     z-index: 1;

@@ -75,3 +75,25 @@ export const possible = {
   },
 }
 
+export const RenderedList = function <T>(
+  props: { list: T[], item: (item: T, index: number) => JSX.Element } & IfProps,
+) {
+  if (props.if === false) return null;
+  return (
+    <>
+      {props.list.map((it, index) => props.item(it, index))}
+    </>
+  )
+};
+
+export const RenderedListInDiv = forwardRef(function RenderList<T>(
+  props: HTMLAttributes<HTMLDivElement> & IfProps & { list: T[], item: (item: T, index: number) => JSX.Element },
+  ref?: ForwardedRef<HTMLDivElement>,
+) {
+  if (props.if === false) return null;
+  return (
+    <div ref={ref} data-testid={props.className} {...stripUnKnownProps(props)}>
+      {props.list.map((it, index) => props.item(it, index))}
+    </div>
+  )
+})
