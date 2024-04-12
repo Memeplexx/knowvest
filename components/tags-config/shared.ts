@@ -27,7 +27,8 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     blurAutocompleteInput();
   }
   const completeCreateTagForGroup = async () => {
-    if (!inputs.groupId || !inputs.synonymId) return;
+    if (!inputs.groupId || !inputs.synonymId) 
+      return;
     const apiResponse = await createTagForGroup(inputs.autocompleteText.trim(), inputs.groupId, inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
@@ -37,7 +38,8 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     blurAutocompleteInput();
   }
   const completeCreateGroup = async () => {
-    if (!inputs.synonymId) { throw new Error() }
+    if (!inputs.synonymId) 
+      throw new Error();
     const apiResponse = await createGroup(inputs.autocompleteText.trim(), inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.name);
@@ -49,7 +51,8 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     blurAutocompleteInput();
   }
   const completeEditGroupName = async () => {
-    if (!inputs.groupId) { throw new Error(); }
+    if (!inputs.groupId) 
+      throw new Error();
     const apiResponse = await updateGroup(inputs.groupId, inputs.focusedGroupNameInputText);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.name);
@@ -60,7 +63,8 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     blurAutocompleteInput();
   }
   const completeEditTag = async () => {
-    if (!inputs.tagId) { throw new Error() }
+    if (!inputs.tagId) 
+      throw new Error();
     const apiResponse = await updateTag(inputs.tagId, inputs.autocompleteText.trim())
     if (apiResponse.status === 'TAG_UNCHANGED')
       return notify.info('Tag unchanged');
@@ -105,7 +109,8 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     store.tagsConfig.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: 'addSynonymsToActiveSynonyms' });
   }
   const onAutocompleteSelectedWhileSynonymIsSelected = async ({ tagId }: { tagId: TagId }) => {
-    if (!inputs.synonymId) { throw new Error(); }
+    if (!inputs.synonymId) 
+      throw new Error();
     const selected = store.$state.tags.findOrThrow(t => t.id === tagId);
     const apiResponse = await addTagToSynonym(inputs.synonymId, tagId);
     const synonymId = apiResponse.tags[0]!.synonymId;
@@ -116,7 +121,8 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && notify.success('Tag(s) added to synonyms');
   };
   const onAutocompleteSelectedWhileGroupIsSelected = async ({ tagId }: { tagId: TagId }) => {
-    if (!inputs.groupId) { throw new Error(); }
+    if (!inputs.groupId) 
+      throw new Error();
     const { synonymId } = store.$state.tags.findOrThrow(t => t.id === tagId);
     const apiResponse = await addSynonymToGroup(inputs.groupId, synonymId);
     store.tagsConfig.autocompleteText.$set('');
@@ -124,7 +130,8 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
     notify.success('Added to group');
   };
   const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async ({ groupId }: { groupId: GroupId }) => {
-    if (!inputs.synonymId) { throw new Error(); }
+    if (!inputs.synonymId) 
+      throw new Error();
     const apiResponse = await addSynonymToGroup(groupId, inputs.synonymId );
     await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
