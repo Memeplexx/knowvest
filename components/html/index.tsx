@@ -24,7 +24,7 @@ export type SpanProps = ReplaceKeyboardEvents<HTMLSpanElement, HTMLAttributes<HT
 export type ElementProps = ReplaceKeyboardEvents<HTMLElement, HTMLAttributes<HTMLElement>>;
 
 const stripUnKnownProps = function <P extends { children?: ReactNode } & IfProps>(props: P) {
-  return (Object.keys(props) as Array<keyof P>)
+  return Object.keysTyped(props)
     .reduce((acc, key) => { if (key !== 'if' && key !== 'children') { acc[key] = props[key]; } return acc; }, {} as P);
 }
 

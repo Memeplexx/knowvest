@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { ForwardedRef, forwardRef, ComponentType, useRef, useMemo, useState, useEffect, FunctionComponent, useLayoutEffect } from "react";
 import { is } from "./logic-utils";
+import { newRecord } from "olik";
 
 export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(
   useInputs: (props: Props, forwardedRef: ForwardedRef<Handle>) => Inputs,
@@ -87,7 +88,7 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
 		set: (arg: Partial<R> | ((r: R) => (Partial<R> | void) )) => {
 			const newState = is.function<[R], Partial<R>>(arg) ? arg(stateRef) : arg;
 			if (newState === undefined) return;
-			const unChanged = (Object.keys(newState) as Array<keyof typeof newState>)
+			const unChanged = Object.keysTyped(newState)
 				.every(key => is.function(newState[key]) || stateRef[key] === newState[key]);
 			if (unChanged) return;
 			Object.assign(stateRef, newState);
@@ -101,6 +102,6 @@ export const useUnknownPropsStripper = <T extends HTMLElement>(element: T, props
 	return useMemo(() => {
 		return Object.keys(props)
 			.filter(k => k in element)
-			.reduce<Record<string, unknown>>((acc, key) => { acc[key] = props[key]; return acc; }, {});
+			.reduce((acc, key) => { acc[key] = props[key]; return acc; }, newRecord());
 	}, [props, element]);
 }

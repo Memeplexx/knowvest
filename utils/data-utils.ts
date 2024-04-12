@@ -18,7 +18,7 @@ const cache = {
 };
 const getDataViaCache = (store: Store<AppState>) => {
   const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
-  if ((Object.keys(cache.key) as Array<keyof typeof cache.key>).every(k => cache.key[k] === store.$state[k])) return cache.value;
+  if (Object.keysTyped(cache.key).every(k => cache.key[k] === store.$state[k])) return cache.value;
   const groupSynonymIds = synonymGroups
     .filter(sg => synonymIds.includes(sg.synonymId))
     .distinct();
