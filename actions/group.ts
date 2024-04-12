@@ -8,9 +8,10 @@ export const createGroup = (name: string, synonymId: SynonymId) => respond(async
   // Validate
   await validateSynonymId(synonymId);
   const userId = await getUserId();
-  if (!name.trim().length) return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const;
-  const groupWithSameName = await prisma.group.findFirst({ where: { name, userId, isArchived: false } });
-  if (groupWithSameName) return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const;
+  if (!name.trim().length) 
+    return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const;
+  if (await prisma.group.findFirst({ where: { name, userId, isArchived: false } })) 
+    return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const;
 
   // Logic
   const group = await prisma.group.create({ data: { name, userId } });
@@ -23,9 +24,10 @@ export const updateGroup = (groupId: GroupId, name: string) => respond(async () 
   // Validate
   await validateGroupId(groupId);
   const userId = await getUserId();
-  if (!name.trim().length) return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const;
-  const anotherGroupWithSameName = await prisma.group.findFirst({ where: { name, userId, id: { not: groupId }, isArchived: false } });
-  if (anotherGroupWithSameName) return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const;
+  if (!name.trim().length) 
+    return { status: 'BAD_REQUEST', fields: { name: 'Group name cannot be empty' } } as const;
+  if (await prisma.group.findFirst({ where: { name, userId, id: { not: groupId }, isArchived: false } })) 
+    return { status: 'CONFLICT', message: 'A group with this name already exists.' } as const;
 
   // logic
   const group = await prisma.group.update({ where: { id: groupId }, data: { name } });
@@ -82,9 +84,10 @@ export const createTagForGroup = (text: string, groupId: GroupId, synonymId: Syn
   const userId = await getUserId();
   await validateGroupId(groupId);
   await validateSynonymId(synonymId);
-  if (!text.trim()) return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const;
-  const tagWithSameText = await prisma.tag.findFirst({ where: { text, userId, isArchived: false } });
-  if (tagWithSameText) return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const;
+  if (!text.trim()) 
+    return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const;
+  if (await prisma.tag.findFirst({ where: { text, userId, isArchived: false } })) 
+    return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const;
 
   // Create a new tag and synonym htoup. Do not un-archive any existing tag with the same text
   const tag = await prisma.tag.create({ data: { text, synonymId, userId } });
@@ -92,9 +95,8 @@ export const createTagForGroup = (text: string, groupId: GroupId, synonymId: Syn
 
   // Create new note tags as required
   const noteIdsWithTagText = await listUnArchivedNoteIdsWithTagText({ userId, tagText: text });
-  if (noteIdsWithTagText.length) {
+  if (noteIdsWithTagText.length)
     await prisma.noteTag.createMany({ data: noteIdsWithTagText.map(noteId => ({ noteId, tagId: tag.id })) });
-  }
   const noteTags = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText } } });
 
   // Populate and return response

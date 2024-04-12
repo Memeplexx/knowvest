@@ -43,7 +43,7 @@ export const answerFlashCardQuestionCorrectly = async (flashCardId: FlashCardId)
 
   // Logic
   const cleanRunCount = flashCard.cleanRunCount + 1;
-  const nextQuestionDate = add(new Date(), { days: flashCard.cleanRunCount + 1 }); // TODO: consider using a more sophisticated algorithm for spaced repitition
+  const nextQuestionDate = add(new Date(), { days: flashCard.cleanRunCount + 1 }); // TODO: consider using a more sophisticated algorithm for spaced repetition
   const flashCardUpdated = await prisma.flashCard.update({ where: { id: flashCardId }, data: { cleanRunCount, nextQuestionDate } });
   return { status: 'FLASH CARD UPDATED', flashCard: flashCardUpdated };
 });

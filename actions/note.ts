@@ -63,9 +63,8 @@ export const splitNote = (from: number, to: number, noteId: NoteId) => respond(a
 
   // Create new note tags for the new note
   const tagIdsToBeAssigned = await listUnArchivedTagIdsWithTagText({ userId, noteText: noteCreated.text });
-  if (tagIdsToBeAssigned.length) {
+  if (tagIdsToBeAssigned.length)
     await prisma.noteTag.createMany({ data: tagIdsToBeAssigned.map(tagId => ({ noteId: noteCreated.id, tagId })) });
-  }
 
   // Update the existing note by removing the split text
   const noteUpdated = await prisma.note.update({ where: { id: noteId }, data: { text: `${note.text.slice(0, from)}${note.text.slice(to)}`, dateUpdated: now, dateViewed: now } });

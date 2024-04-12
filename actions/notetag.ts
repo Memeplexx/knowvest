@@ -13,9 +13,8 @@ export const updateNoteTags = async (noteId: NoteId, addTagIds: TagId[], removeT
 
     // ... and if there are any existing archived note tags, then unarchive them
     const existingNoteTags = await prisma.noteTag.findMany({ where: { noteId, tagId: { in: addTagIds } }, select: { tagId: true, id: true } });
-    if (existingNoteTags.length) {
+    if (existingNoteTags.length)
       await prisma.noteTag.updateMany({ where: { id: { in: existingNoteTags.map(noteTag => noteTag.id) } }, data: { isArchived: false } });
-    }
 
     // ... and if there are any tags that need to be created, then create them
     if (existingNoteTags.length < addTagIds.length) {
@@ -26,9 +25,8 @@ export const updateNoteTags = async (noteId: NoteId, addTagIds: TagId[], removeT
   }
 
   // If there are any tags to be archived, then archive them
-  if (removeTagIds.length) {
+  if (removeTagIds.length)
     await prisma.noteTag.updateMany({ where: { noteId, tagId: { in: removeTagIds } }, data: { isArchived: true } });
-  }
 
   // Populate and return response
   const noteTags = await prisma.noteTag.findMany({ where: { noteId } });
