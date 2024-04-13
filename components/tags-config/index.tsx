@@ -147,11 +147,11 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => (
             <Tag
               key={tag.id}
               ref={tag.id === inputs.tagId ? inputs.selectedTagRef : null}
-              onClick={e => outputs.onClickTagSynonym(tag.id, e)}
               children={tag.text}
               $selected={tag.selected}
               $first={tag.first}
               $last={tag.last}
+              onClick={e => outputs.onClickTagSynonym(tag.id, e)}
             />
           )}
         />
@@ -259,33 +259,33 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => (
                 children={
                   <>
                     <PopupOption
-                      onClick={outputs.onClickAddSynonymToCustomGroup}
                       children='Add to this Group'
+                      onClick={outputs.onClickAddSynonymToCustomGroup}
                     />
                     <PopupOption
                       if={!!inputs.groupSynonymId && synonyms.length > 1}
-                      onClick={outputs.onClickRemoveSynonymFromCustomGroup}
                       children='Remove selection from Group'
+                      onClick={outputs.onClickRemoveSynonymFromCustomGroup}
                     />
                     <PopupOption
                       if={!!inputs.groupSynonymId && inputs.groupSynonymId !== inputs.synonymId}
-                      onClick={outputs.onClickUpdateGroupSynonym}
                       children='Update selection'
+                      onClick={outputs.onClickUpdateGroupSynonym}
                     />
                     <PopupOption
-                      onClick={outputs.onClickDeleteGroup}
                       children='Delete this Group'
+                      onClick={outputs.onClickDeleteGroup}
                     />
                   </>
                 }
               />
               <Confirmation
                 if={inputs.modal === 'confirmDeleteGroup'}
-                onClose={outputs.onCancelConfirmation}
-                onConfirm={outputs.onClickConfirmArchiveGroup}
                 title='Delete Group Requested'
                 message='Are you sure you want to delete this group?'
                 confirmText='Yes, Delete Group'
+                onClose={outputs.onCancelConfirmation}
+                onConfirm={outputs.onClickConfirmArchiveGroup}
               />
             </>
           }
