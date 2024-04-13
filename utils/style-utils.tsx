@@ -1,5 +1,4 @@
 'use client';
-import { possible } from "@/components/html";
 import { Montserrat, Source_Code_Pro } from 'next/font/google';
 import { AiFillTag } from "react-icons/ai";
 import { CiBeaker1, CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
@@ -8,6 +7,7 @@ import styled, { css } from "styled-components";
 import React, { useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
+import { button, div } from '@/components/html';
  
 export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
   // Only create stylesheet once with lazy initial state
@@ -39,7 +39,7 @@ export const monoFontFamily = Source_Code_Pro({
   display: 'swap',
 })
 
-export const PopupOptions = styled(possible.div)`
+export const PopupOptions = styled(div)`
   display: flex;
   flex-direction: column;
   filter: drop-shadow(0px 0px 38px #000);
@@ -50,7 +50,7 @@ export const PopupOptions = styled(possible.div)`
   letter-spacing: 0;
 `;
 
-export const PopupOption = styled(possible.button)`
+export const PopupOption = styled(button)`
   display: flex;
   align-items: center;
   justify-content: space-between;

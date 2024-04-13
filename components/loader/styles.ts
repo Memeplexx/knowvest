@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components"
-import { possible } from "../html";
 
-export const Container = styled(possible.div)<{ $if: boolean }>`
+
+export const Container = styled.div<{ $if: boolean }>`
   transition: all 0.4s 0.4s;
   cursor: not-allowed;
   display: flex;

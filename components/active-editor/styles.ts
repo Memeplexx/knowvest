@@ -1,10 +1,9 @@
 import styled from "styled-components";
-import { possible } from "../html";
 import { monoFontFamily } from "@/utils/style-utils";
+import { div } from "../html";
 
 
-
-export const TextEditorWrapper = styled(possible.div)`
+export const TextEditorWrapper = styled(div)`
   flex: 1;
   flex-basis: 0;
   font-weight: 300;
@@ -13,7 +12,7 @@ export const TextEditorWrapper = styled(possible.div)`
   justify-content: space-between;
 `;
 
-export const TextEditor = styled(possible.div)`
+export const TextEditor = styled(div)`
   ${monoFontFamily.style};
   font-size: 12px;
   color: lightgray;
@@ -30,7 +29,7 @@ export const ActiveSelectionListItem = styled.div`
   }
 `;
 
-export const ActiveSelection = styled(possible.div)`
+export const ActiveSelection = styled(div)`
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -50,7 +49,7 @@ export const ActiveSelection = styled(possible.div)`
   }
 `;
 
-export const ActiveSelectionInstructions = styled(possible.div)`
+export const ActiveSelectionInstructions = styled(div)`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -60,7 +59,7 @@ export const ActiveSelectionInstructions = styled(possible.div)`
   }
 `;
 
-export const Instruction = styled(possible.div)`
+export const Instruction = styled(div)`
 `;
 
 export const ActiveSelectionTagName = styled.div`

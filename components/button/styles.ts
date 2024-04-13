@@ -1,9 +1,9 @@
 import styled, { css } from "styled-components";
-import { possible } from "../html";
 import { mobileBreakPoint } from "@/utils/style-utils";
+import { button } from "../html";
 
 
-export const Wrapper = styled(possible.button)<{ selected?: boolean, $highlighted?: boolean }>`
+export const Wrapper = styled(button)<{ selected?: boolean, $highlighted?: boolean }>`
   cursor: pointer;
   padding: 8px 16px;
   background-color: transparent;

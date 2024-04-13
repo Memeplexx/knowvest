@@ -88,7 +88,7 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
 		set: (arg: Partial<R> | ((r: R) => (Partial<R> | void) )) => {
 			const newState = is.function<[R], Partial<R>>(arg) ? arg(stateRef) : arg;
 			if (newState === undefined) return;
-			const unChanged = Object.keysTyped(newState)
+			const unChanged = (Object.keys(newState) as Array<keyof typeof newState>)
 				.every(key => is.function(newState[key]) || stateRef[key] === newState[key]);
 			if (unChanged) return;
 			Object.assign(stateRef, newState);

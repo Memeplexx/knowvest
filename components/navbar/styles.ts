@@ -1,10 +1,10 @@
 import Image from "next/image";
 import styled, { css } from "styled-components";
-import { possible } from "../html";
 import { SearchIcon as BaseSearchIcon } from "@/utils/style-utils";
 import { ButtonIcon } from "../button-icon";
 import { PiStudentFill } from 'react-icons/pi';
 import { Loader } from "../loader";
+import { div } from "../html";
 
 export const Wrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;
@@ -25,7 +25,7 @@ export const Wrapper = styled.div<{ $show?: boolean }>`
 export const ImageLogo = styled(Image)`
 `;
 
-export const RightContent = styled(possible.div)`
+export const RightContent = styled(div)`
   display: flex;
   gap: 8px;
   align-items: center;

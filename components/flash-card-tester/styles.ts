@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "../button";
-import { possible } from "../html";
 import { WiCloudyWindy } from "react-icons/wi";
+import { div, element } from "../html";
 
 export const Container = styled.div`
   width: 600px;
@@ -11,16 +11,16 @@ export const Container = styled.div`
   padding: 16px;
 `;
 
-export const Question = styled(possible.div)`
+export const Question = styled(div)`
   flex: 1;
 `;
 
-export const Body = styled(possible.div)`
+export const Body = styled(div)`
   flex: 1;
   display: flex;
 `;
 
-export const Footer = styled(possible.div)`
+export const Footer = styled(div)`
   display: flex;
   justify-content: space-between;
 `;
@@ -28,7 +28,7 @@ export const Footer = styled(possible.div)`
 export const ToggleViewButton = styled(Button)`
 `;
 
-export const NextButton = styled(possible.element(Button))`
+export const NextButton = styled(element(Button))`
   gap: 8px;
   border: 1px solid grey;
 `;
@@ -38,7 +38,7 @@ export const FooterRightContent = styled.div`
   gap: 16px;
 `;
 
-export const NoResults = styled(possible.div)`
+export const NoResults = styled(div)`
   flex: 1;
   display: flex;
   align-items: center;

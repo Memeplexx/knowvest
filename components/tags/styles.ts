@@ -1,10 +1,10 @@
 import { SettingsIcon as BaseSettingsIcon } from '@/utils/style-utils';
 import styled, { css } from 'styled-components';
-import { possible } from '../html';
 import { ButtonIcon } from '../button-icon';
 import { Loader } from '../loader';
+import { div, element } from '../html';
 
-export const Tag = styled(possible.div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
+export const Tag = styled(div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
   font-size: 12px;
   height: 20px;
   align-items: center;
@@ -39,7 +39,7 @@ export const ActiveHeaderTag = styled(Tag)`
 export const GroupHeaderTag = styled(Tag)`
 `;
 
-export const SettingsButton = styled(possible.element(ButtonIcon))`
+export const SettingsButton = styled(element(ButtonIcon))`
   position: absolute;
   top: 16px;
   right: 16px;
@@ -53,14 +53,14 @@ export const TagsWrapper = styled.div`
   row-gap: 12px;
 `;
 
-export const TagsSection = styled(possible.div)`
+export const TagsSection = styled(div)`
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: start;
 `;
 
-export const Body = styled(possible.div)`
+export const Body = styled(div)`
   flex: 1;
   max-height: 300px;
   display: flex;
@@ -71,7 +71,7 @@ export const Body = styled(possible.div)`
 export const SettingsIcon = styled(BaseSettingsIcon)`
 `;
 
-export const NoTagsPlaceholder = styled(possible.div)`
+export const NoTagsPlaceholder = styled(div)`
   display: flex;
   align-items: center;
   justify-content: center;

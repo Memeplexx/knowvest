@@ -1,15 +1,15 @@
 import styled, { css } from 'styled-components';
 import { ButtonIcon } from '../button-icon';
-import { possible } from '../html';
 import { Button } from '../button';
 import { mobileBreakPoint } from '@/utils/style-utils';
+import { div, element } from '../html';
 
 
 
 export const CloseButton = styled(ButtonIcon)`
 `;
 
-export const BodyHeader = styled(possible.div)`
+export const BodyHeader = styled(div)`
   font-size: 14px;
   display: flex;
   flex-direction: row;
@@ -34,7 +34,7 @@ export const CustomGroupNameInput = styled.input`
   }
 `;
 
-export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
+export const BodyGroup = styled(div) <{ $active?: boolean }>`
   flex-direction: column;
   column-gap: 16px;
   row-gap: 8px;
@@ -59,10 +59,10 @@ export const BodyGroup = styled(possible.div) <{ $active?: boolean }>`
 export const PageTitle = styled.div`
 `;
 
-export const FooterButton = styled(possible.element(Button))`
+export const FooterButton = styled(element(Button))`
 `;
 
-export const Container = styled(possible.div)`
+export const Container = styled(div)`
   padding: 0 24px 24px 24px;
   width: 540px;
   height: 800px;
@@ -76,7 +76,7 @@ export const Container = styled(possible.div)`
   }
 `;
 
-export const Body = styled(possible.div)`
+export const Body = styled(div)`
   flex: 1;
   display: flex;
   gap: 16px;
@@ -84,7 +84,7 @@ export const Body = styled(possible.div)`
   pointer-events: none;
 `;
 
-export const Footer = styled(possible.div)`
+export const Footer = styled(div)`
   display: flex;
   flex-direction: column;
   place-items: end;
@@ -93,14 +93,14 @@ export const Footer = styled(possible.div)`
   }
 `;
 
-export const TagGroup = styled(possible.div)`
+export const TagGroup = styled(div)`
   display: flex;
   flex-wrap: wrap;
   column-gap: 2px;
   row-gap: 12px;
 `;
 
-export const Tag = styled(possible.div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
+export const Tag = styled(div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
   font-size: 12px;
   height: 20px;
   display: flex;

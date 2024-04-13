@@ -1,11 +1,11 @@
 import { AiOutlineLink } from "react-icons/ai";
 import styled from "styled-components";
-import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";
 import { WiCloudyWindy } from "react-icons/wi";
 import { Loader } from "../loader";
+import { div } from "../html";
 
-export const Header = styled(possible.div)`
+export const Header = styled(div)`
   display: flex;
   align-items: center;
   justify-content: end;
@@ -47,7 +47,7 @@ export const ListItem = styled.div`
   }
 `;
 
-export const NoResultsWrapper = styled(possible.div)`
+export const NoResultsWrapper = styled(div)`
   flex: 1;
   display: flex;
   align-items: center;
@@ -56,7 +56,7 @@ export const NoResultsWrapper = styled(possible.div)`
   color: grey;
 `;
 
-export const ListItemsWrapper = styled(possible.div)`
+export const ListItemsWrapper = styled(div)`
   display: flex;
   flex-direction: column;
 `;
@@ -66,7 +66,7 @@ export const NoResultsIcon = styled(WiCloudyWindy)`
   height: auto;
 `;
 
-export const NoteCount = styled(possible.div)`
+export const NoteCount = styled(div)`
   font-size: 12px;
 `;
 

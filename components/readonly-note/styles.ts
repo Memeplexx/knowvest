@@ -1,9 +1,9 @@
 import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
-import { possible } from "../html";
+import { div } from "../html";
 
 
-export const Wrapper = styled(possible.div)`
+export const Wrapper = styled(div)`
   ${monoFontFamily.style};
   font-size: 12px;
   padding-left: 0px;

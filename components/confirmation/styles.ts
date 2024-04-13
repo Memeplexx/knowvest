@@ -1,24 +1,24 @@
 import styled from "styled-components";
-import { possible } from "../html";
 import { Button } from "../button";
+import { div } from "../html";
 
 
-export const DialogBody = styled(possible.div)`
+export const DialogBody = styled(div)`
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 32px;
 `;
 
-export const Header = styled(possible.div)`
+export const Header = styled(div)`
   color: grey;
 `;
 
-export const Message = styled(possible.div)`
+export const Message = styled(div)`
   font-size: 18px;
 `;
 
-export const ButtonWrapper = styled(possible.div)`
+export const ButtonWrapper = styled(div)`
   display: flex;
   justify-content: right;
 `;

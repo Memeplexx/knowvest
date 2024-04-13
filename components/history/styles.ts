@@ -1,9 +1,9 @@
 import { ClockIcon } from "@/utils/style-utils";
 import styled from "styled-components";
-import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";
 import { WiCloudyWindy } from "react-icons/wi";
 import { Loader } from "../loader";
+import { div } from "../html";
 
 
 export const Header = styled.div`
@@ -49,7 +49,7 @@ export const ListItem = styled.div`
   }
 `;
 
-export const RightBorder = styled(possible.div)`
+export const RightBorder = styled(div)`
   position: absolute;
   right: 12px;
   width: 1px;
@@ -59,12 +59,12 @@ export const RightBorder = styled(possible.div)`
   z-index: 4;
 `;
 
-export const ListItemsWrapper = styled(possible.div)`
+export const ListItemsWrapper = styled(div)`
   display: flex;
   flex-direction: column;
 `;
 
-export const NoResultsWrapper = styled(possible.div)`
+export const NoResultsWrapper = styled(div)`
   flex: 1;
   display: flex;
   align-items: center;

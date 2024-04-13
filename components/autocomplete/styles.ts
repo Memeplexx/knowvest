@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components';
 
 import { ButtonIcon } from '../button-icon';
-import { possible } from '../html';
 import { CloseIcon } from '@/utils/style-utils';
+import { button, div, element, input } from '../html';
 
 
-export const ClearTextButtonWrapper = styled(possible.div)`
+export const ClearTextButtonWrapper = styled(div)`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -15,7 +15,7 @@ export const ClearTextButtonWrapper = styled(possible.div)`
   align-items: center;
 `;
 
-export const ClearTextButton = styled(possible.element(ButtonIcon))`
+export const ClearTextButton = styled(element(ButtonIcon))`
 `;
 
 export const ClearIcon = styled(CloseIcon)`
@@ -29,7 +29,7 @@ export const Container = styled.div`
   display: flex;
 `;
 
-export const Input = styled(possible.input)<{ $hasError: boolean }>`
+export const Input = styled(input)<{ $hasError: boolean }>`
   flex: 1;
   outline: none;
   border: 0.5px solid #CCC;
@@ -52,7 +52,7 @@ export const Input = styled(possible.input)<{ $hasError: boolean }>`
   `}
 `;
 
-export const ErrorMsg = styled(possible.div)`
+export const ErrorMsg = styled(div)`
   color: #F00;
   position: absolute;
   transition: 0.2s all;
@@ -62,7 +62,7 @@ export const ErrorMsg = styled(possible.div)`
   `}
 `;
 
-export const Options = styled(possible.div)`
+export const Options = styled(div)`
   flex: 1;
   overflow-y: auto;
   z-index: 4;
@@ -72,7 +72,7 @@ export const Options = styled(possible.div)`
   flex-direction: column;
 `;
 
-export const OptionItem = styled(possible.button)`
+export const OptionItem = styled(button)`
   padding: 8px;
   color: #c5c5c5;
   font-size: 12px;

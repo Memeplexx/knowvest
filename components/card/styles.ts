@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { possible } from "../html";
 import { Loader } from "../loader";
+import { div } from "../html";
 
 
-export const Wrapper = styled(possible.div)`
+export const Wrapper = styled(div)`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -11,7 +11,7 @@ export const Wrapper = styled(possible.div)`
   background-image: linear-gradient(to right, #242020, #191919);
 `;
 
-export const Header = styled(possible.div)`
+export const Header = styled(div)`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -40,7 +40,7 @@ export const Heading = styled.div`
 export const Actions = styled.div`
 `;
 
-export const Body = styled(possible.div)`
+export const Body = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;

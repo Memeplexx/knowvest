@@ -1,11 +1,11 @@
 import styled, { css } from "styled-components";
-import { possible } from "../html";
 import ReadonlyNote from "../readonly-note";
 import { Button } from "../button";
 import { dialogWidth, tabsHeight } from "./constants";
 import { ButtonIcon } from "../button-icon";
+import { button, div } from "../html";
 
-export const Container = styled(possible.div)`
+export const Container = styled(div)`
   width: ${dialogWidth}px;
   height: 600px;
   max-height: 600px;
@@ -18,7 +18,7 @@ export const Container = styled(possible.div)`
   }
 `;
 
-export const MainContent = styled(possible.div)`
+export const MainContent = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: row;
@@ -32,14 +32,14 @@ export const MainContent = styled(possible.div)`
   }
 `;
 
-export const TabsWrapper = styled(possible.div)`
+export const TabsWrapper = styled(div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-height: ${tabsHeight};
 `;
 
-export const TabTitle = styled(possible.div)`
+export const TabTitle = styled(div)`
   padding-left: 16px;
 `;
 
@@ -55,7 +55,7 @@ export const TabButton = styled(Button)`
 export const CloseButton = styled(ButtonIcon)`
 `;
 
-export const LeftContent = styled(possible.div)`
+export const LeftContent = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -66,7 +66,7 @@ export const LeftContent = styled(possible.div)`
   }
 `;
 
-export const RightContent = styled(possible.div)`
+export const RightContent = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -79,48 +79,48 @@ export const RightContent = styled(possible.div)`
   }
 `;
 
-export const TagsOuterWrapper = styled(possible.div)`
+export const TagsOuterWrapper = styled(div)`
   display: flex;
   flex-direction: column;
   gap: 32px;
   overflow-y: auto;
 `;
 
-export const TagsWrapper = styled(possible.div)`
+export const TagsWrapper = styled(div)`
   display: flex;
   flex-wrap: wrap;
   column-gap: 2px;
   row-gap: 12px;
 `;
 
-export const CategoryTitle = styled(possible.div)`
+export const CategoryTitle = styled(div)`
 `;
 
-export const CategoryWrapper = styled(possible.div)`
+export const CategoryWrapper = styled(div)`
   display: flex;
   gap: 16px;
   flex-direction: column;
 `;
 
-export const AutocompleteOption = styled(possible.div)`
+export const AutocompleteOption = styled(div)`
   display: flex;
   gap: 16px;
   justify-content: space-between;
 `;
 
-export const AutocompleteOptionLeft = styled(possible.div)`
+export const AutocompleteOptionLeft = styled(div)`
   display: flex;
   gap: 4px;
 `;
 
-export const AutocompleteOptionLabel = styled(possible.div)`
+export const AutocompleteOptionLabel = styled(div)`
 `;
 
 export const AutocompleteOptionStatus = styled.div`
   width: 8px;
 `;
 
-export const Tag = styled(possible.button) <{ $hovered: boolean, $first?: boolean, $last?: boolean }>`
+export const Tag = styled(button) <{ $hovered: boolean, $first?: boolean, $last?: boolean }>`
   font-size: 12px;
   height: 20px;
   display: flex;

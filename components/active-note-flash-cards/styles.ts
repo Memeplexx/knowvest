@@ -1,8 +1,8 @@
-import { possible } from "@/components/html";
 import styled from "styled-components";
 import { ButtonIcon } from "../button-icon";
 import { TextAreaDebounced } from "../debounced";
 import { WiCloudyWindy } from "react-icons/wi";
+import { div, element } from "../html";
 
 
 export const Container = styled.div`
@@ -17,7 +17,7 @@ export const CreateNewButton = styled(ButtonIcon)`
   z-index: 5;
 `;
 
-export const FlashCardWrapper = styled(possible.div)`
+export const FlashCardWrapper = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -44,7 +44,7 @@ export const TextArea = styled(TextAreaDebounced)`
   }
 `;
 
-export const NoResults = styled(possible.div)`
+export const NoResults = styled(div)`
   flex: 1;
   display: flex;
   align-items: center;
@@ -53,7 +53,7 @@ export const NoResults = styled(possible.div)`
   color: grey;
 `;
 
-export const DeleteButton = styled(possible.element(ButtonIcon))`
+export const DeleteButton = styled(element(ButtonIcon))`
   position: absolute;
   right: 0;
   top: 0;
