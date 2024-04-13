@@ -46,22 +46,20 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             children={props.error}
           />
           <Options
+            if={props.showOptions}
             ref={inputs.floatingRef.refs.setFloating}
             style={inputs.floatingRef.floatingStyles}
-            if={props.showOptions}
-            children={
-              inputs.options.map(option => (
-                <OptionItem
-                  type='button'
-                  key={option.value}
-                  tabIndex={0}
-                  onKeyDown={outputs.onKeyDownOption}
-                  onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
-                  onClick={e => outputs.onClickOption(option.value, e)}
-                  children={props.renderOption?.(option) || option.label}
-                />
-              ))
-            }
+            children={inputs.options.map(option => (
+              <OptionItem
+                type='button'
+                key={option.value}
+                tabIndex={0}
+                onKeyDown={outputs.onKeyDownOption}
+                onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
+                onClick={e => outputs.onClickOption(option.value, e)}
+                children={props.renderOption?.(option) || option.label}
+              />
+            ))}
           />
         </>
       }
