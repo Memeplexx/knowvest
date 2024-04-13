@@ -1,6 +1,6 @@
 "use client";
 import { TypedKeyboardEvent } from "@/utils/dom-utils";
-import { ButtonHTMLAttributes, ComponentType, ForwardedRef, HTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, forwardRef } from "react";
+import { ButtonHTMLAttributes, ComponentType, ForwardedRef, Fragment, HTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, forwardRef } from "react";
 
 
 type ReplaceKeyboardEvents<E extends HTMLElement, A extends HTMLAttributes<E>> = {
@@ -73,6 +73,10 @@ export const possible = {
       return <ComponentType ref={ref} {...stripUnKnownProps(props)}>{props.children}</ComponentType>;
     });
   },
+}
+
+export const Frag = (props: { if?: boolean, children?: ReactNode }) => {
+  return props.if === false ? null : <Fragment children={props.children} />
 }
 
 export const RenderedList = function <T>(

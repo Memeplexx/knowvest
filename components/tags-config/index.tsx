@@ -89,16 +89,16 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => (
           }
         />
         <Autocomplete<AutocompleteOptionType>
+          inputPlaceholder='Start typing...'
+          inputText={inputs.autocompleteText}
+          showOptions={inputs.showAutocompleteOptions}
           ref={inputs.autocompleteRef}
           options={inputs.autocompleteOptions}
-          inputPlaceholder='Start typing...'
           onValueChange={outputs.onAutocompleteSelected}
           onInputEnterKeyUp={outputs.onAutocompleteInputEnter}
           onInputEscapeKeyUp={outputs.onAutocompleteInputCancel}
-          inputText={inputs.autocompleteText}
           onInputTextChange={outputs.onAutocompleteInputChange}
           onInputFocused={outputs.onAutocompleteInputFocused}
-          showOptions={inputs.showAutocompleteOptions}
           onShowOptionsChange={outputs.onShowAutocompleteOptionsChange}
           disabled={!!inputs.groupSynonymId}
           renderOption={o => (
@@ -133,11 +133,11 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => (
               Synonyms
               <SettingsButton
                 children={<SettingsIcon />}
-                onClick={outputs.onClickShowOptionsForSynonyms}
                 selected={inputs.modal === 'synonymOptions'}
+                aria-label='Settings'
                 $show={!inputs.groupId}
                 ref={inputs.settingsButtonRef}
-                aria-label='Settings'
+                onClick={outputs.onClickShowOptionsForSynonyms}
               />
             </>
           }
@@ -290,6 +290,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => (
             </>
           }
         />
-      ))}
+      ))
+    }
   </>
 );
