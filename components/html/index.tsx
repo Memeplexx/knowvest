@@ -23,9 +23,12 @@ export type SpanProps = ReplaceKeyboardEvents<HTMLSpanElement, HTMLAttributes<HT
 
 export type ElementProps = ReplaceKeyboardEvents<HTMLElement, HTMLAttributes<HTMLElement>>;
 
+const propsToOmit = ['if', 'children'];
+
 const stripUnKnownProps = function <P extends { children?: ReactNode } & IfProps>(props: P) {
   return Object.keysTyped(props)
-    .reduce((acc, key) => { if (key !== 'if' && key !== 'children') { acc[key] = props[key]; } return acc; }, {} as P);
+    .filter(key => !propsToOmit.includes(key as string))
+    .reduce((acc, key) => { acc[key] = props[key]; return acc; }, {} as P);
 }
 
 export const div = forwardRef(function Div(
