@@ -9,11 +9,11 @@ import { Header, Icon, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, Result
 export function Related(
   props: Props
 ) {
-  const inputs = useInputs();
+  const inputs = useInputs(props);
   const outputs = useOutputs(props, inputs);
   return (
     <Card
-      className={props.className}
+      {...inputs.htmlProps}
       ref={inputs.cardRef}
       heading='Related'
       onScrolledToBottom={outputs.onScrolledToBottom}

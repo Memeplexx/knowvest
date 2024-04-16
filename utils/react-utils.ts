@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { ForwardedRef, forwardRef, ComponentType, useRef, useMemo, useState, useEffect, FunctionComponent, useLayoutEffect } from "react";
 import { is } from "./logic-utils";
-import { newRecord } from "olik";
+import { newRecord, is as olikIs } from "olik";
 
 export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(
   useInputs: (props: Props, forwardedRef: ForwardedRef<Handle>) => Inputs,
@@ -100,10 +100,12 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
 
 type HTMLTagName = 'div' | 'span' | 'input' | 'button';
 export const useUnknownPropsStripper = <T extends HTMLTagName, P extends Record<string, unknown>>(elementTag: T, props: P) => {
-  const element = useMemo(() => document.createElement(elementTag), [elementTag]);
-  return useMemo(() => {
-    return Object.keys(props)
-      .filter(k => k in element)
-      .reduce((acc, key) => { acc[key] = props[key]; return acc; }, newRecord());
-  }, [props, element]);
+  const propsRef = useRef(props);
+  if (Object.entries(props).filter(([, v]) => !is.function(v) && !olikIs.storeInternal(v)).every(([k, v]) => propsRef.current[k] === v))
+    return;
+  propsRef.current = props;
+  const element = document.createElement(elementTag);
+  return Object.keys(props)
+    .filter(k => k in element)
+    .reduce((acc, key) => { acc[key] = props[key]; return acc; }, newRecord());
 }

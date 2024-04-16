@@ -1,9 +1,12 @@
 import { useStore } from "@/utils/store-utils";
 import { useMemo, useRef } from "react";
-import { initialState, pageSize } from "./constants";
+import { Props, initialState, pageSize } from "./constants";
 import { CardHandle } from "../card/constants";
+import { useUnknownPropsStripper } from "@/utils/react-utils";
 
-export const useInputs = () => {
+export const useInputs = (
+  props: Props,
+) => {
 
   const { store, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized, relatedItems } = useStore(initialState);
 
@@ -32,12 +35,15 @@ export const useInputs = () => {
     return `${items.length} result${items.length === 1 ? '' : 's'}`;
   }, [items]);
 
+  const htmlProps = useUnknownPropsStripper('div', {...props});
+
   return {
     store,
     items,
     stateInitialized,
     noteCountString,
     cardRef,
+    htmlProps,
   }
 
 };

@@ -8,11 +8,11 @@ import { Header, Icon, ListItem, ListItemsWrapper, LoaderPlaceholder, NoResultsI
 export function History(
   props: Props,
 ) {
-  const inputs = useInputs();
+  const inputs = useInputs(props);
   const outputs = useOutputs(props, inputs);
   return (
     <Card
-      className={props.className}
+      {...inputs.htmlProps}
       ref={inputs.cardRef}
       heading='Recent'
       onScrolledToBottom={outputs.onScrolledToBottom}
