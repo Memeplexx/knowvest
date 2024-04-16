@@ -17,7 +17,7 @@ export function Related(
       ref={inputs.cardRef}
       heading='Related'
       onScrolledToBottom={outputs.onScrolledToBottom}
-      actions={() => (
+      actions={(
         <NoteCount
           children={inputs.noteCountString}
         />

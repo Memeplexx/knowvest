@@ -23,7 +23,7 @@ export const ActivePanel = (
         <>
           <CardWrapper
             heading="Active"
-            actions={() =>
+            actions={
               <>
                 <Popup
                   ref={inputs.popupRef}

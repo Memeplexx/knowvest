@@ -25,7 +25,7 @@ export const Card = forwardRef(function Card(
                   children={props.heading}
                  />
                 <Actions
-                  children={props.actions?.()}
+                  children={props.actions}
                 />
               </>
             }
