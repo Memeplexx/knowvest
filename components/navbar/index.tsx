@@ -9,6 +9,8 @@ import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, LoaderPlaceholder, RightContent, SearchButton, SearchIcon, UserButton, UserImage, Wrapper } from './styles';
 import { FlashCardTester } from '../flash-card-tester';
+import farmImage from '../../public/images/farm.svg';
+import useImage from '../../public/images/user.svg';
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
@@ -42,7 +44,7 @@ export const Navbar = (props: Props) => {
               src={Farm}
               alt='logo'
               placeholder="blur"
-              blurDataURL={'/images/farm.svg'}
+              blurDataURL={farmImage.src}
             />
             <RightContent
               children={
@@ -73,7 +75,7 @@ export const Navbar = (props: Props) => {
                           <UserImage
                             width={44}
                             height={44}
-                            src={inputs.session?.user?.image || '/images/user.svg'}
+                            src={inputs.session?.user?.image || useImage.src}
                             alt='user image'
                             priority={true}
                           />
