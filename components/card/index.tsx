@@ -9,8 +9,8 @@ export const Card = forwardRef(function Card(
   props: Props,
   ref: ForwardedRef<CardHandle>
 ) {
-  const inputs = useInputs(ref, props);
-  const outputs = useOutputs(inputs);
+  const inputs = useInputs(ref);
+  const outputs = useOutputs(props, inputs);
   return (
     <Wrapper
       id={props.id}

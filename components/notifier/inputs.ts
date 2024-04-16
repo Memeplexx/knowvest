@@ -50,9 +50,9 @@ export const useInputs = (incomingProps: Props) => {
   }, [animationDuration, displayDuration, initialized, set, maxCount, message]);
 
   return {
-    ...props,
     ...localState,
     initialized,
     floatingRef,
+    ...props,
   };
 }

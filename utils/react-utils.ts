@@ -82,26 +82,28 @@ export const useComponentDownloader = <P>(importer: () => Promise<{ default: Fun
 }
 
 export const useRecord = <R extends Record<string, unknown>>(record: R) => {
-	const [, setCount] = useState(0);
-	const stateRef = useRef({
-		...record,
-		set: (arg: Partial<R> | ((r: R) => (Partial<R> | void) )) => {
-			const newState = is.function<[R], Partial<R>>(arg) ? arg(stateRef) : arg;
-			if (newState === undefined) return;
-			const unChanged = (Object.keys(newState) as Array<keyof typeof newState>)
-				.every(key => is.function(newState[key]) || stateRef[key] === newState[key]);
-			if (unChanged) return;
-			Object.assign(stateRef, newState);
-			setCount(c => c + 1);
-		}
-	}).current;
-	return stateRef;
+  const [, setCount] = useState(0);
+  const stateRef = useRef({
+    ...record,
+    set: (arg: Partial<R> | ((r: R) => (Partial<R> | void))) => {
+      const newState = is.function<[R], Partial<R>>(arg) ? arg(stateRef) : arg;
+      if (newState === undefined) return;
+      const unChanged = (Object.keys(newState) as Array<keyof typeof newState>)
+        .every(key => is.function(newState[key]) || stateRef[key] === newState[key]);
+      if (unChanged) return;
+      Object.assign(stateRef, newState);
+      setCount(c => c + 1);
+    }
+  }).current;
+  return stateRef;
 }
 
-export const useUnknownPropsStripper = <T extends HTMLElement>(element: T, props: Record<string, unknown>) => {
-	return useMemo(() => {
-		return Object.keys(props)
-			.filter(k => k in element)
-			.reduce((acc, key) => { acc[key] = props[key]; return acc; }, newRecord());
-	}, [props, element]);
+type HTMLTagName = 'div' | 'span' | 'input' | 'button';
+export const useUnknownPropsStripper = <T extends HTMLTagName, P extends Record<string, unknown>>(elementTag: T, props: P) => {
+  const element = useMemo(() => document.createElement(elementTag), [elementTag]);
+  return useMemo(() => {
+    return Object.keys(props)
+      .filter(k => k in element)
+      .reduce((acc, key) => { acc[key] = props[key]; return acc; }, newRecord());
+  }, [props, element]);
 }

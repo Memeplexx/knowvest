@@ -11,7 +11,7 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
   forwardedRef: ForwardedRef<AutocompleteHandle>
 ) {
   const inputs = useInputs(props, forwardedRef);
-  const outputs = useOutputs(inputs);
+  const outputs = useOutputs(props, inputs);
   return (
     <Container
       tabIndex={0}

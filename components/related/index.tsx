@@ -9,8 +9,8 @@ import { Header, Icon, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, Result
 export function Related(
   props: Props
 ) {
-  const inputs = useInputs(props);
-  const outputs = useOutputs(inputs);
+  const inputs = useInputs();
+  const outputs = useOutputs(props, inputs);
   return (
     <Card
       className={props.className}

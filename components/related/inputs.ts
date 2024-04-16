@@ -1,9 +1,9 @@
 import { useStore } from "@/utils/store-utils";
 import { useMemo, useRef } from "react";
-import { Props, initialState, pageSize } from "./constants";
+import { initialState, pageSize } from "./constants";
 import { CardHandle } from "../card/constants";
 
-export const useInputs = (props: Props) => {
+export const useInputs = () => {
 
   const { store, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized, relatedItems } = useStore(initialState);
 
@@ -33,7 +33,6 @@ export const useInputs = (props: Props) => {
   }, [items]);
 
   return {
-    props,
     store,
     items,
     stateInitialized,

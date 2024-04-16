@@ -1,14 +1,11 @@
 import { useRecord } from "@/utils/react-utils";
-import { Props, Selection } from "./constants";
+import { Selection } from "./constants";
 
-export const useInputs = (props: Props) => {
+export const useInputs = () => {
 
   const localState = useRecord({
     selection: 'none' as Selection
   })
 
-  return {
-    props,
-    ...localState,
-  }
+  return localState;
 }

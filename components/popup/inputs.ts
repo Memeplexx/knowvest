@@ -51,6 +51,5 @@ export const useInputs = (
     ...state,
     backgroundAnimations,
     foregroundAnimations,
-    props,
   }
 }

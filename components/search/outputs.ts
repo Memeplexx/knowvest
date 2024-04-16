@@ -1,10 +1,10 @@
 import { GroupId, NoteId, SynonymId } from "@/actions/types";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 import { onSelectGroup, onSelectSynonym } from "./shared";
 
-export const useOutputs = (inputs: Inputs) => {
-  const { props, store } = inputs;
+export const useOutputs = (props: Props, inputs: Inputs) => {
+  const { store } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
       if (event.target.parentNode === null) // element was removed from the DOM

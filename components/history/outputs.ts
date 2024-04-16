@@ -1,8 +1,9 @@
 import { NoteId } from "@/actions/types";
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 
 
-export const useOutputs = ({ store, cardRef, props }: Inputs) => {
+export const useOutputs = (props: Props, inputs: Inputs) => {
+  const { store, cardRef } = inputs;
   return {
     onScrolledToBottom: () => {
       store.historyItems.index.$add(1);

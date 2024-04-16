@@ -8,7 +8,6 @@ export const Tabs = (
 ) => {
   const { options, ...remainingProps } = props;
   const inputs = useInputs(props);
-  const { Panel } = inputs;
   return (
     <Container
       {...remainingProps}
@@ -34,7 +33,7 @@ export const Tabs = (
       body={
         <Body
           children={
-            <Panel />
+            <inputs.Panel />
           }
         />
       }

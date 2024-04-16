@@ -1,9 +1,9 @@
 "use client";
 
 import { ForwardedRef, useImperativeHandle, useRef } from "react";
-import { CardHandle, Props } from "./constants";
+import { CardHandle } from "./constants";
 
-export const useInputs = (ref: ForwardedRef<CardHandle>, props: Props) => {
+export const useInputs = (ref: ForwardedRef<CardHandle>) => {
 
   const headRef = useRef<HTMLDivElement>(null);
 
@@ -22,6 +22,5 @@ export const useInputs = (ref: ForwardedRef<CardHandle>, props: Props) => {
     bodyRef,
     previousScrollOffset,
     headerOffset,
-    props,
   };
 }

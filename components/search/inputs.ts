@@ -1,14 +1,15 @@
 import { useStore } from "@/utils/store-utils";
 import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutocompleteHandle } from "../autocomplete/constants";
-import { AutocompleteOptionType, Props, dialogWidth, initialState } from "./constants";
+import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
+import { useForwardedRef } from "@/utils/react-utils";
 
-export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
+export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   const { store, search, tags, groups, synonymGroups, noteTags, notes } = useStore(initialState);
   const { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } = search;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
-  const bodyRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useForwardedRef(ref);
 
   const allAutocompleteOptions = useMemo(() => {
     return [
@@ -117,6 +118,5 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     tabTitleText,
     tabButtonText,
     ...search,
-    props,
   }
 }

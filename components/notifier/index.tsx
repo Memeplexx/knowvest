@@ -8,8 +8,8 @@ import { Container, Message, Popup } from "./styles";
 
 export const useNotifier = () => useContext(NotificationContext)!
 
-export function NotifierProvider(partialProps: Props) {
-  const inputs = useInputs(partialProps);
+export function NotifierProvider(props: Props) {
+  const inputs = useInputs(props);
   const outputs = useOutputs(inputs);
   return (
     <>

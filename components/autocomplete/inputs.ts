@@ -30,7 +30,6 @@ export const useInputs = <Option extends OptionBase>(
   }), [inputRef]);
 
   return {
-    props,
     inputRef,
     containerRef,
     floatingRef,

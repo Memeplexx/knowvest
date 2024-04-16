@@ -1,7 +1,8 @@
 import { type HTMLAttributes } from "react";
 import { useInputs } from "./inputs";
+import { IfProps } from "../html";
 
-export type Props = HTMLAttributes<HTMLDivElement> & { if?: boolean };
+export type Props = HTMLAttributes<HTMLDivElement> & IfProps;
 
 export const initialState = {
   navBar: {

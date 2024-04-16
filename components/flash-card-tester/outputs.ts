@@ -1,10 +1,10 @@
 import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/actions/flashcard";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 
-export const useOutputs = (inputs: Inputs) => {
-  const { props, store, notify, bodyRef, items } = inputs;
+export const useOutputs = (props: Props, inputs: Inputs) => {
+  const { store, notify, bodyRef, items } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
       if (event.target.parentNode === null) // element was removed from the DOM

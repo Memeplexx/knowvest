@@ -10,7 +10,7 @@ import { useOutputs } from './outputs';
 export const Confirmation = (
   props: Props
 ) => {
-  const inputs = useInputs(props);
+  const inputs = useInputs();
   const outputs = useOutputs(props, inputs);
   return (
     <Modal

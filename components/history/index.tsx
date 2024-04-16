@@ -8,8 +8,8 @@ import { Header, Icon, ListItem, ListItemsWrapper, LoaderPlaceholder, NoResultsI
 export function History(
   props: Props,
 ) {
-  const inputs = useInputs(props);
-  const outputs = useOutputs(inputs);
+  const inputs = useInputs();
+  const outputs = useOutputs(props, inputs);
   return (
     <Card
       className={props.className}

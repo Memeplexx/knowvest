@@ -30,8 +30,8 @@ export const TagsConfig = forwardRef(function TagsConfig(
   props: Props,
   ref: ForwardedRef<HTMLDivElement>
 ) {
-  const inputs = useInputs(ref, props);
-  const outputs = useOutputs(inputs);
+  const inputs = useInputs(ref);
+  const outputs = useOutputs(props, inputs);
   const fragmentProps = { inputs, outputs };
   return (
     <Container

@@ -1,14 +1,14 @@
 import { useMemo, useRef, type ForwardedRef } from 'react';
 
-import { useRecord } from '@/utils/react-utils';
+import { useForwardedRef, useRecord } from '@/utils/react-utils';
 import { useStore } from '@/utils/store-utils';
 import { useFloating } from '@floating-ui/react';
 import { AutocompleteHandle } from '../autocomplete/constants';
 import { useNotifier } from '../notifier';
-import { Props, initialState, initialTransientState } from './constants';
+import { initialState, initialTransientState } from './constants';
 
 
-export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
+export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState);
   const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = tagsConfig;
@@ -18,7 +18,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
   const settingsButtonRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
   const synonymOptionsRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null;
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useForwardedRef(ref);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const selectedTagRef = useRef<HTMLDivElement>(null);
 
@@ -144,7 +144,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>, props: Props) => {
     settingsButtonRef,
     synonymOptionsRef,
     notify,
-    props,
     store,
     ...localState,
   };

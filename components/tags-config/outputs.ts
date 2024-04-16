@@ -5,12 +5,12 @@ import { GroupId, SynonymId, TagId } from '@/actions/types';
 import { TypedKeyboardEvent, useEventHandlerForDocument } from '@/utils/dom-utils';
 import { writeToStoreAndDb } from '@/utils/storage-utils';
 import { type ChangeEvent, type MouseEvent } from 'react';
-import { Inputs } from './constants';
+import { Inputs, Props } from './constants';
 import { useSharedFunctions } from './shared';
 
 
-export const useOutputs = (inputs: Inputs) => {
-  const shared = useSharedFunctions(inputs);
+export const useOutputs = (props: Props, inputs: Inputs) => {
+  const shared = useSharedFunctions(props, inputs);
   const { store, notify, set } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
@@ -262,7 +262,7 @@ export const useOutputs = (inputs: Inputs) => {
       store.tagsConfig.showAutocompleteOptions.$set(showAutocompleteOptions)
     },
     onClickCloseButton: () => {
-      inputs.props.onHide();
+      props.onHide();
     },
   };
 }

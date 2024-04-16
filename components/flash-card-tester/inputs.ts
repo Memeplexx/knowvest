@@ -2,9 +2,9 @@ import { useStore } from "@/utils/store-utils";
 import { isAfter } from "date-fns";
 import { useMemo, useRef } from "react";
 import { useNotifier } from "../notifier";
-import { Props, initialState } from "./constants";
+import { initialState } from "./constants";
 
-export const useInputs = (props: Props) => {
+export const useInputs = () => {
 
   const { store, flashCardTester, flashCards } = useStore(initialState);
   const notify = useNotifier();
@@ -20,7 +20,6 @@ export const useInputs = (props: Props) => {
     items,
     notify,
     store,
-    props,
     bodyRef,
   }
 }

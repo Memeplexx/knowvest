@@ -1,12 +1,10 @@
 import { useStore } from "@/utils/store-utils";
 import { formatDistanceToNow } from "date-fns";
 import { useMemo, useRef } from "react";
-import { Props, initialState, pageSize } from "./constants";
+import { initialState, pageSize } from "./constants";
 import { CardHandle } from "../card/constants";
 
-export const useInputs = (
-  props: Props,
-) => {
+export const useInputs = () => {
 
   const { store, historyItems, activeNoteId, notes, stateInitialized } = useStore(initialState);
 
@@ -24,7 +22,6 @@ export const useInputs = (
   }, [activeNoteId, historyItems.index, notes]);
 
   return {
-    props,
     store,
     items,
     stateInitialized,

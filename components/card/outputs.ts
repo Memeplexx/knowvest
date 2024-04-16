@@ -1,6 +1,7 @@
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 
-export const useOutputs = ({ previousScrollOffset, bodyRef, headRef, headerOffset, props }: Inputs) => {
+export const useOutputs = (props: Props, inputs: Inputs) => {
+  const { previousScrollOffset, bodyRef, headRef, headerOffset } = inputs;
   return {
     onBodyScroll: () => {
       const isScrollingDown = previousScrollOffset.current < bodyRef.current!.scrollTop;

@@ -2,11 +2,12 @@ import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '
 import { addTagToSynonym, createTagForSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
-import { Inputs } from './constants';
+import { Inputs, Props } from './constants';
 import { writeToStoreAndDb } from '@/utils/storage-utils';
 
 
-export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
+export const useSharedFunctions = (props: Props, inputs: Inputs) => {
+  const { store, notify } = inputs;
   const completeCreateTagForSynonym = async () => {
     const apiResponse = await createTagForSynonym(inputs.autocompleteText.trim(), inputs.synonymId === null ? undefined : inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
@@ -101,7 +102,7 @@ export const useSharedFunctions = ({ notify, store, ...inputs }: Inputs) => {
       modal: null,
       autocompleteText: '',
     })
-    inputs.props.onHide();
+    props.onHide();
   }
   const onAutocompleteSelectedWhileNothingIsSelected = async ({ tagId }: { tagId: TagId }) => {
     const synonymId = store.tags.$find.id.$eq(tagId).synonymId;

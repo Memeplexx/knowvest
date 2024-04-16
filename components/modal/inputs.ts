@@ -40,7 +40,6 @@ export const useInputs = (props: Props) => {
     showInternal,
     backgroundAnimations: isMobileWidth ? undefined : backgroundAnimations,
     foregroundAnimations: isMobileWidth ? undefined : foregroundAnimations,
-    props,
   }
 }
 

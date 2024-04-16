@@ -6,9 +6,11 @@ import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { Body, Container, Footer, FooterRightContent, NextButton, NoResults, NoResultsIcon, Question, ToggleViewButton } from "./styles";
 
-export const FlashCardTester = (props: Props) => {
-  const inputs = useInputs(props);
-  const outputs = useOutputs(inputs);
+export const FlashCardTester = (
+  props: Props
+) => {
+  const inputs = useInputs();
+  const outputs = useOutputs(props, inputs);
   return (
     <Container
       ref={inputs.bodyRef}

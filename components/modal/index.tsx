@@ -10,7 +10,7 @@ export const Modal = (
   props: Props
 ) => {
   const inputs = useInputs(props);
-  const outputs = useOutputs(inputs);
+  const outputs = useOutputs(props, inputs);
   return !inputs.showInternal ? <></> : createPortal(
     <>
       <Background

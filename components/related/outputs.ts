@@ -1,7 +1,7 @@
 import { NoteId } from "@/actions/types";
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 
-export const useOutputs = ({ store, props, cardRef }: Inputs) => {
+export const useOutputs = (props: Props, { store, cardRef }: Inputs) => {
   return {
     onScrolledToBottom: () => {
       store.relatedItems.index.$add(1);

@@ -2,16 +2,16 @@ import { NoteDTO } from '@/actions/types';
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { listenToTagsForEditor } from '@/utils/data-utils';
-import { useIsomorphicLayoutEffect } from '@/utils/react-utils';
+import { useIsomorphicLayoutEffect, useUnknownPropsStripper } from '@/utils/react-utils';
 import { useStore } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { Highlighter } from '@lezer/highlight';
 import { useRef } from 'react';
 import { Props } from './constants';
-import { Highlighter } from '@lezer/highlight';
 
 
 export const useInputs = (props: Props) => {
@@ -35,7 +35,7 @@ export const useInputs = (props: Props) => {
 
   return {
     editorRef,
-    props,
+    props: useUnknownPropsStripper('div', {...props})
   }
 }
 
