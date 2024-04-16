@@ -1,6 +1,5 @@
 "use client";
 import { PopupOption } from '@/utils/style-utils';
-import Farm from '../../public/images/farm.svg';
 import { Modal } from '../modal';
 import { Popup } from '../popup';
 import { SearchDialog } from '../search';
@@ -11,6 +10,7 @@ import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, LoaderPlaceh
 import { FlashCardTester } from '../flash-card-tester';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
+
 
 export const Navbar = (props: Props) => {
   const inputs = useInputs();
@@ -41,7 +41,7 @@ export const Navbar = (props: Props) => {
             <ImageLogo
               width={44}
               height={44}
-              src={Farm}
+              src={farmImage}
               alt='logo'
               placeholder="blur"
               blurDataURL={farmImage.src}
