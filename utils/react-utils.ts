@@ -100,12 +100,12 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
 
 type HTMLTagName = 'div' | 'span' | 'input' | 'button';
 export const useUnknownPropsStripper = <T extends HTMLTagName, P extends Record<string, unknown>>(elementTag: T, props: P) => {
-  const propsRef = useRef(props);
+  const propsRef = useRef(newRecord());
   if (Object.entries(props).filter(([, v]) => !is.function(v) && !olikIs.storeInternal(v)).every(([k, v]) => propsRef.current[k] === v))
-    return;
-  propsRef.current = props;
+    return propsRef.current;
   const element = document.createElement(elementTag);
-  return Object.keys(props)
+  propsRef.current = Object.keys(props)
     .filter(k => k in element)
     .reduce((acc, key) => { acc[key] = props[key]; return acc; }, newRecord());
+  return propsRef.current;
 }

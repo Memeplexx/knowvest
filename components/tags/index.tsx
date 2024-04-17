@@ -84,40 +84,38 @@ const PlaceholderFragment = ({ inputs, outputs }: FragmentProps) => {
 
 const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
-    <>
-      <TagsSection
-        if={inputs.stateInitialized}
-        children={
-          <>
-            <ActiveHeaderTag
-              if={!inputs.tagsForActiveNote.length}
-              $selected={inputs.allActiveTagsSelected}
-              onClick={outputs.onChangeAllActiveTagsSelected}
-              children='Active'
-              $first={true}
-              $last={true}
-            />
-            <TagsWrapper
-              children={inputs.tagsForActiveNote.map(synonyms => (
-                <Fragment
-                  key={synonyms.synonymId}
-                  children={synonyms.tags.map(tag => (
-                    <Tag
-                      key={tag.id}
-                      $selected={synonyms.selected}
-                      $first={tag.first}
-                      $last={tag.last}
-                      children={tag.text}
-                      onClick={() => outputs.onClickSynonym(tag.synonymId)}
-                    />
-                  ))}
-                />
-              ))}
-            />
-          </>
-        }
-      />
-    </>
+    <TagsSection
+      if={inputs.stateInitialized}
+      children={
+        <>
+          <ActiveHeaderTag
+            if={!inputs.tagsForActiveNote.length}
+            $selected={inputs.allActiveTagsSelected}
+            onClick={outputs.onChangeAllActiveTagsSelected}
+            children='Active'
+            $first={true}
+            $last={true}
+          />
+          <TagsWrapper
+            children={inputs.tagsForActiveNote.map(synonyms => (
+              <Fragment
+                key={synonyms.synonymId}
+                children={synonyms.tags.map(tag => (
+                  <Tag
+                    key={tag.id}
+                    $selected={synonyms.selected}
+                    $first={tag.first}
+                    $last={tag.last}
+                    children={tag.text}
+                    onClick={() => outputs.onClickSynonym(tag.synonymId)}
+                  />
+                ))}
+              />
+            ))}
+          />
+        </>
+      }
+    />
   )
 }
 

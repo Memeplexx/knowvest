@@ -118,9 +118,12 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   }, [autocompleteOptionsGroups, autocompleteOptionsTags, autocompleteAction]);
 
   const pageTitle = useMemo(() => {
-    if (tagId) return 'Update selected Tag';
-    if (synonymId) return 'Search for Tag to add to active Group';
-    if (groupId) return 'Search for Tag to add to selected Group';
+    if (tagId) 
+      return 'Update selected Tag';
+    if (synonymId) 
+      return 'Search for Tag to add to active Group';
+    if (groupId) 
+      return 'Search for Tag to add to selected Group';
     return 'Search for Tag or create a new Tag';
   }, [groupId, synonymId, tagId]);
 

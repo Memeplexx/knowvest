@@ -93,31 +93,16 @@ export const TagsWrapper = styled(div)`
   row-gap: 12px;
 `;
 
-export const CategoryTitle = styled(div)`
-`;
-
 export const CategoryWrapper = styled(div)`
   display: flex;
   gap: 16px;
   flex-direction: column;
 `;
 
-export const AutocompleteOption = styled(div)`
+export const AutocompleteOption = styled(div)<{ $selected: boolean }>`
   display: flex;
-  gap: 16px;
-  justify-content: space-between;
-`;
-
-export const AutocompleteOptionLeft = styled(div)`
-  display: flex;
-  gap: 4px;
-`;
-
-export const AutocompleteOptionLabel = styled(div)`
-`;
-
-export const AutocompleteOptionStatus = styled.div`
-  width: 8px;
+  gap: 8px;
+  ${p => p.$selected && css`text-decoration: underline;` }
 `;
 
 export const Tag = styled(button) <{ $hovered: boolean, $first?: boolean, $last?: boolean }>`

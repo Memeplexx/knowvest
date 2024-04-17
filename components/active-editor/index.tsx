@@ -2,7 +2,7 @@
 import { AddIcon, FilterIcon, SplitIcon } from '@/utils/style-utils';
 import { Loader } from '../loader';
 import { useOutputs } from './outputs';
-import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, Instruction, TextEditor, TextEditorWrapper } from './styles';
+import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, TextEditor, TextEditorWrapper } from './styles';
 import { useInputs } from './inputs';
 
 
@@ -32,9 +32,7 @@ export default function ActiveEditor() {
                         children={
                           <>
                             <AddIcon />
-                            <Instruction
-                              children='Create a new tag out of selection'
-                            />
+                            Create a new tag out of selection
                           </>
                         }
                       />
@@ -43,9 +41,7 @@ export default function ActiveEditor() {
                         children={
                           <>
                             <SplitIcon />
-                            <Instruction
-                              children='Move selection out into a new note'
-                            />
+                            Move selection out into a new note
                           </>
                         }
                       />
@@ -54,9 +50,7 @@ export default function ActiveEditor() {
                         children={
                           <>
                             <FilterIcon />
-                            <Instruction
-                              children='Filter notes similar to selection'
-                            />
+                            Filter notes similar to selection
                           </>
                         }
                       />

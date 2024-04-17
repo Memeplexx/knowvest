@@ -5,7 +5,7 @@ import { Autocomplete } from '../autocomplete';
 import { AutocompleteOptionType, Props, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, AutocompleteOptionLabel, AutocompleteOptionLeft, AutocompleteOptionStatus, CategoryTitle, CategoryWrapper, CloseButton, Container, LeftContent, MainContent, Result, RightContent, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, CategoryWrapper, CloseButton, Container, LeftContent, MainContent, Result, RightContent, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
 export const SearchDialog = forwardRef(function SearchDialog(
@@ -106,23 +106,8 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
       onInputFocused={outputs.onAutocompleteInputFocused}
       renderOption={option => (
         <AutocompleteOption
-          children={
-            <>
-              <AutocompleteOptionLeft
-                children={
-                  <>
-                    <AutocompleteOptionStatus
-                      children={option.selected ? '✓' : ' '}
-                    />
-                    <AutocompleteOptionLabel
-                      children={option.label}
-                    />
-                  </>
-                }
-              />
-              <div />
-            </>
-          }
+          $selected={option.selected}
+          children={option.label}
         />
       )}
     />
@@ -134,9 +119,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
     <CategoryWrapper
       children={
         <>
-          <CategoryTitle
-            children='Synonyms'
-          />
+          Synonyms
           <TagsWrapper
             children={
               inputs.selectedSynonymTags.map(tags => (
@@ -172,9 +155,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
           key={group.groupId}
           children={
             <>
-              <CategoryTitle
-                children={group.name}
-              />
+              {group.name}
               <TagsWrapper
                 children={group.synonyms.map(synonym =>
                   synonym.tags.map(tag => (

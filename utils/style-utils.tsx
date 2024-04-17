@@ -79,8 +79,6 @@ const resetIconDims = css`
   height: 100%;
 `;
 
-export const OptionText = styled.div``;
-
 export const CreateIcon = styled(CiCirclePlus)``;
 
 export const DuplicateIcon = styled(CiGrid2V)``;
@@ -106,7 +104,7 @@ export const SearchIcon = styled(CiSearch)``;
 export const TestIcon = styled(CiBeaker1)``;
 
 export const LeftIcon = styled(MdKeyboardArrowLeft)`
-${resetIconDims}
+  ${resetIconDims}
 `;
 
 export const RightIcon = styled(MdKeyboardArrowRight)`

@@ -13,7 +13,6 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       bodyRef.current!.scrollTop > 0
         ? headRef.current!.style.boxShadow = '0px 3px 5px 0px #000'
         : headRef.current!.style.boxShadow = '';
-
       const element = bodyRef.current!;
       if (Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) < 1) {
         props.onScrolledToBottom?.();

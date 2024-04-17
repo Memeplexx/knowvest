@@ -5,12 +5,9 @@ import { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 
 export const TextAreaDebounced = (
   props: Props & TextareaHTMLAttributes<unknown>
-) => {
-  return <textarea {...useInputs(props)} />;
-}
+) => <textarea {...useInputs(props)} />;
 
 export const InputDebounced = (
   props: Props & InputHTMLAttributes<unknown>
-) => {
-  return <input {...useInputs(props)} />;
-}
+) => <input {...useInputs(props)} />;
+

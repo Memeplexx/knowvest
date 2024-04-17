@@ -1,9 +1,13 @@
 "use client";
 
 import { ForwardedRef, useImperativeHandle, useRef } from "react";
-import { CardHandle } from "./constants";
+import { CardHandle, Props } from "./constants";
+import { useUnknownPropsStripper } from "@/utils/react-utils";
 
-export const useInputs = (ref: ForwardedRef<CardHandle>) => {
+export const useInputs = (
+  props: Props,
+  ref: ForwardedRef<CardHandle>
+) => {
 
   const headRef = useRef<HTMLDivElement>(null);
 
@@ -22,5 +26,6 @@ export const useInputs = (ref: ForwardedRef<CardHandle>) => {
     bodyRef,
     previousScrollOffset,
     headerOffset,
+    htmlProps: useUnknownPropsStripper('div', {...props}),
   };
 }

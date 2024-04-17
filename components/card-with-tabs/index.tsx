@@ -6,16 +6,15 @@ import { Body, Container, Header, Tab, Underline } from "./styles";
 export const Tabs = (
   props: Props,
 ) => {
-  const { options, ...remainingProps } = props;
   const inputs = useInputs(props);
   return (
     <Container
-      {...remainingProps}
+      {...inputs.htmlProps}
       heading={
         <Header
           children={
             <>
-              {options.map(option => (
+              {props.options.map(option => (
                 <Tab
                   key={option.label}
                   children={option.label}

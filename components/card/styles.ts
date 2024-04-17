@@ -29,15 +29,11 @@ export const Header = styled(div)`
   letter-spacing: 4px;
   background-image: linear-gradient(to right, #242020, #191919);
   padding: 16px;
-`;
-
-export const Heading = styled.div`
-  display: flex;
-  align-self: stretch;
-  align-items: center;
-`;
-
-export const Actions = styled.div`
+  :first-child {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+  }
 `;
 
 export const Body = styled(div)`

@@ -1,6 +1,6 @@
 "use client";
 import { type ForwardedRef, forwardRef } from 'react';
-import { Actions, Body, Header, Heading, LoaderPlaceholder, Wrapper } from './styles';
+import { Body, Header, LoaderPlaceholder, Wrapper } from './styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { CardHandle, Props } from './constants';
@@ -9,24 +9,20 @@ export const Card = forwardRef(function Card(
   props: Props,
   ref: ForwardedRef<CardHandle>
 ) {
-  const inputs = useInputs(ref);
+  const inputs = useInputs(props, ref);
   const outputs = useOutputs(props, inputs);
   return (
     <Wrapper
       id={props.id}
-      className={props.className}
+      {...inputs.htmlProps}
       children={
         <>
           <Header
             ref={inputs.headRef}
             children={
               <>
-                <Heading 
-                  children={props.heading}
-                 />
-                <Actions
-                  children={props.actions}
-                />
+                {props.heading}
+                {props.actions}
               </>
             }
           />

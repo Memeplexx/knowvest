@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Props } from "./constants";
-import { useRecord } from "@/utils/react-utils";
+import { useRecord, useUnknownPropsStripper } from "@/utils/react-utils";
 
 export const useInputs = (props: Props) => {
   
@@ -21,5 +21,6 @@ export const useInputs = (props: Props) => {
     tabsRef,
     underline,
     ...localState,
+    htmlProps: useUnknownPropsStripper('div', {...props}),
   }
 }

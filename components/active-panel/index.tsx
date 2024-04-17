@@ -1,5 +1,5 @@
 "use client";
-import { CreateIcon, DeleteIcon, DuplicateIcon, OptionText, PopupOption, SettingsIcon } from '@/utils/style-utils';
+import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, SettingsIcon } from '@/utils/style-utils';
 import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
@@ -40,9 +40,7 @@ export const ActivePanel = (
                         onClick={outputs.onClickCreateNote}
                         children={
                           <>
-                            <OptionText
-                              children='Create new note'
-                            />
+                            Create new note
                             <CreateIcon />
                           </>
                         }
@@ -51,9 +49,7 @@ export const ActivePanel = (
                         onClick={outputs.onClickDuplicateNote}
                         children={
                           <>
-                            <OptionText
-                              children='Duplicate this note'
-                            />
+                            Duplicate this note
                             <DuplicateIcon />
                           </>
                         }
@@ -63,9 +59,7 @@ export const ActivePanel = (
                         onClick={outputs.onClickRequestDeleteNote}
                         children={
                           <>
-                            <OptionText
-                              children='Delete this note'
-                            />
+                            Delete this note
                             <DeleteIcon />
                           </>
                         }

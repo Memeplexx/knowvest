@@ -59,9 +59,6 @@ export const ActiveSelectionInstructions = styled(div)`
   }
 `;
 
-export const Instruction = styled(div)`
-`;
-
 export const ActiveSelectionTagName = styled.div`
   font-weight: 600;
   font-size: 14px;
