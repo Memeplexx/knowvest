@@ -35,7 +35,7 @@ export const useInputs = (props: Props) => {
 
   return {
     editorRef,
-    props: useUnknownPropsStripper('div', {...props})
+    props: useUnknownPropsStripper({...props})
   }
 }
 

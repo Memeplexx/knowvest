@@ -9,13 +9,13 @@ export const prisma = new PrismaClient({
 
 export const archiveNoteTagsAssociatedWithAnyArchivedTags = async (userId: UserId) => {
   const noteTagIdsToArchive = (await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
-  SELECT nt.id FROM note_tag nt 
-    JOIN note n ON nt.note_id = n.id
-    JOIN tag t ON nt.tag_id = t.id
-    WHERE n.user_id = ${userId} 
-    AND nt.is_archived IS FALSE 
-    AND t.is_archived IS TRUE;
-`)).map(nt => nt.id);
+    SELECT nt.id FROM note_tag nt 
+      JOIN note n ON nt.note_id = n.id
+      JOIN tag t ON nt.tag_id = t.id
+      WHERE n.user_id = ${userId} 
+      AND nt.is_archived IS FALSE 
+      AND t.is_archived IS TRUE;
+  `)).map(nt => nt.id);
   await prisma.noteTag.updateMany({ where: { id: { in: noteTagIdsToArchive } }, data: { isArchived: true } });
   return await prisma.noteTag.findMany({ where: { id: { in: noteTagIdsToArchive } } });
 }
@@ -25,10 +25,10 @@ export const archiveSynonymsAssociatedWithAnyArchivedTags = async (userId: UserI
     SELECT DISTINCT s.id 
       FROM synonym s 
       WHERE s.is_archived IS FALSE 
-      AND s.id IN (
+      AND s.id IN ( 
         SELECT synonym_id 
         FROM (
-          SELECT t.synonym_id, count(t)
+          SELECT t.synonym_id, COUNT(t)
           FROM tag t
           WHERE t.is_archived IS FALSE
           AND t.user_id = ${userId}
@@ -53,7 +53,7 @@ export const archiveSynonymGroupsAssociatedWithAnyArchivedTags = async (userId: 
           AND s.id in (
             SELECT synonym_id 
             FROM (
-              SELECT t.synonym_id, count(t)
+              SELECT t.synonym_id, COUNT(t)
               FROM tag t
               WHERE t.is_archived IS FALSE
               AND t.user_id = ${userId}
@@ -107,7 +107,8 @@ export const respond = async <R>(processor: () => R) => await processor() as Ent
 const validateId = async <R>(entityName: string, query: (user: { email: string }) => Promise<R>) => {
   const session = await getServerSession(authOptions);
   const result = await query({ email: session!.user!.email! });
-  if (!result) { throw new ApiError('NOT_FOUND', `${entityName} not found`); }
+  if (!result)
+    throw new ApiError('NOT_FOUND', `${entityName} not found`);
   return result;
 }
 
@@ -126,7 +127,8 @@ export const validateTagId = async (tagId: TagId) =>
 export const getUserId = async () => {
   const session = await getServerSession(authOptions);
   const result = await prisma.user.findFirst({ where: { email: session!.user!.email! } });
-  if (!result) { throw new ApiError('NOT_FOUND', `User not found`); }
+  if (!result)
+    throw new ApiError('NOT_FOUND', `User not found`);
   return result.id as UserId;
 }
 

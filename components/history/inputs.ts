@@ -24,7 +24,7 @@ export const useInputs = (
       }));
   }, [activeNoteId, historyItems.index, notes]);
 
-  const htmlProps = useUnknownPropsStripper('div', {...props});
+  const htmlProps = useUnknownPropsStripper({...props});
 
   return {
     store,

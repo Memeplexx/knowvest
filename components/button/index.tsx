@@ -8,7 +8,7 @@ export const Button = forwardRef(function Button(
   props: Props,
   ref?: ForwardedRef<HTMLButtonElement>
 ) {
-  const htmlProps = useUnknownPropsStripper('div', props);
+  const htmlProps = useUnknownPropsStripper(props);
   return (
     <Wrapper
       {...htmlProps}

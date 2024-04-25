@@ -35,7 +35,7 @@ export const useInputs = (
     return `${items.length} result${items.length === 1 ? '' : 's'}`;
   }, [items]);
 
-  const htmlProps = useUnknownPropsStripper('div', {...props});
+  const htmlProps = useUnknownPropsStripper({...props});
 
   return {
     store,

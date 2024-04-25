@@ -26,6 +26,6 @@ export const useInputs = (
     bodyRef,
     previousScrollOffset,
     headerOffset,
-    htmlProps: useUnknownPropsStripper('div', {...props}),
+    htmlProps: useUnknownPropsStripper({...props}),
   };
 }

@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
-import { ForwardedRef, forwardRef, ComponentType, useRef, useMemo, useState, useEffect, FunctionComponent, useLayoutEffect } from "react";
+import { newRecord } from "olik";
+import { ComponentType, ForwardedRef, FunctionComponent, forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { is } from "./logic-utils";
-import { newRecord, is as olikIs } from "olik";
 
 export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(
   useInputs: (props: Props, forwardedRef: ForwardedRef<Handle>) => Inputs,
@@ -29,7 +29,7 @@ export const useForwardedRef = <T>(forwardedRef: ForwardedRef<T>) => {
   const refs = useMemo(() => [basicRef, forwardedRef], [forwardedRef]);
   useIsomorphicLayoutEffect(() => {
     refs.forEach(ref => {
-      if (!ref) return
+      if (!ref) return;
       if (typeof ref === 'function') {
         ref(targetRef.current)
       } else {
@@ -98,14 +98,9 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
   return stateRef;
 }
 
-type HTMLTagName = 'div' | 'span' | 'input' | 'button';
-export const useUnknownPropsStripper = <T extends HTMLTagName, P extends Record<string, unknown>>(elementTag: T, props: P) => {
-  const propsRef = useRef(newRecord());
-  if (Object.entries(props).filter(([, v]) => !is.function(v) && !olikIs.storeInternal(v)).every(([k, v]) => propsRef.current[k] === v))
-    return propsRef.current;
-  const element = document.createElement(elementTag);
-  propsRef.current = Object.keys(props)
-    .filter(k => k in element)
-    .reduce((acc, key) => { acc[key] = props[key]; return acc; }, newRecord());
-  return propsRef.current;
+const whitelist = ['className', 'style', 'onClick'];
+export const useUnknownPropsStripper = <P extends Record<string, unknown>>(props: P) => {
+  return Object.keys(props)
+    .filter(k => whitelist.includes(k))
+    .reduce((acc, key) => Object.assign(acc, { [key]: props[key] }), newRecord());
 }

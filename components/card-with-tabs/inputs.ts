@@ -5,7 +5,7 @@ import { Props } from "./constants";
 import { useRecord, useUnknownPropsStripper } from "@/utils/react-utils";
 
 export const useInputs = (props: Props) => {
-  
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const tabsRef = props.options.mapToObject(o => o.label, () => useRef<HTMLDivElement>(null));
   const localState = useRecord({
@@ -21,6 +21,6 @@ export const useInputs = (props: Props) => {
     tabsRef,
     underline,
     ...localState,
-    htmlProps: useUnknownPropsStripper('div', {...props}),
+    htmlProps: useUnknownPropsStripper({ ...props }),
   }
 }
