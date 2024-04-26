@@ -1,20 +1,20 @@
 import { NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO, TagId } from "@/actions/types";
 import { EditorView } from "codemirror";
-import { Store } from "olik";
-import { AppState } from "./store-utils";
+import { DeepReadonlyArray, Store } from "olik";
 import { ReviseEditorTagsArgs } from "./codemirror-utils";
+import { AppState } from "./store-utils";
 
 
 export type tagType = 'primary' | 'secondary';
 
 const cache = {
   key: {
-    synonymGroups: new Array<SynonymGroupDTO>(),
-    synonymIds: new Array<SynonymId>(),
-    tags: new Array<TagDTO>(),
-    noteTags: new Array<NoteTagDTO>(),
+    synonymGroups: [] as ReadonlyArray<SynonymGroupDTO>,
+    synonymIds: [] as ReadonlyArray<SynonymId>,
+    tags: [] as ReadonlyArray<TagDTO>,
+    noteTags: [] as ReadonlyArray<NoteTagDTO>,
   },
-  value: new Array<NoteTagDTO & { type: tagType }>
+  value: [] as DeepReadonlyArray<(NoteTagDTO & { type: tagType })>,
 };
 const getDataViaCache = (store: Store<AppState>) => {
   const { synonymGroups, synonymIds, tags, noteTags } = store.$state;
@@ -49,7 +49,7 @@ export const listenToTagsForEditor = <S extends AppState>({
 
   let previousTagPositions = new Array<{ from: number; to: number; tagId: TagId, type: tagType }>();
 
-  const onChangeNoteTags = (noteTags: (NoteTagDTO & { type: tagType })[]) => {
+  const onChangeNoteTags = (noteTags: DeepReadonlyArray<(NoteTagDTO & { type: tagType })>) => {
     const docString = editorView.state.doc.toString() || '';
     const removeTags = previousTagPositions
       .distinct(t => t.tagId + ' ' + t.from)

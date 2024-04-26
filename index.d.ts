@@ -151,5 +151,9 @@ declare global {
     } : Record<string, unknown>;
   }
 
+  interface ReadonlyArray<T> extends Omit<Array<T>, 'push' | 'pop' | 'shift' | 'unshift' | 'reverse' | 'sort' | 'splice'> {
+    
+  }
+
 }
 

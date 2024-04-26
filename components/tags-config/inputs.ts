@@ -13,7 +13,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState);
   const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = tagsConfig;
 
-  const localState = useRecord(initialTransientState)
+  const localState = useRecord(initialTransientState);
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
   const settingsButtonRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;

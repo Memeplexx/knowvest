@@ -12,7 +12,7 @@ export const useInputs = () => {
   const notify = useNotifier();
   const mayDeleteNote = useMemo(() => {
     return notes.length > 1;
-  }, [notes])
+  }, [notes]);
   
   return {
     store,
