@@ -1,7 +1,7 @@
 "use client";
 import { StoreDef, createStore } from 'olik';
-import { connectOlikDevtoolsToStore } from 'olik/devtools';
-import { augmentOlikForReact, createUseStoreHook } from 'olik-react';
+import { configureDevtools } from 'olik/devtools';
+import { augmentForReact, createUseStoreHook } from 'olik-react';
 import { createContext, useMemo } from "react";
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '../actions/types';
 
@@ -31,11 +31,11 @@ export const initialAppState = {
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
 
-  augmentOlikForReact() // invoke before initializing store
+  augmentForReact() // invoke before initializing store
   const store = useMemo(() => createStore(initialAppState), []);
 
   if (typeof(navigator) !== 'undefined' && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-    connectOlikDevtoolsToStore();
+    configureDevtools();
   }
 
   return (

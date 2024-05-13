@@ -50,7 +50,7 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
   let previousActiveNoteTagIds = new Array<TagId>();
   const tagsWithRegexp = store.$state.tags
     .map(tag => ({ ...tag, regexp: new RegExp(`\\b(${tag.text})\\b`, 'gi') }));
-  store.tags.$onChange(newTags => {
+  store.tags.$onChange(newTags => { ///////// THIS WILL CAUSE A MEMORY LEAK! TODO: FIX
     const currentTagIds = tagsWithRegexp.map(t => t.id);
     newTags
       .filter(nt => !currentTagIds.includes(nt.id))

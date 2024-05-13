@@ -1,13 +1,13 @@
 import { useStore } from "@/utils/store-utils";
 import { useMemo } from "react";
-import { initialState, initialTransientState } from "./constants";
-import { useRecord } from "@/utils/react-utils";
+import { initialState } from "./constants";
+import { addToWhitelist } from "olik/devtools";
 
 export const useInputs = () => {
 
   const { store, tagsComponent, tags, synonymIds, noteTags, activeNoteId, groups, synonymGroups, stateInitialized } = useStore(initialState);
 
-  const state = useRecord(initialTransientState)
+  useMemo(() => addToWhitelist([store.tagsComponent.hoveringGroupId, store.tagsComponent.hoveringSynonymId]), [store]);
 
   const tagsForActiveNote = useMemo(() => {
     return noteTags
@@ -72,6 +72,5 @@ export const useInputs = () => {
     tagsForActiveNote,
     allGroupTagsSelected,
     allActiveTagsSelected,
-    ...state,
   };
 };

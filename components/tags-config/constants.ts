@@ -44,13 +44,10 @@ export const initialState = {
 
     showAutocompleteOptions: false,
     autocompleteValue: null as null | GroupId | TagId,
+    hoveringGroupId: null as null | GroupId,
+    hoveringSynonymId: null as null | SynonymId,
   }
 };
-
-export const initialTransientState = {
-  hoveringGroupId: null as null | GroupId,
-  hoveringSynonymId: null as null | SynonymId,
-}
 
 export type Props = {
   onHide: () => void,

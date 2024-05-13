@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { newRecord } from "olik";
 import { ComponentType, ForwardedRef, FunctionComponent, forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { is } from "./logic-utils";
 
@@ -102,5 +101,5 @@ const whitelist = ['className', 'style', 'onClick'];
 export const useUnknownPropsStripper = <P extends Record<string, unknown>>(props: P) => {
   return Object.keys(props)
     .filter(k => whitelist.includes(k))
-    .reduce((acc, key) => Object.assign(acc, { [key]: props[key] }), newRecord());
+    .reduce((acc, key) => Object.assign(acc, { [key]: props[key] }), {});
 }

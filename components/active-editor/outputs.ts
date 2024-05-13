@@ -10,7 +10,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
   return {
     onClickCreateNewTagFromSelection: async () => {
       store.activePanel.loadingSelection.$set(true);
-      const apiResponse = await createTagFromActiveNote(store.activePanel.selection.$state);
+      const apiResponse = await createTagFromActiveNote(store.$state.activePanel.selection);
       store.activePanel.loadingSelection.$set(false);
       if (apiResponse.status === 'BAD_REQUEST')
         return notify.error(apiResponse.fields.tagText);
@@ -53,7 +53,7 @@ export const useOutputs = ({ store, notify, codeMirror, editorRef }: Inputs) => 
     onDocumentClick: useEventHandlerForDocument('click', event => {
       if (event.target.hasAncestor(editorRef.current))
         return;
-      if (store.activePanel.selection.$state === '')
+      if (store.$state.activePanel.selection === '')
         return;
       store.activePanel.selection.$set('');
     }),
