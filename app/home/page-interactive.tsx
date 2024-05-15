@@ -29,6 +29,8 @@ export default function HomeInteractive() {
                   <ActivePane />
                   <TabsPanel
                     $expanded={inputs.tagsExpanded}
+                    selection={inputs.selectedTab}
+                    onSelectTab={outputs.onSelectTab}
                     options={[
                       { label: 'Tags', panel: Tags },
                       { label: 'Flashcards', panel: ActiveNoteFlashCards },

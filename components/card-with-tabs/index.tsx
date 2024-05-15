@@ -14,12 +14,12 @@ export const Tabs = (
         <Header
           children={
             <>
-              {props.options.map(option => (
+              {props.options.map(({ label }) => (
                 <Tab
-                  key={option.label}
-                  children={option.label}
-                  ref={inputs.tabsRef[option.label]}
-                  onClick={() => inputs.set({ selected: option.label })}
+                  key={label}
+                  children={label}
+                  ref={inputs.tabsRef[label]}
+                  onClick={() => props.onSelectTab(label)}
                 />
               ))}
               <Underline

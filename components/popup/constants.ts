@@ -4,6 +4,7 @@ import { useInputs } from "./inputs";
 export type Props = {
   trigger: (args: { ref?: Ref<HTMLButtonElement>, onClick: MouseEventHandler<HTMLElement> }) => ReactNode,
   overlay: ReactNode,
+  storeKey: string,
 };
 
 export type Inputs = ReturnType<typeof useInputs>;

@@ -12,7 +12,7 @@ export const Popup = forwardRef(function Popup(
   forwardedRef: ForwardedRef<PopupHandle>
 ) {
   const inputs = useInputs(props, forwardedRef);
-  const outputs = useOutputs(inputs);
+  const outputs = useOutputs(props, inputs);
   return (
     <>
       {props.trigger({

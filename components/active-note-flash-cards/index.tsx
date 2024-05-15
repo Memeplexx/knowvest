@@ -40,6 +40,7 @@ export const ActiveNoteFlashCards = () => {
                         />
                         <Confirmation
                           if={!!inputs.confirmDeleteId}
+                          storeKey='deleteFlashCard'
                           onClose={outputs.onCancelRemoveFlashCard}
                           onConfirm={() => outputs.onConfirmRemoveFlashCard(item.id)}
                           title='Delete note requested'

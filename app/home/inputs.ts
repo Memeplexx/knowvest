@@ -13,7 +13,7 @@ import { Store } from "olik";
 
 export const useInputs = () => {
 
-  const { store, home } = useStore(initialState);
+  const { store, localState, localStore } = useStore({ key: 'home', value: initialState.home });
 
   useDataInitializer({ store });
 
@@ -23,7 +23,8 @@ export const useInputs = () => {
 
   return {
     store,
-    ...home,
+    ...localState,
+    localStore,
   }
 }
 

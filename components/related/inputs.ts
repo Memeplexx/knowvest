@@ -8,7 +8,10 @@ export const useInputs = (
   props: Props,
 ) => {
 
-  const { store, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized, relatedItems } = useStore(initialState);
+  const { store, localState, localStore, notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized } = useStore({
+    key: 'relatedItems',
+    value: initialState
+  });
 
   const cardRef = useRef<CardHandle>(null);
 
@@ -24,22 +27,23 @@ export const useInputs = (
         count: noteTagGroup.length,
       }))
       .sort((a, b) => b.count - a.count)
-      .slice(0, (relatedItems.index + 1) * pageSize)
+      .slice(0, (localState.index + 1) * pageSize)
       .map(n => ({
         ...n,
         matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
       }));
-  }, [activeNoteId, notes, tags, noteTags, synonymIds, relatedItems.index]);
+  }, [activeNoteId, notes, tags, noteTags, synonymIds, localState.index]);
 
   const noteCountString = useMemo(() => {
     return `${items.length} result${items.length === 1 ? '' : 's'}`;
   }, [items]);
 
-  const htmlProps = useUnknownPropsStripper({...props});
+  const htmlProps = useUnknownPropsStripper({ ...props });
 
   return {
     store,
     items,
+    localStore,
     stateInitialized,
     noteCountString,
     cardRef,

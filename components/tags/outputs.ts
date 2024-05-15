@@ -3,7 +3,7 @@ import { Inputs } from "./constants";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store, groupsWithSynonyms, tagsForActiveNote, set } = inputs;
+  const { store, groupsWithSynonyms, tagsForActiveNote, localStore, showConfigDialog } = inputs;
   return {
     onClickSynonym: (synonymId: SynonymId) => {
       if (store.$state.synonymIds.includes(synonymId))
@@ -25,18 +25,18 @@ export const useOutputs = (inputs: Inputs) => {
       store.synonymIds.$pushMany(synonymIds);
     },
     onShowDialog: () => {
-      store.tagsComponent.showConfigDialog.$set(true);
+      localStore.showConfigDialog.$set(true);
     },
     onHideDialog: () => {
-      if (!store.$state.tagsComponent.showConfigDialog) 
+      if (!showConfigDialog) 
         return;
-      store.tagsComponent.showConfigDialog.$set(false);
+      localStore.showConfigDialog.$set(false);
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      set({ hoveringGroupId, hoveringSynonymId });
+      localStore.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      set({ hoveringGroupId: null, hoveringSynonymId: null });
+      localStore.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
     },
   };
 }

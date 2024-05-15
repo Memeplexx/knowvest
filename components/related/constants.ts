@@ -7,9 +7,7 @@ export type Props = {
 } & HTMLAttributes<HTMLDivElement>
 
 export const initialState = {
-  relatedItems: {
-    index: 0,
-  }
+  index: 0,
 }
 
 export const pageSize = 10;

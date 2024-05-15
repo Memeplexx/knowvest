@@ -68,6 +68,7 @@ export const Navbar = (props: Props) => {
                     children={<SearchIcon />}
                   />
                   <Popup
+                    storeKey='userMenu'
                     trigger={props => (
                       <UserButton
                         {...props}

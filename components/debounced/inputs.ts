@@ -1,29 +1,26 @@
-import { useRecord } from "@/utils/react-utils";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Props } from "./constants";
 
 export const useInputs = (props: Props) => {
 
   const { onChangeDebounced, debounceTime, ...otherProps } = props;
-  const localState = useRecord({
-    value: props.value,
-  });
-  const valueRef = useRef(localState.value);
+  const [state, setState] = useState(props.value);
+  const valueRef = useRef(state);
   const timestampRef = useRef(0);
   timestampRef.current = Date.now();
   const timeoutRef = useRef<number>(0);
   const actualDebounceTime = debounceTime ?? 500;
-  if (localState.value !== valueRef.current) {
-    valueRef.current = localState.value;
+  if (state !== valueRef.current) {
+    valueRef.current = state;
     clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
       if (Date.now() < (timestampRef.current + actualDebounceTime)) return;
-      onChangeDebounced(localState.value);
+      onChangeDebounced(state);
     }, actualDebounceTime)
   }
   return {
     ...otherProps,
-    onChange: (e: React.ChangeEvent<{ value: string }>) => localState.set({ value: e.target.value }),
-    ...localState,
+    onChange: (e: React.ChangeEvent<{ value: string }>) => setState(e.target.value),
+    value: state,
   }
 }

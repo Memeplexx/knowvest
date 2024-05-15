@@ -10,7 +10,7 @@ import { useOutputs } from './outputs';
 export const Confirmation = (
   props: Props
 ) => {
-  const inputs = useInputs();
+  const inputs = useInputs(props);
   const outputs = useOutputs(props, inputs);
   return (
     <Modal
@@ -35,7 +35,7 @@ export const Confirmation = (
                       highlighted={false}
                       onMouseUp={outputs.onClickCancel}
                       onMouseLeave={outputs.onMouseLeaveButton}
-                      onMouseDown={() => inputs.set({ selection: 'cancel' })}
+                      onMouseDown={outputs.onMouseDownCancel}
                       children={props.cancelText || 'Cancel'}
                       aria-label='Cancel'
                     />
@@ -44,7 +44,7 @@ export const Confirmation = (
                       highlighted={false}
                       onMouseUp={outputs.onClickConfirm}
                       onMouseLeave={outputs.onMouseLeaveButton}
-                      onMouseDown={() => inputs.set({ selection: 'confirm' })}
+                      onMouseDown={outputs.onMouseDownConfirm}
                       children={props.confirmText || 'Confirm'}
                       aria-label='Confirm'
                     />

@@ -26,6 +26,7 @@ export const ActivePanel = (
             actions={
               <>
                 <Popup
+                  storeKey='settingsMenu'
                   ref={inputs.popupRef}
                   trigger={props => (
                     <ButtonIcon
@@ -68,7 +69,8 @@ export const ActivePanel = (
                   }
                 />
                 <Confirmation
-                  if={inputs.activePanel.confirmDelete}
+                  if={inputs.confirmDelete}
+                  storeKey='deleteNote'
                   onClose={outputs.onClickCancelRemoveNote}
                   onConfirm={outputs.onClickConfirmRemoveNote}
                   title='Delete note requested'
@@ -80,7 +82,7 @@ export const ActivePanel = (
             loading={!inputs.stateInitialized}
           />
           <LoaderPlaceholder
-            if={inputs.activePanel.loadingNote}
+            if={inputs.loadingNote}
           />
         </>
       }

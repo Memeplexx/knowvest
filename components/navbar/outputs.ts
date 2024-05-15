@@ -2,25 +2,25 @@ import { signOut } from "next-auth/react";
 import { Inputs } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store } = inputs;
+  const { localStore } = inputs;
   return {
     onClickUserButton: () => {
-      store.navBar.showOptions.$toggle()
+      localStore.showOptions.$toggle()
     },
     onClickSignOut: async () => {
       await signOut();
     },
     onClickSearchButton: () => {
-      store.navBar.showSearchDialog.$set(true);
+      localStore.showSearchDialog.$set(true);
     },
     onHideSearchDialog: () => {
-      store.navBar.showSearchDialog.$set(false);
+      localStore.showSearchDialog.$set(false);
     },
     onClickFlashCardsButton: () => {
-      store.navBar.showFlashCardsDialog.$set(true);
+      localStore.showFlashCardsDialog.$set(true);
     },
     onHideFlashCardsDialog: () => {
-      store.navBar.showFlashCardsDialog.$set(false);
+      localStore.showFlashCardsDialog.$set(false);
     },
   };
 }

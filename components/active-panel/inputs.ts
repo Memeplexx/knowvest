@@ -7,16 +7,17 @@ import { initialState } from './constants';
 
 export const useInputs = () => {
 
-  const { store, activePanel, activeNoteId, notes, stateInitialized } = useStore(initialState);
+  const { store, localStore, localState, activeNoteId, notes, stateInitialized } = useStore({ key: 'activePanel', value: initialState });
   const popupRef = useRef<PopupHandle>(null);
   const notify = useNotifier();
   const mayDeleteNote = useMemo(() => {
     return notes.length > 1;
   }, [notes]);
-  
+
   return {
     store,
-    activePanel,
+    ...localState,
+    localStore,
     activeNoteId,
     mayDeleteNote,
     popupRef,

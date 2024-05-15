@@ -9,11 +9,17 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       props.onClose?.();
     },
     onMouseLeaveButton: () => {
-      inputs.set({ selection: 'none' });
+      inputs.localStore.selection.$set('none');
     },
     onClose: () => {
       if (inputs.selection === 'confirm')
         props.onConfirm?.();
-    }
+    },
+    onMouseDownCancel: () => {
+      inputs.localStore.selection.$set('cancel');
+    },
+    onMouseDownConfirm: () => {
+      inputs.localStore.selection.$set('confirm');
+    },
   };
 }

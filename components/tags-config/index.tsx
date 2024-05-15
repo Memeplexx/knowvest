@@ -190,6 +190,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => (
         />
         <Confirmation
           if={inputs.modal === 'confirmDeleteTag'}
+          storeKey='deleteTag'
           onClose={outputs.onCancelConfirmation}
           onConfirm={outputs.onClickConfirmArchiveTag}
           title='Delete Tag Requested'
@@ -281,6 +282,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => (
               />
               <Confirmation
                 if={inputs.modal === 'confirmDeleteGroup'}
+                storeKey='deleteGroup'
                 title='Delete Group Requested'
                 message='Are you sure you want to delete this group?'
                 confirmText='Yes, Delete Group'

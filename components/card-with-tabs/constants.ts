@@ -6,4 +6,6 @@ export type Props = {
     label: string;
     panel: ComponentType<unknown>;
   }[];
+  selection: string,
+  onSelectTab: (label: string) => void,
 } & HTMLAttributes<HTMLDivElement>

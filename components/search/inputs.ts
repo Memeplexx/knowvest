@@ -6,8 +6,8 @@ import { useForwardedRef } from "@/utils/react-utils";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
-  const { store, search, tags, groups, synonymGroups, noteTags, notes } = useStore(initialState);
-  const { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } = search;
+  const { store, localStore, localState, tags, groups, synonymGroups, noteTags, notes } = useStore({ key: 'search', value: initialState });
+  const { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } = localState;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const bodyRef = useForwardedRef(ref);
 
@@ -88,7 +88,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   }, [showingTab, notesByTags]);
 
   const listener = useCallback(() => {
-    const state = store.$state.search;
+    const state = localStore.$state;
     const screenIsNarrow = window.innerWidth < dialogWidth;
     const payload = {
       showSearchPane: !screenIsNarrow || showingTab === 'search',
@@ -96,9 +96,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       screenIsNarrow,
     };
     if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
-      store.search.$patch(payload);
+      localStore.$patch(payload);
     }
-  }, [store, showSearchPane, showingTab])
+  }, [localStore, showSearchPane, showingTab])
   useEffect(() => {
     window.addEventListener('resize', listener);
     return () => window.removeEventListener('resize', listener)
@@ -109,6 +109,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   return {
     store,
+    localStore,
     autocompleteRef,
     bodyRef,
     autocompleteOptions,
@@ -117,6 +118,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     notesByTags,
     tabTitleText,
     tabButtonText,
-    ...search,
+    ...localState,
   }
 }

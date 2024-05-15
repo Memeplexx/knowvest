@@ -9,8 +9,13 @@ export interface Props {
   cancelText?: ReactNode;
   onConfirm?: () => void;
   onClose?: () => void;
+  storeKey: string,
 }
 
 export type Inputs = ReturnType<typeof useInputs>;
 
 export type Selection = 'none' | 'confirm' | 'cancel';
+
+export const initialState = {
+  selection: 'none' as Selection
+};

@@ -11,12 +11,12 @@ import { addToWhitelist } from 'olik/devtools';
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
-  const { store, tagsConfig, tags, groups, synonymGroups, activeNoteId } = useStore(initialState);
-  const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = tagsConfig;
-  useMemo(() => addToWhitelist([store.tagsConfig.hoveringGroupId, store.tagsConfig.hoveringSynonymId]), [store])
+  const { store, localState, localStore, tags, groups, synonymGroups, activeNoteId } = useStore({ key: 'tagsConfig', value: initialState });
+  const { tagId, synonymId, groupId, autocompleteText, autocompleteAction } = localState;
+  useMemo(() => addToWhitelist([store.tagsConfig.hoveringGroupId, store.tagsConfig.hoveringSynonymId]), [store]);
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
-  const settingsButtonRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
-  const synonymOptionsRef = tagsConfig.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null;
+  const settingsButtonRef = localState.modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
+  const synonymOptionsRef = localState.modal === 'synonymOptions' ? floatingRef.refs.setFloating : null;
   const modalRef = useForwardedRef(ref);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const selectedTagRef = useRef<HTMLDivElement>(null);
@@ -132,7 +132,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   }, [groupId, synonymId, tagsInCustomGroups]);
 
   return {
-    ...tagsConfig,
+    localStore,
+    ...localState,
     pageTitle,
     activeNoteId,
     autocompleteOptions,

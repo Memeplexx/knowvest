@@ -4,34 +4,34 @@ import { useSharedFunctions } from "./shared";
 import { initialState } from './constants';
 
 export const useOutputs = (inputs: State) => {
-  const { store, similarExpanded, historyExpanded } = inputs;
+  const { store, similarExpanded, historyExpanded, tagsExpanded, localStore, headerExpanded } = inputs;
   const shared = useSharedFunctions(inputs);
   return {
     onClickHistoryToggle: () => {
-      store.home.$patch({
+      localStore.$patch({
         ...initialState.home,
-        headerExpanded: store.home.headerExpanded.$state,
-        historyExpanded: !store.home.historyExpanded.$state,
+        headerExpanded: headerExpanded,
+        historyExpanded: !historyExpanded,
       });
     },
     onClickSimilarToggle: () => {
-      store.home.$patch({
+      localStore.$patch({
         ...initialState.home,
-        headerExpanded: store.home.headerExpanded.$state,
-        similarExpanded: !store.home.similarExpanded.$state,
+        headerExpanded,
+        similarExpanded: !similarExpanded,
       });
     },
     onClickTagsToggle: () => {
-      store.home.$patch({
+      localStore.$patch({
         ...initialState.home,
-        headerExpanded: store.home.headerExpanded.$state,
-        tagsExpanded: !store.home.tagsExpanded.$state,
+        headerExpanded,
+        tagsExpanded: !tagsExpanded,
       });
     },
     onClickHeaderToggle: () => {
-      store.home.$patch({
+      localStore.$patch({
         ...initialState.home,
-        headerExpanded: !store.home.headerExpanded.$state,
+        headerExpanded: !headerExpanded,
       });
     },
     onClickRelatedNote: async (noteId: NoteId) => {
@@ -41,6 +41,9 @@ export const useOutputs = (inputs: State) => {
     onClickHistoricalNote: async (noteId: NoteId) => {
       historyExpanded && store.home.historyExpanded.$set(false);
       await shared.onSelectNote(noteId);
+    },
+    onSelectTab: (tab: string) => {
+      localStore.selectedTab.$set(tab);
     },
   }
 };

@@ -11,9 +11,7 @@ export type Props = {
 export type Inputs = ReturnType<typeof useInputs>;
 
 export const initialState = {
-  historyItems: {
-    index: 0,
-  }
+  index: 0,
 }
 
 export const pageSize = 10;
