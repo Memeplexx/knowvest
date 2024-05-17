@@ -11,27 +11,28 @@ export const useInputs = (
   props: Props,
   forwardedRef: ForwardedRef<PopupHandle>
 ) => {
-  const { store, localState, localStore } = useStore({ key: props.storeKey, value: { showInternal: false, show: false }});
+  const { store, state } = useStore(props.storeKey, { showInternal: false, show: false });
+  const { show, showInternal } = state.$local;
   const isClosingRef = useRef(false);
 
   const backgroundAnimations = useSpring({
-    opacity: localState!.show ? 1 : 0,
+    opacity: show ? 1 : 0,
     config: { duration: animationDuration },
   });
 
   const foregroundAnimations = useSpring({
-    opacity: localState!.show ? 1 : 0,
-    transform: `scale(${localState!.show ? 1 : 0.4})`,
-    filter: `blur(${localState!.show ? 0 : 20}px)`,
+    opacity: show ? 1 : 0,
+    transform: `scale(${show ? 1 : 0.4})`,
+    filter: `blur(${show ? 0 : 20}px)`,
     config: { duration: animationDuration },
   });
 
-  if (localState!.show && !localStore.$state.showInternal) {
-    localStore.showInternal.$set(true);
-  } else if (!localState.show && localState.showInternal && !isClosingRef.current) {
+  if (show && !showInternal) {
+    store.$local.showInternal.$set(true);
+  } else if (!show && showInternal && !isClosingRef.current) {
     isClosingRef.current = true;
     setTimeout(() => {
-      localStore.$patch({ showInternal: false, show: false });
+      store.$local.$patch({ showInternal: false, show: false });
       isClosingRef.current = false;
     }, animationDuration);
   }
@@ -39,14 +40,13 @@ export const useInputs = (
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'bottom-end' });
 
   useImperativeHandle(forwardedRef, () => ({
-    hide: function hide() { localStore.show.$set(false); }
-  }), [localStore.show]);
+    hide: function hide() { store.$local.show.$set(false); }
+  }), [store]);
 
   return {
     floatingRef,
     store,
-    localStore,
-    ...localState,
+    state,
     backgroundAnimations,
     foregroundAnimations,
   }

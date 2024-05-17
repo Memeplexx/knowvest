@@ -5,9 +5,9 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, localStore, localState, tags, synonymIds, noteTags, activeNoteId, groups, synonymGroups, stateInitialized } = useStore({ key: 'tagsComponent', value: initialState });
-
-  useMemo(() => addToWhitelist([store.tagsComponent.hoveringGroupId, store.tagsComponent.hoveringSynonymId]), [store]);
+  const { store, state } = useStore('tagsComponent', initialState);
+  const { $local, noteTags, activeNoteId, tags, synonymIds, synonymGroups, groups, stateInitialized } = state;
+  useMemo(() => addToWhitelist([store.$local.hoveringGroupId, store.$local.hoveringSynonymId]), [store]);
 
   const tagsForActiveNote = useMemo(() => {
     return noteTags
@@ -66,12 +66,11 @@ export const useInputs = () => {
 
   return {
     store,
-    stateInitialized,
-    localStore,
-    ...localState,
+    ...$local,
     groupsWithSynonyms,
     tagsForActiveNote,
     allGroupTagsSelected,
     allActiveTagsSelected,
+    stateInitialized,
   };
 };

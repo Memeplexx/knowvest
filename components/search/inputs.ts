@@ -6,8 +6,9 @@ import { useForwardedRef } from "@/utils/react-utils";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
-  const { store, localStore, localState, tags, groups, synonymGroups, noteTags, notes } = useStore({ key: 'search', value: initialState });
-  const { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } = localState;
+  const { store, state } = useStore('search', initialState);
+  const { $local, tags, groups, synonymGroups, noteTags, notes } = state;
+  const { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } = $local;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const bodyRef = useForwardedRef(ref);
 
@@ -88,7 +89,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   }, [showingTab, notesByTags]);
 
   const listener = useCallback(() => {
-    const state = localStore.$state;
+    const state = store.$local.$state;
     const screenIsNarrow = window.innerWidth < dialogWidth;
     const payload = {
       showSearchPane: !screenIsNarrow || showingTab === 'search',
@@ -96,9 +97,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       screenIsNarrow,
     };
     if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
-      localStore.$patch(payload);
+      store.$local.$patch(payload);
     }
-  }, [localStore, showSearchPane, showingTab])
+  }, [showSearchPane, showingTab, store])
   useEffect(() => {
     window.addEventListener('resize', listener);
     return () => window.removeEventListener('resize', listener)
@@ -109,7 +110,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   return {
     store,
-    localStore,
+    ...$local,
     autocompleteRef,
     bodyRef,
     autocompleteOptions,
@@ -118,6 +119,5 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     notesByTags,
     tabTitleText,
     tabButtonText,
-    ...localState,
   }
 }

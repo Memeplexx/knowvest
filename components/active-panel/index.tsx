@@ -1,13 +1,14 @@
 "use client";
-import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, SettingsIcon } from '@/utils/style-utils';
+import { AddIcon, CreateIcon, DeleteIcon, DuplicateIcon, FilterIcon, PopupOption, SettingsIcon, SplitIcon } from '@/utils/style-utils';
 import { type HTMLAttributes } from 'react';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
 import { Popup } from '../popup';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { CardWrapper, LoaderPlaceholder, Wrapper } from './styles';
-import ActiveEditor from '../active-editor';
+import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, CardWrapper, LoaderPlaceholder, TextEditor, TextEditorWrapper, Wrapper } from './styles';
+import { Loader } from '../loader';
+import { FragmentProps } from './constants';
 
 
 
@@ -16,6 +17,7 @@ export const ActivePanel = (
 ) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
+  const fragmentProps = { inputs, outputs };
   return (
     <Wrapper
       {...props}
@@ -23,62 +25,8 @@ export const ActivePanel = (
         <>
           <CardWrapper
             heading="Active"
-            actions={
-              <>
-                <Popup
-                  storeKey='settingsMenu'
-                  ref={inputs.popupRef}
-                  trigger={props => (
-                    <ButtonIcon
-                      {...props}
-                      aria-label='Settings'
-                      children={<SettingsIcon />}
-                    />
-                  )}
-                  overlay={
-                    <>
-                      <PopupOption
-                        onClick={outputs.onClickCreateNote}
-                        children={
-                          <>
-                            Create new note
-                            <CreateIcon />
-                          </>
-                        }
-                      />
-                      <PopupOption
-                        onClick={outputs.onClickDuplicateNote}
-                        children={
-                          <>
-                            Duplicate this note
-                            <DuplicateIcon />
-                          </>
-                        }
-                      />
-                      <PopupOption
-                        disabled={!inputs.mayDeleteNote}
-                        onClick={outputs.onClickRequestDeleteNote}
-                        children={
-                          <>
-                            Delete this note
-                            <DeleteIcon />
-                          </>
-                        }
-                      />
-                    </>
-                  }
-                />
-                <Confirmation
-                  if={inputs.confirmDelete}
-                  storeKey='deleteNote'
-                  onClose={outputs.onClickCancelRemoveNote}
-                  onConfirm={outputs.onClickConfirmRemoveNote}
-                  title='Delete note requested'
-                  message='Are you sure you want to delete this note?'
-                />
-              </>
-            }
-            body={<ActiveEditor />}
+            actions={<SettingsMenu {...fragmentProps} />}
+            body={<EditorFragment {...fragmentProps} />}
             loading={!inputs.stateInitialized}
           />
           <LoaderPlaceholder
@@ -88,4 +36,123 @@ export const ActivePanel = (
       }
     />
   )
+}
+
+const SettingsMenu = ({ inputs, outputs }: FragmentProps) => {
+  return (
+    <>
+      <Popup
+        storeKey='settingsMenu'
+        ref={inputs.popupRef}
+        trigger={props => (
+          <ButtonIcon
+            {...props}
+            aria-label='Settings'
+            children={<SettingsIcon />}
+          />
+        )}
+        overlay={
+          <>
+            <PopupOption
+              onClick={outputs.onClickCreateNote}
+              children={
+                <>
+                  Create new note
+                  <CreateIcon />
+                </>
+              }
+            />
+            <PopupOption
+              onClick={outputs.onClickDuplicateNote}
+              children={
+                <>
+                  Duplicate this note
+                  <DuplicateIcon />
+                </>
+              }
+            />
+            <PopupOption
+              disabled={!inputs.mayDeleteNote}
+              onClick={outputs.onClickRequestDeleteNote}
+              children={
+                <>
+                  Delete this note
+                  <DeleteIcon />
+                </>
+              }
+            />
+          </>
+        }
+      />
+      <Confirmation
+        if={inputs.confirmDelete}
+        storeKey='deleteNote'
+        onClose={outputs.onClickCancelRemoveNote}
+        onConfirm={outputs.onClickConfirmRemoveNote}
+        title='Delete note requested'
+        message='Are you sure you want to delete this note?'
+      />
+    </>
+  );
+}
+
+const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
+  return (
+    <TextEditorWrapper
+      onClick={outputs.onClickTextEditorWrapper}
+      children={
+        <>
+          <TextEditor
+            ref={inputs.editorRef}
+          />
+          <ActiveSelection
+            if={!!inputs.selection}
+            children={
+              <>
+                <ActiveSelectionTagName
+                  children={'"' + inputs.selection + '"'}
+                />
+                <ActiveSelectionInstructions
+                  children={
+                    <>
+                      <ActiveSelectionListItem
+                        onClick={outputs.onClickCreateNewTagFromSelection}
+                        children={
+                          <>
+                            <AddIcon />
+                            Create a new tag out of selection
+                          </>
+                        }
+                      />
+                      <ActiveSelectionListItem
+                        onClick={outputs.onClickSplitNoteFromSelection}
+                        children={
+                          <>
+                            <SplitIcon />
+                            Move selection out into a new note
+                          </>
+                        }
+                      />
+                      <ActiveSelectionListItem
+                        onClick={outputs.onClickFilterNotesFromSelection}
+                        children={
+                          <>
+                            <FilterIcon />
+                            Filter notes similar to selection
+                          </>
+                        }
+                      />
+                    </>
+                  }
+                />
+                <Loader
+                  if={inputs.loadingSelection}
+                />
+              </>
+            }
+          />
+        </>
+      }
+    />
+  );
 }

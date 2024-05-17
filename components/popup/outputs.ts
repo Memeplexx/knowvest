@@ -6,10 +6,10 @@ export const useOutputs = (
 ) => {
   return {
     onClickBackdrop: () => {
-      inputs.localStore.show.$set(false);
+      inputs.store.$local.show.$set(false);
     },
     onClickTrigger: () => {
-      inputs.localStore.show.$set(true);
+      inputs.store.$local.show.$set(true);
     }
   };
 };

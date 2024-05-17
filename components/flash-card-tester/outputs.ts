@@ -16,7 +16,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       props.onHide();
     }),
     onToggleView: () => {
-      store.flashCardTester.showQuestions.$toggle();
+      store.$local.showQuestions.$toggle();
     },
     onClickWrongAnswer: async () => {
       const flashCardId = items[0]!.id;

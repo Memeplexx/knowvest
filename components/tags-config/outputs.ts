@@ -11,10 +11,10 @@ import { useSharedFunctions } from './shared';
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
   const shared = useSharedFunctions(props, inputs);
-  const { store, notify, localStore } = inputs;
+  const { store, notify } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
-      localStore.$patch({
+      store.$local.$patch({
         groupId,
         groupSynonymId: null,
         focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name,
@@ -22,7 +22,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     },
     onCustomGroupNameBlur: (groupId: GroupId) => {
       const groupName = store.groups.$find.id.$eq(groupId).name;
-      localStore.focusedGroupNameInputText.$set(groupName);
+      store.$local.focusedGroupNameInputText.$set(groupName);
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter')
@@ -30,27 +30,27 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       if (event.key === 'Escape') {
         event.target.blur();
         event.stopPropagation();
-        localStore.groupId.$set(null);
+        store.$local.groupId.$set(null);
       }
     },
     onCustomGroupNameChange: (event: ChangeEvent<HTMLInputElement>) => {
-      localStore.focusedGroupNameInputText.$set(event.target.value);
+      store.$local.focusedGroupNameInputText.$set(event.target.value);
     },
     onClickHideOptionsForSynonyms: () => {
-      localStore.modal.$set(null);
+      store.$local.modal.$set(null);
     },
     onClickHideOptionsForGroup: () => {
-      localStore.modal.$set(null);
+      store.$local.modal.$set(null);
     },
     onClickTagSynonym: (tagId: TagId, event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (inputs.tagId === tagId)
-        return localStore.$patch({
+        return store.$local.$patch({
           tagId: null,
           autocompleteText: '',
           groupSynonymId: null,
         })
-        localStore.$patch({
+      store.$local.$patch({
         tagId,
         groupId: null,
         groupSynonymId: null,
@@ -61,8 +61,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onClickGroupSynonym: (groupId: GroupId, groupSynonymId: SynonymId, event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (inputs.groupId === groupId && inputs.groupSynonymId === groupSynonymId)
-        return localStore.groupSynonymId.$set(null);
-      localStore.$patch({
+        return store.$local.groupSynonymId.$set(null);
+      store.$local.$patch({
         tagId: null,
         groupId,
         groupSynonymId,
@@ -71,26 +71,26 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       });
     },
     onClickRemoveTagFromSynonyms: async () => {
-      if (!inputs.tagId) 
+      if (!inputs.tagId)
         return;
       const apiResponse = await removeTagFromItsCurrentSynonym(inputs.tagId);
       await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroups, tags: apiResponse.tag });
-      localStore.$patch({ tagId: null, autocompleteText: '' });
+      store.$local.$patch({ tagId: null, autocompleteText: '' });
       notify.success('Tag removed from synonyms');
     },
     onClickRemoveSynonymFromCustomGroup: async () => {
-      if (!inputs.groupSynonymId) 
+      if (!inputs.groupSynonymId)
         return;
-      if (!inputs.groupId) 
+      if (!inputs.groupId)
         throw new Error();
       const response = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId);
       await writeToStoreAndDb(store, { groups: response.group, synonymGroups: response.synonymGroups });
-      localStore.$patch({ tagId: null, groupId: null, groupSynonymId: null });
+      store.$local.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
     onClickConfirmDeleteTag: (event: MouseEvent) => {
       event.stopPropagation();
-      localStore.modal.$set('confirmDeleteTag');
+      store.$local.modal.$set('confirmDeleteTag');
     },
     onClickEnterEditTextMode: () => {
       shared.focusAutocompleteInput();
@@ -108,19 +108,19 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
         return await shared.completeCreateGroup()
     },
     onAutocompleteInputChange: (value: string) => {
-      localStore.autocompleteText.$set(value);
+      store.$local.autocompleteText.$set(value);
     },
     onAutocompleteInputFocused: () => {
       if (!inputs.tagId && !inputs.showAutocompleteOptions)
-        localStore.showAutocompleteOptions.$set(true);
+        store.$local.showAutocompleteOptions.$set(true);
     },
     onAutocompleteInputCancel: () => {
       const autocompleteText = !inputs.tagId ? '' : store.tags.$find.id.$eq(inputs.tagId).text;
-      localStore.autocompleteText.$set(autocompleteText);
+      store.$local.autocompleteText.$set(autocompleteText);
       shared.blurAutocompleteInput();
     },
     onClickAddNewTagToSynonymGroup: () => {
-      localStore.$patch({
+      store.$local.$patch({
         autocompleteAction: 'addSynonymsToActiveSynonyms',
         autocompleteText: '',
         tagId: null,
@@ -128,7 +128,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       shared.focusAutocompleteInput();
     },
     onClickAddCurrentSynonymsToExistingGroup: () => {
-      localStore.$patch({
+      store.$local.$patch({
         autocompleteAction: 'addActiveSynonymsToAGroup',
         autocompleteText: '',
         tagId: null,
@@ -136,7 +136,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       shared.focusAutocompleteInput();
     },
     onClickAddSynonymToCustomGroup: () => {
-      localStore.$patch({
+      store.$local.$patch({
         autocompleteAction: 'addSynonymsToActiveGroup',
         autocompleteText: '',
         showAutocompleteOptions: true,
@@ -144,12 +144,12 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       shared.focusAutocompleteInput();
     },
     onClickUpdateGroupSynonym: () => {
-      if (!inputs.groupId || !inputs.groupSynonymId) 
+      if (!inputs.groupId || !inputs.groupSynonymId)
         throw new Error();
       const synonymId = store.synonymGroups
         .$find.groupId.$eq(inputs.groupId).$and.synonymId.$eq(inputs.groupSynonymId)
         .synonymId;
-        localStore.$patch({
+      store.$local.$patch({
         autocompleteAction: 'addSynonymsToActiveSynonyms',
         tagId: null,
         groupId: null,
@@ -159,7 +159,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     },
     onClickStartOver: (event: MouseEvent) => {
       event.stopPropagation();
-      localStore.$patch({
+      store.$local.$patch({
         tagId: null,
         groupId: null,
         synonymId: null,
@@ -173,7 +173,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     },
     onClickDeleteGroup: (event: MouseEvent) => {
       event.stopPropagation();
-      localStore.modal.$set('confirmDeleteGroup');
+      store.$local.modal.$set('confirmDeleteGroup');
     },
     onAutocompleteSelected: async (id: TagId | GroupId | null) => {
       if (inputs.autocompleteAction === 'addActiveSynonymsToAGroup')
@@ -197,7 +197,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       if (event.target.tagName === 'INPUT') {
         inputs.autocompleteRef.current?.blurInput();
         if (inputs.showAutocompleteOptions)
-          localStore.showAutocompleteOptions.$set(false)
+          store.$local.showAutocompleteOptions.$set(false)
         return;
       }
       shared.doCancel(event.target);
@@ -205,8 +205,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onClickDialogBody: (event: MouseEvent) => {
       event.stopPropagation();
       if (inputs.modal)
-        return localStore.modal.$set(null);
-      localStore.$patch({
+        return store.$local.modal.$set(null);
+      store.$local.$patch({
         tagId: null,
         groupId: null,
         autocompleteText: '',
@@ -219,24 +219,24 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const isLastTag = inputs.tagsInSynonymGroup.length === 1;
       const synonymId = isLastTag ? null : inputs.synonymId;
       const autocompleteAction = isLastTag ? null : inputs.autocompleteAction;
-      localStore.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
+      store.$local.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
       synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
       await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroups });
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {
       const response = await archiveGroup(inputs.groupId!);
-      localStore.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
+      store.$local.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
       await writeToStoreAndDb(store, { synonymGroups: response.synonymGroups, groups: response.group });
       notify.success('Group archived');
     },
     onCancelConfirmation: () => {
-      localStore.modal.$set(null);
+      store.$local.modal.$set(null);
     },
     onClickShowOptionsForSynonyms: () => {
       if (inputs.modal)
-        return localStore.modal.$set(null);
-      localStore.$patch({
+        return store.$local.modal.$set(null);
+      store.$local.$patch({
         modal: 'synonymOptions',
         groupId: null,
         groupSynonymId: null,
@@ -244,8 +244,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     },
     onClickShowOptionsForGroup: (groupId: GroupId) => {
       if (inputs.groupId === groupId && inputs.modal)
-        return localStore.modal.$set(null);
-      localStore.$patch({
+        return store.$local.modal.$set(null);
+      store.$local.$patch({
         modal: 'groupOptions',
         groupId,
         tagId: null,
@@ -253,13 +253,13 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      localStore.$patch({ hoveringGroupId, hoveringSynonymId });
+      store.$local.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      localStore.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
+      store.$local.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
     },
     onShowAutocompleteOptionsChange: (showAutocompleteOptions: boolean) => {
-      localStore.showAutocompleteOptions.$set(showAutocompleteOptions)
+      store.$local.showAutocompleteOptions.$set(showAutocompleteOptions)
     },
     onClickCloseButton: () => {
       props.onHide();

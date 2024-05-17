@@ -9,6 +9,7 @@ import { Container, CreateNewButton, DeleteButton, FlashCard, TextArea, FlashCar
 export const ActiveNoteFlashCards = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
+  const { state: { $local: { confirmDeleteId } }, items } = inputs;
   return (
     <>
       <CreateNewButton
@@ -20,9 +21,9 @@ export const ActiveNoteFlashCards = () => {
         children={
           <>
             <FlashCardWrapper
-              if={!!inputs.items.length}
+              if={!!items.length}
               children={
-                inputs.items.map(item => (
+                items.map(item => (
                   <FlashCard
                     key={item.id}
                     children={
@@ -39,7 +40,7 @@ export const ActiveNoteFlashCards = () => {
                           onClick={() => outputs.onClickRequestDeleteFlashCard(item.id)}
                         />
                         <Confirmation
-                          if={!!inputs.confirmDeleteId}
+                          if={!!confirmDeleteId}
                           storeKey='deleteFlashCard'
                           onClose={outputs.onCancelRemoveFlashCard}
                           onConfirm={() => outputs.onConfirmRemoveFlashCard(item.id)}
@@ -53,7 +54,7 @@ export const ActiveNoteFlashCards = () => {
               }
             />
             <NoResults
-              if={!inputs.items.length}
+              if={!items.length}
               children={
                 <>
                   <NoResultsIcon />

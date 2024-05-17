@@ -9,10 +9,8 @@ export const useInputs = (
   props: Props,
 ) => {
 
-  const { store, localState, localStore, activeNoteId, notes, stateInitialized } = useStore({
-    key: 'historyItems',
-    value: initialState
-  });
+  const { store, state } = useStore('historyItems', initialState);
+  const { activeNoteId, notes, stateInitialized, $local } = state;
 
   const cardRef = useRef<CardHandle>(null);
 
@@ -20,21 +18,20 @@ export const useInputs = (
     return notes
       .filter(note => activeNoteId !== note.id)
       .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())
-      .slice(0, (localState.index + 1) * pageSize)
+      .slice(0, ($local.index + 1) * pageSize)
       .map(note => ({
         ...note,
         date: formatDistanceToNow(note.dateViewed!, { addSuffix: true }),
       }));
-  }, [activeNoteId, localState.index, notes]);
+  }, [activeNoteId, $local.index, notes]);
 
   const htmlProps = useUnknownPropsStripper({...props});
 
   return {
     store,
+    state,
     items,
     stateInitialized,
-    localStore,
-    ...localState,
     cardRef,
     htmlProps,
   };

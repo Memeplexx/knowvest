@@ -6,7 +6,7 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, localState, flashCards } = useStore({ key: 'flashCardTester', value: initialState });
+  const { store, state: { $local, flashCards } } = useStore('flashCardTester', initialState);
   const notify = useNotifier();
   const bodyRef = useRef<HTMLDivElement>(null);
   const items = useMemo(() => {
@@ -16,10 +16,10 @@ export const useInputs = () => {
   }, [flashCards, store]);
 
   return {
-    ...localState,
+    store,
+    ...$local,
     items,
     notify,
-    store,
     bodyRef,
   }
 }

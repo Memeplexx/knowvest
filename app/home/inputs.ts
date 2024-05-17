@@ -13,9 +13,9 @@ import { Store } from "olik";
 
 export const useInputs = () => {
 
-  const { store, localState, localStore } = useStore({ key: 'home', value: initialState.home });
+  const { store, state } = useStore('home', initialState);
 
-  useDataInitializer({ store });
+  useDataInitializer(store);
 
   useLogoutUserIfSessionExpired();
 
@@ -23,19 +23,18 @@ export const useInputs = () => {
 
   return {
     store,
-    ...localState,
-    localStore,
+    ...state.$local,
   }
 }
 
 const useHeaderExpander = (store: HomeStore) => {
   useEffect(() => {
     const listener = () => {
-      const { headerExpanded } = store.$state.home;
+      const { headerExpanded } = store.$local.$state;
       if (window.innerWidth >= 1000 && !headerExpanded) {
-        store.home.headerExpanded.$set(true);
+        store.$local.headerExpanded.$set(true);
       } else if (window.innerWidth < 1000 && headerExpanded) {
-        store.home.headerExpanded.$set(false);
+        store.$local.headerExpanded.$set(false);
       }
     }
     listener();
@@ -53,7 +52,7 @@ const useLogoutUserIfSessionExpired = () => {
   }, [session.status]);
 }
 
-export const useDataInitializer = ({ store }: { store: HomeStore }) => {
+export const useDataInitializer = (store: HomeStore) => {
   const { data: session } = useSession();
   const mounted = useIsMounted();
   const initializingData = useRef(false);

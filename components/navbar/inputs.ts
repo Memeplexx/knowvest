@@ -6,15 +6,16 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
   
-  const { localState, localStore, flashCards, stateInitialized } = useStore({ key: 'navBar', value: initialState.navBar });
+  const { store, state } = useStore('navBar', initialState);
+  const { flashCards, stateInitialized } = state;
   const { data: session } = useSession();
   const flashCardCount = useMemo(() => {
     return flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length;
   }, [flashCards]);
 
   return {
-    ...localState,
-    localStore,
+    ...state.$local,
+    store,
     session,
     flashCardCount,
     stateInitialized,

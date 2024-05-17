@@ -20,7 +20,7 @@ export const Popup = forwardRef(function Popup(
         onClick: () => setTimeout(() => outputs.onClickTrigger(), 50),
       })}
       {
-        !inputs.showInternal
+        !inputs.state.$local.showInternal
           ? <></>
           : createPortal(
             <Background

@@ -30,7 +30,7 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
   const doNoteUpdate = async (update: ViewUpdate) => {
     if (store.$state.activeNoteId !== activeNoteIdRef) return;
     if (Date.now() - timestamp < debounce) return;
-    if (!store.$state.activePanel.allowNotePersister) return;
+    if (!store.$local.$state.allowNotePersister) return;
     store.writingNote.$set(true);
     const apiResponse = await updateNote(store.$state.activeNoteId, update.state.doc.toString());
     await writeToStoreAndDb(store, { notes: apiResponse.note });
@@ -38,7 +38,7 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) return;
-    if (!store.$state.activePanel.allowNotePersister) return;
+    if (!store.$local.$state.allowNotePersister) return;
     timestamp = Date.now();
     setTimeout(() => doNoteUpdate(update), debounce)
     activeNoteIdRef = store.$state.activeNoteId;
@@ -104,8 +104,8 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
       this.decorations = this.getDecorations(view)
     }
     updateSelection = (value: string) => {
-      if (store.$state.activePanel.selection === value) return;
-      store.activePanel.selection.$set(value);
+      if (store.$local.$state.selection === value) return;
+      store.$local.selection.$set(value);
     }
     update(update: ViewUpdate) {
       if (!update.selectionSet) return;
@@ -158,10 +158,10 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
 export const editorHasTextUpdater = (store: ActivePanelStore) => {
   return EditorView.updateListener.of(function editorHasTextUpdater(update) {
     if (!update.docChanged) return;
-    if (store.$state.activePanel.editorHasText && !update.state.doc.length) {
-      setTimeout(() => store.activePanel.editorHasText.$set(false));
-    } else if (!store.$state.activePanel.editorHasText && !!update.state.doc.length) {
-      setTimeout(() => store.activePanel.editorHasText.$set(true));
+    if (store.$local.$state.editorHasText && !update.state.doc.length) {
+      setTimeout(() => store.$local.editorHasText.$set(false));
+    } else if (!store.$local.$state.editorHasText && !!update.state.doc.length) {
+      setTimeout(() => store.$local.editorHasText.$set(true));
     }
   });
 }

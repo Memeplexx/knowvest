@@ -1,6 +1,7 @@
 import { Inputs, Props } from "./constants";
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
+  const { store: { $local: localStore }, state: { $local: { selection } } } = inputs;
   return {
     onClickCancel: () => {
       props.onClose?.();
@@ -9,17 +10,17 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       props.onClose?.();
     },
     onMouseLeaveButton: () => {
-      inputs.localStore.selection.$set('none');
+      localStore.selection.$set('none');
     },
     onClose: () => {
-      if (inputs.selection === 'confirm')
+      if (selection === 'confirm')
         props.onConfirm?.();
     },
     onMouseDownCancel: () => {
-      inputs.localStore.selection.$set('cancel');
+      localStore.selection.$set('cancel');
     },
     onMouseDownConfirm: () => {
-      inputs.localStore.selection.$set('confirm');
+      localStore.selection.$set('confirm');
     },
   };
 }

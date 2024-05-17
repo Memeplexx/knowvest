@@ -3,7 +3,7 @@ import { Inputs } from "./constants";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store, groupsWithSynonyms, tagsForActiveNote, localStore, showConfigDialog } = inputs;
+  const { store, groupsWithSynonyms, tagsForActiveNote } = inputs;
   return {
     onClickSynonym: (synonymId: SynonymId) => {
       if (store.$state.synonymIds.includes(synonymId))
@@ -16,27 +16,27 @@ export const useOutputs = (inputs: Inputs) => {
       const synonymIds = synonyms.map(s => s.id);
       if (synonyms.some(s => s.selected))
         return store.synonymIds.$filter.$in(synonymIds).$delete();
-      store.synonymIds.$pushMany(synonymIds);
+      void store.synonymIds.$pushMany(synonymIds);
     },
     onChangeAllActiveTagsSelected: () => {
       const synonymIds = tagsForActiveNote.map(s => s.synonymId);
       if (tagsForActiveNote.some(s => s.selected))
         return store.synonymIds.$filter.$in(synonymIds).$delete();
-      store.synonymIds.$pushMany(synonymIds);
+      void store.synonymIds.$pushMany(synonymIds);
     },
     onShowDialog: () => {
-      localStore.showConfigDialog.$set(true);
+      void store.$local.showConfigDialog.$set(true);
     },
     onHideDialog: () => {
-      if (!showConfigDialog) 
+      if (!store.$local.$state.showConfigDialog) 
         return;
-      localStore.showConfigDialog.$set(false);
+      store.$local.showConfigDialog.$set(false);
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
-      localStore.$patch({ hoveringGroupId, hoveringSynonymId });
+      store.$local.$patch({ hoveringGroupId, hoveringSynonymId });
     },
     onMouseOutGroupTag: () => {
-      localStore.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
+      store.$local.$patch({ hoveringGroupId: null, hoveringSynonymId: null });
     },
   };
 }
