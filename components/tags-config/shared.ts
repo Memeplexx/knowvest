@@ -83,7 +83,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
   const doCancel = (eventTarget: EventTarget) => {
     if (eventTarget?.hasAncestorWithTagNames('BUTTON', 'INPUT'))
       return;
-    if (store.$local.$state.showAutocompleteOptions)
+    if (inputs.showAutocompleteOptions)
       return store.$local.showAutocompleteOptions.$set(false);
     if (inputs.tagId)
       return store.$local.$patch({ tagId: null, autocompleteText: '' });
