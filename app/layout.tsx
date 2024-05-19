@@ -77,6 +77,7 @@ export default async function RootLayout({
                     <StoreProvider
                       children={
                         <NotifierProvider
+                          storeKey='notifier'
                           children={
                             <StyledComponentsRegistry
                               children={children}

@@ -28,6 +28,7 @@ export type Message = {
 };
 
 export type Props = {
+  storeKey: string,
   stackGap?: number,
   displayDuration?: number,
   animationDuration?: number,
@@ -42,3 +43,10 @@ export const defaultProps = {
   stackGap: 80,
   maxCount: 5,
 } satisfies Partial<Props>;
+
+export const initialState = {
+  message: '',
+  status: 'info' as snackbarStatus,
+  initialized: false,
+  messages: new Array<Message>(),
+}

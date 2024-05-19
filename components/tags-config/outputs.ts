@@ -83,8 +83,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
         return;
       if (!inputs.groupId)
         throw new Error();
-      const response = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId);
-      await writeToStoreAndDb(store, { groups: response.group, synonymGroups: response.synonymGroups });
+      const apiResponse = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId);
+      await writeToStoreAndDb(store, { groups: apiResponse.group, synonymGroups: apiResponse.synonymGroups });
       store.$local.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
@@ -225,9 +225,9 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {
-      const response = await archiveGroup(inputs.groupId!);
+      const apiResponse = await archiveGroup(inputs.groupId!);
       store.$local.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-      await writeToStoreAndDb(store, { synonymGroups: response.synonymGroups, groups: response.group });
+      await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroups, groups: apiResponse.group });
       notify.success('Group archived');
     },
     onCancelConfirmation: () => {
