@@ -1,6 +1,5 @@
 import { useStore } from '@/utils/store-utils';
 import { useEffect, useRef } from 'react';
-import { useNotifier } from '../notifier';
 import { PopupHandle } from '../popup/constants';
 import { ActivePanelStore, initialState } from './constants';
 import { listenToTagsForEditor } from '@/utils/data-utils';
@@ -39,7 +38,7 @@ export const useInputs = () => {
   const { store, state } = useStore('activePanel', initialState);
   const { activeNoteId, notes, stateInitialized, $local } = state;
   const popupRef = useRef<PopupHandle>(null);
-  const notify = useNotifier();
+  
   const mayDeleteNote = !!notes.length;
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
@@ -62,7 +61,6 @@ export const useInputs = () => {
     activeNoteId,
     mayDeleteNote,
     popupRef,
-    notify,
     stateInitialized,
     editorRef,
     codeMirror: codeMirror.current,

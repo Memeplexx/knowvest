@@ -4,10 +4,12 @@ import { Inputs } from "./constants";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { tupleIncludes } from "olik";
+import { useNotifier } from "../notifier";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store, notify, popupRef, codeMirror, editorRef } = inputs;
+  const { store, popupRef, codeMirror, editorRef } = inputs;
+  const notify = useNotifier();
   return {
     onClickCreateNote: async () => {
       store.$local.loadingNote.$set(true);
