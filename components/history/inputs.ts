@@ -25,7 +25,7 @@ export const useInputs = (
       }));
   }, [activeNoteId, $local.index, notes]);
 
-  const htmlProps = useUnknownPropsStripper({...props});
+  const htmlProps = useUnknownPropsStripper({ ...props });
 
   return {
     store,
