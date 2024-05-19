@@ -24,11 +24,10 @@ export const useInputs = (props: Props) => {
 
     // if we get to this point, we know that the message text is not empty, so we can push the message onto the messages queue
     const ts = Date.now();
-    if (store.$local.$state.messages.length > maxCount) {
+    if (store.$local.$state.messages.length > maxCount)
       store.$local.messages.$slice({ start: 0, end: maxCount });
-    } else {
+    else 
       store.$local.messages.$push({ text: message, ts, show: false })
-    }
 
     // show message. Note that nested requestAnimationFrame is needed for animation to work
     requestAnimationFrame(() => requestAnimationFrame(() => store.$local.messages.$find.ts.$eq(ts).show.$set(true)));
