@@ -47,6 +47,5 @@ export const defaultProps = {
 export const initialState = {
   message: '',
   status: 'info' as snackbarStatus,
-  initialized: false,
   messages: new Array<Message>(),
 }
