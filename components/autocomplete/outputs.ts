@@ -47,11 +47,10 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
       if (event.key === 'ArrowUp') {
         event.preventDefault(); // prevents undesirable scrolling behavior
         const previousElement = document.activeElement?.previousElementSibling as HTMLElement;
-        if (previousElement) {
+        if (previousElement)
           previousElement.focus();
-        } else {
+        else
           inputRef.current?.focus();
-        }
       }
     },
     onKeyUpOption: (value: Option['value'], event: TypedKeyboardEvent<HTMLElement>) => {

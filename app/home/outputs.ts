@@ -35,11 +35,13 @@ export const useOutputs = (inputs: Inputs) => {
       });
     },
     onClickRelatedNote: async (noteId: NoteId) => {
-      similarExpanded && local.similarExpanded.$set(false);
+      if (similarExpanded)
+        local.similarExpanded.$set(false);
       await shared.onSelectNote(noteId);
     },
     onClickHistoricalNote: async (noteId: NoteId) => {
-      historyExpanded && local.historyExpanded.$set(false);
+      if (historyExpanded)
+        local.historyExpanded.$set(false);
       await shared.onSelectNote(noteId);
     },
     onSelectTab: (tab: string) => {

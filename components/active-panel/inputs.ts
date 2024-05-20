@@ -42,7 +42,8 @@ export const useInputs = () => {
   const codeMirror = useRef<EditorView | null>(null);
   
   useEffect(() => {
-    if (!activeNoteId) return;
+    if (!activeNoteId) 
+      return;
     codeMirror.current = new EditorView({
       doc: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text,
       parent: editorRef.current!,
@@ -79,7 +80,8 @@ export const useInputs = () => {
   }, [store, activeNoteId, local]);
 
   useEffect(() => {
-    if (!activeNoteId) return;
+    if (!activeNoteId) 
+      return;
     const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
     return () => changeListener.unsubscribe();
   }, [store, activeNoteId]);

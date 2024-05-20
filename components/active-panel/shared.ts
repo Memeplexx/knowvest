@@ -83,9 +83,8 @@ export const noteTagsPersisterExtension = (store: StoreDef<AppState>) => {
     const uniqueTagsHaveChanged = JSON.stringify(previousActiveNoteTagIds.distinct()) !== JSON.stringify(newActiveNoteTagIds.distinct());
     previousActiveNoteTagIds = newActiveNoteTagIds;
     if (!uniqueTagsHaveChanged) {
-      if (nonUniqueTagsHaveChanged) {
+      if (nonUniqueTagsHaveChanged)
         store.noteTags.$set(store.$state.noteTags.slice());  // forces re-rendering
-      }
       return;
     }
     const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
@@ -120,7 +119,8 @@ export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
           from: range.from,
           to: range.to,
           enter: (node) => {
-            if (node.type.name !== 'Document') return;
+            if (node.type.name !== 'Document') 
+              return;
             const documentText = view.state.doc.toString();
             if (view.state.selection.main.from === view.state.selection.main.to) {
               this.updateSelection('');
@@ -129,18 +129,16 @@ export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
             const regexForAnyNumberAndAnyLetter = /\W/;
             let from = view.state.selection.main.from;
             const startChar = documentText[from]!;
-            if (regexForAnyNumberAndAnyLetter.test(startChar)) {
+            if (regexForAnyNumberAndAnyLetter.test(startChar))
               while (regexForAnyNumberAndAnyLetter.test(documentText[from]!) && from < documentText.length - 1) { from++; }
-            } else {
+            else
               while (!regexForAnyNumberAndAnyLetter.test(documentText[from - 1]!) && from > 0) { from--; }
-            }
             let to = view.state.selection.main.to;
             const endChar = documentText[to - 1]!;
-            if (regexForAnyNumberAndAnyLetter.test(endChar)) {
+            if (regexForAnyNumberAndAnyLetter.test(endChar))
               while (regexForAnyNumberAndAnyLetter.test(documentText[to]!) && to > 0) { to--; }
-            } else {
+            else
               while (!regexForAnyNumberAndAnyLetter.test(documentText[to]!) && to < documentText.length) { to++; }
-            }
             const selection = view.state.sliceDoc(from, to).toLowerCase();
             if (!selection.trim().length) {
               this.updateSelection('');
@@ -159,12 +157,12 @@ export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
 
 export const editorHasTextUpdater = ({ local }: { local: ActivePanelStore }) => {
   return EditorView.updateListener.of(function editorHasTextUpdater(update) {
-    if (!update.docChanged) return;
-    if (local.$state.editorHasText && !update.state.doc.length) {
+    if (!update.docChanged) 
+      return;
+    if (local.$state.editorHasText && !update.state.doc.length)
       setTimeout(() => local.editorHasText.$set(false));
-    } else if (!local.$state.editorHasText && !!update.state.doc.length) {
+    else if (!local.$state.editorHasText && !!update.state.doc.length)
       setTimeout(() => local.editorHasText.$set(true));
-    }
   });
 }
 

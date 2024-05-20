@@ -53,7 +53,6 @@ export const ExpandHeaderToggleButton = styled(BaseToggleButton)`
   transform: translateX(-50%) rotate(${p => !p.selected ? '0' : '180deg'});;
 `;
 
-
 export const ActivePane = styled(ActivePanel)`
   flex: 1;
 `;
