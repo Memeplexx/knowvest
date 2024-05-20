@@ -4,7 +4,7 @@ import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { Inputs, Props } from "./constants";
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
-  const { store, notify, bodyRef, items } = inputs;
+  const { store, local, notify, bodyRef, items } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
       if (event.target.parentNode === null) // element was removed from the DOM
@@ -16,7 +16,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       props.onHide();
     }),
     onToggleView: () => {
-      store.$local.showQuestions.$toggle();
+      local.showQuestions.$toggle();
     },
     onClickWrongAnswer: async () => {
       const flashCardId = items[0]!.id;

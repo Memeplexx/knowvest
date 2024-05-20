@@ -1,4 +1,4 @@
-import { useStore } from "@/utils/store-utils";
+import { useLocalStore, useStore } from "@/utils/store-utils";
 import { useMemo } from "react";
 import { useNotifier } from "../notifier";
 import { initialState } from "./constants";
@@ -8,8 +8,8 @@ import { initialState } from "./constants";
 export const useInputs = () => {
 
   const notify = useNotifier();
-  const { store, state } = useStore('activeFlashCards', initialState);
-  const { flashCards, activeNoteId } = state;
+  const { store, state: { flashCards, activeNoteId } } = useStore();
+  const { local, state } = useLocalStore('activeFlashCards', initialState);
   const items = useMemo(() => {
     return flashCards.filter(fc => fc.noteId === activeNoteId);
   }, [flashCards, activeNoteId]);
@@ -17,8 +17,10 @@ export const useInputs = () => {
   return {
     notify,
     store,
+    local,
     state,
     items,
+    ...local.$state,
   }
 }
 

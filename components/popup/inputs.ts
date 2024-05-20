@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@/utils/store-utils";
+import { useLocalStore } from "@/utils/store-utils";
 import { useFloating } from "@floating-ui/react";
 import { ForwardedRef, useImperativeHandle, useRef } from "react";
 import { useSpring } from "react-spring";
@@ -11,8 +11,7 @@ export const useInputs = (
   props: Props,
   forwardedRef: ForwardedRef<PopupHandle>
 ) => {
-  const { store, state } = useStore(props.storeKey, { showInternal: false, show: false });
-  const { show, showInternal } = state.$local;
+  const { local, state: { show, showInternal } } = useLocalStore(props.storeKey, { showInternal: false, show: false });
   const isClosingRef = useRef(false);
 
   const backgroundAnimations = useSpring({
@@ -28,11 +27,11 @@ export const useInputs = (
   });
 
   if (show && !showInternal) {
-    store.$local.showInternal.$set(true);
+    local.showInternal.$set(true);
   } else if (!show && showInternal && !isClosingRef.current) {
     isClosingRef.current = true;
     setTimeout(() => {
-      store.$local.$patch({ showInternal: false, show: false });
+      local.$patch({ showInternal: false, show: false });
       isClosingRef.current = false;
     }, animationDuration);
   }
@@ -40,13 +39,13 @@ export const useInputs = (
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'bottom-end' });
 
   useImperativeHandle(forwardedRef, () => ({
-    hide: function hide() { store.$local.show.$set(false); }
-  }), [store]);
+    hide: function hide() { local.show.$set(false); }
+  }), [local]);
 
   return {
     floatingRef,
-    store,
-    state,
+    local,
+    ...local.$state,
     backgroundAnimations,
     foregroundAnimations,
   }

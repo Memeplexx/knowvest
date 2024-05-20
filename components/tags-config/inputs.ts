@@ -1,7 +1,7 @@
 import { useMemo, useRef, type ForwardedRef } from 'react';
 
 import { useForwardedRef } from '@/utils/react-utils';
-import { useStore } from '@/utils/store-utils';
+import { useLocalStore, useStore } from '@/utils/store-utils';
 import { useFloating } from '@floating-ui/react';
 import { addToWhitelist } from 'olik/devtools';
 import { AutocompleteHandle } from '../autocomplete/constants';
@@ -11,10 +11,9 @@ import { initialState } from './constants';
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
-  const { store, state } = useStore('tagsConfig', initialState);
-  const { tags, groups, synonymGroups, activeNoteId, $local } = state;
-  const { tagId, synonymId, groupId, autocompleteText, autocompleteAction, modal } = $local;
-  useMemo(() => addToWhitelist([store.$local.hoveringGroupId, store.$local.hoveringSynonymId]), [store]);
+  const { store, state: { tags, groups, synonymGroups, activeNoteId } } = useStore();
+  const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', initialState);
+  useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
   const settingsButtonRef = modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
@@ -110,12 +109,11 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   }, [groupId, synonymGroups, synonymId, tagSynonymGroupMap, tags]);
 
   const autocompleteOptions = useMemo(() => {
-    return (autocompleteAction === 'addActiveSynonymsToAGroup'
-      ? autocompleteOptionsGroups
-      : autocompleteOptionsTags).map(option => ({
-        ...option,
-        synonyms: option.synonyms!.map(synonym => synonym.text).join(', '),
-      }));
+    const items = autocompleteAction === 'addActiveSynonymsToAGroup' ? autocompleteOptionsGroups : autocompleteOptionsTags;
+    return items.map(option => ({
+      ...option,
+      synonyms: option.synonyms!.map(synonym => synonym.text).join(', '),
+    }));
   }, [autocompleteOptionsGroups, autocompleteOptionsTags, autocompleteAction]);
 
   const pageTitle = useMemo(() => {
@@ -135,7 +133,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   return {
     store,
-    ...$local,
+    local,
+    ...local.$state,
     pageTitle,
     activeNoteId,
     autocompleteOptions,

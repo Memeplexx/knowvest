@@ -7,8 +7,10 @@ import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range, TransactionSpec } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { ActivePanelStore } from "./constants";
+import { StoreDef } from "olik";
+import { AppState } from "@/utils/store-utils";
 
-export const autocompleteExtension = (store: ActivePanelStore) => {
+export const autocompleteExtension = (store: StoreDef<AppState>) => {
   return autocompletion({
     override: [
       (context: CompletionContext) => {
@@ -24,13 +26,13 @@ export const autocompleteExtension = (store: ActivePanelStore) => {
   })
 };
 
-export const createNotePersisterExtension = ({ debounce, store }: { debounce: number, store: ActivePanelStore }) => {
+export const createNotePersisterExtension = ({ debounce, store, local }: { debounce: number, store: StoreDef<AppState>, local: ActivePanelStore }) => {
   let timestamp = Date.now();
   let activeNoteIdRef = store.$state.activeNoteId;
   const doNoteUpdate = async (update: ViewUpdate) => {
     if (store.$state.activeNoteId !== activeNoteIdRef) return;
     if (Date.now() - timestamp < debounce) return;
-    if (!store.$local.$state.allowNotePersister) return;
+    if (!local.$state.allowNotePersister) return;
     store.writingNote.$set(true);
     const apiResponse = await updateNote(store.$state.activeNoteId, update.state.doc.toString());
     await writeToStoreAndDb(store, { notes: apiResponse.note });
@@ -38,14 +40,14 @@ export const createNotePersisterExtension = ({ debounce, store }: { debounce: nu
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) return;
-    if (!store.$local.$state.allowNotePersister) return;
+    if (!local.$state.allowNotePersister) return;
     timestamp = Date.now();
     setTimeout(() => doNoteUpdate(update), debounce)
     activeNoteIdRef = store.$state.activeNoteId;
   });
 }
 
-export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
+export const noteTagsPersisterExtension = (store: StoreDef<AppState>) => {
   let previousActiveNoteId = 0 as NoteId;
   let previousActiveNoteTagIds = new Array<TagId>();
   const tagsWithRegexp = store.$state.tags
@@ -96,7 +98,7 @@ export const noteTagsPersisterExtension = (store: ActivePanelStore) => {
   });
 }
 
-export const textSelectorPlugin = (store: ActivePanelStore) => {
+export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
   return ViewPlugin.fromClass(class {
     decorations: DecorationSet;
 
@@ -104,8 +106,8 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
       this.decorations = this.getDecorations(view)
     }
     updateSelection = (value: string) => {
-      if (store.$local.$state.selection === value) return;
-      store.$local.selection.$set(value);
+      if (local.$state.selection === value) return;
+      local.selection.$set(value);
     }
     update(update: ViewUpdate) {
       if (!update.selectionSet) return;
@@ -155,13 +157,13 @@ export const textSelectorPlugin = (store: ActivePanelStore) => {
   });
 }
 
-export const editorHasTextUpdater = (store: ActivePanelStore) => {
+export const editorHasTextUpdater = ({ local }: { local: ActivePanelStore }) => {
   return EditorView.updateListener.of(function editorHasTextUpdater(update) {
     if (!update.docChanged) return;
-    if (store.$local.$state.editorHasText && !update.state.doc.length) {
-      setTimeout(() => store.$local.editorHasText.$set(false));
-    } else if (!store.$local.$state.editorHasText && !!update.state.doc.length) {
-      setTimeout(() => store.$local.editorHasText.$set(true));
+    if (local.$state.editorHasText && !update.state.doc.length) {
+      setTimeout(() => local.editorHasText.$set(false));
+    } else if (!local.$state.editorHasText && !!update.state.doc.length) {
+      setTimeout(() => local.editorHasText.$set(true));
     }
   });
 }

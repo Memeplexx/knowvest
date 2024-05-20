@@ -188,7 +188,7 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
         <Result
           key={note.id}
           note={note}
-          synonymIds={inputs.store.$local.selectedSynonymIds}
+          synonymIds={inputs.local.selectedSynonymIds}
           onClick={() => outputs.onClickResult(note.id)}
         />
       ))}

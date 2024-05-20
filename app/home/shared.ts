@@ -1,9 +1,9 @@
 import { viewNote } from "@/actions/note";
 import { NoteId } from "@/actions/types";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
-import { State } from "./constants";
+import { Inputs } from "./constants";
 
-export const useSharedFunctions = ({ store }: State) => ({
+export const useSharedFunctions = ({ store }: Inputs) => ({
   onSelectNote: async (noteId: NoteId) => {
     const tagIds = store.noteTags.$filter.noteId.$eq(noteId).tagId;
     const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;

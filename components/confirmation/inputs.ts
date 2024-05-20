@@ -1,12 +1,12 @@
-import { useStore } from "@/utils/store-utils";
+import { useLocalStore } from "@/utils/store-utils";
 import { Props, initialState } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const { store, state } = useStore( props.storeKey,  initialState);
+  const { local, state } = useLocalStore( props.storeKey,  initialState);
 
   return {
-    store,
-    state,
+    local,
+    ...state,
   };
 }

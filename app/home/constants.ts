@@ -1,6 +1,5 @@
-import { ReactStoreLocal } from "olik-react";
 import { useInputs } from "./inputs";
-import { AppState } from "@/utils/store-utils";
+import { StoreDef } from "olik";
 
 
 export const initialState = {
@@ -11,6 +10,6 @@ export const initialState = {
   selectedTab: 'Tags',
 };
 
-export type HomeStore = ReactStoreLocal<AppState, 'home', typeof initialState>;
+export type HomeStore = StoreDef<typeof initialState>;
 
-export type State = ReturnType<typeof useInputs>;
+export type Inputs = ReturnType<typeof useInputs>;

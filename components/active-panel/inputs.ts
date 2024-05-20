@@ -1,4 +1,4 @@
-import { useStore } from '@/utils/store-utils';
+import { AppState, useLocalStore, useStore } from '@/utils/store-utils';
 import { useEffect, useRef } from 'react';
 import { PopupHandle } from '../popup/constants';
 import { ActivePanelStore, initialState } from './constants';
@@ -31,12 +31,13 @@ import {
 import { Highlighter } from '@lezer/highlight';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, noteTagsPersisterExtension, pasteListener, textSelectorPlugin } from './shared';
 import { NoteId } from '@/actions/types';
+import { StoreDef } from 'olik';
 
 
 export const useInputs = () => {
 
-  const { store, state } = useStore('activePanel', initialState);
-  const { activeNoteId, notes, stateInitialized, $local } = state;
+  const { store, state: { activeNoteId, notes, stateInitialized } } = useStore();
+  const { local } = useLocalStore('activePanel', initialState);
   const popupRef = useRef<PopupHandle>(null);
   
   const mayDeleteNote = !!notes.length;
@@ -45,9 +46,9 @@ export const useInputs = () => {
 
   useEffect(() => {
     if (!activeNoteId) return;
-    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store, activeNoteId });
+    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, store, local, activeNoteId });
     return () => codeMirror.current?.destroy();
-  }, [store, activeNoteId]);
+  }, [store, activeNoteId, local]);
 
   useEffect(() => {
     if (!activeNoteId) return;
@@ -57,7 +58,8 @@ export const useInputs = () => {
 
   return {
     store,
-    ...$local,
+    local,
+    ...local.$state,
     activeNoteId,
     mayDeleteNote,
     popupRef,
@@ -67,7 +69,7 @@ export const useInputs = () => {
   };
 }
 
-export const instantiateCodeMirror = ({ editor, store, activeNoteId }: { editor: HTMLDivElement, store: ActivePanelStore, activeNoteId: NoteId }) => {
+export const instantiateCodeMirror = ({ editor, store, local, activeNoteId }: { editor: HTMLDivElement, store: StoreDef<AppState>, local: ActivePanelStore, activeNoteId: NoteId }) => {
   const result = new EditorView({
     doc: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text,
     parent: editor,
@@ -86,9 +88,9 @@ export const instantiateCodeMirror = ({ editor, store, activeNoteId }: { editor:
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
       autocompleteExtension(store),
       noteTagsPersisterExtension(store),
-      createNotePersisterExtension({ debounce: 500, store }),
-      textSelectorPlugin(store),
-      editorHasTextUpdater(store),
+      createNotePersisterExtension({ debounce: 500, store, local }),
+      textSelectorPlugin({local}),
+      editorHasTextUpdater({local}),
       pasteListener,
       bulletPointPlugin,
       inlineNotePlugin,

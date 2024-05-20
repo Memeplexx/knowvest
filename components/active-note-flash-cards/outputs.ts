@@ -4,7 +4,7 @@ import { FlashCardId } from "@/actions/types";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store, notify } = inputs;
+  const { store, local, notify } = inputs;
   return {
     onClickCreateFlashCard: async () => {
       const apiResponse = await createFlashCard(store.$state.activeNoteId);
@@ -15,7 +15,7 @@ export const useOutputs = (inputs: Inputs) => {
       await writeToStoreAndDb(store, { flashCards: apiResponse.flashCard });
     },
     onClickRequestDeleteFlashCard: (id: FlashCardId) => {
-      store.$local.confirmDeleteId.$set(id);
+      local.confirmDeleteId.$set(id);
     },
     onConfirmRemoveFlashCard: async (flashCardId: FlashCardId) => {
       const apiResponse = await archiveFlashCard(flashCardId);
@@ -23,7 +23,7 @@ export const useOutputs = (inputs: Inputs) => {
       notify.success('Flash card archived');
     },
     onCancelRemoveFlashCard: () => {
-      store.$local.confirmDeleteId.$set(null);
+      local.confirmDeleteId.$set(null);
     },
   };
 }

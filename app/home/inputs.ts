@@ -1,46 +1,48 @@
 import { UserDTO } from "@/actions/types";
 import { useIsMounted, useIsomorphicLayoutEffect } from "@/utils/react-utils";
 import { initializeDb, readFromDb, writeToStoreAndDb } from "@/utils/storage-utils";
-import { AppState, useStore } from "@/utils/store-utils";
+import { AppState, useLocalStore, useStore } from "@/utils/store-utils";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { initialize } from "../../actions/session";
 import { HomeStore, initialState } from "./constants";
-import { Store } from "olik";
+import { Store, StoreDef } from "olik";
 
 
 export const useInputs = () => {
 
-  const { store, state } = useStore('home', initialState);
+  const { store } = useStore();
+  const { local, state } = useLocalStore('home', initialState);
 
   useDataInitializer(store);
 
   useLogoutUserIfSessionExpired();
 
-  useHeaderExpander(store);
+  useHeaderExpander(local);
 
   return {
     store,
-    ...state.$local,
+    local,
+    ...state,
   }
 }
 
-const useHeaderExpander = (store: HomeStore) => {
+const useHeaderExpander = (local: HomeStore) => {
   useEffect(() => {
     const listener = () => {
-      const { headerExpanded } = store.$local.$state;
+      const { headerExpanded } = local.$state;
       if (window.innerWidth >= 1000 && !headerExpanded) {
-        store.$local.headerExpanded.$set(true);
+        local.headerExpanded.$set(true);
       } else if (window.innerWidth < 1000 && headerExpanded) {
-        store.$local.headerExpanded.$set(false);
+        local.headerExpanded.$set(false);
       }
     }
     listener();
     window.addEventListener('resize', listener)
     return () => window.removeEventListener('resize', listener);
-  }, [store]);
+  }, [local]);
 }
 
 const useLogoutUserIfSessionExpired = () => {
@@ -52,7 +54,7 @@ const useLogoutUserIfSessionExpired = () => {
   }, [session.status]);
 }
 
-export const useDataInitializer = (store: HomeStore) => {
+export const useDataInitializer = (store: StoreDef<AppState>) => {
   const { data: session } = useSession();
   const mounted = useIsMounted();
   const initializingData = useRef(false);
@@ -69,7 +71,7 @@ export const useDataInitializer = (store: HomeStore) => {
   }, [mounted, session, store]);
 }
 
-const initializeData = async ({ session, store }: { session: Session, store: HomeStore }) => {
+const initializeData = async ({ session, store }: { session: Session, store: StoreDef<AppState> }) => {
   await initializeDb();
   const databaseData = await readFromDb();
   const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());

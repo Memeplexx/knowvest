@@ -1,4 +1,4 @@
-import { useStore } from "@/utils/store-utils";
+import { useLocalStore, useStore } from "@/utils/store-utils";
 import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutocompleteHandle } from "../autocomplete/constants";
 import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
@@ -6,9 +6,8 @@ import { useForwardedRef } from "@/utils/react-utils";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
-  const { store, state } = useStore('search', initialState);
-  const { $local, tags, groups, synonymGroups, noteTags, notes } = state;
-  const { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } = $local;
+  const { store, state: { tags, groups, synonymGroups, noteTags, notes } } = useStore();
+  const { local, state: { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const bodyRef = useForwardedRef(ref);
 
@@ -89,7 +88,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   }, [showingTab, notesByTags]);
 
   const listener = useCallback(() => {
-    const state = store.$local.$state;
+    const state = local.$state;
     const screenIsNarrow = window.innerWidth < dialogWidth;
     const payload = {
       showSearchPane: !screenIsNarrow || showingTab === 'search',
@@ -97,9 +96,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       screenIsNarrow,
     };
     if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
-      store.$local.$patch(payload);
+      local.$patch(payload);
     }
-  }, [showSearchPane, showingTab, store])
+  }, [local, showSearchPane, showingTab])
   useEffect(() => {
     window.addEventListener('resize', listener);
     return () => window.removeEventListener('resize', listener)
@@ -110,7 +109,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   return {
     store,
-    ...$local,
+    local,
+    ...local.$state,
     autocompleteRef,
     bodyRef,
     autocompleteOptions,

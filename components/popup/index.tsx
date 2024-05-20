@@ -12,7 +12,7 @@ export const Popup = forwardRef(function Popup(
   forwardedRef: ForwardedRef<PopupHandle>
 ) {
   const inputs = useInputs(props, forwardedRef);
-  const outputs = useOutputs(props, inputs);
+  const outputs = useOutputs(inputs);
   return (
     <>
       {props.trigger({
@@ -20,7 +20,7 @@ export const Popup = forwardRef(function Popup(
         onClick: () => setTimeout(() => outputs.onClickTrigger(), 50),
       })}
       {
-        !inputs.state.$local.showInternal
+        !inputs.showInternal
           ? <></>
           : createPortal(
             <Background
