@@ -108,13 +108,13 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       }));
   }, [groupId, synonymGroups, synonymId, tagSynonymGroupMap, tags]);
 
+  const options = autocompleteAction === 'addActiveSynonymsToAGroup' ? autocompleteOptionsGroups : autocompleteOptionsTags;
   const autocompleteOptions = useMemo(() => {
-    const items = autocompleteAction === 'addActiveSynonymsToAGroup' ? autocompleteOptionsGroups : autocompleteOptionsTags;
-    return items.map(option => ({
+    return options.map(option => ({
       ...option,
       synonyms: option.synonyms!.map(synonym => synonym.text).join(', '),
     }));
-  }, [autocompleteOptionsGroups, autocompleteOptionsTags, autocompleteAction]);
+  }, [options]);
 
   const pageTitle = useMemo(() => {
     if (tagId)
@@ -128,7 +128,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   const selectedGroupSelectedSynonym = useMemo(() => {
     if (!groupId || !synonymId) return '';
-    return tagsInCustomGroups.findOrThrow(t => t.group.id === groupId).synonyms.find(s => s.synonymId === synonymId)?.tags || '';
+    return tagsInCustomGroups
+      .findOrThrow(t => t.group.id === groupId).synonyms
+      .find(s => s.synonymId === synonymId)?.tags || '';
   }, [groupId, synonymId, tagsInCustomGroups]);
 
   return {

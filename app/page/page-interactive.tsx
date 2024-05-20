@@ -13,14 +13,13 @@ export default function PageInteractive() {
     <>
       <LoginButton
         onClick={outputs.onClickSignIn}
-        children="Sign in"
+        children='Sign in'
       />
       {!inputs.initialized ? <></> : createPortal(
         <Loader
           if={inputs.showLoader}
         />,
-        document.body
-      )}
+        document.body)}
     </>
   )
 }

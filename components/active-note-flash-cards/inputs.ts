@@ -6,10 +6,12 @@ import { initialState } from "./constants";
 
 
 export const useInputs = () => {
-
-  const notify = useNotifier();
+  
   const { store, state: { flashCards, activeNoteId } } = useStore();
   const { local, state } = useLocalStore('activeFlashCards', initialState);
+
+  const notify = useNotifier();
+
   const items = useMemo(() => {
     return flashCards.filter(fc => fc.noteId === activeNoteId);
   }, [flashCards, activeNoteId]);

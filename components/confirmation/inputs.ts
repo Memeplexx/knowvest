@@ -3,7 +3,7 @@ import { Props, initialState } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const { local, state } = useLocalStore( props.storeKey,  initialState);
+  const { local, state } = useLocalStore(props.storeKey, initialState);
 
   return {
     local,

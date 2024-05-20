@@ -6,10 +6,12 @@ import { Props, defaultProps, initialState } from "./constants";
 export const useInputs = (props: Props) => {
 
   const { local, state: { initialized, message } } = useLocalStore(props.storeKey, initialState);
+
   const floatingRef = useFloating<ReferenceType>({ placement: 'bottom' });
   const maxCount = props.maxCount ?? defaultProps.maxCount;
   const animationDuration = props.animationDuration ?? defaultProps.animationDuration;
   const displayDuration = props.displayDuration ?? defaultProps.displayDuration;
+  
   useEffect(() => {
 
     // mark component as initialized so that portal can snackbar can be added to DOM body element

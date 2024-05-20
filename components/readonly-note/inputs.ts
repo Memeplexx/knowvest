@@ -1,4 +1,3 @@
-import { NoteDTO } from '@/actions/types';
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { listenToTagsForEditor } from '@/utils/data-utils';
@@ -23,7 +22,21 @@ export const useInputs = (props: Props) => {
 
   useIsomorphicLayoutEffect(() => {
     if (props.if === false) return; /* do not instantiate because component has been hidden */
-    codeMirror.current = instantiateCodeMirror({ editor: editorRef.current!, note: props.note! });
+    codeMirror.current = new EditorView({
+      doc: props.note!.text,
+      parent: editorRef.current!,
+      extensions: [
+        syntaxHighlighting(defaultHighlightStyle as Highlighter, { fallback: true }),
+        markdown({ codeLanguages: languages }),
+        EditorState.readOnly.of(true),
+        EditorView.lineWrapping,
+        bulletPointPlugin,
+        inlineNotePlugin,
+        noteBlockPlugin,
+        titleFormatPlugin,
+        oneDark,
+      ],
+    });
     return () => codeMirror.current?.destroy();
   }, [editorRef.current, props.if]);
 
@@ -38,22 +51,3 @@ export const useInputs = (props: Props) => {
     props: useUnknownPropsStripper({...props})
   }
 }
-
-export const instantiateCodeMirror = ({ editor, note }: { editor: HTMLDivElement, note: NoteDTO }) => {
-  return new EditorView({
-    doc: note.text,
-    parent: editor,
-    extensions: [
-      syntaxHighlighting(defaultHighlightStyle as Highlighter, { fallback: true }),
-      markdown({ codeLanguages: languages }),
-      EditorState.readOnly.of(true),
-      EditorView.lineWrapping,
-      bulletPointPlugin,
-      inlineNotePlugin,
-      noteBlockPlugin,
-      titleFormatPlugin,
-      oneDark,
-    ],
-  });
-}
-

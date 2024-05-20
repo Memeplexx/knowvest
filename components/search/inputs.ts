@@ -1,8 +1,9 @@
+import { useResizeListener } from "@/utils/dom-utils";
+import { useForwardedRef } from "@/utils/react-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
-import { ForwardedRef, useCallback, useEffect, useMemo, useRef } from "react";
+import { ForwardedRef, useCallback, useMemo, useRef } from "react";
 import { AutocompleteHandle } from "../autocomplete/constants";
 import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
-import { useForwardedRef } from "@/utils/react-utils";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
@@ -80,14 +81,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       .distinct(n => n.id);
   }, [noteTags, notes, selectedSynonymIds, tags]);
 
-  const tabTitleText = useMemo(() => {
-    return showingTab === 'search' ? 'Search' : 'Results';
-  }, [showingTab]);
-  const tabButtonText = useMemo(() => {
-    return showingTab === 'search' ? `Results (${notesByTags.length})` : 'Search';
-  }, [showingTab, notesByTags]);
-
-  const listener = useCallback(() => {
+  useResizeListener(useCallback(() => {
     const state = local.$state;
     const screenIsNarrow = window.innerWidth < dialogWidth;
     const payload = {
@@ -98,14 +92,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
       local.$patch(payload);
     }
-  }, [local, showSearchPane, showingTab])
-  useEffect(() => {
-    window.addEventListener('resize', listener);
-    return () => window.removeEventListener('resize', listener)
-  }, [listener])
-  useEffect(() => {
-    listener();
-  }, [listener]);
+  }, [local, showSearchPane, showingTab]));
 
   return {
     store,
@@ -117,7 +104,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     selectedSynonymTags,
     selectedGroupTags,
     notesByTags,
-    tabTitleText,
-    tabButtonText,
+    tabTitleText: showingTab === 'search' ? 'Search' : 'Results',
+    tabButtonText: showingTab === 'search' ? `Results (${notesByTags.length})` : 'Search',
   }
 }

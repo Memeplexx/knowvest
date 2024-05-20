@@ -8,8 +8,10 @@ export const useInputs = () => {
 
   const { store, state: { flashCards } } = useStore();
   const { local } = useLocalStore('flashCardTester', initialState);
+
   const notify = useNotifier();
   const bodyRef = useRef<HTMLDivElement>(null);
+  
   const items = useMemo(() => {
     return flashCards
       .filter(fc => isAfter(new Date(), fc.nextQuestionDate))

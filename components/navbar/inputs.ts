@@ -8,16 +8,12 @@ export const useInputs = () => {
   
   const { state: { flashCards, stateInitialized } } = useStore();
   const { local } = useLocalStore('navBar', initialState);
-  const { data: session } = useSession();
-  const flashCardCount = useMemo(() => {
-    return flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length;
-  }, [flashCards]);
 
   return {
     ...local.$state,
     local,
-    session,
-    flashCardCount,
     stateInitialized,
+    session: useSession().data,
+    flashCardCount: useMemo(() => flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length, [flashCards]),
   }
 }

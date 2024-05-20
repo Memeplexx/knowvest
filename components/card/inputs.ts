@@ -10,11 +10,8 @@ export const useInputs = (
 ) => {
 
   const headRef = useRef<HTMLDivElement>(null);
-
   const bodyRef = useRef<HTMLDivElement>(null);
-
   const previousScrollOffset = useRef(0);
-  
   const headerOffset = useRef(0);
 
   useImperativeHandle<CardHandle, CardHandle>(ref, () => ({

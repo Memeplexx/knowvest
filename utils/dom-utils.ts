@@ -1,5 +1,5 @@
 export { };
-import { MouseEvent, useRef } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import { useIsomorphicLayoutEffect } from "./react-utils";
 import { tupleIncludes } from "olik";
 
@@ -49,6 +49,18 @@ export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'key
     document.addEventListener(type, listener);
     return () => document.removeEventListener(type, listener);
   }, [type]);
+}
+
+export const useResizeListener = (listener: () => void) => {
+  const initialized = useRef(false);
+  if (typeof window !== 'undefined' && !initialized.current) {
+    listener();
+    initialized.current = true;
+  }
+  useEffect(() => {
+    window.addEventListener('resize', listener);
+    return () => window.removeEventListener('resize', listener);
+  }, [listener]);
 }
 
 const ancestorMatches = (element: EventTarget | null, check: (element: HTMLElement) => boolean): boolean => {
