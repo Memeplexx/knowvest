@@ -1,4 +1,5 @@
 "use client";
+import { useUnknownPropsStripper } from '@/utils/react-utils';
 import { Card } from '../card';
 import { Props } from './constants';
 import { useInputs } from './inputs';
@@ -8,11 +9,11 @@ import { Header, Icon, ListItem, ListItemsWrapper, LoaderPlaceholder, NoResultsI
 export function History(
   props: Props,
 ) {
-  const inputs = useInputs(props);
+  const inputs = useInputs();
   const outputs = useOutputs(props, inputs);
   return (
     <Card
-      {...inputs.htmlProps}
+      {...useUnknownPropsStripper(props)}
       ref={inputs.cardRef}
       heading='Recent'
       onScrolledToBottom={outputs.onScrolledToBottom}

@@ -1,6 +1,6 @@
 import { UserDTO } from "@/actions/types";
 import { useResizeListener } from "@/utils/dom-utils";
-import { useIsMounted, useIsomorphicLayoutEffect } from "@/utils/react-utils";
+import { useIsMounted } from "@/utils/react-utils";
 import { initializeDb, readFromDb, writeToStoreAndDb } from "@/utils/storage-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { useSession } from "next-auth/react";
@@ -14,29 +14,28 @@ export const useInputs = () => {
 
   const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
+  const refs = useRef({ initializingData: false, loggingOut: false });
 
   // Log user out if session expired
   const session = useSession();
-  useIsomorphicLayoutEffect(() => {
-    if (session.status === 'authenticated')
-      return;
-    redirect('/?session-expired=true');
-  }, [session.status]);
+  if (!refs.current.loggingOut) {
+    refs.current.loggingOut = true;
+    if (session.status === 'unauthenticated')
+      redirect('/?session-expired=true');
+  }
 
   // Update header visibility as required
   useResizeListener(useCallback(() => {
-    const { headerExpanded } = local.$state;
-    if (window.innerWidth >= 1000 && !headerExpanded)
+    if (window.innerWidth >= 1000 && !local.$state.headerExpanded)
       local.headerExpanded.$set(true);
-    else if (window.innerWidth < 1000 && headerExpanded)
+    else if (window.innerWidth < 1000 && local.$state.headerExpanded)
       local.headerExpanded.$set(false);
   }, [local]));
 
   // Initialize data
   const mounted = useIsMounted();
-  const initializingData = useRef(false);
-  if (session.data && mounted && !initializingData.current && !store.stateInitialized.$state) {
-    initializingData.current = true;
+  if (session.data && mounted && !refs.current.initializingData && !store.stateInitialized.$state) {
+    refs.current.initializingData = true;
     void async function initializeData() {
       await initializeDb();
       const databaseData = await readFromDb();

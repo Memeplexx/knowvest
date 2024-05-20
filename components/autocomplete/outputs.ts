@@ -31,17 +31,17 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
       inputs.containerRef.current?.blur();
       const inputValueToLowerCase = inputRef.current!.value.toLowerCase();
       const selectedOption = options.find(o => o.label.toLowerCase() === inputValueToLowerCase);
-      if (selectedOption) {
+      if (selectedOption)
         props.onValueChange(selectedOption.value);
-      } else {
+      else
         props.onInputEnterKeyUp?.();
-      }
       props.onShowOptionsChange(false);
     },
     onKeyDownOption: (event: TypedKeyboardEvent<HTMLElement>): true | void => {
       if (event.key === 'ArrowDown') {
         event.preventDefault(); // prevents undesirable scrolling behavior
-        if (!options.length) return true;
+        if (!options.length)
+          return true;
         (document.activeElement?.nextElementSibling as HTMLElement)?.focus();
       }
       if (event.key === 'ArrowUp') {

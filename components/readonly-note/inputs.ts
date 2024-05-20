@@ -1,7 +1,7 @@
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { listenToTagsForEditor } from '@/utils/data-utils';
-import { useIsomorphicLayoutEffect, useUnknownPropsStripper } from '@/utils/react-utils';
+import { useIsomorphicLayoutEffect } from '@/utils/react-utils';
 import { useStore } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
@@ -48,6 +48,5 @@ export const useInputs = (props: Props) => {
 
   return {
     editorRef,
-    props: useUnknownPropsStripper({...props})
   }
 }

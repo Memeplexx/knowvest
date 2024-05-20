@@ -89,9 +89,8 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       showResultsPane: !screenIsNarrow || showingTab === 'results',
       screenIsNarrow,
     };
-    if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow) {
+    if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow)
       local.$patch(payload);
-    }
   }, [local, showSearchPane, showingTab]));
 
   return {

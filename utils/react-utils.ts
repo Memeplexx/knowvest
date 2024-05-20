@@ -98,8 +98,8 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
 }
 
 const whitelist = ['className', 'style', 'onClick'];
-export const useUnknownPropsStripper = <P extends Record<string, unknown>>(props: P) => {
+export const useUnknownPropsStripper = (props: object) => {
   return Object.keys(props)
     .filter(k => whitelist.includes(k))
-    .reduce((acc, key) => Object.assign(acc, { [key]: props[key] }), {});
+    .reduce((acc, key) => Object.assign(acc, { [key]: props[key as keyof typeof props] }), {});
 }

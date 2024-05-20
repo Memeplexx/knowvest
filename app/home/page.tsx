@@ -10,9 +10,8 @@ import { Wrapper } from './styles';
 export default async function Home() {
   
   const session = await getServerSession(authOptions);
-  if (!session || new Date(session.expires).getTime() < Date.now()) {
+  if (!session || new Date(session.expires).getTime() < Date.now())
     redirect('/');
-  }
 
   return (
     <Wrapper

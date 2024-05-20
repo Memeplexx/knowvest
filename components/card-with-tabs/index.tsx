@@ -1,4 +1,5 @@
 "use client";
+import { useUnknownPropsStripper } from "@/utils/react-utils";
 import { Props } from "./constants";
 import { useInputs } from "./inputs";
 import { Body, Container, Header, Tab, Underline } from "./styles";
@@ -9,7 +10,7 @@ export const Tabs = (
   const inputs = useInputs(props);
   return (
     <Container
-      {...inputs.htmlProps}
+      {...useUnknownPropsStripper(props)}
       heading={
         <Header
           children={

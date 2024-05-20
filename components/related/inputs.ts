@@ -1,12 +1,9 @@
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { useMemo, useRef } from "react";
-import { Props, initialState, pageSize } from "./constants";
 import { CardHandle } from "../card/constants";
-import { useUnknownPropsStripper } from "@/utils/react-utils";
+import { initialState, pageSize } from "./constants";
 
-export const useInputs = (
-  props: Props,
-) => {
+export const useInputs = () => {
 
   const { store, state: { notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized } } = useStore();
   const { local, state: { index } } = useLocalStore('relatedItems', initialState);
@@ -36,8 +33,6 @@ export const useInputs = (
     return `${items.length} result${items.length === 1 ? '' : 's'}`;
   }, [items]);
 
-  const htmlProps = useUnknownPropsStripper({ ...props });
-
   return {
     store,
     local,
@@ -45,7 +40,6 @@ export const useInputs = (
     stateInitialized,
     noteCountString,
     cardRef,
-    htmlProps,
   }
 
 };

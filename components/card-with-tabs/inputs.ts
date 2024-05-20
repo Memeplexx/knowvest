@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { Props } from "./constants";
-import { useUnknownPropsStripper } from "@/utils/react-utils";
 
 export const useInputs = (props: Props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -16,6 +15,5 @@ export const useInputs = (props: Props) => {
     Panel,
     tabsRef,
     underline,
-    htmlProps: useUnknownPropsStripper({ ...props }),
   }
 }

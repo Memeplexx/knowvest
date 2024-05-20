@@ -1,4 +1,5 @@
 "use client";
+import { useUnknownPropsStripper } from '@/utils/react-utils';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { Wrapper } from './styles';
@@ -9,7 +10,7 @@ export default function ReadonlyNote(
   const inputs = useInputs(props);
   return (
     <Wrapper
-      {...inputs.props}
+      {...useUnknownPropsStripper(props)}
       ref={inputs.editorRef}
     />
   );

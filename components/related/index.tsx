@@ -1,4 +1,5 @@
 "use client";
+import { useUnknownPropsStripper } from '@/utils/react-utils';
 import { Card } from '../card';
 import { Props } from './constants';
 import { useInputs } from './inputs';
@@ -9,11 +10,11 @@ import { Header, Icon, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, Result
 export function Related(
   props: Props
 ) {
-  const inputs = useInputs(props);
+  const inputs = useInputs();
   const outputs = useOutputs(props, inputs);
   return (
     <Card
-      {...inputs.htmlProps}
+      {...useUnknownPropsStripper(props)}
       ref={inputs.cardRef}
       heading='Related'
       onScrolledToBottom={outputs.onScrolledToBottom}

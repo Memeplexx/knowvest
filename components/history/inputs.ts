@@ -1,13 +1,10 @@
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { formatDistanceToNow } from "date-fns";
 import { useMemo, useRef } from "react";
-import { Props, initialState, pageSize } from "./constants";
 import { CardHandle } from "../card/constants";
-import { useUnknownPropsStripper } from "@/utils/react-utils";
+import { initialState, pageSize } from "./constants";
 
-export const useInputs = (
-  props: Props,
-) => {
+export const useInputs = () => {
 
   const { store, state: { activeNoteId, notes, stateInitialized } } = useStore();
   const { local, state: { index } } = useLocalStore('historyItems', initialState);
@@ -25,8 +22,6 @@ export const useInputs = (
       }));
   }, [activeNoteId, index, notes]);
 
-  const htmlProps = useUnknownPropsStripper({ ...props });
-
   return {
     store,
     local,
@@ -34,6 +29,5 @@ export const useInputs = (
     items,
     stateInitialized,
     cardRef,
-    htmlProps,
   };
 }

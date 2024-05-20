@@ -4,17 +4,18 @@ import { Body, Header, LoaderPlaceholder, Wrapper } from './styles';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { CardHandle, Props } from './constants';
+import { useUnknownPropsStripper } from '@/utils/react-utils';
 
 export const Card = forwardRef(function Card(
   props: Props,
   ref: ForwardedRef<CardHandle>
 ) {
-  const inputs = useInputs(props, ref);
+  const inputs = useInputs(ref);
   const outputs = useOutputs(props, inputs);
   return (
     <Wrapper
       id={props.id}
-      {...inputs.htmlProps}
+      {...useUnknownPropsStripper(props)}
       children={
         <>
           <Header
