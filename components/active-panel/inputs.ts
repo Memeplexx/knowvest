@@ -40,12 +40,14 @@ export const useInputs = () => {
   const popupRef = useRef<PopupHandle>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
-  
+
+  // Configure CodeMirror text editor
   useEffect(() => {
-    if (!activeNoteId) 
+    if (!activeNoteId)
       return;
+    const doc = store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
     codeMirror.current = new EditorView({
-      doc: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text,
+      doc,
       parent: editorRef.current!,
       extensions: [
         history(),
@@ -63,8 +65,8 @@ export const useInputs = () => {
         autocompleteExtension(store),
         noteTagsPersisterExtension(store),
         createNotePersisterExtension({ debounce: 500, store, local }),
-        textSelectorPlugin({local}),
-        editorHasTextUpdater({local}),
+        textSelectorPlugin({ local }),
+        editorHasTextUpdater({ local }),
         pasteListener,
         bulletPointPlugin,
         inlineNotePlugin,
@@ -73,14 +75,15 @@ export const useInputs = () => {
         oneDark,
       ],
     });
-    codeMirror.current.dispatch({ selection: { anchor: codeMirror.current.state.doc.length } });
+    codeMirror.current.dispatch({ selection: { anchor: doc.length } });
     if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
       codeMirror.current.focus();
     return () => codeMirror.current?.destroy();
   }, [store, activeNoteId, local]);
 
+  // Revise editor tags as required
   useEffect(() => {
-    if (!activeNoteId) 
+    if (!activeNoteId)
       return;
     const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
     return () => changeListener.unsubscribe();

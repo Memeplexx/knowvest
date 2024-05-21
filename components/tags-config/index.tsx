@@ -241,13 +241,13 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => (
                     <Tag
                       key={tag.id}
                       ref={active && inputs.groupSynonymId === inputs.synonymId ? inputs.selectedTagRef : null}
-                      $selected={(inputs.hoveringGroupId === group.id && inputs.hoveringSynonymId === synonymId) || (active && inputs.groupSynonymId === synonymId)}
                       children={tag.text}
-                      $first={tag.first}
-                      $last={tag.last}
                       onClick={e => outputs.onClickGroupSynonym(group.id, synonymId, e)}
                       onMouseOver={() => outputs.onMouseOverGroupTag(group.id, synonymId)}
                       onMouseOut={outputs.onMouseOutGroupTag}
+                      $first={tag.first}
+                      $last={tag.last}
+                      $selected={(inputs.hoveringGroupId === group.id && inputs.hoveringSynonymId === synonymId) || (active && inputs.groupSynonymId === synonymId)}
                     />
                   ))
                 ))}

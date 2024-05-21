@@ -1,28 +1,23 @@
 import { useNotifier } from "@/components/notifier";
+import { useIsMounted } from "@/utils/react-utils";
 import { useLocalStore } from "@/utils/store-utils";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from "react";
 
 export const useInputs = () => {
 
-  const { local, state: { initialized } } = useLocalStore('page', {
+  const { local } = useLocalStore('page', {
     showLoader: false,
-    initialized: false,
   })
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const notifier = useNotifier();
+  const isMounted = useIsMounted();
 
-  useEffect(() => {
-    local.initialized.$set(true);
-  }, [local]);
-
-  useEffect(() => {
-    if (!initialized || !searchParams?.has('session-expired')) return;
+  if (isMounted && searchParams?.has('session-expired')) {
     router.replace('/');
     notifier.info('Your session expired. Please sign in again');
-  }, [searchParams, initialized, router, notifier]);
+  }
 
   return {
     ...local.$state,
