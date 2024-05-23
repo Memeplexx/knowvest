@@ -15,7 +15,7 @@ export default function PageInteractive() {
         onClick={outputs.onClickSignIn}
         children='Sign in'
       />
-      {!inputs.initialized ? <></> : createPortal(
+      {!inputs.isMounted ? <></> : createPortal(
         <Loader
           if={inputs.showLoader}
         />,

@@ -33,12 +33,4 @@ module.exports = withBundleAnalyzer(withPWA({
       },
     ],
   },
-  // webpack: (
-  //   config,
-  //   { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
-  // ) => {
-  //   // config.devtool = 'source-map';
-  //   // config.devtool = 'eval-cheap-module-source-map';
-  //   return config
-  // },
 }))
