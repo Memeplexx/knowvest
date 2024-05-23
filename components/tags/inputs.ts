@@ -29,11 +29,6 @@ export const useInputs = () => {
       }))
   }, [tags, synonymIds, noteTags, activeNoteId]);
 
-  const allActiveTagsSelected = useMemo(() => {
-    return tagsForActiveNote
-      .every(t => t.selected);
-  }, [tagsForActiveNote]);
-
   const groupsWithSynonyms = useMemo(() => {
     return noteTags
       .filter(nt => nt.noteId === activeNoteId)
@@ -58,6 +53,11 @@ export const useInputs = () => {
           })),
       }));
   }, [activeNoteId, groups, noteTags, synonymGroups, synonymIds, tags]);
+
+  const allActiveTagsSelected = useMemo(() => {
+    return tagsForActiveNote
+      .every(t => t.selected);
+  }, [tagsForActiveNote]);
 
   const allGroupTagsSelected = useMemo(() => {
     return groupsWithSynonyms

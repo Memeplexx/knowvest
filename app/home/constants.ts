@@ -1,5 +1,5 @@
 import { useInputs } from "./inputs";
-import { StoreDef } from "olik";
+import { Store } from "olik";
 
 
 export const initialState = {
@@ -10,6 +10,6 @@ export const initialState = {
   selectedTab: 'Tags',
 };
 
-export type HomeStore = StoreDef<typeof initialState>;
+export type HomeStore = Store<typeof initialState>;
 
 export type Inputs = ReturnType<typeof useInputs>;

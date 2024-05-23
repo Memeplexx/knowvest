@@ -37,13 +37,13 @@ const getDataViaCache = (store: Store<AppState>) => {
   return cache.value;
 }
 
-export const listenToTagsForEditor = <S extends AppState>({
+export const listenToTagsForEditor = ({
   editorView,
   store,
   reviseEditorTags
 }: {
   editorView: EditorView,
-  store: Store<S>,
+  store: Store<AppState>,
   reviseEditorTags: (arg: ReviseEditorTagsArgs) => void
 }) => {
 
@@ -78,5 +78,5 @@ export const listenToTagsForEditor = <S extends AppState>({
       onChangeNoteTags(getDataViaCache(store));
     }));
   onChangeNoteTags(getDataViaCache(store));
-  return { unsubscribe: () => subscriptions.forEach(sub => sub.unsubscribe()) };
+  return () => subscriptions.forEach(unsubscribe => unsubscribe());
 }

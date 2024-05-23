@@ -7,10 +7,10 @@ import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range, TransactionSpec } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { ActivePanelStore } from "./constants";
-import { StoreDef } from "olik";
+import { Store } from "olik";
 import { AppState } from "@/utils/store-utils";
 
-export const autocompleteExtension = (store: StoreDef<AppState>) => {
+export const autocompleteExtension = (store: Store<AppState>) => {
   return autocompletion({
     override: [
       (context: CompletionContext) => {
@@ -26,7 +26,7 @@ export const autocompleteExtension = (store: StoreDef<AppState>) => {
   })
 };
 
-export const createNotePersisterExtension = ({ debounce, store, local }: { debounce: number, store: StoreDef<AppState>, local: ActivePanelStore }) => {
+export const createNotePersisterExtension = ({ debounce, store, local }: { debounce: number, store: Store<AppState>, local: ActivePanelStore }) => {
   let timestamp = Date.now();
   let activeNoteIdRef = store.$state.activeNoteId;
   const doNoteUpdate = async (update: ViewUpdate) => {
@@ -47,7 +47,7 @@ export const createNotePersisterExtension = ({ debounce, store, local }: { debou
   });
 }
 
-export const noteTagsPersisterExtension = (store: StoreDef<AppState>) => {
+export const noteTagsPersisterExtension = (store: Store<AppState>) => {
   let previousActiveNoteId = 0 as NoteId;
   let previousActiveNoteTagIds = new Array<TagId>();
   const tagsWithRegexp = store.$state.tags
@@ -97,7 +97,7 @@ export const noteTagsPersisterExtension = (store: StoreDef<AppState>) => {
   });
 }
 
-export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
+export const textSelectorPlugin = (local: ActivePanelStore) => {
   return ViewPlugin.fromClass(class {
     decorations: DecorationSet;
 
@@ -122,10 +122,8 @@ export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
             if (node.type.name !== 'Document') 
               return;
             const documentText = view.state.doc.toString();
-            if (view.state.selection.main.from === view.state.selection.main.to) {
-              this.updateSelection('');
-              return;
-            }
+            if (view.state.selection.main.from === view.state.selection.main.to)
+              return this.updateSelection('');
             const regexForAnyNumberAndAnyLetter = /\W/;
             let from = view.state.selection.main.from;
             const startChar = documentText[from]!;
@@ -140,10 +138,8 @@ export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
             else
               while (!regexForAnyNumberAndAnyLetter.test(documentText[to]!) && to < documentText.length) { to++; }
             const selection = view.state.sliceDoc(from, to).toLowerCase();
-            if (!selection.trim().length) {
-              this.updateSelection('');
-              return;
-            }
+            if (!selection.trim().length)
+              return this.updateSelection('');
             this.updateSelection(selection);
           },
         })
@@ -155,7 +151,7 @@ export const textSelectorPlugin = ({ local }: { local: ActivePanelStore }) => {
   });
 }
 
-export const editorHasTextUpdater = ({ local }: { local: ActivePanelStore }) => {
+export const editorHasTextUpdater = (local: ActivePanelStore) => {
   return EditorView.updateListener.of(function editorHasTextUpdater(update) {
     if (!update.docChanged) 
       return;

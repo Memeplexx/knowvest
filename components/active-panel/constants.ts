@@ -1,6 +1,6 @@
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { StoreDef } from "olik";
+import { Store } from "olik";
 
 export const initialState = {
   selection: '',
@@ -17,4 +17,4 @@ export type Outputs = ReturnType<typeof useOutputs>;
 
 export type FragmentProps = { inputs: Inputs, outputs: Outputs };
 
-export type ActivePanelStore = StoreDef<typeof initialState>;
+export type ActivePanelStore = Store<typeof initialState>;

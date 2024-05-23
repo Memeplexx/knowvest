@@ -65,8 +65,8 @@ export const useInputs = () => {
         autocompleteExtension(store),
         noteTagsPersisterExtension(store),
         createNotePersisterExtension({ debounce: 500, store, local }),
-        textSelectorPlugin({ local }),
-        editorHasTextUpdater({ local }),
+        textSelectorPlugin(local),
+        editorHasTextUpdater(local),
         pasteListener,
         bulletPointPlugin,
         inlineNotePlugin,
@@ -85,8 +85,7 @@ export const useInputs = () => {
   useEffect(() => {
     if (!activeNoteId)
       return;
-    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
-    return () => changeListener.unsubscribe();
+    return listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
   }, [store, activeNoteId]);
 
   return {

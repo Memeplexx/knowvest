@@ -42,8 +42,7 @@ export const useInputs = (props: Props) => {
 
   useIsomorphicLayoutEffect(() => {
     if (props.if === false) return; /* do not instantiate because component has been hidden */
-    const changeListener = listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
-    return () => changeListener.unsubscribe();
+    return listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
   }, [editorRef.current, props.if]);
 
   return {
