@@ -93,13 +93,12 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   const autocompleteOptionsTags = useMemo(() => {
     return tags
       .filter(t => {
-        if (groupId) {
+        if (groupId)
           return t.synonymId !== synonymId && !synonymGroups
             .filter(sg => sg.groupId === groupId)
             .some(sg => sg.synonymId === t.synonymId);
-        } else {
+        else
           return !synonymId || t.synonymId !== synonymId;
-        }
       })
       .map(t => ({
         value: t.id,
@@ -116,7 +115,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     }));
   }, [options]);
 
-  const pageTitle = useMemo(() => {
+  const instruction = useMemo(() => {
     if (tagId)
       return 'Update selected Tag';
     if (synonymId)
@@ -126,24 +125,15 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     return 'Search for Tag or create a new Tag';
   }, [groupId, synonymId, tagId]);
 
-  const selectedGroupSelectedSynonym = useMemo(() => {
-    if (!groupId || !synonymId) 
-      return '';
-    return tagsInCustomGroups
-      .findOrThrow(t => t.group.id === groupId).synonyms
-      .find(s => s.synonymId === synonymId)?.tags || '';
-  }, [groupId, synonymId, tagsInCustomGroups]);
-
   return {
     store,
     local,
     ...local.$state,
-    pageTitle,
+    instruction,
     activeNoteId,
     autocompleteOptions,
     tagsInCustomGroups,
     tagsInSynonymGroup,
-    selectedGroupSelectedSynonym,
     floatingRef,
     modalRef,
     autocompleteRef,

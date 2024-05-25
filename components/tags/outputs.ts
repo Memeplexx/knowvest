@@ -16,16 +16,16 @@ export const useOutputs = (inputs: Inputs) => {
       const synonymIds = synonyms.map(s => s.id);
       if (synonyms.some(s => s.selected))
         return store.synonymIds.$filter.$in(synonymIds).$delete();
-      void store.synonymIds.$pushMany(synonymIds);
+      store.synonymIds.$pushMany(synonymIds);
     },
     onChangeAllActiveTagsSelected: () => {
       const synonymIds = tagsForActiveNote.map(s => s.synonymId);
       if (tagsForActiveNote.some(s => s.selected))
         return store.synonymIds.$filter.$in(synonymIds).$delete();
-      void store.synonymIds.$pushMany(synonymIds);
+      store.synonymIds.$pushMany(synonymIds);
     },
     onShowDialog: () => {
-      void local.configure.$set(true);
+      local.configure.$set(true);
     },
     onHideDialog: () => {
       if (!local.$state.configure) 

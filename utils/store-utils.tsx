@@ -4,6 +4,7 @@ import { augmentForReact, createUseStoreHook } from 'olik-react';
 import { configureDevtools } from 'olik/devtools';
 import { createContext, useMemo } from "react";
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '../actions/types';
+import { MediaQueries } from './dom-utils';
 
 
 
@@ -24,6 +25,7 @@ export const indexedDbState = {
 
 export const initialAppState = {
   ...indexedDbState,
+  mediaQuery: null as keyof typeof MediaQueries | null,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
   stateInitialized: false,

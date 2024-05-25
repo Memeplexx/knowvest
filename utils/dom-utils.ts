@@ -1,8 +1,16 @@
 export { };
-import { MouseEvent, useEffect, useRef } from "react";
+import { MouseEvent, useCallback, useEffect, useRef } from "react";
 import { useIsomorphicLayoutEffect } from "./react-utils";
 import { tupleIncludes } from "olik";
 
+
+export const MediaQueries = {
+  xs: 576,
+  sm: 768,
+  md: 992,
+  lg: 1200,
+  xl: 1400,
+} as const;
 
 export type Keys =
   | 'Backspace'
@@ -53,14 +61,45 @@ export const useEventHandlerForDocument = <Type extends 'click' | 'keyup' | 'key
 
 export const useResizeListener = (listener: () => void) => {
   const initialized = useRef(false);
+  const listenerRef = useRef(listener);
+  listenerRef.current = listener;
   if (typeof window !== 'undefined' && !initialized.current) {
-    listener();
+    listenerRef.current();
     initialized.current = true;
   }
   useEffect(() => {
-    window.addEventListener('resize', listener);
-    return () => window.removeEventListener('resize', listener);
+    window.addEventListener('resize', listenerRef.current);
+    return () => window.removeEventListener('resize', listenerRef.current);
   }, [listener]);
+}
+
+export const useMediaQueryListener = (listener: (mediaQuery: keyof typeof MediaQueries) => void) => {
+  const initialized = useRef(false);
+  const listenerRef = useRef(listener);
+  listenerRef.current = listener;
+  const currentQuery = useRef<keyof typeof MediaQueries | null>(null);
+  const getMediaQuery = useCallback(() => {
+    const windowWidth = window.innerWidth;
+    return Object.keysTyped(MediaQueries).reverse().find(key => windowWidth > MediaQueries[key]) ?? 'xs';
+  }, []);
+  if (typeof window !== 'undefined' && !initialized.current) {
+    const previousMediaQuery = currentQuery.current;
+    currentQuery.current = getMediaQuery();
+    if (previousMediaQuery !== currentQuery.current)
+      listener(currentQuery.current);
+    initialized.current = true;
+  }
+  const resizeListener = useCallback(() => {
+    const previousMediaQuery = currentQuery.current;
+    currentQuery.current = getMediaQuery();
+    if (previousMediaQuery !== currentQuery.current) {
+      listenerRef.current(currentQuery.current);
+    }
+  }, [getMediaQuery]);
+  useEffect(() => {
+    window.addEventListener('resize', resizeListener);
+    return () => window.removeEventListener('resize', resizeListener);
+  }, [resizeListener]);
 }
 
 const ancestorMatches = (element: EventTarget | null, check: (element: HTMLElement) => boolean): boolean => {

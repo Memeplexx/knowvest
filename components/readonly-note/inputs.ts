@@ -21,7 +21,8 @@ export const useInputs = (props: Props) => {
   const codeMirror = useRef<EditorView | null>(null);
 
   useIsomorphicLayoutEffect(() => {
-    if (props.if === false) return; /* do not instantiate because component has been hidden */
+    if (props.if === false) 
+      return; /* do not instantiate because component has been hidden */
     codeMirror.current = new EditorView({
       doc: props.note!.text,
       parent: editorRef.current!,
@@ -41,7 +42,8 @@ export const useInputs = (props: Props) => {
   }, [editorRef.current, props.if]);
 
   useIsomorphicLayoutEffect(() => {
-    if (props.if === false) return; /* do not instantiate because component has been hidden */
+    if (props.if === false) 
+      return; /* do not instantiate because component has been hidden */
     return listenToTagsForEditor({ editorView: codeMirror.current!, store, reviseEditorTags });
   }, [editorRef.current, props.if]);
 

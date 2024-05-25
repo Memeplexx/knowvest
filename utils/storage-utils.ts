@@ -1,4 +1,4 @@
-import { RepsertableObject, Store } from "olik";
+import { Filter, MergeMatching, Store } from "olik";
 import { AppState, indexedDbState } from "./store-utils";
 
 
@@ -7,8 +7,8 @@ type WriteToIndexedDBArgs = Partial<{ [tableName in keyof typeof indexedDbState]
 const openDatabase = () => indexedDB.open('knowvest', 1);
 const eventTarget = <T = IDBOpenDBRequest>(event: Event) => event.target as T;
 
-export const writeToStoreAndDb = <S extends AppState>(
-  store: Store<S>,
+export const writeToStoreAndDb = (
+  store: Store<AppState>,
   records: WriteToIndexedDBArgs
 ) => new Promise<void>((resolve, reject) => Object.keysTyped(records)
   .filter(tableName => !!indexedDbState[tableName])
@@ -19,15 +19,17 @@ export const writeToStoreAndDb = <S extends AppState>(
       return resolve();
 
     // update records in store
-    const toUpdate = tableRecords.filter(r => !(r as typeof r & { isArchived: boolean }).isArchived);
-    !!toUpdate.length && (store[tableName].$mergeMatching.id as RepsertableObject<{ id: number }, { id: number }>).$with(toUpdate as Array<{ id: number }>);
+    const toUpdate = tableRecords.filter(r => !('isArchived' in r) || !r.isArchived);
+    if (toUpdate.length)
+      (store[tableName] as MergeMatching<{ id: number }>).$mergeMatching.id.$with(toUpdate);
 
     // delete records from store
-    const toDelete = tableRecords.filter(r => (r as typeof r & { isArchived: boolean }).isArchived).map(r => r.id);
-    !!toDelete.length && (store[tableName] as unknown as Store<{ id: number }[]>).$filter.id.$in(toDelete).$delete();
+    const toDelete = tableRecords.filter(r => 'isArchived' in r && r.isArchived).map(r => r.id);
+    if (toDelete.length)
+      (store[tableName] as unknown as Filter<{ id: number }[], 3>).$filter.id.$in(toDelete).$delete();
 
     const request = openDatabase();
-    request.onsuccess = event => {
+    request.onsuccess = event => { 
       const db = eventTarget(event).result;
       const transaction = db.transaction([tableName], 'readwrite');
       const objectStore = transaction.objectStore(tableName);

@@ -79,7 +79,7 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => (
           children={
             <>
               <PageTitle
-                children={inputs.pageTitle}
+                children={inputs.instruction}
               />
               <CloseButton
                 children={<CloseIcon />}

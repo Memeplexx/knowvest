@@ -1,11 +1,11 @@
 import { UserDTO } from "@/actions/types";
-import { useResizeListener } from "@/utils/dom-utils";
+import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
 import { useIsMounted } from "@/utils/react-utils";
 import { initializeDb, readFromDb, writeToStoreAndDb } from "@/utils/storage-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import { initialize } from "../../actions/session";
 import { initialState } from "./constants";
 
@@ -16,6 +16,8 @@ export const useInputs = () => {
   const { local, state } = useLocalStore('home', initialState);
   const refs = useRef({ initializingData: false, loggingOut: false });
 
+  useMediaQueryListener(store.mediaQuery.$set);
+
   // Log user out if session expired
   const session = useSession();
   if (!refs.current.loggingOut) {
@@ -25,12 +27,12 @@ export const useInputs = () => {
   }
 
   // Update header visibility as required
-  useResizeListener(useCallback(() => {
-    if (window.innerWidth >= 1000 && !local.$state.headerExpanded)
+  useResizeListener(() => {
+    if (window.innerWidth >= MediaQueries.md && !local.$state.headerExpanded)
       local.headerExpanded.$set(true);
-    else if (window.innerWidth < 1000 && local.$state.headerExpanded)
+    else if (window.innerWidth < MediaQueries.md && local.$state.headerExpanded)
       local.headerExpanded.$set(false);
-  }, [local]));
+  });
 
   // Initialize data
   const mounted = useIsMounted();

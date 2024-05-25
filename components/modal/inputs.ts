@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useStore } from "@/utils/store-utils";
+import { useRef, useState } from "react";
 import { useSpring } from "react-spring";
 import { Props, animationDuration } from "./constants";
 
 export const useInputs = (props: Props) => {
 
+  const { state: { mediaQuery } } = useStore();
   const [showInternal, setShowInternal] = useState(props.if);
 
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -33,7 +35,7 @@ export const useInputs = (props: Props) => {
     }, animationDuration);
   }
 
-  const isMobileWidth = useIsMobileWidth();
+  const isMobileWidth = mediaQuery === 'xs' || mediaQuery === 'sm';
 
   return {
     backdropRef,
@@ -41,17 +43,4 @@ export const useInputs = (props: Props) => {
     backgroundAnimations: isMobileWidth ? undefined : backgroundAnimations,
     foregroundAnimations: isMobileWidth ? undefined : foregroundAnimations,
   }
-}
-
-const useIsMobileWidth = () => {
-  const [isMobileWidth, setIsMobileWidth] = useState(false);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileWidth(window.innerWidth < 768);
-    }
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  return isMobileWidth;
 }
