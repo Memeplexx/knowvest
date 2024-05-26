@@ -1,9 +1,9 @@
 import styled, { css } from "styled-components";
-import ReadonlyNote from "../readonly-note";
 import { Button } from "../button";
-import { dialogWidth, tabsHeight } from "./constants";
 import { ButtonIcon } from "../button-icon";
 import { button, div } from "../html";
+import ReadonlyNote from "../readonly-note";
+import { dialogWidth, tabsHeight } from "./constants";
 
 export const Container = styled(div)`
   width: ${dialogWidth}px;
@@ -99,10 +99,10 @@ export const CategoryWrapper = styled(div)`
   flex-direction: column;
 `;
 
-export const AutocompleteOption = styled(div)<{ $selected: boolean }>`
+export const AutocompleteOption = styled(div) <{ $selected: boolean }>`
   display: flex;
   gap: 8px;
-  ${p => p.$selected && css`text-decoration: underline;` }
+  ${p => p.$selected && css`text-decoration: underline;`}
 `;
 
 export const Tag = styled(button) <{ $hovered: boolean, $first?: boolean, $last?: boolean }>`

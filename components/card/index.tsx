@@ -1,10 +1,10 @@
 "use client";
-import { type ForwardedRef, forwardRef } from 'react';
-import { Body, Header, LoaderPlaceholder, Wrapper } from './styles';
+import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { forwardRef, type ForwardedRef } from 'react';
+import { CardHandle, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { CardHandle, Props } from './constants';
-import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { Body, Header, LoaderPlaceholder, Wrapper } from './styles';
 
 export const Card = forwardRef(function Card(
   props: Props,

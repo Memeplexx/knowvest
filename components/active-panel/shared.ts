@@ -2,13 +2,13 @@ import { updateNote } from "@/actions/note";
 import { updateNoteTags } from "@/actions/notetag";
 import { NoteId, TagId } from "@/actions/types";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
+import { AppState } from "@/utils/store-utils";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range, TransactionSpec } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
-import { ActivePanelStore } from "./constants";
 import { Store } from "olik";
-import { AppState } from "@/utils/store-utils";
+import { ActivePanelStore } from "./constants";
 
 export const autocompleteExtension = (store: Store<AppState>) => {
   return autocompletion({
@@ -119,7 +119,7 @@ export const textSelectorPlugin = (local: ActivePanelStore) => {
           from: range.from,
           to: range.to,
           enter: (node) => {
-            if (node.type.name !== 'Document') 
+            if (node.type.name !== 'Document')
               return;
             const documentText = view.state.doc.toString();
             if (view.state.selection.main.from === view.state.selection.main.to)
@@ -153,7 +153,7 @@ export const textSelectorPlugin = (local: ActivePanelStore) => {
 
 export const editorHasTextUpdater = (local: ActivePanelStore) => {
   return EditorView.updateListener.of(function editorHasTextUpdater(update) {
-    if (!update.docChanged) 
+    if (!update.docChanged)
       return;
     if (local.$state.editorHasText && !update.state.doc.length)
       setTimeout(() => local.editorHasText.$set(false));

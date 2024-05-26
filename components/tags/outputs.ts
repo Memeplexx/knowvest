@@ -1,4 +1,4 @@
-import { SynonymId, GroupId } from "@/actions/types";
+import { GroupId, SynonymId } from "@/actions/types";
 import { Inputs } from "./constants";
 
 
@@ -28,7 +28,7 @@ export const useOutputs = (inputs: Inputs) => {
       local.configure.$set(true);
     },
     onHideDialog: () => {
-      if (!local.$state.configure) 
+      if (!local.$state.configure)
         return;
       local.configure.$set(false);
     },

@@ -1,8 +1,8 @@
+import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
 import { Card } from "../card";
-import { Loader } from "../loader";
 import { div } from "../html";
-import { monoFontFamily } from "@/utils/style-utils";
+import { Loader } from "../loader";
 
 
 export const Wrapper = styled.div`

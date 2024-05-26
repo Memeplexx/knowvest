@@ -1,4 +1,4 @@
-import { SynonymId, GroupId } from "@/actions/types";
+import { GroupId, SynonymId } from "@/actions/types";
 import { Inputs } from "./constants";
 
 export const onSelectSynonym = (inputs: Inputs, synonymId: SynonymId) => {

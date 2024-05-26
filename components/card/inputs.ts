@@ -13,7 +13,7 @@ export const useInputs = (
   const headerOffset = useRef(0);
 
   useImperativeHandle<CardHandle, CardHandle>(ref, () => ({
-    scrollToTop: function scrollToTop(){ bodyRef.current!.scroll({ top: 0, behavior: 'smooth' }); },
+    scrollToTop: function scrollToTop() { bodyRef.current!.scroll({ top: 0, behavior: 'smooth' }); },
   }), []);
 
   return {

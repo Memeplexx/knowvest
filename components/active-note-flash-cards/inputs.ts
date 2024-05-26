@@ -6,7 +6,7 @@ import { initialState } from "./constants";
 
 
 export const useInputs = () => {
-  
+
   const { store, state: { flashCards, activeNoteId } } = useStore();
   const { local, state } = useLocalStore('activeFlashCards', initialState);
 

@@ -1,9 +1,9 @@
-import styled, { css } from "styled-components";
 import { mobileBreakPoint } from "@/utils/style-utils";
+import styled, { css } from "styled-components";
 import { button } from "../html";
 
 
-export const Wrapper = styled(button)<{ selected?: boolean }>`
+export const Wrapper = styled(button) <{ selected?: boolean }>`
   cursor: pointer;
   width: 30px;
   height: 30px;

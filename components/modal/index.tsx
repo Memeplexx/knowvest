@@ -1,9 +1,9 @@
 "use client";
 import { createPortal } from 'react-dom';
-import { Background, Foreground, ForegroundWrapper } from './styles';
-import { useInputs } from './inputs';
 import { Props } from './constants';
+import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
+import { Background, Foreground, ForegroundWrapper } from './styles';
 
 
 export const Modal = (

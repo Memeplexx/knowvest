@@ -1,6 +1,6 @@
 import { type HTMLAttributes } from "react";
-import { useInputs } from "./inputs";
 import { IfProps } from "../html";
+import { useInputs } from "./inputs";
 
 export type Props = HTMLAttributes<HTMLDivElement> & IfProps;
 

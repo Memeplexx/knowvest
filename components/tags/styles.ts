@@ -1,8 +1,8 @@
 import { SettingsIcon as BaseSettingsIcon } from '@/utils/style-utils';
 import styled, { css } from 'styled-components';
 import { ButtonIcon } from '../button-icon';
-import { Loader } from '../loader';
 import { div, element } from '../html';
+import { Loader } from '../loader';
 
 export const Tag = styled(div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
   font-size: 12px;

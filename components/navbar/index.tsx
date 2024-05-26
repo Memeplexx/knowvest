@@ -1,5 +1,8 @@
 "use client";
 import { PopupOption } from '@/utils/style-utils';
+import farmImage from '../../public/images/farm.svg';
+import useImage from '../../public/images/user.svg';
+import { FlashCardTester } from '../flash-card-tester';
 import { Modal } from '../modal';
 import { Popup } from '../popup';
 import { SearchDialog } from '../search';
@@ -7,9 +10,6 @@ import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, LoaderPlaceholder, RightContent, SearchButton, SearchIcon, UserButton, UserImage, Wrapper } from './styles';
-import { FlashCardTester } from '../flash-card-tester';
-import farmImage from '../../public/images/farm.svg';
-import useImage from '../../public/images/user.svg';
 
 
 export const Navbar = (props: Props) => {

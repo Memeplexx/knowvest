@@ -1,6 +1,6 @@
+import { Store } from "olik";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { Store } from "olik";
 
 export const initialState = {
   selection: '',

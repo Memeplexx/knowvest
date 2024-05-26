@@ -1,9 +1,9 @@
 import { ClockIcon } from "@/utils/style-utils";
-import styled from "styled-components";
-import ReadonlyNote from "../readonly-note";
 import { WiCloudyWindy } from "react-icons/wi";
-import { Loader } from "../loader";
+import styled from "styled-components";
 import { div } from "../html";
+import { Loader } from "../loader";
+import ReadonlyNote from "../readonly-note";
 
 
 export const Header = styled.div`

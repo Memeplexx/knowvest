@@ -1,6 +1,6 @@
 import { ReactNode, createContext } from "react";
 import { useInputs } from "./inputs";
-import { SuccessIcon, FailureIcon, InfoIcon } from "./styles";
+import { FailureIcon, InfoIcon, SuccessIcon } from "./styles";
 
 interface NotificationContextType {
   error: (message: string) => void;
@@ -14,9 +14,9 @@ export type Inputs = ReturnType<typeof useInputs>;
 
 
 export const snackbarStatuses = {
-  success: { icon: () => <SuccessIcon/>, color: '#50C878' },
-  error: { icon: () => <FailureIcon/>, color: '#F00' },
-  info: { icon: () => <InfoIcon/>, color: '#FF5F1F' },
+  success: { icon: () => <SuccessIcon />, color: '#50C878' },
+  error: { icon: () => <FailureIcon />, color: '#F00' },
+  info: { icon: () => <InfoIcon />, color: '#FF5F1F' },
 }
 
 export type snackbarStatus = keyof typeof snackbarStatuses;

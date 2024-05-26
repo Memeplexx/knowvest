@@ -1,6 +1,6 @@
+import { UseFloatingOptions, autoUpdate, flip, size } from '@floating-ui/react';
 import { type ReactNode } from 'react';
 import { useInputs } from './inputs';
-import { UseFloatingOptions, autoUpdate, flip, size } from '@floating-ui/react';
 
 export type OptionBase = { value: number | string | null, label: string };
 
@@ -42,4 +42,4 @@ export const floatingUiDefaultOptions = {
   ]
 } as Partial<UseFloatingOptions>;
 
-export type Inputs<Option extends OptionBase> =  ReturnType<typeof useInputs<Option>>;
+export type Inputs<Option extends OptionBase> = ReturnType<typeof useInputs<Option>>;

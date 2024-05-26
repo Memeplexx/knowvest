@@ -1,7 +1,7 @@
+import { defaultFontFamily } from '@/utils/style-utils';
 import { CiCircleAlert, CiCircleCheck, CiCircleInfo } from 'react-icons/ci';
 import styled from "styled-components";
 import { snackbarStatus, snackbarStatuses } from './constants';
-import { defaultFontFamily } from '@/utils/style-utils';
 
 export const Container = styled.div`
   position: fixed;

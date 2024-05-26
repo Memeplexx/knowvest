@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { initialState } from "./constants";
 
 export const useInputs = () => {
-  
+
   const { state: { flashCards, stateInitialized } } = useStore();
   const { local } = useLocalStore('navBar', initialState);
 

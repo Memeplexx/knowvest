@@ -1,11 +1,11 @@
 "use client";
 import { ActivePanel } from "@/components/active-panel";
-import { Tabs } from "@/components/card-with-tabs";
-import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
-import styled from "styled-components";
 import { ButtonIcon } from "@/components/button-icon";
+import { Tabs } from "@/components/card-with-tabs";
 import { History } from "@/components/history";
 import { Related } from "@/components/related";
+import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
+import styled from "styled-components";
 
 const gap = '4px';
 

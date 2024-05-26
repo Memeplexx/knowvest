@@ -4,10 +4,10 @@ import { Container, Spinner } from "./styles";
 
 export const Loader = (props: Props) => {
   return (
-    <Container 
+    <Container
       className={props.className}
       $if={props.if}
-      children={<Spinner/>}
+      children={<Spinner />}
     />
   );
 }

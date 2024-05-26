@@ -1,6 +1,6 @@
+import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 import { Button } from "../button";
-import { WiCloudyWindy } from "react-icons/wi";
 import { div, element } from "../html";
 
 export const Container = styled.div`

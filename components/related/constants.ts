@@ -1,6 +1,6 @@
 import { NoteId } from "@/actions/types";
-import { useInputs } from "./inputs";
 import { type HTMLAttributes } from 'react';
+import { useInputs } from "./inputs";
 
 export type Props = {
   onSelectNote: (noteId: NoteId) => void;

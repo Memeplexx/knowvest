@@ -1,6 +1,6 @@
-import { ChangeEvent, MouseEvent } from "react";
-import { OptionBase, Inputs, Props } from "./constants";
 import { TypedKeyboardEvent } from "@/utils/dom-utils";
+import { ChangeEvent, MouseEvent } from "react";
+import { Inputs, OptionBase, Props } from "./constants";
 
 export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inputs: Inputs<Option>) => {
   const { options, inputRef } = inputs;
@@ -10,7 +10,7 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
     },
     onClickOption: (value: Option['value'], event: MouseEvent) => {
       if (event.detail === 0) /* handled by onKeyUpInput */
-        return; 
+        return;
       props.onValueChange(value);
       props.onShowOptionsChange(false);
     },
@@ -18,15 +18,15 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
       props.onInputTextChange(event.target.value.toLowerCase());
     },
     onKeyDownInput: (event: TypedKeyboardEvent<HTMLInputElement>): true | void => {
-      if (event.key !== 'ArrowDown') 
+      if (event.key !== 'ArrowDown')
         return;
-      if (!options.length) 
+      if (!options.length)
         return true;
       (inputs.optionsPopupRef.current?.firstChild as HTMLElement)?.focus();
       event.preventDefault(); // prevents undesirable scrolling behavior
     },
     onKeyUpInput: (event: TypedKeyboardEvent<HTMLInputElement>) => {
-      if (event.key !== 'Enter') 
+      if (event.key !== 'Enter')
         return;
       inputs.containerRef.current?.blur();
       const inputValueToLowerCase = inputRef.current!.value.toLowerCase();
@@ -54,7 +54,7 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
       }
     },
     onKeyUpOption: (value: Option['value'], event: TypedKeyboardEvent<HTMLElement>) => {
-      if (event.key !== 'Enter') 
+      if (event.key !== 'Enter')
         return;
       props.onValueChange(value);
     },

@@ -1,7 +1,7 @@
-import { Inputs } from "./constants";
 import { archiveFlashCard, createFlashCard, updateFlashCardText } from "@/actions/flashcard";
 import { FlashCardId } from "@/actions/types";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
+import { Inputs } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
   const { store, local, notify } = inputs;

@@ -1,4 +1,4 @@
-import { SynonymId, TagId, GroupId } from "@/actions/types";
+import { GroupId, SynonymId, TagId } from "@/actions/types";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 

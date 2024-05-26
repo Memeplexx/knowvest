@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
-import { ButtonIcon } from '../button-icon';
 import { CloseIcon } from '@/utils/style-utils';
+import { ButtonIcon } from '../button-icon';
 import { button, div, element, input } from '../html';
 
 
@@ -29,7 +29,7 @@ export const Container = styled.div`
   display: flex;
 `;
 
-export const Input = styled(input)<{ $hasError: boolean }>`
+export const Input = styled(input) <{ $hasError: boolean }>`
   flex: 1;
   outline: none;
   border: 0.5px solid #CCC;

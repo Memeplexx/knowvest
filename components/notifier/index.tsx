@@ -1,7 +1,7 @@
 "use client";
-import { useContext } from "react"
-import { NotificationContext, Props, defaultProps, snackbarStatuses } from "./constants";
+import { useContext } from "react";
 import { createPortal } from "react-dom";
+import { NotificationContext, Props, defaultProps, snackbarStatuses } from "./constants";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { Container, Message, Popup } from "./styles";

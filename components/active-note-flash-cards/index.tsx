@@ -3,7 +3,7 @@ import { Confirmation } from "@/components/confirmation";
 import { AddIcon, DeleteIcon } from "@/utils/style-utils";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { Container, CreateNewButton, DeleteButton, FlashCard, TextArea, FlashCardWrapper, NoResults, NoResultsIcon } from "./styles";
+import { Container, CreateNewButton, DeleteButton, FlashCard, FlashCardWrapper, NoResults, NoResultsIcon, TextArea } from "./styles";
 
 
 export const ActiveNoteFlashCards = () => {

@@ -1,7 +1,7 @@
+import { useIsMounted } from "@/utils/react-utils";
 import { useLocalStore } from "@/utils/store-utils";
 import { ReferenceType, useFloating } from "@floating-ui/react";
 import { Props, defaultProps, initialState } from "./constants";
-import { useIsMounted } from "@/utils/react-utils";
 
 export const useInputs = (props: Props) => {
 

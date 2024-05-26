@@ -1,7 +1,7 @@
 "use client";
-import { useInputs } from "./inputs";
-import { Props } from "./constants";
 import { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
+import { Props } from "./constants";
+import { useInputs } from "./inputs";
 
 export const TextAreaDebounced = (
   props: Props & TextareaHTMLAttributes<unknown>

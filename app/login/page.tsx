@@ -1,8 +1,8 @@
 "use server";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Suspense } from "react";
 import { LoginEvents } from "./events";
 import { CenterContent, Divider, ProviderButton, Providers, SubTitle, Title, Wrapper } from "./styles";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 
 export default async function PageInteractive() {

@@ -1,7 +1,6 @@
 import { NoteId } from "@/actions/types";
-import { Inputs } from "./constants";
+import { Inputs, initialState } from "./constants";
 import { useSharedFunctions } from "./shared";
-import { initialState } from './constants';
 
 export const useOutputs = (inputs: Inputs) => {
   const { local, similarExpanded, historyExpanded, tagsExpanded, headerExpanded } = inputs;

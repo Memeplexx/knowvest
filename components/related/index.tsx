@@ -4,7 +4,7 @@ import { Card } from '../card';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Header, Icon, ListItemsWrapper, NoResultsWrapper, NoResultsIcon, Result, ListItem, NoteCount, LoaderPlaceholder } from './styles';
+import { Header, Icon, ListItem, ListItemsWrapper, LoaderPlaceholder, NoResultsIcon, NoResultsWrapper, NoteCount, Result } from './styles';
 
 
 export function Related(

@@ -1,9 +1,9 @@
 "use client";
-import { AutocompleteHandle, Props, OptionBase } from './constants';
-import { ClearIcon, ClearTextButton, ClearTextButtonWrapper, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
+import { forwardRef, type ForwardedRef } from 'react';
+import { AutocompleteHandle, OptionBase, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { type ForwardedRef, forwardRef } from 'react';
+import { ClearIcon, ClearTextButton, ClearTextButtonWrapper, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
 
 
 export const Autocomplete = forwardRef(function Autocomplete<Option extends OptionBase>(

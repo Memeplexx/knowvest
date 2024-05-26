@@ -2,7 +2,7 @@
 import { CloseIcon } from '@/utils/style-utils';
 import { Fragment, forwardRef, type ForwardedRef } from 'react';
 import { Autocomplete } from '../autocomplete';
-import { AutocompleteOptionType, Props, FragmentProps } from './constants';
+import { AutocompleteOptionType, FragmentProps, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { AutocompleteOption, CategoryWrapper, CloseButton, Container, LeftContent, MainContent, Result, RightContent, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';

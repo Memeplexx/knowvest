@@ -2,8 +2,8 @@ import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '
 import { addTagToSynonym, createTagForSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
-import { Inputs, Props } from './constants';
 import { writeToStoreAndDb } from '@/utils/storage-utils';
+import { Inputs, Props } from './constants';
 
 
 export const useSharedFunctions = (props: Props, inputs: Inputs) => {

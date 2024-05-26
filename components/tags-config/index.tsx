@@ -4,7 +4,7 @@ import { forwardRef, type ForwardedRef } from 'react';
 import { CloseIcon, PopupOption, PopupOptions, SettingsIcon } from '@/utils/style-utils';
 import { Autocomplete } from '../autocomplete';
 import { Confirmation } from '../confirmation';
-import { AutocompleteOptionType, Props, FragmentProps } from './constants';
+import { AutocompleteOptionType, FragmentProps, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import {

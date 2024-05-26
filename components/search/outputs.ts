@@ -54,7 +54,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       local.showAutocompleteOptions.$set(true);
     },
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
-      if (event.key !== 'Escape') 
+      if (event.key !== 'Escape')
         return;
       if (inputs.showAutocompleteOptions)
         return local.showAutocompleteOptions.$set(false);

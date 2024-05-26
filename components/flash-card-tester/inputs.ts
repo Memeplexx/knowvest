@@ -11,7 +11,7 @@ export const useInputs = () => {
 
   const notify = useNotifier();
   const bodyRef = useRef<HTMLDivElement>(null);
-  
+
   const items = useMemo(() => {
     return flashCards
       .filter(fc => isAfter(new Date(), fc.nextQuestionDate))

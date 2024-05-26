@@ -1,10 +1,10 @@
-import Image from "next/image";
-import styled, { css } from "styled-components";
 import { SearchIcon as BaseSearchIcon } from "@/utils/style-utils";
-import { ButtonIcon } from "../button-icon";
+import Image from "next/image";
 import { PiStudentFill } from 'react-icons/pi';
-import { Loader } from "../loader";
+import styled, { css } from "styled-components";
+import { ButtonIcon } from "../button-icon";
 import { div } from "../html";
+import { Loader } from "../loader";
 
 export const Wrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;

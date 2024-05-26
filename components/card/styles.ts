@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Loader } from "../loader";
 import { div } from "../html";
+import { Loader } from "../loader";
 
 
 export const Wrapper = styled(div)`

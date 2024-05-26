@@ -1,10 +1,10 @@
 "use client";
-import { createPortal } from 'react-dom';
-import { Floating, Foreground, Background } from './styles';
-import { useInputs } from './inputs';
-import { PopupHandle, Props } from './constants';
-import { useOutputs } from './outputs';
 import { ForwardedRef, forwardRef } from 'react';
+import { createPortal } from 'react-dom';
+import { PopupHandle, Props } from './constants';
+import { useInputs } from './inputs';
+import { useOutputs } from './outputs';
+import { Background, Floating, Foreground } from './styles';
 
 
 export const Popup = forwardRef(function Popup(

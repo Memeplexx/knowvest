@@ -1,10 +1,10 @@
 import { archiveNote, createNote, duplicateNote, splitNote } from "@/actions/note";
-import { writeToStoreAndDb } from "@/utils/storage-utils";
-import { Inputs } from "./constants";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
+import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { tupleIncludes } from "olik";
 import { useNotifier } from "../notifier";
+import { Inputs } from "./constants";
 
 
 export const useOutputs = (inputs: Inputs) => {

@@ -1,14 +1,14 @@
 "use client";
+import { useForwardedRef } from "@/utils/react-utils";
 import { useFloating } from "@floating-ui/react";
 import { ForwardedRef, useImperativeHandle, useMemo, useRef } from "react";
-import { Props, AutocompleteHandle, OptionBase, floatingUiDefaultOptions } from "./constants";
-import { useForwardedRef } from "@/utils/react-utils";
+import { AutocompleteHandle, OptionBase, Props, floatingUiDefaultOptions } from "./constants";
 
 export const useInputs = <Option extends OptionBase>(
   props: Props<Option>,
   forwardedRef: ForwardedRef<AutocompleteHandle>
 ) => {
-  
+
   const floatingRef = useFloating<HTMLInputElement>(floatingUiDefaultOptions);
   const inputRef = floatingRef.refs.domReference;
   const optionsPopupRef = floatingRef.refs.floating;
@@ -25,7 +25,7 @@ export const useInputs = <Option extends OptionBase>(
   const optionsPopupExpanded = !!props.showOptions && !!options.length;
 
   useImperativeHandle(forwardedRef, () => ({
-    focusInput: function focusInput(){ inputRef.current!.focus(); },
+    focusInput: function focusInput() { inputRef.current!.focus(); },
     blurInput: function blurInput() { inputRef.current!.blur(); },
   }), [inputRef]);
 
