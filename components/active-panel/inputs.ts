@@ -96,9 +96,7 @@ export const useInputs = () => {
       const note = store.$state.notes.findOrThrow(n => n.id === activeNoteId);
       codeMirror.current!.dispatch({ changes: { from: 0, to: codeMirror.current!.state.doc.length, insert: note.text } });
       unsubscribeFromNoteTextChange?.();
-      unsubscribeFromNoteTextChange = store.notes.$find.id.$eq(activeNoteId).text.$onChangeImmediate(text => {
-        tagsWorker.updateNote({ ...note, text });
-      });
+      unsubscribeFromNoteTextChange = store.notes.$find.id.$eq(activeNoteId).text.$onChangeImmediate(text => tagsWorker.updateNote({ ...note, text }));
     })
 
     // Listen to changes in tags and synonyms, and notify the worker as required

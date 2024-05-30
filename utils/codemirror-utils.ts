@@ -209,13 +209,11 @@ const highlightedRanges = StateField.define({
 export const doReviseTagsInEditor = (store: Store<AppState>, codeMirror: EditorView, tags: TagSummary[], previousPositions: { from: number, to: number, type: tagType }[]) => {
   const { synonymIds, synonymGroups } = store.$state;
   const text = codeMirror.state.doc.toString().toLowerCase();
-
   const groupSynonymIds = synonymGroups
     .filter(sg => synonymIds.includes(sg.synonymId))
     .distinct()
     .map(sg => sg.synonymId);
   const primarySynonyms = [...synonymIds, ...groupSynonymIds];
-
   const newTagPositions = tags
     .flatMap(tag => {
       const tagText = tag.text.toLowerCase();
@@ -225,10 +223,8 @@ export const doReviseTagsInEditor = (store: Store<AppState>, codeMirror: EditorV
     });
   const removeTagPositions = previousPositions
     .filter(p => !newTagPositions.some(np => np.from === p.from && np.to === p.to && np.type === p.type));
-
   const addTagPositions = newTagPositions
     .filter(p => !previousPositions.some(np => np.from === p.from && np.to === p.to && np.type === p.type));
-
   const effects = [
     ...removeTagPositions
       .map(t => removeHighlight.of(t) as StateEffect<unknown>),
