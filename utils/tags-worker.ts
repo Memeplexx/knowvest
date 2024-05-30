@@ -104,6 +104,18 @@ export type TagsWorker = Omit<Worker, 'postMessage' | 'onmessage'> & {
 const trie = new Trie();
 const allTags = [] as Array<TagSummary>;
 const allNotes = [] as Array<NoteDTO>;
+const previousResults = new Map<NoteId, Array<TagSummary>>();
+
+const notify = () => allNotes.forEach(note => {
+  const results = Array.from(trie.search(note.text.toLowerCase()));
+  if (JSON.stringify(results) === JSON.stringify(previousResults.get(note.id)!))
+    return;
+  previousResults.set(note.id, results);
+  postMessage({
+    noteId: note.id,
+    tags: results,
+  })
+});
 
 onmessage = (e: MessageEvent<Incoming>) => {
   const { type, data } = e.data;
@@ -111,6 +123,7 @@ onmessage = (e: MessageEvent<Incoming>) => {
     case 'addTags': {
       allTags.push(...data);
       data.forEach(tag => trie.insert(tag.text.toLowerCase(), tag.id, tag.synonymId!));
+      notify();
       break;
     }
     case 'removeTags': {
@@ -118,6 +131,7 @@ onmessage = (e: MessageEvent<Incoming>) => {
       if (index !== -1)
         allTags.splice(index, 1);
       data.forEach(tagId => trie.remove(allTags.find(t => t.id === tagId)!.text.toLowerCase()));
+      notify();
       break;
     }
     case 'updateTags': {
@@ -125,8 +139,9 @@ onmessage = (e: MessageEvent<Incoming>) => {
         const tag = allTags.find(t => t.id === tagSummary.id);
         if (!tag) return;
         trie.remove(tag.text.toLowerCase());
-        trie.insert(tag.text.toLowerCase(), tag.id, tag.synonymId!);
+        trie.insert(tagSummary.text.toLowerCase(), tag.id, tag.synonymId!);
       });
+      notify();
       break;
     }
     case 'updateNote': {
@@ -135,10 +150,7 @@ onmessage = (e: MessageEvent<Incoming>) => {
         allNotes.push(data);
       else
         note.text = data.text;
-      allNotes.forEach(note => postMessage({
-        noteId: note.id,
-        tags: Array.from(trie?.search(note.text.toLowerCase()))!
-      }));
+      notify();
       break;
     }
     case 'removeNote': {

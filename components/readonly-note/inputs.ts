@@ -65,9 +65,11 @@ export const useInputs = (props: Props) => {
     const reviseTagsInEditor = () => doReviseTagsInEditor(store, codeMirror.current!, latestTagsFromWorker, previousPositions);
     const unsubscribeFromSynonymIds = store.synonymIds.$onChangeImmediate(reviseTagsInEditor);
     const unsubscribeFromSynonymGroupsChange = store.synonymGroups.$onChange(reviseTagsInEditor);
+    const unsubscribeFromTagsChange = store.tags.$onChange(reviseTagsInEditor);
 
     // Cleanup
     return () => {
+      unsubscribeFromTagsChange();
       unsubscribeFromWorker();
       unsubscribeFromSynonymIds();
       unsubscribeFromSynonymGroupsChange();
