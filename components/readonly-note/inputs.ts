@@ -25,9 +25,13 @@ export const useInputs = (props: Props) => {
   const tagsWorker = useTagsContext();
 
   useIsomorphicLayoutEffect(() => {
+
+    // Do not instantiate the editor until certain conditions are met
     if (!isMounted) return;
     if (!tagsWorker) return;
     if (props.if === false) return;
+
+    // Instantiate the editor
     codeMirror.current = new EditorView({
       doc: props.note!.text,
       parent: editorRef.current!,
@@ -44,8 +48,10 @@ export const useInputs = (props: Props) => {
       ],
     });
 
+    // Register note in listener
     tagsWorker.updateNote(props.note!);
 
+    // Listen to changes in this note as well as its text, and notify the worker as required
     const latestTagsFromWorker = new Array<TagSummary>();
     const unsubscribeFromWorker = tagsWorker.addListener(async event => {
       if (event.data.noteId !== props.note!.id) return;
@@ -54,12 +60,13 @@ export const useInputs = (props: Props) => {
       reviseTagsInEditor();
     });
 
+    // Listen to changes in tags and synonyms, and notify the worker as required
     const previousPositions = new Array<{ from: number, to: number, type: tagType }>();
     const reviseTagsInEditor = () => doReviseTagsInEditor(store, codeMirror.current!, latestTagsFromWorker, previousPositions);
     const unsubscribeFromSynonymIds = store.synonymIds.$onChangeImmediate(reviseTagsInEditor);
     const unsubscribeFromSynonymGroupsChange = store.synonymGroups.$onChange(reviseTagsInEditor);
-    reviseTagsInEditor();
 
+    // Cleanup
     return () => {
       unsubscribeFromWorker();
       unsubscribeFromSynonymIds();

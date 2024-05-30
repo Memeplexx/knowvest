@@ -31,6 +31,7 @@ import {
 import { Highlighter } from '@lezer/highlight';
 import { useEffect, useRef } from 'react';
 import { TagSummary } from '../../utils/tags-worker';
+import { useNotifier } from '../notifier';
 import { PopupHandle } from '../popup/constants';
 import { initialState } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdater, pasteListener, textSelectorPlugin } from './shared';
@@ -41,6 +42,7 @@ export const useInputs = () => {
 
   const { store, state: { notes, stateInitialized } } = useStore();
   const { local } = useLocalStore('activePanel', initialState);
+  const notify = useNotifier();
   const tagsWorker = useTagsContext();
 
   const popupRef = useRef<PopupHandle>(null);
@@ -152,6 +154,7 @@ export const useInputs = () => {
   return {
     store,
     local,
+    notify,
     ...local.$state,
     mayDeleteNote: !!notes.length,
     popupRef,
