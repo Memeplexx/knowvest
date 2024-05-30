@@ -3,6 +3,7 @@ import { prisma, respond, validateTagId } from './_common';
 import { NoteId, TagId } from './types';
 
 
+
 export const updateNoteTags = async (noteId: NoteId, addTagIds: TagId[], removeTagIds: TagId[]) => respond(async () => {
 
   // Validation
@@ -20,7 +21,8 @@ export const updateNoteTags = async (noteId: NoteId, addTagIds: TagId[], removeT
     if (existingNoteTags.length < addTagIds.length) {
       const tagIdsOfNoteTagsJustCreated = existingNoteTags.map(noteTag => noteTag.tagId);
       const tagIdsOfNoteTagsToBeCreated = addTagIds.filter(tagId => !tagIdsOfNoteTagsJustCreated.includes(tagId));
-      await prisma.noteTag.createMany({ data: tagIdsOfNoteTagsToBeCreated.map(tagId => ({ tagId, noteId })) });
+      const now = new Date();
+      await prisma.noteTag.createMany({ data: tagIdsOfNoteTagsToBeCreated.map(tagId => ({ tagId, noteId, assignedAt: now })) });
     }
   }
 
@@ -29,7 +31,6 @@ export const updateNoteTags = async (noteId: NoteId, addTagIds: TagId[], removeT
     await prisma.noteTag.updateMany({ where: { noteId, tagId: { in: removeTagIds } }, data: { isArchived: true } });
 
   // Populate and return response
-  const noteTags = await prisma.noteTag.findMany({ where: { noteId } });
+  const noteTags = await prisma.noteTag.findMany({ where: { noteId, tag: { id: { in: [...addTagIds, ...removeTagIds] } } } });
   return { status: 'NOTE TAGS UPDATED', noteTags };
 });
-

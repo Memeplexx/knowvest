@@ -1,6 +1,5 @@
 import { updateNote } from "@/actions/note";
-import { updateNoteTags } from "@/actions/notetag";
-import { NoteId, TagId } from "@/actions/types";
+import { NoteId } from "@/actions/types";
 import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { AppState } from "@/utils/store-utils";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
@@ -28,72 +27,19 @@ export const autocompleteExtension = (store: Store<AppState>) => {
 
 export const createNotePersisterExtension = ({ debounce, store, local }: { debounce: number, store: Store<AppState>, local: ActivePanelStore }) => {
   let timestamp = Date.now();
-  let activeNoteIdRef = store.$state.activeNoteId;
-  const doNoteUpdate = async (update: ViewUpdate) => {
-    if (store.$state.activeNoteId !== activeNoteIdRef) return;
+  const doNoteUpdate = async (noteId: NoteId, docText: string) => {
     if (Date.now() - timestamp < debounce) return;
     if (!local.$state.allowNotePersister) return;
-    store.writingNote.$set(true);
-    const apiResponse = await updateNote(store.$state.activeNoteId, update.state.doc.toString());
+    if (docText === store.$state.notes.findOrThrow(n => n.id === noteId).text) return;
+    const apiResponse = await updateNote(noteId, docText);
     await writeToStoreAndDb(store, { notes: apiResponse.note });
-    store.writingNote.$set(false);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) return;
     if (!local.$state.allowNotePersister) return;
     timestamp = Date.now();
-    setTimeout(() => doNoteUpdate(update), debounce)
-    activeNoteIdRef = store.$state.activeNoteId;
-  });
-}
-
-export const noteTagsPersisterExtension = (store: Store<AppState>) => {
-  let previousActiveNoteId = 0 as NoteId;
-  let previousActiveNoteTagIds = new Array<TagId>();
-  const tagsWithRegexp = store.$state.tags
-    .map(tag => ({ ...tag, regexp: new RegExp(`\\b(${tag.text})\\b`, 'gi') }));
-  store.tags.$onChange(newTags => { ///////// THIS WILL CAUSE A MEMORY LEAK! TODO: FIX
-    const currentTagIds = tagsWithRegexp.map(t => t.id);
-    newTags
-      .filter(nt => !currentTagIds.includes(nt.id))
-      .forEach(nt => {
-        const regexp = new RegExp(`\\b(${nt.text})\\b`, 'gi');
-        tagsWithRegexp.push({ ...nt, regexp });
-      });
-  });
-  let initializing = true;
-  return EditorView.updateListener.of(async update => {
-    if (!initializing && !update.docChanged) return;
-    initializing = false;
-    const activeNoteText = update.state.doc.toString();
-    if (previousActiveNoteId !== store.$state.activeNoteId) {
-      previousActiveNoteId = store.$state.activeNoteId;
-      previousActiveNoteTagIds = tagsWithRegexp
-        .map(t => ({ tagId: t.id, items: [...activeNoteText.matchAll(t.regexp)] }))
-        .flatMap(t => t.items.map(() => t.tagId))
-        .sort((a, b) => a - b);
-      return;
-    }
-    const newActiveNoteTagIds = tagsWithRegexp
-      .map(t => ({ tagId: t.id, items: [...activeNoteText.matchAll(t.regexp)] }))
-      .flatMap(t => t.items.map(() => t.tagId))
-      .sort((a, b) => a - b);
-    const previousActiveNoteTagIdsCopy = previousActiveNoteTagIds.slice();
-    const nonUniqueTagsHaveChanged = JSON.stringify(previousActiveNoteTagIds) !== JSON.stringify(newActiveNoteTagIds);
-    const uniqueTagsHaveChanged = JSON.stringify(previousActiveNoteTagIds.distinct()) !== JSON.stringify(newActiveNoteTagIds.distinct());
-    previousActiveNoteTagIds = newActiveNoteTagIds;
-    if (!uniqueTagsHaveChanged) {
-      if (nonUniqueTagsHaveChanged)
-        store.noteTags.$set(store.$state.noteTags.slice());  // forces re-rendering
-      return;
-    }
-    const addTagIds = newActiveNoteTagIds.filter(t => !previousActiveNoteTagIdsCopy.includes(t));
-    const removeTagIds = previousActiveNoteTagIdsCopy.filter(t => !newActiveNoteTagIds.includes(t));
-    store.writingNoteTags.$set(true);
-    const apiResponse = await updateNoteTags(store.$state.activeNoteId, addTagIds, removeTagIds);
-    await writeToStoreAndDb(store, apiResponse);
-    store.synonymIds.$setUnique(store.tags.$filter.id.$in(apiResponse.noteTags.map(nt => nt.tagId)).synonymId);
-    store.writingNoteTags.$set(false);
+    const docText = update.state.doc.toString();
+    setTimeout(() => doNoteUpdate(store.$state.activeNoteId, docText), debounce);
   });
 }
 

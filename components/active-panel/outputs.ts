@@ -24,14 +24,15 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickConfirmRemoveNote: async () => {
       local.$patch({ allowNotePersister: false, loadingNote: true })
-      const apiResponse = await archiveNote(store.$state.activeNoteId);
+      const { noteTags, tags, notes, activeNoteId } = store.$state;
+      const apiResponse = await archiveNote(activeNoteId);
       await writeToStoreAndDb(store, apiResponse)
       local.$patch({ loadingNote: false, confirmDelete: false });
-      const mostRecentlyViewedNoteId = store.$state.notes
-        .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, store.$state.notes[0])!.id;
+      const mostRecentlyViewedNoteId = notes
+        .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
       store.activeNoteId.$set(mostRecentlyViewedNoteId);
-      const tagIds = store.noteTags.$filter.noteId.$eq(mostRecentlyViewedNoteId).tagId;
-      const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
+      const tagIds = noteTags.filter(nt => nt.noteId === mostRecentlyViewedNoteId).map(nt => nt.tagId);
+      const synonymIds = tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
       store.synonymIds.$setUnique(synonymIds);
       setTimeout(() => local.allowNotePersister.$set(true), 500);
       notify.success('Note deleted');
@@ -66,7 +67,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (apiResponse.status === 'CONFLICT')
         return notify.error(apiResponse.fields.tagText);
       await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
-      store.synonymIds.$merge(store.tags.$find.id.$eq(apiResponse.tag.id).synonymId);
+      store.synonymIds.$merge(store.$state.tags.filter(t => t.id === apiResponse.tag.id).map(t => t.synonymId));
       local.selection.$set('');
       codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0]!.anchor } });
       notify.success(`Tag "${apiResponse.tag.text}" created`);
@@ -74,7 +75,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickFilterNotesFromSelection: () => {
       const { from, to } = codeMirror!.state.selection.ranges[0]!;
       const selection = codeMirror!.state.doc.sliceString(from, to);
-      store.synonymIds.$setUnique(store.tags.$filter.text.$isContainedInIgnoreCase(selection).synonymId);
+      store.synonymIds.$set(store.$state.tags.filter(t => selection.includes(t.text)).map(t => t.synonymId).distinct());
       local.selection.$set('');
       notify.success(`Filtered related notes`);
     },

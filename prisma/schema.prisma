@@ -15,7 +15,7 @@ model Note {
   text        String
   userId      Int         @map("user_id")
   user        User        @relation(fields: [userId], references: [id])
-  dateCreated DateTime    @default(now()) @map("date_created")
+  dateCreated DateTime    @map("date_created")
   dateUpdated DateTime?   @default(now()) @updatedAt @map("date_updated")
   dateViewed  DateTime?   @map("date_viewed")
   isArchived  Boolean     @default(false) @map("is_archived")
@@ -42,7 +42,7 @@ model Tag {
   synonym     Synonym   @relation(fields: [synonymId], references: [id])
   userId      Int       @map("user_id")
   user        User      @relation(fields: [userId], references: [id])
-  dateCreated DateTime  @default(now()) @map("date_created")
+  dateCreated DateTime  @map("date_created")
   dateUpdated DateTime  @default(now()) @updatedAt @map("date_updated")
   isArchived  Boolean   @default(false) @map("is_archived")
   noteTags    NoteTag[]
@@ -80,7 +80,7 @@ model NoteTag {
   note        Note     @relation(fields: [noteId], references: [id])
   tagId       Int      @map("tag_id")
   tag         Tag      @relation(fields: [tagId], references: [id])
-  assignedAt  DateTime @default(now()) @map("assigned_at")
+  assignedAt  DateTime @map("assigned_at")
   dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
   isArchived  Boolean  @default(false) @map("is_archived")
 

@@ -41,8 +41,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       local.hoveredSynonymId.$set(null);
     },
     onClickResult: (noteId: NoteId) => {
-      const tagIds = store.noteTags.$filter.noteId.$eq(noteId).tagId;
-      const synonymIds = store.tags.$filter.id.$in(tagIds).synonymId;
+      const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.tagId);
+      const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.activeNoteId.$set(noteId);
       store.synonymIds.$setUnique(synonymIds);
       props.onHide();

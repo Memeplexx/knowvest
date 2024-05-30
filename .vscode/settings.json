@@ -9,9 +9,9 @@
   ],
   "editor.tabSize": 2,
   "editor.gotoLocation.multipleTypeDefinitions": "peek",
-  "editor.gotoLocation.multipleDefinitions": "goto", 
-  "editor.gotoLocation.multipleDeclarations": "peek", 
-  "editor.gotoLocation.multipleImplementations": "goto", 
+  "editor.gotoLocation.multipleDefinitions": "goto",
+  "editor.gotoLocation.multipleDeclarations": "peek",
+  "editor.gotoLocation.multipleImplementations": "goto",
   "editor.gotoLocation.multipleReferences": "peek",
   "typescript.referencesCodeLens.enabled": true,
   "highlight-matching-tag.highlightFromAttributes": true,
@@ -31,5 +31,6 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "always"
-  }
+  },
+  "js/ts.implicitProjectConfig.checkJs": true
 }

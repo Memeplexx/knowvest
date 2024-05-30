@@ -1,7 +1,7 @@
 "use server";
 import { NoteId, NoteTagId, TagId } from "@/actions/types";
-import { getUserId, listUnArchivedTagIdsWithTagText, prisma, respond, validateNoteId } from "./_common";
 import { Note, NoteTag } from "@prisma/client";
+import { getUserId, listUnArchivedTagIdsWithTagText, prisma, respond, validateNoteId } from "./_common";
 
 
 export const createNote = () => respond(async () => {
@@ -9,7 +9,7 @@ export const createNote = () => respond(async () => {
   // Create a new note
   const now = new Date();
   const userId = await getUserId();
-  const note = await prisma.note.create({ data: { userId, text: '', dateUpdated: now, dateViewed: now } });
+  const note = await prisma.note.create({ data: { userId, text: '', dateCreated: now, dateViewed: now } });
 
   // Populate and return response
   return { status: 'NOTE_CREATED', note } as const;
@@ -40,11 +40,11 @@ export const duplicateNote = (noteId: NoteId) => respond(async () => {
 
   // Create a new note with the same text as the note being duplicated
   const now = new Date();
-  const noteCreated = await prisma.note.create({ data: { userId, text: note.text, dateUpdated: now, dateViewed: now } });
+  const noteCreated = await prisma.note.create({ data: { userId, text: note.text, dateCreated: now, dateUpdated: now, dateViewed: now } });
 
   // Create new note tags with the same tag ids as the note being duplicated
   const noteTagTagIds = (await prisma.noteTag.findMany({ where: { noteId }, select: { tagId: true } })).map(nt => nt.tagId);
-  await prisma.noteTag.createMany({ data: noteTagTagIds.map(tagId => ({ noteId: noteCreated.id, tagId })) });
+  await prisma.noteTag.createMany({ data: noteTagTagIds.map(tagId => ({ noteId: noteCreated.id, tagId, assignedAt: now })) });
 
   // Populate and return response
   const noteTags = await prisma.noteTag.findMany({ where: { noteId: noteCreated.id, tagId: { in: noteTagTagIds } } });
@@ -59,12 +59,12 @@ export const splitNote = (from: number, to: number, noteId: NoteId) => respond(a
 
   // Create new note with the split text
   const now = new Date();
-  const noteCreated = await prisma.note.create({ data: { userId, text: note.text.slice(from, to), dateUpdated: now, dateViewed: now } });
+  const noteCreated = await prisma.note.create({ data: { userId, text: note.text.slice(from, to), dateUpdated: now, dateViewed: now, dateCreated: now } });
 
   // Create new note tags for the new note
   const tagIdsToBeAssigned = await listUnArchivedTagIdsWithTagText({ userId, noteText: noteCreated.text });
   if (tagIdsToBeAssigned.length)
-    await prisma.noteTag.createMany({ data: tagIdsToBeAssigned.map(tagId => ({ noteId: noteCreated.id, tagId })) });
+    await prisma.noteTag.createMany({ data: tagIdsToBeAssigned.map(tagId => ({ noteId: noteCreated.id, tagId, assignedAt: now })) });
 
   // Update the existing note by removing the split text
   const noteUpdated = await prisma.note.update({ where: { id: noteId }, data: { text: `${note.text.slice(0, from)}${note.text.slice(to)}`, dateUpdated: now, dateViewed: now } });

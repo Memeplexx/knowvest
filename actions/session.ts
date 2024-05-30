@@ -20,16 +20,18 @@ export const initialize = ({ name, email, image, after }: {
         name
       }
     });
+    const now = new Date();
     const firstNote = await prisma.note.create({
       data: {
         userId: user.id,
         text: '# Welcome to Knowledge Harvest! ## This is your first note. Remove this text to get started ❤️',
-        dateViewed: new Date(),
+        dateViewed: now,
+        dateCreated: now,
       }
     });
     return { status: 'USER_CREATED', firstNote } as const;
 
-  // Else if the user does exist, return their data after the specified date
+    // Else if the user does exist, return their data after the specified date
   } else {
     const user = await prisma.user.update({ where: { email }, data: { email, image, name } });
     const userId = user.id;

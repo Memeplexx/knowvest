@@ -105,8 +105,8 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     props.onHide();
   }
   const onAutocompleteSelectedWhileNothingIsSelected = async ({ tagId }: { tagId: TagId }) => {
-    const synonymId = store.tags.$find.id.$eq(tagId).synonymId;
-    const autocompleteText = store.tags.$find.id.$eq(tagId).text;
+    const synonymId = store.$state.tags.findOrThrow(t => t.id === tagId).synonymId;
+    const autocompleteText = store.$state.tags.findOrThrow(t => t.id === tagId).text;
     local.$patch({ tagId, synonymId, autocompleteText, autocompleteAction: 'addSynonymsToActiveSynonyms' });
   }
   const onAutocompleteSelectedWhileSynonymIsSelected = async ({ tagId }: { tagId: TagId }) => {

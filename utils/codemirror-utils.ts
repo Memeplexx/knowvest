@@ -1,7 +1,10 @@
 import { TagId } from "@/actions/types";
+import { TagSummary } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
+import { Store } from "olik";
+import { AppState } from "./store-utils";
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
   decorations: DecorationSet;
@@ -203,22 +206,39 @@ const highlightedRanges = StateField.define({
   provide: field => EditorView.decorations.from(field)
 });
 
-export const reviseEditorTags = ({ editorView, addTags, removeTags }: ReviseEditorTagsArgs) => {
+export const doReviseTagsInEditor = (store: Store<AppState>, codeMirror: EditorView, tags: TagSummary[], previousPositions: { from: number, to: number, type: tagType }[]) => {
+  const { synonymIds, synonymGroups } = store.$state;
+  const text = codeMirror.state.doc.toString().toLowerCase();
+
+  const groupSynonymIds = synonymGroups
+    .filter(sg => synonymIds.includes(sg.synonymId))
+    .distinct()
+    .map(sg => sg.synonymId);
+  const primarySynonyms = [...synonymIds, ...groupSynonymIds];
+
+  const newTagPositions = tags
+    .flatMap(tag => {
+      const tagText = tag.text.toLowerCase();
+      return [...text.matchAll(new RegExp(`(${tagText})`, 'ig'))]
+        .map(m => m.index!)
+        .map(index => ({ from: index, to: index + tagText.length, type: primarySynonyms.includes(tag.synonymId!) ? 'primary' : 'secondary' as tagType }));
+    });
+  const removeTagPositions = previousPositions
+    .filter(p => !newTagPositions.some(np => np.from === p.from && np.to === p.to && np.type === p.type));
+
+  const addTagPositions = newTagPositions
+    .filter(p => !previousPositions.some(np => np.from === p.from && np.to === p.to && np.type === p.type));
+
   const effects = [
-    ...removeTags
-      .map(t => removeHighlight.of({
-        ...t,
-        // if user deletes last character and char is inside tag, we will get an out of bounds error. This prevents that
-        to: Math.min(t.to, editorView.state.doc.length || Number.MAX_VALUE)
-      }) as StateEffect<unknown>),
-    ...addTags
-      .map(t => addHighlight.of(
-        t
-      ) as StateEffect<unknown>),
+    ...removeTagPositions
+      .map(t => removeHighlight.of(t) as StateEffect<unknown>),
+    ...addTagPositions
+      .map(t => addHighlight.of(t) as StateEffect<unknown>),
   ];
-  if (!editorView.state.field(highlightedRanges, false)) {
+  if (!codeMirror.state.field(highlightedRanges, false)) {
     effects.push(StateEffect.appendConfig.of([highlightedRanges]));
   }
-  editorView.dispatch({ effects });
-
-}
+  codeMirror.dispatch({ effects });
+  previousPositions.length = 0;
+  previousPositions.push(...newTagPositions);
+};

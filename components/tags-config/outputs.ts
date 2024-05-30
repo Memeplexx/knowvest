@@ -17,11 +17,11 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       local.$patch({
         groupId,
         groupSynonymId: null,
-        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name,
+        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
     onCustomGroupNameBlur: (groupId: GroupId) => {
-      const groupName = store.groups.$find.id.$eq(groupId).name;
+      const groupName = store.$state.groups.findOrThrow(g => g.id === groupId).name;
       local.focusedGroupNameInputText.$set(groupName);
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
@@ -50,7 +50,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
         tagId,
         groupId: null,
         groupSynonymId: null,
-        autocompleteText: store.tags.$find.id.$eq(tagId).text,
+        autocompleteText: store.$state.tags.findOrThrow(t => t.id === tagId).text,
       });
       shared.focusAutocompleteInput();
     },
@@ -63,7 +63,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
         groupId,
         groupSynonymId,
         autocompleteText: '',
-        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name,
+        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
     onClickRemoveTagFromSynonyms: async () => {
@@ -111,7 +111,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
         local.showAutocompleteOptions.$set(true);
     },
     onAutocompleteInputCancel: () => {
-      const autocompleteText = !inputs.tagId ? '' : store.tags.$find.id.$eq(inputs.tagId).text;
+      const autocompleteText = !inputs.tagId ? '' : store.$state.tags.findOrThrow(t => t.id === inputs.tagId).text;
       local.autocompleteText.$set(autocompleteText);
       shared.blurAutocompleteInput();
     },
@@ -142,8 +142,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onClickUpdateGroupSynonym: () => {
       if (!inputs.groupId || !inputs.groupSynonymId)
         throw new Error();
-      const synonymId = store.synonymGroups
-        .$find.groupId.$eq(inputs.groupId).$and.synonymId.$eq(inputs.groupSynonymId)
+      const synonymId = store.$state.synonymGroups
+        .findOrThrow(sg => sg.groupId === inputs.groupId && sg.synonymId === inputs.groupSynonymId)
         .synonymId;
       local.$patch({
         autocompleteAction: 'addSynonymsToActiveSynonyms',
@@ -245,7 +245,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
         modal: 'groupOptions',
         groupId,
         tagId: null,
-        focusedGroupNameInputText: store.groups.$find.id.$eq(groupId).name,
+        focusedGroupNameInputText: store.$state.groups.findOrThrow(g => g.id === groupId).name,
       });
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
