@@ -79,6 +79,10 @@ export type Incoming
     data: TagId[]
   }
   | {
+    type: 'updateTags',
+    data: TagSummary[]
+  }
+  | {
     type: 'updateNote',
     data: NoteDTO
   }
@@ -114,6 +118,15 @@ onmessage = (e: MessageEvent<Incoming>) => {
       if (index !== -1)
         allTags.splice(index, 1);
       data.forEach(tagId => trie.remove(allTags.find(t => t.id === tagId)!.text.toLowerCase()));
+      break;
+    }
+    case 'updateTags': {
+      data.forEach(tagSummary => {
+        const tag = allTags.find(t => t.id === tagSummary.id);
+        if (!tag) return;
+        trie.remove(tag.text.toLowerCase());
+        trie.insert(tag.text.toLowerCase(), tag.id, tag.synonymId!);
+      });
       break;
     }
     case 'updateNote': {
