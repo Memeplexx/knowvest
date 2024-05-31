@@ -65,6 +65,25 @@ export default function TagsProvider({ children }: { children: React.ReactNode }
       }
     });
 
+    //   const { synonymIds, synonymGroups } = store.$state;
+    // const groupSynonymIds = synonymGroups
+    //   .filter(sg => synonymIds.includes(sg.synonymId))
+    //   .distinct()
+    //   .map(sg => sg.synonymId);
+    // const primarySynonymIds = [...synonymIds, ...groupSynonymIds];
+
+    // const unsubscribeFromPrimarySynonymIds = derive(
+    //   store.synonymIds,
+    //   store.synonymGroups,
+    // ).$with((synonymIds, synonymGroups) => {
+    //   const groupSynonymIds = synonymGroups
+    //     .filter(sg => synonymIds.includes(sg.synonymId))
+    //     .distinct()
+    //     .map(sg => sg.synonymId);
+    //   return [...synonymIds, ...groupSynonymIds];
+    // }).$onChange();
+
+
     // Cleanup
     return () => {
       worker.terminate();

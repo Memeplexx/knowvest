@@ -231,9 +231,8 @@ export const doReviseTagsInEditor = (
     ...removeTagPositions.map(t => removeHighlight.of(t)),
     ...addTagPositions.map(t => addHighlight.of(t))
   ] as StateEffect<unknown>[];
-  if (!codeMirror.state.field(highlightedRanges, false)) {
+  if (!codeMirror.state.field(highlightedRanges, false))
     effects.push(StateEffect.appendConfig.of([highlightedRanges]));
-  }
   codeMirror.dispatch({ effects });
   previousPositions.length = 0;
   previousPositions.push(...newTagPositions);

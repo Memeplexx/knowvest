@@ -5,7 +5,7 @@ import { useStore } from '@/utils/store-utils';
 import { useTagsContext } from '@/utils/tags-provider';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
-import { languages } from '@codemirror/language-data';
+import { languages as codeLanguages } from '@codemirror/language-data';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { Highlighter } from '@lezer/highlight';
@@ -37,7 +37,7 @@ export const useInputs = (props: Props) => {
       parent: editorRef.current!,
       extensions: [
         syntaxHighlighting(defaultHighlightStyle as Highlighter, { fallback: true }),
-        markdown({ codeLanguages: languages }),
+        markdown({ codeLanguages }),
         EditorState.readOnly.of(true),
         EditorView.lineWrapping,
         bulletPointPlugin,
@@ -52,7 +52,7 @@ export const useInputs = (props: Props) => {
     tagsWorker.updateNote(props.note!);
 
     // Listen to changes in this note as well as its text, and notify the worker as required
-    const latestTagsFromWorker = new Array<(TagResult & { type?: tagType })>();
+    const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
     const unsubscribeFromWorker = tagsWorker.addListener(async event => {
       if (event.data.noteId !== props.note!.id) return;
       latestTagsFromWorker.length = 0;
@@ -61,9 +61,9 @@ export const useInputs = (props: Props) => {
     });
 
     // Listen to changes in tags and synonyms, and notify the worker as required
-    const previousPositions = new Array<(TagResult & { type?: tagType })>();
+    const previousPositions = new Array<TagResult & { type?: tagType }>();
     const reviseTagsInEditor = () => doReviseTagsInEditor(store, codeMirror.current!, latestTagsFromWorker, previousPositions);
-    const unsubscribeFromSynonymIds = store.synonymIds.$onChangeImmediate(reviseTagsInEditor);
+    const unsubscribeFromSynonymIdsChange = store.synonymIds.$onChangeImmediate(reviseTagsInEditor);
     const unsubscribeFromSynonymGroupsChange = store.synonymGroups.$onChange(reviseTagsInEditor);
     const unsubscribeFromTagsChange = store.tags.$onChange(reviseTagsInEditor);
 
@@ -71,7 +71,7 @@ export const useInputs = (props: Props) => {
     return () => {
       unsubscribeFromTagsChange();
       unsubscribeFromWorker();
-      unsubscribeFromSynonymIds();
+      unsubscribeFromSynonymIdsChange();
       unsubscribeFromSynonymGroupsChange();
       codeMirror.current?.destroy();
       tagsWorker.removeNote(props.note!.id);

@@ -21,7 +21,7 @@ class Trie {
     node.synonymId = synonymId;
   }
 
-  search(text: string): Array<TagResult> {
+  search(text: string) {
     const detectedTags = new Array<TagResult>();
     for (let i = 0; i < text.length; i++) {
       let node: TrieNode = this.root;
@@ -118,7 +118,7 @@ const allNotes = [] as Array<NoteDTO>;
 const previousResults = new Map<NoteId, Array<TagSummary>>();
 
 const notify = () => allNotes.forEach(note => {
-  const results = Array.from(trie.search(note.text.toLowerCase()));
+  const results = trie.search(note.text.toLowerCase());
   if (JSON.stringify(results) === JSON.stringify(previousResults.get(note.id)!))
     return;
   previousResults.set(note.id, results);

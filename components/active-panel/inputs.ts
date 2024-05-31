@@ -100,9 +100,9 @@ export const useInputs = () => {
     })
 
     // Listen to changes in tags and synonyms, and notify the worker as required
-    const previousPositions = new Array<(TagResult & { type?: tagType })>();
+    const previousPositions = new Array<TagResult & { type?: tagType }>();
     const reviseTagsInEditor = () => doReviseTagsInEditor(store, codeMirror.current!, latestTagsFromWorker, previousPositions);
-    const latestTagsFromWorker = new Array<(TagResult & { type?: tagType })>();
+    const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
     const unsubscribeFromWorker = tagsWorker.addListener(async event => {
       if (event.data.noteId !== store.$state.activeNoteId) return;
       latestTagsFromWorker.length = 0;
