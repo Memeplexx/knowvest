@@ -21,8 +21,8 @@ class Trie {
     node.synonymId = synonymId;
   }
 
-  search(text: string): Set<TagSummary> {
-    const detectedTags: Set<TagSummary> = new Set();
+  search(text: string): Array<TagResult> {
+    const detectedTags = new Array<TagResult>();
     for (let i = 0; i < text.length; i++) {
       let node: TrieNode = this.root;
       for (let j = i; j < text.length; j++) {
@@ -32,7 +32,13 @@ class Trie {
         }
         node = node.children[char]!;
         if (node.isEndOfTag) {
-          detectedTags.add({ text: text.slice(i, j + 1), id: node.id!, synonymId: node.synonymId });
+          detectedTags.push({
+            text: text.slice(i, j + 1),
+            id: node.id!,
+            synonymId: node.synonymId,
+            from: i,
+            to: j + 1,
+          });
         }
       }
     }
@@ -69,6 +75,11 @@ export type TagSummary = {
   synonymId: SynonymId | null;
 };
 
+export type TagResult = {
+  from: number;
+  to: number;
+} & TagSummary;
+
 export type Incoming
   = {
     type: 'addTags',
@@ -93,7 +104,7 @@ export type Incoming
 
 export type Outgoing = {
   noteId: NoteId,
-  tags: TagSummary[]
+  tags: TagResult[]
 }
 
 export type TagsWorker = Omit<Worker, 'postMessage' | 'onmessage'> & {

@@ -10,7 +10,7 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { Highlighter } from '@lezer/highlight';
 import { useRef } from 'react';
-import { TagSummary } from '../../utils/tags-worker';
+import { TagResult } from '../../utils/tags-worker';
 import { Props } from './constants';
 
 
@@ -52,7 +52,7 @@ export const useInputs = (props: Props) => {
     tagsWorker.updateNote(props.note!);
 
     // Listen to changes in this note as well as its text, and notify the worker as required
-    const latestTagsFromWorker = new Array<TagSummary>();
+    const latestTagsFromWorker = new Array<(TagResult & { type?: tagType })>();
     const unsubscribeFromWorker = tagsWorker.addListener(async event => {
       if (event.data.noteId !== props.note!.id) return;
       latestTagsFromWorker.length = 0;
@@ -61,7 +61,7 @@ export const useInputs = (props: Props) => {
     });
 
     // Listen to changes in tags and synonyms, and notify the worker as required
-    const previousPositions = new Array<{ from: number, to: number, type: tagType }>();
+    const previousPositions = new Array<(TagResult & { type?: tagType })>();
     const reviseTagsInEditor = () => doReviseTagsInEditor(store, codeMirror.current!, latestTagsFromWorker, previousPositions);
     const unsubscribeFromSynonymIds = store.synonymIds.$onChangeImmediate(reviseTagsInEditor);
     const unsubscribeFromSynonymGroupsChange = store.synonymGroups.$onChange(reviseTagsInEditor);
