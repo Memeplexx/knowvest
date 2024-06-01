@@ -12,6 +12,7 @@ type TagsWorkerHandler = {
   updateTags: (arg: TagSummary[]) => void,
   updateNote: (arg: NoteDTO) => void,
   removeNote: (arg: NoteId) => void,
+  addNotes: (arg: NoteDTO[]) => void,
 };
 
 export const TagsContext = createContext<TagsWorkerHandler | null>(null);
@@ -41,11 +42,24 @@ export default function TagsProvider({ children }: { children: React.ReactNode }
       updateNote: (data: NoteDTO) => worker.postMessage({ type: 'updateNote', data }),
       removeNote: (data: NoteId) => worker.postMessage({ type: 'removeNote', data }),
       updateTags: (data: TagSummary[]) => worker.postMessage({ type: 'updateTags', data }),
+      addNotes: (data: NoteDTO[]) => worker.postMessage({ type: 'addNotes', data }),
     };
     worker.onmessage = event => eventListeners.forEach(listener => listener(event));
     setState(state);
 
-    // Ensure that tags are in sync with the worker
+    // Ensure that changes to note tags in worker are sent to the store
+    // TODO: Consider sending this data to the IndexedDB also.
+    state.addListener(event => {
+      event.data.forEach(({ noteId, tags }) => {
+        if (JSON.stringify(tags) !== JSON.stringify(store.$state.tagNotes[noteId])) {
+          store.tagNotes[noteId]!.$set(tags);
+        }
+      });
+      if (!store.$state.tagNotesInitialized)
+        store.tagNotesInitialized.$set(true);
+    });
+
+    // Ensure that changes to tags in the store are sent to the worker
     state.addTags(store.$state.tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId })));
     const unsubscribeFromTagsChange = store.tags.$onChange((tags, previousTags) => {
       const previousTagIds = previousTags.map(t => t.id);
@@ -65,29 +79,31 @@ export default function TagsProvider({ children }: { children: React.ReactNode }
       }
     });
 
-    //   const { synonymIds, synonymGroups } = store.$state;
-    // const groupSynonymIds = synonymGroups
-    //   .filter(sg => synonymIds.includes(sg.synonymId))
-    //   .distinct()
-    //   .map(sg => sg.synonymId);
-    // const primarySynonymIds = [...synonymIds, ...groupSynonymIds];
-
-    // const unsubscribeFromPrimarySynonymIds = derive(
-    //   store.synonymIds,
-    //   store.synonymGroups,
-    // ).$with((synonymIds, synonymGroups) => {
-    //   const groupSynonymIds = synonymGroups
-    //     .filter(sg => synonymIds.includes(sg.synonymId))
-    //     .distinct()
-    //     .map(sg => sg.synonymId);
-    //   return [...synonymIds, ...groupSynonymIds];
-    // }).$onChange();
-
+    // Ensure that changes to notes in the store are sent to the worker
+    state.addNotes(store.$state.notes as NoteDTO[]);
+    const unsubscribeFromNotesChange = store.notes.$onChange((notes, previousNotes) => {
+      const previousNoteIds = previousNotes.map(n => n.id);
+      const notesToAdd = notes.filter(n => !previousNoteIds.includes(n.id));
+      const noteIdsToRemove = previousNoteIds.filter(id => !notes.some(n => n.id === id));
+      const notesToUpdate = notes.filter(n => previousNoteIds.includes(n.id) && previousNotes.find(pn => pn.id === n.id)!.text !== n.text);
+      if (notesToAdd.length) {
+        previousNoteIds.push(...notesToAdd.map(n => n.id));
+        state.addNotes(notesToAdd);
+      }
+      if (noteIdsToRemove.length) {
+        previousNoteIds.remove(e => noteIdsToRemove.includes(e));
+        noteIdsToRemove.forEach(id => state.removeNote(id));
+      }
+      if (notesToUpdate.length) {
+        notesToUpdate.forEach(n => state.updateNote(n));
+      }
+    });
 
     // Cleanup
     return () => {
       worker.terminate();
       unsubscribeFromTagsChange();
+      unsubscribeFromNotesChange();
     }
   }, [store, stateInitialized]);
 

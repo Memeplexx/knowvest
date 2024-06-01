@@ -3,7 +3,6 @@ import { removeTagFromItsCurrentSynonym } from '@/actions/synonym';
 import { archiveTag } from '@/actions/tag';
 import { GroupId, SynonymId, TagId } from '@/actions/types';
 import { TypedKeyboardEvent, useEventHandlerForDocument } from '@/utils/dom-utils';
-import { writeToStoreAndDb } from '@/utils/storage-utils';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { Inputs, Props } from './constants';
 import { useSharedFunctions } from './shared';
@@ -11,7 +10,7 @@ import { useSharedFunctions } from './shared';
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
   const shared = useSharedFunctions(props, inputs);
-  const { store, local, notify } = inputs;
+  const { store, local, notify, storage } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       local.$patch({
@@ -70,7 +69,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       if (!inputs.tagId)
         return;
       const apiResponse = await removeTagFromItsCurrentSynonym(inputs.tagId);
-      await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroups, tags: apiResponse.tag });
+      await storage.write({ synonymGroups: apiResponse.synonymGroups, tags: apiResponse.tag });
       local.$patch({ tagId: null, autocompleteText: '' });
       notify.success('Tag removed from synonyms');
     },
@@ -80,7 +79,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       if (!inputs.groupId)
         throw new Error();
       const apiResponse = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId);
-      await writeToStoreAndDb(store, { groups: apiResponse.group, synonymGroups: apiResponse.synonymGroups });
+      await storage.write({ groups: apiResponse.group, synonymGroups: apiResponse.synonymGroups });
       local.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
@@ -217,13 +216,13 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const autocompleteAction = isLastTag ? null : inputs.autocompleteAction;
       local.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
       synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
-      await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroups });
+      await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroups });
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {
       const apiResponse = await archiveGroup(inputs.groupId!);
       local.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-      await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroups, groups: apiResponse.group });
+      await storage.write({ synonymGroups: apiResponse.synonymGroups, groups: apiResponse.group });
       notify.success('Group archived');
     },
     onCancelConfirmation: () => {

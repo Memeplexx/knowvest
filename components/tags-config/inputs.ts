@@ -1,6 +1,7 @@
 import { useMemo, useRef, type ForwardedRef } from 'react';
 
 import { useForwardedRef } from '@/utils/react-utils';
+import { useStorageContext } from '@/utils/storage-provider';
 import { useLocalStore, useStore } from '@/utils/store-utils';
 import { useFloating } from '@floating-ui/react';
 import { addToWhitelist } from 'olik/devtools';
@@ -21,7 +22,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   const modalRef = useForwardedRef(ref);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const selectedTagRef = useRef<HTMLDivElement>(null);
-
+  const storage = useStorageContext();
   const notify = useNotifier();
 
   const tagsInSynonymGroup = useMemo(() => {
@@ -141,6 +142,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     settingsButtonRef,
     synonymOptionsRef,
     notify,
+    storage,
   };
 }
 

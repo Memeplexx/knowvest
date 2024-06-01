@@ -4,6 +4,7 @@ import '@/styles/application.css';
 import '@/styles/reset.css';
 import { NextAuthProvider } from '@/utils/auth-utils';
 import '@/utils/polyfills';
+import StorageProvider from '@/utils/storage-provider';
 import StoreProvider from '@/utils/store-utils';
 import StyledComponentsRegistry from '@/utils/style-utils';
 import { Analytics } from '@vercel/analytics/react';
@@ -76,11 +77,15 @@ export default async function RootLayout({
                   children={
                     <StoreProvider
                       children={
-                        <NotifierProvider
-                          storeKey='notifier'
+                        <StorageProvider
                           children={
-                            <StyledComponentsRegistry
-                              children={children}
+                            <NotifierProvider
+                              storeKey='notifier'
+                              children={
+                                <StyledComponentsRegistry
+                                  children={children}
+                                />
+                              }
                             />
                           }
                         />

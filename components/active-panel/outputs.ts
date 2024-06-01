@@ -1,16 +1,15 @@
 import { archiveNote, createNote, duplicateNote, splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
-import { writeToStoreAndDb } from "@/utils/storage-utils";
 import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, notify }: Inputs) => ({
+export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, notify, storage }: Inputs) => ({
   onClickCreateNote: async () => {
     local.loadingNote.$set(true);
     const apiResponse = await createNote();
-    await writeToStoreAndDb(store, { notes: apiResponse.note });
+    await storage.write({ notes: apiResponse.note });
     local.loadingNote.$set(false);
     store.activeNoteId.$set(apiResponse.note.id);
     store.synonymIds.$clear();
@@ -22,7 +21,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     local.$patch({ allowNotePersister: false, loadingNote: true })
     const { noteTags, tags, notes, activeNoteId } = store.$state;
     const apiResponse = await archiveNote(activeNoteId);
-    await writeToStoreAndDb(store, apiResponse)
+    await storage.write(apiResponse)
     local.$patch({ loadingNote: false, confirmDelete: false });
     const mostRecentlyViewedNoteId = notes
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
@@ -41,7 +40,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
   onClickDuplicateNote: async () => {
     local.loadingNote.$set(true);
     const apiResponse = await duplicateNote(store.$state.activeNoteId)
-    await writeToStoreAndDb(store, { notes: apiResponse.note, noteTags: apiResponse.noteTags });
+    await storage.write({ notes: apiResponse.note, noteTags: apiResponse.noteTags });
     local.loadingNote.$set(false);
     popupRef.current?.hide();
   },
@@ -62,7 +61,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
       return notify.error(apiResponse.fields.tagText);
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.fields.tagText);
-    await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
     store.synonymIds.$merge(store.$state.tags.filter(t => t.id === apiResponse.tag.id).map(t => t.synonymId));
     local.selection.$set('');
     codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0]!.anchor } });
@@ -79,7 +78,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     const range = codeMirror!.state.selection.ranges[0]!;
     local.loadingSelection.$set(true);
     const apiResponse = await splitNote(range.from, range.to, store.$state.activeNoteId);
-    await writeToStoreAndDb(store, apiResponse);
+    await storage.write(apiResponse);
     local.$patch({
       loadingSelection: false,
       selection: '',

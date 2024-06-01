@@ -42,7 +42,7 @@ class Trie {
         }
       }
     }
-    return detectedTags;
+    return detectedTags.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   }
 
   remove(word: string) {
@@ -86,6 +86,10 @@ export type Incoming
     data: TagSummary[]
   }
   | {
+    type: 'addNotes',
+    data: NoteDTO[]
+  }
+  | {
     type: 'removeTags',
     data: TagId[]
   }
@@ -105,7 +109,7 @@ export type Incoming
 export type Outgoing = {
   noteId: NoteId,
   tags: TagResult[]
-}
+}[]
 
 export type TagsWorker = Omit<Worker, 'postMessage' | 'onmessage'> & {
   postMessage: (message: Incoming) => void,
@@ -115,61 +119,118 @@ export type TagsWorker = Omit<Worker, 'postMessage' | 'onmessage'> & {
 const trie = new Trie();
 const allTags = [] as Array<TagSummary>;
 const allNotes = [] as Array<NoteDTO>;
-const previousResults = new Map<NoteId, Array<TagSummary>>();
-
-const notify = () => allNotes.forEach(note => {
-  const results = trie.search(note.text.toLowerCase());
-  if (JSON.stringify(results) === JSON.stringify(previousResults.get(note.id)!))
-    return;
-  previousResults.set(note.id, results);
-  postMessage({
-    noteId: note.id,
-    tags: results,
-  })
-});
+const resultsCache = new Map<NoteId, Array<TagResult>>();
 
 onmessage = (event: MessageEvent<Incoming>) => {
   const { type, data } = event.data;
   switch (type) {
-    case 'addTags': {
-      allTags.push(...data);
-      data.forEach(tag => trie.insert(tag.text.toLowerCase(), tag.id, tag.synonymId!));
-      notify();
-      break;
-    }
-    case 'removeTags': {
-      const index = allTags.findIndex(tag => data.includes(tag.id));
-      if (index !== -1)
-        allTags.splice(index, 1);
-      data.forEach(tagId => trie.remove(allTags.find(t => t.id === tagId)!.text.toLowerCase()));
-      notify();
-      break;
-    }
-    case 'updateTags': {
-      data.forEach(tagSummary => {
-        const tag = allTags.find(t => t.id === tagSummary.id);
-        if (!tag) return;
-        trie.remove(tag.text.toLowerCase());
-        trie.insert(tagSummary.text.toLowerCase(), tag.id, tag.synonymId!);
-      });
-      notify();
-      break;
-    }
-    case 'updateNote': {
-      const note = allNotes.find(n => n.id === data.id);
-      if (!note)
-        allNotes.push(data);
-      else
-        note.text = data.text;
-      notify();
-      break;
-    }
-    case 'removeNote': {
-      const index = allNotes.findIndex(n => n.id === data);
-      if (index !== -1)
-        allNotes.splice(index, 1);
-      break;
-    }
+    case 'addTags':
+      return addTags(data);
+    case 'removeTags':
+      return removeTags(data);
+    case 'updateTags':
+      return updateTags(data);
+    case 'addNotes':
+      return addNotes(data);
+    case 'updateNote':
+      return updateNote(data);
+    case 'removeNote':
+      return removeNote(data);
   }
 };
 
+const sendToProvider = (data: Outgoing) => postMessage(data);
+
+const addTags = (incomingTags: TagSummary[]) => {
+  const trieLocal = new Trie(); // we don't want to search ALL tags in ALL notes. Let's create a Trie to only search the tags that were added
+  incomingTags.forEach(incomingTag => {
+    const found = allTags.find(t => t.id === incomingTag.id);
+    if (found) throw new Error(`Tag already exists: ${JSON.stringify(found)}`);
+    allTags.push(incomingTag);
+    const tagText = incomingTag.text.toLowerCase();
+    trieLocal.insert(tagText, incomingTag.id, incomingTag.synonymId!);
+    trie.insert(tagText, incomingTag.id, incomingTag.synonymId!);
+  });
+  const toPost = [] as Outgoing;
+  allNotes.forEach(note => {
+    const results = trieLocal.search(note.text.toLowerCase());
+    if (JSON.stringify(results) === JSON.stringify(resultsCache.get(note.id)!))
+      return;
+    resultsCache.set(note.id, results);
+    toPost.push({ noteId: note.id, tags: results });
+  });
+  if (toPost.length)
+    sendToProvider(toPost);
+}
+
+const removeTags = (incomingTagIds: TagId[]) => {
+  incomingTagIds.forEach(incomingTagId => {
+    const index = allTags.findIndex(tag => tag.id === incomingTagId);
+    if (index !== -1)
+      allTags.splice(index, 1);
+    trie.remove(allTags.find(t => t.id === incomingTagId)!.text.toLowerCase());
+  });
+  const toPost = [] as Outgoing;
+  Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
+    const filtered = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.id));
+    if (filtered.length < tagSummaries.length) { // where tags removed?
+      resultsCache.set(noteId, filtered);
+      toPost.push({ noteId, tags: filtered });
+    }
+  });
+  if (toPost.length)
+    sendToProvider(toPost);
+};
+
+const updateTags = (incomingTags: TagSummary[]) => {
+  const tagsRemoved = new Array<TagId>();
+  incomingTags.forEach(incomingTag => {
+    const tag = allTags.find(t => t.id === incomingTag.id);
+    if (!tag) throw new Error(`Tag to update not found: ${JSON.stringify(incomingTag)}`);
+    trie.remove(tag.text.toLowerCase());
+    tagsRemoved.push(tag.id);
+    trie.insert(incomingTag.text.toLowerCase(), tag.id, tag.synonymId!);
+    tag.text = incomingTag.text;
+  });
+  const toPost = [] as Outgoing;
+  Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
+    const filtered = tagSummaries.filter(tagSummary => !tagsRemoved.includes(tagSummary.id));
+    if (filtered.length === tagSummaries.length) return; // if filtered tags are same length as original, no tags were removed
+    resultsCache.set(noteId, filtered);
+    toPost.push({ noteId, tags: filtered });
+  });
+  if (toPost.length)
+    sendToProvider(toPost);
+}
+
+const addNotes = (incomingNotes: NoteDTO[]) => {
+  const toPost = [] as Outgoing;
+  incomingNotes.forEach(incomingNote => {
+    const found = allNotes.find(n => n.id === incomingNote.id);
+    if (found) throw new Error(`Note already exists: ${JSON.stringify(found)}`);
+    const results = trie.search(incomingNote.text);
+    resultsCache.set(incomingNote.id, results);
+    allNotes.push(incomingNote);
+    toPost.push({ noteId: incomingNote.id, tags: results });
+  })
+  if (toPost.length)
+    sendToProvider(toPost);
+}
+
+const updateNote = (incomingNote: NoteDTO) => {
+  const found = allNotes.find(n => n.id === incomingNote.id);
+  if (!found) throw new Error(`Note not found: ${JSON.stringify(incomingNote)}`);
+  found.text = incomingNote.text.toLowerCase();
+  const results = trie.search(found.text);
+  if (JSON.stringify(results) === JSON.stringify(resultsCache.get(incomingNote.id)!))
+    return;
+  resultsCache.set(incomingNote.id, results);
+  sendToProvider([{ noteId: incomingNote.id, tags: results }]);
+}
+
+const removeNote = (incomingNoteId: NoteId) => {
+  const index = allNotes.findIndex(n => n.id === incomingNoteId);
+  if (index === -1) throw new Error(`Note not found: ${incomingNoteId}`);
+  allNotes.splice(index, 1);
+  resultsCache.delete(incomingNoteId);
+}

@@ -2,7 +2,6 @@ import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, tagType, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useIsMounted, useIsomorphicLayoutEffect } from '@/utils/react-utils';
 import { useStore } from '@/utils/store-utils';
-import { useTagsContext } from '@/utils/tags-provider';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages as codeLanguages } from '@codemirror/language-data';
@@ -16,19 +15,16 @@ import { Props } from './constants';
 
 export const useInputs = (props: Props) => {
 
-  const { store } = useStore();
-
+  const { store, state: { tagNotesInitialized } } = useStore();
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
-
   const isMounted = useIsMounted();
-  const tagsWorker = useTagsContext();
 
   useIsomorphicLayoutEffect(() => {
 
     // Do not instantiate the editor until certain conditions are met
     if (!isMounted) return;
-    if (!tagsWorker) return;
+    if (!tagNotesInitialized) return;
     if (props.if === false) return;
 
     // Instantiate the editor
@@ -48,20 +44,16 @@ export const useInputs = (props: Props) => {
       ],
     });
 
-    // Register note in listener
-    tagsWorker.updateNote(props.note!);
-
     // Listen to changes in this note as well as its text, and notify the worker as required
     const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
-    const unsubscribeFromWorker = tagsWorker.addListener(async event => {
-      if (event.data.noteId !== props.note!.id) return;
-      latestTagsFromWorker.length = 0;
-      latestTagsFromWorker.push(...event.data.tags);
-      reviseTagsInEditor();
-    });
-
-    // Listen to changes in tags and synonyms, and notify the worker as required
     const previousPositions = new Array<TagResult & { type?: tagType }>();
+    const unsubscribeToTagNotesChange = store.tagNotes[props.note!.id]!.$onChangeImmediate(current => {
+      latestTagsFromWorker.length = 0;
+      latestTagsFromWorker.push(...current);
+      doReviseTagsInEditor(store, codeMirror.current!, latestTagsFromWorker, previousPositions);
+      previousPositions.length = 0;
+      previousPositions.push(...current);
+    });
     const reviseTagsInEditor = () => doReviseTagsInEditor(store, codeMirror.current!, latestTagsFromWorker, previousPositions);
     const unsubscribeFromSynonymIdsChange = store.synonymIds.$onChangeImmediate(reviseTagsInEditor);
     const unsubscribeFromSynonymGroupsChange = store.synonymGroups.$onChange(reviseTagsInEditor);
@@ -69,14 +61,13 @@ export const useInputs = (props: Props) => {
 
     // Cleanup
     return () => {
+      unsubscribeToTagNotesChange();
       unsubscribeFromTagsChange();
-      unsubscribeFromWorker();
       unsubscribeFromSynonymIdsChange();
       unsubscribeFromSynonymGroupsChange();
       codeMirror.current?.destroy();
-      tagsWorker.removeNote(props.note!.id);
     }
-  }, [props.if, isMounted, tagsWorker, props.note, store]);
+  }, [props.if, isMounted, props.note, store, tagNotesInitialized]);
 
   return {
     editorRef,

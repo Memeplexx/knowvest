@@ -2,18 +2,17 @@ import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '
 import { addTagToSynonym, createTagForSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
-import { writeToStoreAndDb } from '@/utils/storage-utils';
 import { Inputs, Props } from './constants';
 
 
 export const useSharedFunctions = (props: Props, inputs: Inputs) => {
-  const { store, local, notify } = inputs;
+  const { store, local, notify, storage } = inputs;
   const completeCreateTagForSynonym = async () => {
     const apiResponse = await createTagForSynonym(inputs.autocompleteText.trim(), inputs.synonymId === null ? undefined : inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.tagId.$set(apiResponse.tag.id);
-    await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -23,7 +22,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return notify.error(apiResponse.fields.text);
     local.$patch({ synonymId: apiResponse.tag.synonymId, tagId: apiResponse.tag.id });
     store.synonymIds.$push(apiResponse.tag.synonymId);
-    await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -34,7 +33,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.autocompleteText.$set('');
-    await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroup });
+    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroup });
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -47,7 +46,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.message);
     local.autocompleteText.$set('');
-    await writeToStoreAndDb(store, { groups: apiResponse.group, synonymGroups: apiResponse.synonymGroup });
+    await storage.write({ groups: apiResponse.group, synonymGroups: apiResponse.synonymGroup });
     notify.success('Group created');
     blurAutocompleteInput();
   }
@@ -59,7 +58,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return notify.error(apiResponse.fields.name);
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.message);
-    await writeToStoreAndDb(store, { groups: apiResponse.group });
+    await storage.write({ groups: apiResponse.group });
     notify.success('Group updated');
     blurAutocompleteInput();
   }
@@ -75,7 +74,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     const activeSynonymIdsToBeDeselected = store.$state.tags.filter(t => activeTagIdsToBeDeselected.includes(t.id)).map(t => t.synonymId);
     const activeTagIdsToBeSelected = apiResponse.noteTags.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
     const activeSynonymIdsToBeSelected = store.$state.tags.filter(t => activeTagIdsToBeSelected.includes(t.id)).map(t => t.synonymId);
-    await writeToStoreAndDb(store, { tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
     store.synonymIds.$setUnique([...store.$state.synonymIds.filter(id => !activeSynonymIdsToBeDeselected.includes(id)), ...activeSynonymIdsToBeSelected]);
     notify.success('Tag updated');
     blurAutocompleteInput();
@@ -117,7 +116,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     const synonymId = apiResponse.tags[0]!.synonymId;
     const groupHasMoreThanOneTag = store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
     const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
-    await writeToStoreAndDb(store, { tags: apiResponse.tags, synonymGroups: apiResponse.synonymGroups });
+    await storage.write({ tags: apiResponse.tags, synonymGroups: apiResponse.synonymGroups });
     local.$patch({ tagId, synonymId, autocompleteText: selected.text });
     groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && notify.success('Tag(s) added to synonyms');
   };
@@ -127,14 +126,14 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     const { synonymId } = store.$state.tags.findOrThrow(t => t.id === tagId);
     const apiResponse = await addSynonymToGroup(inputs.groupId, synonymId);
     local.autocompleteText.$set('');
-    await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroup });
+    await storage.write({ synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
   };
   const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async ({ groupId }: { groupId: GroupId }) => {
     if (!inputs.synonymId)
       throw new Error();
     const apiResponse = await addSynonymToGroup(groupId, inputs.synonymId);
-    await writeToStoreAndDb(store, { synonymGroups: apiResponse.synonymGroup });
+    await storage.write({ synonymGroups: apiResponse.synonymGroup });
     notify.success('Added to group');
   }
   const focusAutocompleteInput = () => {

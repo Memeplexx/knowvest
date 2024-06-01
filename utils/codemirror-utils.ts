@@ -3,7 +3,7 @@ import { TagResult } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { Store } from "olik";
+import { DeepReadonlyArray, Store } from "olik";
 import { AppState } from "./store-utils";
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
@@ -209,8 +209,8 @@ const highlightedRanges = StateField.define({
 export const doReviseTagsInEditor = (
   store: Store<AppState>,
   codeMirror: EditorView,
-  tags: (TagResult & { type?: tagType })[],
-  previousPositions: (TagResult & { type?: tagType })[]
+  tags: DeepReadonlyArray<TagResult & { type?: tagType }>,
+  previousPositions: DeepReadonlyArray<TagResult & { type?: tagType }>,
 ) => {
   const { synonymIds, synonymGroups } = store.$state;
   const groupSynonymIds = synonymGroups
@@ -234,6 +234,4 @@ export const doReviseTagsInEditor = (
   if (!codeMirror.state.field(highlightedRanges, false))
     effects.push(StateEffect.appendConfig.of([highlightedRanges]));
   codeMirror.dispatch({ effects });
-  previousPositions.length = 0;
-  previousPositions.push(...newTagPositions);
 };

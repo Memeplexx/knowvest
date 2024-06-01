@@ -5,6 +5,7 @@ import { configureDevtools } from 'olik/devtools';
 import { createContext, useMemo } from "react";
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '../actions/types';
 import { MediaQueries } from './dom-utils';
+import { TagResult } from './tags-worker';
 
 
 
@@ -29,7 +30,9 @@ export const initialAppState = {
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
   stateInitialized: false,
+  tagNotesInitialized: false,
   writingNoteTags: false,
+  tagNotes: {} as { [noteId: NoteId]: Array<TagResult> },
 };
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
