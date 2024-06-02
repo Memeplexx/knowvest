@@ -148,8 +148,19 @@ onmessage = (event: MessageEvent<Incoming>) => {
 
 const sendToProvider = (data: Outgoing) => postMessage(data);
 
-const initialize = ({ tags, notes }: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => {
-
+const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => {
+  allTags.push(...incomingTags);
+  incomingTags.forEach(incomingTag => {
+    trie.insert(incomingTag.text.toLowerCase(), incomingTag.id, incomingTag.synonymId!);
+  });
+  allNotes.push(...incomingNotes);
+  const toPost = incomingNotes.map(incomingNote => {
+    const results = trie.search(incomingNote.text.toLowerCase());
+    resultsCache.set(incomingNote.id, results);
+    return { noteId: incomingNote.id, tags: results };
+  });
+  if (toPost.length)
+    sendToProvider(toPost);
 }
 
 const addTags = (incomingTags: TagSummary[]) => {

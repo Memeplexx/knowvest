@@ -63,6 +63,10 @@ export const useInputs = () => {
     }();
   }
 
+  // const isBrowser = typeof window !== 'undefined';
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // const thingy = useMemo(() => !isBrowser ? null : new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker, [isBrowser]);
+
   // Ensure that tag notes are kept in sync with the worker
   useEffect(() => {
 
@@ -88,64 +92,68 @@ export const useInputs = () => {
     }
 
     // Send the tags worker the initial data
-    worker.postMessage({ type: 'addTags', data: store.$state.tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId })) });
-    worker.postMessage({ type: 'addNotes', data: store.$state.notes });
+    worker.postMessage({
+      type: 'initialize',
+      data: {
+        notes: store.$state.notes,
+        tags: store.$state.tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
+      }
+    });
 
-    const subscriptions = [
+    const subscriptions = new Array<() => void>();
 
-      // Ensure that changes to tags in the store are sent to the worker
-      store.tags.$onChange((tags, previousTags) => {
-        const previousTagIds = previousTags.map(t => t.id);
-        const tagsToAdd = tags.filter(t => !previousTagIds.includes(t.id));
-        const tagIdsToRemove = previousTagIds.filter(id => !tags.some(t => t.id === id));
-        const tagsToUpdate = tags.filter(t => previousTagIds.includes(t.id) && previousTags.find(pt => pt.id === t.id)!.text !== t.text);
-        if (tagsToAdd.length) {
-          previousTagIds.push(...tagsToAdd.map(t => t.id));
-          worker.postMessage({ type: 'addTags', data: tagsToAdd });
-        }
-        if (tagIdsToRemove.length) {
-          previousTagIds.remove(e => tagIdsToRemove.includes(e));
-          worker.postMessage({ type: 'removeTags', data: tagIdsToRemove });
-        }
-        if (tagsToUpdate.length) {
-          worker.postMessage({ type: 'updateTags', data: tagsToUpdate });
-        }
-      }),
+    // Ensure that changes to tags in the store are sent to the worker
+    subscriptions.push(store.tags.$onChange((tags, previousTags) => {
+      const previousTagIds = previousTags.map(t => t.id);
+      const tagsToAdd = tags.filter(t => !previousTagIds.includes(t.id));
+      const tagIdsToRemove = previousTagIds.filter(id => !tags.some(t => t.id === id));
+      const tagsToUpdate = tags.filter(t => previousTagIds.includes(t.id) && previousTags.find(pt => pt.id === t.id)!.text !== t.text);
+      if (tagsToAdd.length) {
+        previousTagIds.push(...tagsToAdd.map(t => t.id));
+        worker.postMessage({ type: 'addTags', data: tagsToAdd });
+      }
+      if (tagIdsToRemove.length) {
+        previousTagIds.remove(e => tagIdsToRemove.includes(e));
+        worker.postMessage({ type: 'removeTags', data: tagIdsToRemove });
+      }
+      if (tagsToUpdate.length) {
+        worker.postMessage({ type: 'updateTags', data: tagsToUpdate });
+      }
+    }));
 
-      // Ensure that changes to notes in the store are sent to the worker
-      store.notes.$onChange((notes, previousNotes) => {
-        const previousNoteIds = previousNotes.map(n => n.id);
-        const notesToAdd = notes.filter(n => !previousNoteIds.includes(n.id));
-        const noteIdsToRemove = previousNoteIds.filter(id => !notes.some(n => n.id === id));
-        const notesToUpdate = notes.filter(n => previousNoteIds.includes(n.id) && previousNotes.find(pn => pn.id === n.id)!.text !== n.text);
-        if (notesToAdd.length) {
-          previousNoteIds.push(...notesToAdd.map(n => n.id));
-          worker.postMessage({ type: 'addNotes', data: notesToAdd });
-        }
-        if (noteIdsToRemove.length) {
-          previousNoteIds.remove(e => noteIdsToRemove.includes(e));
-          noteIdsToRemove.forEach(id => worker.postMessage({ type: 'removeNote', data: id }));
-        }
-        notesToUpdate.forEach(n => worker.postMessage({ type: 'updateNote', data: n }));
-      }),
+    // Ensure that changes to notes in the store are sent to the worker
+    subscriptions.push(store.notes.$onChange((notes, previousNotes) => {
+      const previousNoteIds = previousNotes.map(n => n.id);
+      const notesToAdd = notes.filter(n => !previousNoteIds.includes(n.id));
+      const noteIdsToRemove = previousNoteIds.filter(id => !notes.some(n => n.id === id));
+      const notesToUpdate = notes.filter(n => previousNoteIds.includes(n.id) && previousNotes.find(pn => pn.id === n.id)!.text !== n.text);
+      if (notesToAdd.length) {
+        previousNoteIds.push(...notesToAdd.map(n => n.id));
+        worker.postMessage({ type: 'addNotes', data: notesToAdd });
+      }
+      if (noteIdsToRemove.length) {
+        previousNoteIds.remove(e => noteIdsToRemove.includes(e));
+        noteIdsToRemove.forEach(id => worker.postMessage({ type: 'removeNote', data: id }));
+      }
+      notesToUpdate.forEach(n => worker.postMessage({ type: 'updateNote', data: n }));
+    }));
 
-      // Ensure that the indexedDB is updated when the store changes
-      store.notes.$onChange(async (current, previous) => {
-        await writeToDb('notes', current.filter(t => !previous.includes(t)));
-      }),
-      store.tags.$onChange(async (current, previous) => {
-        await writeToDb('tags', current.filter(t => !previous.includes(t)));
-      }),
-      store.synonymGroups.$onChange(async (current, previous) => {
-        await writeToDb('synonymGroups', current.filter(t => !previous.includes(t)));
-      }),
-      store.groups.$onChange(async (current, previous) => {
-        await writeToDb('groups', current.filter(t => !previous.includes(t)));
-      }),
-      store.flashCards.$onChange(async (current, previous) => {
-        await writeToDb('flashCards', current.filter(t => !previous.includes(t)));
-      }),
-    ];
+    // Ensure that the indexedDB is updated when the store changes
+    subscriptions.push(store.notes.$onChange(async (current, previous) => {
+      await writeToDb('notes', current.filter(t => !previous.includes(t)));
+    }));
+    subscriptions.push(store.tags.$onChange(async (current, previous) => {
+      await writeToDb('tags', current.filter(t => !previous.includes(t)));
+    }));
+    subscriptions.push(store.synonymGroups.$onChange(async (current, previous) => {
+      await writeToDb('synonymGroups', current.filter(t => !previous.includes(t)));
+    }));
+    subscriptions.push(store.groups.$onChange(async (current, previous) => {
+      await writeToDb('groups', current.filter(t => !previous.includes(t)));
+    }));
+    subscriptions.push(store.flashCards.$onChange(async (current, previous) => {
+      await writeToDb('flashCards', current.filter(t => !previous.includes(t)));
+    }));
 
     // Cleanup
     return () => {
