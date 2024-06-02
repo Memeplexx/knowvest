@@ -5,29 +5,28 @@ import { initialState, pageSize } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { notes, tags, noteTags, synonymIds, activeNoteId, stateInitialized } } = useStore();
+  const { store, state: { notes, synonymIds, activeNoteId, stateInitialized, tagNotesInitialized, tagNotes } } = useStore();
   const { local, state: { index } } = useLocalStore('relatedItems', initialState);
 
   const cardRef = useRef<CardHandle>(null);
 
   const items = useMemo(() => {
-    return synonymIds
-      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
-      .map(t => t.id)
-      .distinct()
-      .flatMap(tagId => noteTags.filter(nt => nt.noteId !== activeNoteId && nt.tagId === tagId))
-      .groupBy(n => n.noteId)
-      .map(noteTagGroup => ({
-        note: notes.findOrThrow(note => note.id === noteTagGroup[0]!.noteId),
-        count: noteTagGroup.length,
+    if (!tagNotesInitialized) return [];
+    return Object.entries(tagNotes)
+      .filter(([noteId]) => +noteId !== activeNoteId)
+      .map(([noteId, tags]) => ({
+        noteId,
+        count: tags.filter(t => synonymIds.includes(t.synonymId!)).length,
       }))
+      .filter(({ count }) => count > 0)
       .sort((a, b) => b.count - a.count)
       .slice(0, (index + 1) * pageSize)
-      .map(n => ({
-        ...n,
-        matches: `${n.count} match${n.count === 1 ? '' : 'es'}`,
+      .map(({ noteId, count }) => ({
+        note: notes.findOrThrow(n => n.id === +noteId),
+        count,
+        matches: `${count} match${count === 1 ? '' : 'es'}`,
       }));
-  }, [synonymIds, index, tags, noteTags, activeNoteId, notes]);
+  }, [activeNoteId, index, notes, synonymIds, tagNotes, tagNotesInitialized]);
 
   const noteCountString = useMemo(() => {
     return `${items.length} result${items.length === 1 ? '' : 's'}`;

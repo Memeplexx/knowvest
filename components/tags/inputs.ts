@@ -5,17 +5,14 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { noteTags, activeNoteId, tags, synonymIds, synonymGroups, groups, stateInitialized } } = useStore();
+  const { store, state: { activeNoteId, tags, synonymIds, synonymGroups, groups, stateInitialized, tagNotes, tagNotesInitialized } } = useStore();
   const { local, state } = useLocalStore('tagsComponent', initialState);
   useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
   const tagsForActiveNote = useMemo(() => {
-    return noteTags
-      .filter(nt => nt.noteId === activeNoteId)
-      .map(nt => nt.tagId)
-      .map(tagId => tags.find(t => t.id === tagId))
-      .map(tag => tag?.synonymId)
-      .filterTruthy()
+    if (!tagNotesInitialized) return [];
+    return tagNotes[activeNoteId]!
+      .map(tn => tn.synonymId)
       .distinct()
       .map(synonymId => tags.filter(t => t.synonymId === synonymId))
       .map(tgs => ({
@@ -26,14 +23,15 @@ export const useInputs = () => {
           first: index === 0,
           last: index === array.length - 1,
         })),
-      }))
-  }, [tags, synonymIds, noteTags, activeNoteId]);
+      }));
+  }, [tagNotes, activeNoteId, tags, synonymIds, tagNotesInitialized]);
 
   const groupsWithSynonyms = useMemo(() => {
-    return noteTags
-      .filter(nt => nt.noteId === activeNoteId)
-      .flatMap(nt => tags.filter(t => t.id === nt.tagId))
-      .flatMap(tag => synonymGroups.filter(sg => sg.synonymId === tag.synonymId))
+    if (!tagNotesInitialized) return [];
+    return tagNotes[activeNoteId]!
+      .map(tn => tn.synonymId)
+      .distinct()
+      .flatMap(synonymId => synonymGroups.filter(sg => sg.synonymId === synonymId))
       .groupBy(sg => sg.groupId)
       .map(group => ({
         groupId: group[0]!.groupId,
@@ -52,7 +50,7 @@ export const useInputs = () => {
               })),
           })),
       }));
-  }, [activeNoteId, groups, noteTags, synonymGroups, synonymIds, tags]);
+  }, [activeNoteId, groups, synonymGroups, synonymIds, tagNotes, tags, tagNotesInitialized]);
 
   const allActiveTagsSelected = useMemo(() => {
     return tagsForActiveNote

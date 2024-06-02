@@ -1,3 +1,4 @@
+import { NoteDTO, NoteId } from "@/actions/types";
 import { useResizeListener } from "@/utils/dom-utils";
 import { useForwardedRef } from "@/utils/react-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
@@ -7,7 +8,7 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
-  const { store, state: { tags, groups, synonymGroups, noteTags, notes } } = useStore();
+  const { store, state: { tags, groups, synonymGroups, notes, tagNotes } } = useStore();
   const { local, state: { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const bodyRef = useForwardedRef(ref);
@@ -75,11 +76,18 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     const tagIds = tags
       .filter(t => selectedSynonymIds.includes(t.synonymId))
       .map(t => t.id);
-    return noteTags
-      .filter(nt => tagIds.includes(nt.tagId))
-      .flatMap(nt => notes.filter(n => n.id === nt.noteId))
-      .distinct(n => n.id);
-  }, [noteTags, notes, selectedSynonymIds, tags]);
+    const tagIdsForGroups = selectedGroupIds
+      .flatMap(groupId => synonymGroups.filter(sg => sg.groupId === groupId))
+      .map(sg => sg.synonymId)
+      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
+      .map(t => t.id);
+    tagIds.push(...tagIdsForGroups);
+    return Object.entries(tagNotes).flatMap(([noteId, tagSummaries]) => {
+      if (tagSummaries.some(tagSummary => tagIds.includes(tagSummary.id)))
+        return notes.findOrThrow(n => n.id === +noteId as NoteId);
+      return new Array<NoteDTO>();
+    });
+  }, [tags, selectedGroupIds, tagNotes, selectedSynonymIds, synonymGroups, notes]);
 
   useResizeListener(useCallback(() => {
     const state = local.$state;

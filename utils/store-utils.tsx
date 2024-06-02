@@ -3,7 +3,7 @@ import { Store, createStore } from 'olik';
 import { augmentForReact, createUseStoreHook } from 'olik-react';
 import { configureDevtools } from 'olik/devtools';
 import { createContext, useMemo } from "react";
-import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, NoteTagDTO, SynonymGroupDTO, SynonymId, TagDTO } from '../actions/types';
+import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, SynonymGroupDTO, SynonymId, TagDTO } from '../actions/types';
 import { MediaQueries } from './dom-utils';
 import { TagResult } from './tags-worker';
 
@@ -18,7 +18,6 @@ export const { useStore, useLocalStore } = createUseStoreHook(StoreContext);
 export const indexedDbState = {
   tags: new Array<TagDTO>(),
   notes: new Array<NoteDTO>(),
-  noteTags: new Array<NoteTagDTO>(),
   groups: new Array<GroupDTO>(),
   synonymGroups: new Array<SynonymGroupDTO>(),
   flashCards: new Array<FlashCardDTO>(),

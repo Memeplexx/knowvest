@@ -1,24 +1,11 @@
-import { FlashCardDTO, FlashCardId, GroupDTO, GroupId, NoteDTO, NoteId, NoteTagDTO, SynonymDTO, SynonymGroupDTO, SynonymGroupId, SynonymId, TagDTO, TagId, UserId } from "@/actions/types";
+import { FlashCardDTO, FlashCardId, GroupDTO, GroupId, NoteDTO, NoteId, SynonymDTO, SynonymGroupDTO, SynonymGroupId, SynonymId, TagDTO, TagId, UserId } from "@/actions/types";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { FlashCard, Group, Note, NoteTag, Prisma, PrismaClient, Synonym, SynonymGroup, Tag } from "@prisma/client";
+import { FlashCard, Group, Note, Prisma, PrismaClient, Synonym, SynonymGroup, Tag } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export const prisma = new PrismaClient({
   // log: ['query', 'info', 'warn', 'error'],
 });
-
-export const archiveNoteTagsAssociatedWithAnyArchivedTags = async (userId: UserId) => {
-  const noteTagIdsToArchive = (await prisma.$queryRaw<NoteDTO[]>(Prisma.sql`
-    SELECT nt.id FROM note_tag nt 
-      JOIN note n ON nt.note_id = n.id
-      JOIN tag t ON nt.tag_id = t.id
-      WHERE n.user_id = ${userId} 
-      AND nt.is_archived IS FALSE 
-      AND t.is_archived IS TRUE;
-  `)).map(nt => nt.id);
-  await prisma.noteTag.updateMany({ where: { id: { in: noteTagIdsToArchive } }, data: { isArchived: true } });
-  return await prisma.noteTag.findMany({ where: { id: { in: noteTagIdsToArchive } } });
-}
 
 export const archiveSynonymsAssociatedWithAnyArchivedTags = async (userId: UserId) => {
   const synonymIdsToArchive = (await prisma.$queryRaw<SynonymDTO[]>(Prisma.sql`
@@ -91,7 +78,6 @@ export type EntityToDto<T>
   = T extends Note ? NoteDTO
   : T extends FlashCard ? FlashCardDTO
   : T extends Tag ? TagDTO
-  : T extends NoteTag ? NoteTagDTO
   : T extends Group ? GroupDTO
   : T extends SynonymGroup ? SynonymGroupDTO
   : T extends Synonym ? SynonymDTO

@@ -19,14 +19,14 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
   },
   onClickConfirmRemoveNote: async () => {
     local.$patch({ allowNotePersister: false, loadingNote: true })
-    const { noteTags, tags, notes, activeNoteId } = store.$state;
+    const { tags, notes, activeNoteId, tagNotes } = store.$state;
     const apiResponse = await archiveNote(activeNoteId);
-    await storage.write(apiResponse)
+    await storage.write({ notes: [apiResponse.note] })
     local.$patch({ loadingNote: false, confirmDelete: false });
     const mostRecentlyViewedNoteId = notes
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
     store.activeNoteId.$set(mostRecentlyViewedNoteId);
-    const tagIds = noteTags.filter(nt => nt.noteId === mostRecentlyViewedNoteId).map(nt => nt.tagId);
+    const tagIds = tagNotes[mostRecentlyViewedNoteId]!.map(tag => tag.id);
     const synonymIds = tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
     store.synonymIds.$setUnique(synonymIds);
     setTimeout(() => local.allowNotePersister.$set(true), 500);
@@ -40,7 +40,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
   onClickDuplicateNote: async () => {
     local.loadingNote.$set(true);
     const apiResponse = await duplicateNote(store.$state.activeNoteId)
-    await storage.write({ notes: apiResponse.note, noteTags: apiResponse.noteTags });
+    await storage.write({ notes: apiResponse.note });
     local.loadingNote.$set(false);
     popupRef.current?.hide();
   },
@@ -61,7 +61,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
       return notify.error(apiResponse.fields.tagText);
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.fields.tagText);
-    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+    await storage.write({ tags: apiResponse.tag });
     store.synonymIds.$merge(store.$state.tags.filter(t => t.id === apiResponse.tag.id).map(t => t.synonymId));
     local.selection.$set('');
     codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0]!.anchor } });

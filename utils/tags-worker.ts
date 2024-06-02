@@ -1,4 +1,5 @@
 import { NoteDTO, NoteId, SynonymId, TagId } from "@/actions/types";
+import { DeepReadonlyArray } from "olik";
 
 class TrieNode {
   children: { [key: string]: TrieNode } = {};
@@ -87,15 +88,15 @@ export type Incoming
   }
   | {
     type: 'addNotes',
-    data: NoteDTO[]
+    data: DeepReadonlyArray<NoteDTO>
   }
   | {
     type: 'removeTags',
-    data: TagId[]
+    data: DeepReadonlyArray<TagId>
   }
   | {
     type: 'updateTags',
-    data: TagSummary[]
+    data: DeepReadonlyArray<TagSummary>
   }
   | {
     type: 'updateNote',
@@ -163,7 +164,7 @@ const addTags = (incomingTags: TagSummary[]) => {
     sendToProvider(toPost);
 }
 
-const removeTags = (incomingTagIds: TagId[]) => {
+const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
   incomingTagIds.forEach(incomingTagId => {
     const index = allTags.findIndex(tag => tag.id === incomingTagId);
     if (index !== -1)
@@ -182,7 +183,7 @@ const removeTags = (incomingTagIds: TagId[]) => {
     sendToProvider(toPost);
 };
 
-const updateTags = (incomingTags: TagSummary[]) => {
+const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
   const tagsRemoved = new Array<TagId>();
   incomingTags.forEach(incomingTag => {
     const tag = allTags.find(t => t.id === incomingTag.id);
@@ -203,7 +204,7 @@ const updateTags = (incomingTags: TagSummary[]) => {
     sendToProvider(toPost);
 }
 
-const addNotes = (incomingNotes: NoteDTO[]) => {
+const addNotes = (incomingNotes: DeepReadonlyArray<NoteDTO>) => {
   const toPost = [] as Outgoing;
   incomingNotes.forEach(incomingNote => {
     const found = allNotes.find(n => n.id === incomingNote.id);

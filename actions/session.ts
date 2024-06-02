@@ -40,9 +40,8 @@ export const initialize = ({ name, email, image, after }: {
     const notes = await prisma.note.findMany({ where: { userId, dateUpdated }, orderBy });
     const flashCards = await prisma.flashCard.findMany({ where: { note: { userId }, dateUpdated }, orderBy });
     const groups = await prisma.group.findMany({ where: { userId, dateUpdated }, orderBy });
-    const noteTags = await prisma.noteTag.findMany({ where: { note: { userId }, dateUpdated }, orderBy });
     const synonymGroups = await prisma.synonymGroup.findMany({ where: { group: { userId }, dateUpdated }, orderBy });
     const tags = await prisma.tag.findMany({ where: { userId, dateUpdated }, orderBy });
-    return { status: 'USER_UPDATED', notes, flashCards, groups, noteTags, synonymGroups, tags } as const;
+    return { status: 'USER_UPDATED', notes, flashCards, groups, synonymGroups, tags } as const;
   }
 });

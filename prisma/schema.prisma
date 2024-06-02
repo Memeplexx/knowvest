@@ -19,7 +19,6 @@ model Note {
   dateUpdated DateTime?   @default(now()) @updatedAt @map("date_updated")
   dateViewed  DateTime?   @map("date_viewed")
   isArchived  Boolean     @default(false) @map("is_archived")
-  noteTags    NoteTag[]
   flashCards  FlashCard[]
 
   @@map("note")
@@ -36,16 +35,15 @@ model Synonym {
 }
 
 model Tag {
-  id          Int       @id @default(autoincrement())
-  text        String    @unique
-  synonymId   Int       @map("synonym_id")
-  synonym     Synonym   @relation(fields: [synonymId], references: [id])
-  userId      Int       @map("user_id")
-  user        User      @relation(fields: [userId], references: [id])
-  dateCreated DateTime  @map("date_created")
-  dateUpdated DateTime  @default(now()) @updatedAt @map("date_updated")
-  isArchived  Boolean   @default(false) @map("is_archived")
-  noteTags    NoteTag[]
+  id          Int      @id @default(autoincrement())
+  text        String   @unique
+  synonymId   Int      @map("synonym_id")
+  synonym     Synonym  @relation(fields: [synonymId], references: [id])
+  userId      Int      @map("user_id")
+  user        User     @relation(fields: [userId], references: [id])
+  dateCreated DateTime @map("date_created")
+  dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
+  isArchived  Boolean  @default(false) @map("is_archived")
 
   @@map("tag")
 }
@@ -72,19 +70,6 @@ model SynonymGroup {
   isArchived  Boolean  @default(false) @map("is_archived")
 
   @@map("synonym_group")
-}
-
-model NoteTag {
-  id          Int      @id @default(autoincrement())
-  noteId      Int      @map("note_id")
-  note        Note     @relation(fields: [noteId], references: [id])
-  tagId       Int      @map("tag_id")
-  tag         Tag      @relation(fields: [tagId], references: [id])
-  assignedAt  DateTime @map("assigned_at")
-  dateUpdated DateTime @default(now()) @updatedAt @map("date_updated")
-  isArchived  Boolean  @default(false) @map("is_archived")
-
-  @@map("note_tag")
 }
 
 model User {

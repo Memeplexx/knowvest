@@ -1,5 +1,5 @@
 "use server";
-import { getUserId, listUnArchivedNoteIdsWithTagText, prisma, respond, validateGroupId, validateSynonymId } from './_common';
+import { getUserId, prisma, respond, validateGroupId, validateSynonymId } from './_common';
 import { GroupId, SynonymGroupId, SynonymId } from './types';
 
 
@@ -94,13 +94,7 @@ export const createTagForGroup = (text: string, groupId: GroupId, synonymId: Syn
   const tag = await prisma.tag.create({ data: { text, synonymId, userId, dateCreated: now } });
   const synonymGroup = await prisma.synonymGroup.create({ data: { groupId, synonymId } });
 
-  // Create new note tags as required
-  const noteIdsWithTagText = await listUnArchivedNoteIdsWithTagText({ userId, tagText: text });
-  if (noteIdsWithTagText.length)
-    await prisma.noteTag.createMany({ data: noteIdsWithTagText.map(noteId => ({ noteId, tagId: tag.id, assignedAt: now })) });
-  const noteTags = await prisma.noteTag.findMany({ where: { noteId: { in: noteIdsWithTagText } } });
-
   // Populate and return response
-  return { status: 'TAG_CREATED', tag, noteTags, synonymGroup } as const;
+  return { status: 'TAG_CREATED', tag, synonymGroup } as const;
 });
 

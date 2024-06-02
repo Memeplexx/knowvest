@@ -56,7 +56,6 @@ export const useInputs = () => {
     if (!tagNotesInitialized) return;
 
     // Create the CodeMirror editor
-    console.log('create');
     codeMirror.current = new EditorView({
       doc: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
       parent: editorRef.current!,

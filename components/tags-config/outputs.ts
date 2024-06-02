@@ -216,7 +216,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const autocompleteAction = isLastTag ? null : inputs.autocompleteAction;
       local.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
       synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
-      await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroups });
+      await storage.write({ tags: apiResponse.tag, synonymGroups: apiResponse.synonymGroups });
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {

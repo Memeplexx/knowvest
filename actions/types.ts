@@ -1,4 +1,4 @@
-import { type Note, type Tag, type NoteTag, type Group, type SynonymGroup, type Synonym, type FlashCard, type User } from "@prisma/client";
+import { type FlashCard, type Group, type Note, type Synonym, type SynonymGroup, type Tag, type User } from "@prisma/client";
 import { type Brand } from "olik";
 
 
@@ -9,7 +9,6 @@ export type GroupId = Brand<number, 'GroupId'>;
 export type SynonymId = Brand<number, 'SynonymId'>;
 export type UserId = Brand<number, 'UserId'>;
 export type FlashCardId = Brand<number, 'FlashCardId'>;
-export type NoteTagId = Brand<number, 'NoteTagId'>;
 export type SynonymGroupId = Brand<number, 'SynonymGroupId'>;
 
 
@@ -22,12 +21,6 @@ export interface TagDTO extends Omit<Tag, 'isArchived'> {
   id: TagId;
   userId: UserId;
   synonymId: SynonymId;
-}
-
-export interface NoteTagDTO extends Omit<NoteTag, 'isArchived'> {
-  id: NoteTagId;
-  noteId: NoteId;
-  tagId: TagId;
 }
 
 export interface GroupDTO extends Omit<Group, 'isArchived'> {

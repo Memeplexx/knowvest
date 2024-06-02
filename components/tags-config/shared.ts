@@ -12,7 +12,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.tagId.$set(apiResponse.tag.id);
-    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+    await storage.write({ tags: apiResponse.tag });
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -22,7 +22,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return notify.error(apiResponse.fields.text);
     local.$patch({ synonymId: apiResponse.tag.synonymId, tagId: apiResponse.tag.id });
     store.synonymIds.$push(apiResponse.tag.synonymId);
-    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
+    await storage.write({ tags: apiResponse.tag });
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -33,7 +33,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.autocompleteText.$set('');
-    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags, synonymGroups: apiResponse.synonymGroup });
+    await storage.write({ tags: apiResponse.tag, synonymGroups: apiResponse.synonymGroup });
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -70,12 +70,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return notify.info('Tag unchanged');
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
-    const activeTagIdsToBeDeselected = apiResponse.noteTags.map(nt => nt.tagId);
-    const activeSynonymIdsToBeDeselected = store.$state.tags.filter(t => activeTagIdsToBeDeselected.includes(t.id)).map(t => t.synonymId);
-    const activeTagIdsToBeSelected = apiResponse.noteTags.filter(nt => nt.noteId === inputs.activeNoteId).map(nt => nt.tagId);
-    const activeSynonymIdsToBeSelected = store.$state.tags.filter(t => activeTagIdsToBeSelected.includes(t.id)).map(t => t.synonymId);
-    await storage.write({ tags: apiResponse.tag, noteTags: apiResponse.noteTags });
-    store.synonymIds.$setUnique([...store.$state.synonymIds.filter(id => !activeSynonymIdsToBeDeselected.includes(id)), ...activeSynonymIdsToBeSelected]);
+    await storage.write({ tags: apiResponse.tag });
     notify.success('Tag updated');
     blurAutocompleteInput();
   }
