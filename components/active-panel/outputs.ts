@@ -5,11 +5,11 @@ import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, notify, storage }: Inputs) => ({
+export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, notify }: Inputs) => ({
   onClickCreateNote: async () => {
     local.loadingNote.$set(true);
     const apiResponse = await createNote();
-    await storage.write({ notes: apiResponse.note });
+    store.notes.$push(apiResponse.note);
     local.loadingNote.$set(false);
     store.activeNoteId.$set(apiResponse.note.id);
     store.synonymIds.$clear();
@@ -21,7 +21,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     local.$patch({ allowNotePersister: false, loadingNote: true })
     const { tags, notes, activeNoteId, tagNotes } = store.$state;
     const apiResponse = await archiveNote(activeNoteId);
-    await storage.write({ notes: [apiResponse.note] })
+    store.notes.$mergeMatching.id.$with(apiResponse.note);
     local.$patch({ loadingNote: false, confirmDelete: false });
     const mostRecentlyViewedNoteId = notes
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
@@ -40,7 +40,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
   onClickDuplicateNote: async () => {
     local.loadingNote.$set(true);
     const apiResponse = await duplicateNote(store.$state.activeNoteId)
-    await storage.write({ notes: apiResponse.note });
+    store.notes.$push(apiResponse.note);
     local.loadingNote.$set(false);
     popupRef.current?.hide();
   },
@@ -61,7 +61,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
       return notify.error(apiResponse.fields.tagText);
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.fields.tagText);
-    await storage.write({ tags: apiResponse.tag });
+    store.tags.$push(apiResponse.tag);
     store.synonymIds.$merge(store.$state.tags.filter(t => t.id === apiResponse.tag.id).map(t => t.synonymId));
     local.selection.$set('');
     codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0]!.anchor } });
@@ -78,7 +78,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     const range = codeMirror!.state.selection.ranges[0]!;
     local.loadingSelection.$set(true);
     const apiResponse = await splitNote(range.from, range.to, store.$state.activeNoteId);
-    await storage.write(apiResponse);
+    store.notes.$mergeMatching.id.$with(apiResponse.notes);
     local.$patch({
       loadingSelection: false,
       selection: '',

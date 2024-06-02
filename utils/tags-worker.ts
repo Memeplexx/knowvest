@@ -83,6 +83,10 @@ export type TagResult = {
 
 export type Incoming
   = {
+    type: 'initialize',
+    data: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }
+  }
+  | {
     type: 'addTags',
     data: TagSummary[]
   }
@@ -125,6 +129,8 @@ const resultsCache = new Map<NoteId, Array<TagResult>>();
 onmessage = (event: MessageEvent<Incoming>) => {
   const { type, data } = event.data;
   switch (type) {
+    case 'initialize':
+      return initialize(data);
     case 'addTags':
       return addTags(data);
     case 'removeTags':
@@ -141,6 +147,10 @@ onmessage = (event: MessageEvent<Incoming>) => {
 };
 
 const sendToProvider = (data: Outgoing) => postMessage(data);
+
+const initialize = ({ tags, notes }: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => {
+
+}
 
 const addTags = (incomingTags: TagSummary[]) => {
   const trieLocal = new Trie(); // we don't want to search ALL tags in ALL notes. Let's create a Trie to only search the tags that were added

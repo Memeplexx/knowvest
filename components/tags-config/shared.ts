@@ -6,13 +6,13 @@ import { Inputs, Props } from './constants';
 
 
 export const useSharedFunctions = (props: Props, inputs: Inputs) => {
-  const { store, local, notify, storage } = inputs;
+  const { store, local, notify } = inputs;
   const completeCreateTagForSynonym = async () => {
     const apiResponse = await createTagForSynonym(inputs.autocompleteText.trim(), inputs.synonymId === null ? undefined : inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.tagId.$set(apiResponse.tag.id);
-    await storage.write({ tags: apiResponse.tag });
+    store.tags.$mergeMatching.id.$with(apiResponse.tag);
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -22,7 +22,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return notify.error(apiResponse.fields.text);
     local.$patch({ synonymId: apiResponse.tag.synonymId, tagId: apiResponse.tag.id });
     store.synonymIds.$push(apiResponse.tag.synonymId);
-    await storage.write({ tags: apiResponse.tag });
+    store.tags.$mergeMatching.id.$with(apiResponse.tag);
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -33,7 +33,8 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.autocompleteText.$set('');
-    await storage.write({ tags: apiResponse.tag, synonymGroups: apiResponse.synonymGroup });
+    store.tags.$mergeMatching.id.$with(apiResponse.tag);
+    store.synonymGroups.$mergeMatching.id.$with(apiResponse.synonymGroup);
     notify.success('Tag created');
     blurAutocompleteInput();
   }
@@ -46,7 +47,8 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.message);
     local.autocompleteText.$set('');
-    await storage.write({ groups: apiResponse.group, synonymGroups: apiResponse.synonymGroup });
+    store.groups.$mergeMatching.id.$with(apiResponse.group);
+    store.synonymGroups.$mergeMatching.id.$with(apiResponse.synonymGroup);
     notify.success('Group created');
     blurAutocompleteInput();
   }
@@ -58,7 +60,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return notify.error(apiResponse.fields.name);
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.message);
-    await storage.write({ groups: apiResponse.group });
+    store.groups.$mergeMatching.id.$with(apiResponse.group);
     notify.success('Group updated');
     blurAutocompleteInput();
   }
@@ -70,7 +72,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return notify.info('Tag unchanged');
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
-    await storage.write({ tags: apiResponse.tag });
+    store.tags.$mergeMatching.id.$with(apiResponse.tag);
     notify.success('Tag updated');
     blurAutocompleteInput();
   }
@@ -111,7 +113,8 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     const synonymId = apiResponse.tags[0]!.synonymId;
     const groupHasMoreThanOneTag = store.$state.tags.some(t => t.synonymId === synonymId && t.id !== tagId);
     const tagWasPartOfAnotherGroup = selected.synonymId !== synonymId;
-    await storage.write({ tags: apiResponse.tags, synonymGroups: apiResponse.synonymGroups });
+    store.tags.$mergeMatching.id.$with(apiResponse.tags);
+    store.synonymGroups.$mergeMatching.id.$with(apiResponse.synonymGroups);
     local.$patch({ tagId, synonymId, autocompleteText: selected.text });
     groupHasMoreThanOneTag && tagWasPartOfAnotherGroup && notify.success('Tag(s) added to synonyms');
   };
@@ -121,14 +124,14 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     const { synonymId } = store.$state.tags.findOrThrow(t => t.id === tagId);
     const apiResponse = await addSynonymToGroup(inputs.groupId, synonymId);
     local.autocompleteText.$set('');
-    await storage.write({ synonymGroups: apiResponse.synonymGroup });
+    store.synonymGroups.$mergeMatching.id.$with(apiResponse.synonymGroup);
     notify.success('Added to group');
   };
   const onAutocompleteSelectedWhileAddActiveSynonymsToGroup = async ({ groupId }: { groupId: GroupId }) => {
     if (!inputs.synonymId)
       throw new Error();
     const apiResponse = await addSynonymToGroup(groupId, inputs.synonymId);
-    await storage.write({ synonymGroups: apiResponse.synonymGroup });
+    store.synonymGroups.$mergeMatching.id.$with(apiResponse.synonymGroup);
     notify.success('Added to group');
   }
   const focusAutocompleteInput = () => {

@@ -10,7 +10,7 @@ import { useSharedFunctions } from './shared';
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
   const shared = useSharedFunctions(props, inputs);
-  const { store, local, notify, storage } = inputs;
+  const { store, local, notify } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       local.$patch({
@@ -69,7 +69,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       if (!inputs.tagId)
         return;
       const apiResponse = await removeTagFromItsCurrentSynonym(inputs.tagId);
-      await storage.write({ synonymGroups: apiResponse.synonymGroups, tags: apiResponse.tag });
+      store.synonymGroups.$mergeMatching.synonymId.$with(apiResponse.synonymGroups);
+      store.tags.$mergeMatching.id.$with(apiResponse.tag);
       local.$patch({ tagId: null, autocompleteText: '' });
       notify.success('Tag removed from synonyms');
     },
@@ -79,7 +80,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       if (!inputs.groupId)
         throw new Error();
       const apiResponse = await removeSynonymFromGroup(inputs.groupId, inputs.groupSynonymId);
-      await storage.write({ groups: apiResponse.group, synonymGroups: apiResponse.synonymGroups });
+      if (apiResponse.group) store.groups.$mergeMatching.id.$with(apiResponse.group);
+      store.synonymGroups.$mergeMatching.synonymId.$with(apiResponse.synonymGroups);
       local.$patch({ tagId: null, groupId: null, groupSynonymId: null });
       notify.success('Tag-Synonym removed from group');
     },
@@ -216,13 +218,15 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const autocompleteAction = isLastTag ? null : inputs.autocompleteAction;
       local.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
       synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
-      await storage.write({ tags: apiResponse.tag, synonymGroups: apiResponse.synonymGroups });
+      store.tags.$mergeMatching.id.$with(apiResponse.tag);
+      store.synonymGroups.$mergeMatching.synonymId.$with(apiResponse.synonymGroups);
       notify.success('Tag archived');
     },
     onClickConfirmArchiveGroup: async () => {
       const apiResponse = await archiveGroup(inputs.groupId!);
       local.$patch({ tagId: null, groupId: null, groupSynonymId: null, autocompleteText: '', modal: null });
-      await storage.write({ synonymGroups: apiResponse.synonymGroups, groups: apiResponse.group });
+      store.groups.$mergeMatching.id.$with(apiResponse.group);
+      store.synonymGroups.$mergeMatching.synonymId.$with(apiResponse.synonymGroups);
       notify.success('Group archived');
     },
     onCancelConfirmation: () => {

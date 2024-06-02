@@ -1,7 +1,6 @@
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, tagType, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useIsMounted } from '@/utils/react-utils';
-import { useStorageContext } from '@/utils/storage-provider';
 import { useLocalStore, useStore } from '@/utils/store-utils';
 import {
   closeBrackets,
@@ -41,7 +40,6 @@ export const useInputs = () => {
   const { store, state: { notes, stateInitialized, tagNotesInitialized } } = useStore();
   const { local } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
-  const storage = useStorageContext();
   const popupRef = useRef<PopupHandle>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
@@ -73,7 +71,7 @@ export const useInputs = () => {
         EditorView.contentAttributes.of({ spellcheck: 'on', autocapitalize: 'on' }),
         keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
         autocompleteExtension(store),
-        createNotePersisterExtension({ debounce: 500, store, local, storage }),
+        createNotePersisterExtension({ debounce: 500, store, local }),
         textSelectorPlugin(local),
         editorHasTextUpdater(local),
         pasteListener,
@@ -116,7 +114,7 @@ export const useInputs = () => {
       unsubscribeFromSynonymGroupsChange();
       codeMirror.current?.destroy();
     }
-  }, [store, local, isMounted, hasNote, tagNotesInitialized, storage]);
+  }, [store, local, isMounted, hasNote, tagNotesInitialized]);
 
   return {
     store,
@@ -127,7 +125,6 @@ export const useInputs = () => {
     popupRef,
     stateInitialized,
     editorRef,
-    storage,
     codeMirror: codeMirror.current,
   };
 }

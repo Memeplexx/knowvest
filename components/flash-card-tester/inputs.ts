@@ -1,4 +1,3 @@
-import { useStorageContext } from "@/utils/storage-provider";
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { isAfter } from "date-fns";
 import { useMemo, useRef } from "react";
@@ -11,7 +10,6 @@ export const useInputs = () => {
   const { local } = useLocalStore('flashCardTester', initialState);
   const notify = useNotifier();
   const bodyRef = useRef<HTMLDivElement>(null);
-  const storage = useStorageContext();
 
   const items = useMemo(() => {
     return flashCards
@@ -26,6 +24,5 @@ export const useInputs = () => {
     items,
     notify,
     bodyRef,
-    storage,
   }
 }

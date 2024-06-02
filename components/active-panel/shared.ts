@@ -1,6 +1,5 @@
 import { updateNote } from "@/actions/note";
 import { NoteId } from "@/actions/types";
-import { StorageProvider } from "@/utils/storage-provider";
 import { AppState } from "@/utils/store-utils";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
@@ -25,14 +24,14 @@ export const autocompleteExtension = (store: Store<AppState>) => {
   })
 };
 
-export const createNotePersisterExtension = ({ debounce, store, local, storage }: { debounce: number, store: Store<AppState>, local: ActivePanelStore, storage: StorageProvider }) => {
+export const createNotePersisterExtension = ({ debounce, store, local }: { debounce: number, store: Store<AppState>, local: ActivePanelStore }) => {
   let timestamp = Date.now();
   const doNoteUpdate = async (noteId: NoteId, docText: string) => {
     if (Date.now() - timestamp < debounce) return;
     if (!local.$state.allowNotePersister) return;
     if (docText === store.$state.notes.findOrThrow(n => n.id === noteId).text) return;
     const apiResponse = await updateNote(noteId, docText);
-    await storage.write({ notes: apiResponse.note });
+    store.notes.$mergeMatching.id.$with(apiResponse.note);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) return;
