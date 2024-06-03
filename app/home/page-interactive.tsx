@@ -17,10 +17,10 @@ export default function HomeInteractive() {
   return (
     <>
       <LoaderPlaceholder
-        if={!inputs.tagNotesInitialized}
+        if={inputs.status !== 'complete'}
       />
       <Frag
-        if={inputs.tagNotesInitialized}
+        if={inputs.status === 'complete'}
         children={
           <>
             <Navbar

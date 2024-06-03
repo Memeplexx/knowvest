@@ -7,7 +7,6 @@ import { useLocalStore, useStore } from "@/utils/store-utils";
 import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { useRef } from "react";
 import { initialState } from "./constants";
 
 
@@ -15,19 +14,12 @@ export const useInputs = () => {
 
   const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
-  const { stateInitialized } = state;
-  const refs = useRef({ initializingData: false, loggingOut: false, initializingNoteTags: false, worker: null as TagsWorker | null });
-  const result = { store, local, ...state, stateInitialized };
+  const { status } = state;
+  const result = { store, local, ...state };
 
   useMediaQueryListener(store.mediaQuery.$set);
 
-  // Log user out if session expired
-  const session = useSession();
-  if (!refs.current.loggingOut) {
-    refs.current.loggingOut = true;
-    if (session.status === 'unauthenticated')
-      redirect('/?session-expired=true');
-  }
+  const component = useComponent();
 
   // Update header visibility as required
   useResizeListener(() => {
@@ -37,17 +29,27 @@ export const useInputs = () => {
       local.headerExpanded.$set(false);
   });
 
-  // Initialize data
-  const component = useComponent();
+  // Log user out if session expired
+  const session = useSession();
+  if (session.status === 'unauthenticated') {
+    local.status.$set('loggingOut');
+    redirect('/?session-expired=true');
+  }
 
   // Do not continue under certain conditions
   if (!component.isMounted)
     return result;
   if (!session.data)
     return result;
+  if (status === 'complete')
+    return result;
+  if (status === 'loggingOut')
+    return result;
+  if (status === 'initializingData')
+    return result;
 
-  if (!refs.current.initializingData) {
-    refs.current.initializingData = true;
+  if (status === 'pristine') {
+    local.status.$set('initializingData');
     void async function initializeData() {
       await initializeDb();
       const databaseData = await readFromDb();
@@ -60,7 +62,7 @@ export const useInputs = () => {
           notes: [apiResponse.firstNote],
           activeNoteId: apiResponse.firstNote.id
         });
-        local.stateInitialized.$set(true);
+        local.status.$set('dataInitialized');
         return;
       }
       await Promise.all([
@@ -78,21 +80,14 @@ export const useInputs = () => {
         synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
         flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
       });
-      local.stateInitialized.$set(true);
+      local.status.$set('dataInitialized');
     }();
   }
-
-  if (!stateInitialized)
-    return result;
-
-  if (refs.current.worker)
-    return result;
 
   console.log('rendering!')
 
   // Configure object which will be passed to the consumer
   const worker = new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker;
-  refs.current.worker = worker;
   component.listen = () => worker.terminate();
 
   // Ensure that changes to note tags in worker are sent to the store
@@ -103,25 +98,22 @@ export const useInputs = () => {
         store.tagNotes[noteId]!.$set(tags);
       }
     });
-    if (!local.$state.tagNotesInitialized) {
+    if (status === 'dataInitialized') {
       const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!);
       store.synonymIds.$set(synonymIds);
-      local.tagNotesInitialized.$set(true);
+      local.status.$set('complete');
     }
   }
 
   // Send the tags worker the initial data
-  if (!refs.current.initializingNoteTags && stateInitialized) {
-    refs.current.initializingNoteTags = true;
-    const { notes, tags } = store.$state;
-    worker.postMessage({
-      type: 'initialize',
-      data: {
-        notes,
-        tags: tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
-      }
-    });
-  }
+  const { notes, tags } = store.$state;
+  worker.postMessage({
+    type: 'initialize',
+    data: {
+      notes,
+      tags: tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
+    }
+  });
 
   // Ensure that changes to tags in the store are sent to the worker
   component.listen = store.tags.$onChange((tags, previousTags) => {

@@ -8,8 +8,7 @@ export const initialState = {
   tagsExpanded: false,
   headerExpanded: true,
   selectedTab: 'Tags',
-  stateInitialized: false,
-  tagNotesInitialized: false,
+  status: 'pristine' as 'pristine' | 'loggingOut' | 'initializingData' | 'dataInitialized' | 'complete',
 };
 
 export type HomeStore = Store<typeof initialState>;
