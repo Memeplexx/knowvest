@@ -14,7 +14,6 @@ export const useInputs = () => {
 
   const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
-  const { status } = state;
   const result = { store, local, ...state };
 
   useMediaQueryListener(store.mediaQuery.$set);
@@ -32,7 +31,7 @@ export const useInputs = () => {
   // Log user out if session expired
   const session = useSession();
   if (session.status === 'unauthenticated') {
-    local.status.$set('loggingOut');
+    local.isLoggingOut.$set(true);
     redirect('/?session-expired=true');
   }
 
@@ -41,16 +40,19 @@ export const useInputs = () => {
     return result;
   if (!session.data)
     return result;
-  if (status === 'complete')
+  if (state.isComplete)
     return result;
-  if (status === 'loggingOut')
+  if (state.isLoggingOut)
     return result;
-  if (status === 'initializingData')
+  if (state.isInitializingData)
+    return result;
+  if (state.isInitializingWorker)
     return result;
 
-  if (status === 'pristine') {
-    local.status.$set('initializingData');
+  if (state.isPristine) {
+    local.isInitializingData.$set(true);
     void async function initializeData() {
+      console.log('Initializing data');
       await initializeDb();
       const databaseData = await readFromDb();
       const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
@@ -58,11 +60,11 @@ export const useInputs = () => {
       if (apiResponse.status === 'USER_CREATED') {
         store.$patch({
           ...databaseData,
-          stateInitialized: true,
           notes: [apiResponse.firstNote],
           activeNoteId: apiResponse.firstNote.id
         });
-        local.status.$set('dataInitialized');
+        local.isDataInitialized.$set(true);
+        console.log('User NOT found and data initialized');
         return;
       }
       await Promise.all([
@@ -80,13 +82,14 @@ export const useInputs = () => {
         synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
         flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
       });
-      local.status.$set('dataInitialized');
+      console.log('User found and data initialized');
+      local.isDataInitialized.$set(true);
     }();
   }
 
-  console.log('rendering!')
-
   // Configure object which will be passed to the consumer
+  console.log('Initializing worker');
+  local.isInitializingWorker.$set(true);
   const worker = new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker;
   component.listen = () => worker.terminate();
 
@@ -98,10 +101,10 @@ export const useInputs = () => {
         store.tagNotes[noteId]!.$set(tags);
       }
     });
-    if (status === 'dataInitialized') {
+    if (local.isInitializingWorker) {
       const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!);
       store.synonymIds.$set(synonymIds);
-      local.status.$set('complete');
+      local.isComplete.$set(true);
     }
   }
 
@@ -153,7 +156,6 @@ export const useInputs = () => {
 
   // Ensure that the indexedDB is updated when the store changes
   component.listen = store.notes.$onChange(async (current, previous) => {
-    console.log('.');
     await writeToDb('notes', current.filter(t => !previous.includes(t)));
   });
   component.listen = store.tags.$onChange(async (current, previous) => {

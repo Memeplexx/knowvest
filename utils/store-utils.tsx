@@ -28,8 +28,6 @@ export const initialAppState = {
   mediaQuery: null as keyof typeof MediaQueries | null,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
-  stateInitialized: false,
-  writingNoteTags: false,
   tagNotes: {} as { [noteId: NoteId]: Array<TagResult> },
 };
 
