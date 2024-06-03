@@ -7,7 +7,6 @@ export const initialState = {
   allowNotePersister: true,
   confirmDelete: false,
   loadingSelection: false,
-  isEditorInitialized: false,
 };
 
 export type Inputs = ReturnType<typeof useInputs>;

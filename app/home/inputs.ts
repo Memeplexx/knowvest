@@ -14,11 +14,9 @@ export const useInputs = () => {
 
   const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
-  const result = { store, local, ...state };
-
-  useMediaQueryListener(store.mediaQuery.$set);
-
   const component = useComponent();
+  const result = { store, local, ...state, isDone: component.isDone };
+  useMediaQueryListener(store.mediaQuery.$set);
 
   // Update header visibility as required
   useResizeListener(() => {
@@ -30,81 +28,70 @@ export const useInputs = () => {
 
   // Log user out if session expired
   const session = useSession();
-  if (session.status === 'unauthenticated') {
-    local.isLoggingOut.$set(true);
+  if (session.status === 'unauthenticated')
     redirect('/?session-expired=true');
-  }
 
   // Do not continue under certain conditions
   if (!component.isMounted)
     return result;
   if (!session.data)
     return result;
-  if (state.isComplete)
-    return result;
-  if (state.isLoggingOut)
-    return result;
-  if (state.isInitializingData)
-    return result;
-  if (state.isInitializingWorker)
+  if (!component.isPristine)
     return result;
 
-  if (state.isPristine) {
-    local.isInitializingData.$set(true);
-    void async function initializeData() {
-      console.log('Initializing data');
-      await initializeDb();
-      const databaseData = await readFromDb();
-      const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
-      const apiResponse = await initialize({ ...session.data.user as UserDTO, after: notesFromDbSorted[0]?.dateUpdated ?? null });
-      if (apiResponse.status === 'USER_CREATED') {
-        store.$patch({
-          ...databaseData,
-          notes: [apiResponse.firstNote],
-          activeNoteId: apiResponse.firstNote.id
-        });
-        local.isDataInitialized.$set(true);
-        console.log('User NOT found and data initialized');
-        return;
-      }
-      await Promise.all([
-        writeToDb('notes', apiResponse.notes),
-        writeToDb('tags', apiResponse.tags),
-        writeToDb('groups', apiResponse.groups),
-        writeToDb('synonymGroups', apiResponse.synonymGroups),
-        writeToDb('flashCards', apiResponse.flashCards)
-      ]);
-      store.$patch({ // NOTE: Database might be empty. If so, use the first note from the API response
-        activeNoteId: notesFromDbSorted[0]?.id ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id,
-        notes: [...databaseData.notes, ...apiResponse.notes].filter(n => 'isArchived' in n ? !n.isArchived : true),
-        tags: [...databaseData.tags, ...apiResponse.tags].filter(t => 'isArchived' in t ? !t.isArchived : true),
-        groups: [...databaseData.groups, ...apiResponse.groups].filter(g => 'isArchived' in g ? !g.isArchived : true),
-        synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
-        flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
+  component.start();
+  void async function initializeData() {
+    console.log('Initializing data');
+    await initializeDb();
+    const databaseData = await readFromDb();
+    const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
+    const apiResponse = await initialize({ ...session.data.user as UserDTO, after: notesFromDbSorted[0]?.dateUpdated ?? null });
+    if (apiResponse.status === 'USER_CREATED') {
+      store.$patch({
+        ...databaseData,
+        notes: [apiResponse.firstNote],
+        activeNoteId: apiResponse.firstNote.id
       });
-      console.log('User found and data initialized');
-      local.isDataInitialized.$set(true);
-    }();
-  }
+      console.log('User NOT found and data initialized');
+      return;
+    }
+    await Promise.all([
+      writeToDb('notes', apiResponse.notes),
+      writeToDb('tags', apiResponse.tags),
+      writeToDb('groups', apiResponse.groups),
+      writeToDb('synonymGroups', apiResponse.synonymGroups),
+      writeToDb('flashCards', apiResponse.flashCards)
+    ]);
+    store.$patch({ // NOTE: Database might be empty. If so, use the first note from the API response
+      activeNoteId: notesFromDbSorted[0]?.id ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id,
+      notes: [...databaseData.notes, ...apiResponse.notes].filter(n => 'isArchived' in n ? !n.isArchived : true),
+      tags: [...databaseData.tags, ...apiResponse.tags].filter(t => 'isArchived' in t ? !t.isArchived : true),
+      groups: [...databaseData.groups, ...apiResponse.groups].filter(g => 'isArchived' in g ? !g.isArchived : true),
+      synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
+      flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
+    });
+    console.log('User found and data initialized');
+  }();
 
   // Configure object which will be passed to the consumer
   console.log('Initializing worker');
-  local.isInitializingWorker.$set(true);
   const worker = new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker;
   component.listen = () => worker.terminate();
 
   // Ensure that changes to note tags in worker are sent to the store
   // TODO: Consider sending this data to the IndexedDB also.
+  let first = true;
   worker.onmessage = event => {
     event.data.forEach(({ noteId, tags }) => {
       if (JSON.stringify(tags) !== JSON.stringify(store.$state.tagNotes[noteId])) {
         store.tagNotes[noteId]!.$set(tags);
       }
     });
-    if (local.isInitializingWorker) {
+    if (first) {
+      first = false;
       const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!);
       store.synonymIds.$set(synonymIds);
-      local.isComplete.$set(true);
+      component.done();
     }
   }
 

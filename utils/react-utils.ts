@@ -1,5 +1,4 @@
-import dynamic from "next/dynamic";
-import { ComponentType, ForwardedRef, FunctionComponent, forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { ComponentType, ForwardedRef, forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { is } from "./logic-utils";
 
 export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(
@@ -62,16 +61,9 @@ export const usePropsWithDefaults = <P extends Record<string, unknown>, I extend
   return outRef.current as I & D;
 }
 
-export const useIsMounted = () => {
-  const [initialized, setInitialized] = useState(false);
-  useEffect(() => {
-    setTimeout(() => setInitialized(true));
-  }, []);
-  return initialized;
-}
-
 export const useComponent = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const [status, setStatus] = useState<'pristine' | 'processing' | 'done'>('pristine');
   const subscriptions = useRef<(() => void)[]>([]);
   useEffect(() => {
     setIsMounted(true);
@@ -83,10 +75,20 @@ export const useComponent = () => {
   }, []);
   const firstPass = useRef(true);
   firstPass.current = true
-  return useMemo(() => new Proxy({} as { isMounted: boolean, listen: () => void }, {
+  return useMemo(() => new Proxy({} as { isMounted: boolean, listen: () => void, start: () => void, done: () => void, isPristine: boolean, isProcessing: boolean, isDone: boolean }, {
     get: (_, prop) => {
       if (prop === 'isMounted')
         return isMounted;
+      if (prop === 'start')
+        return () => setStatus('processing');
+      if (prop === 'done')
+        return () => setStatus('done');
+      if (prop === 'isPristine')
+        return status === 'pristine';
+      if (prop === 'isProcessing')
+        return status === 'processing';
+      if (prop === 'isDone')
+        return status === 'done';
       return;
     },
     set(_, prop, newValue) {
@@ -100,17 +102,7 @@ export const useComponent = () => {
       }
       return true;
     },
-  }), [isMounted]);
-}
-
-export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {
-  const isMounted = useIsMounted();
-  const importerRef = useRef(importer);
-  const component = useMemo(() => {
-    if (!isMounted) return null;
-    return dynamic(importerRef.current);
-  }, [isMounted]);
-  return component;
+  }), [isMounted, status]);
 }
 
 export const useRecord = <R extends Record<string, unknown>>(record: R) => {

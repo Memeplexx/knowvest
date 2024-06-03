@@ -1,4 +1,4 @@
-import { useIsMounted } from "@/utils/react-utils";
+import { useComponent } from "@/utils/react-utils";
 import { useLocalStore } from "@/utils/store-utils";
 import { ReferenceType, useFloating } from "@floating-ui/react";
 import { Props, defaultProps, initialState } from "./constants";
@@ -10,6 +10,8 @@ export const useInputs = (props: Props) => {
   const maxCount = props.maxCount ?? defaultProps.maxCount;
   const animationDuration = props.animationDuration ?? defaultProps.animationDuration;
   const displayDuration = props.displayDuration ?? defaultProps.displayDuration;
+
+  const component = useComponent();
 
   // message will be an empty string on initialization or when the message is cleared
   if (message) {
@@ -39,7 +41,7 @@ export const useInputs = (props: Props) => {
   return {
     local,
     ...local.$state,
-    initialized: useIsMounted(),
+    initialized: component.isMounted,
     floatingRef: useFloating<ReferenceType>({ placement: 'bottom' }),
   };
 }

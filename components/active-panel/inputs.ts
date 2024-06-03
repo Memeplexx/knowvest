@@ -1,6 +1,6 @@
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, tagType, titleFormatPlugin } from '@/utils/codemirror-utils';
-import { useComponent, useIsMounted } from '@/utils/react-utils';
+import { useComponent } from '@/utils/react-utils';
 import { useLocalStore, useStore } from '@/utils/store-utils';
 import {
   closeBrackets,
@@ -38,11 +38,10 @@ import { autocompleteExtension, createNotePersisterExtension, pasteListener, tex
 export const useInputs = () => {
 
   const { store, state: { notes } } = useStore();
-  const { local, state } = useLocalStore('activePanel', initialState);
+  const { local } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
   const editorRef = useRef<HTMLDivElement>(null);
-  const isMounted = useIsMounted();
   const hasNote = !!store.$state.activeNoteId;
   const component = useComponent();
   const result = {
@@ -57,13 +56,14 @@ export const useInputs = () => {
   };
 
   // Do not instantiate the editor until certain conditions are met
-  if (!isMounted)
+  if (!component.isMounted)
     return result;
   if (!hasNote)
     return result;
-  if (state.isEditorInitialized)
+  if (!component.isPristine)
     return result;
 
+  component.start();
   const editorView = new EditorView({
     doc: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
     parent: editorRef.current!,
@@ -91,9 +91,7 @@ export const useInputs = () => {
       oneDark,
     ],
   });
-  local.isEditorInitialized.$set(true);
   component.listen = () => editorView.destroy();
-
   const previousPositions = new Array<TagResult & { type?: tagType }>();
   const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
   const reviseTagsInEditor = () => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions);
@@ -116,7 +114,7 @@ export const useInputs = () => {
   // Listen to changes in tags and synonyms, and notify the worker as required
   component.listen = store.synonymIds.$onChange(reviseTagsInEditor);
   component.listen = store.synonymGroups.$onChange(reviseTagsInEditor);
-
+  component.done();
   return {
     ...result,
     editorView,
