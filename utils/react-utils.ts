@@ -70,6 +70,66 @@ export const useIsMounted = () => {
   return initialized;
 }
 
+// export const useComponent = () => {
+//   const [isMounted, setIsMounted] = useState(false);
+//   const subscriptions = useRef<(() => void)[]>([]);
+//   useEffect(() => {
+//     setIsMounted(true);
+//     const subs = subscriptions.current;
+//     return () => {
+//       subs.forEach(listener => listener());
+//       subs.length = 0;
+//     }
+//   }, []);
+//   const firstPass = useRef(true);
+//   firstPass.current = true
+//   return {
+//     isMounted,
+//     push: (listener: () => void) => {
+//       if (firstPass.current) { // This is a workaround for React.strictMode which add double the number of subscriptions.
+//         subscriptions.current.forEach(listener => listener());
+//         subscriptions.current.length = 0;
+//         firstPass.current = false;
+//       }
+//       subscriptions.current.push(listener);
+//     },
+//   };
+// }
+export const useComponent = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  const subscriptions = useRef<(() => void)[]>([]);
+  useEffect(() => {
+    setIsMounted(true);
+    const subs = subscriptions.current;
+    return () => {
+      subs.forEach(listener => listener());
+      subs.length = 0;
+    }
+  }, []);
+  const firstPass = useRef(true);
+  firstPass.current = true
+  return useMemo(() => {
+    return new Proxy({} as { isMounted: boolean, listen: () => void }, {
+      get: (_, prop) => {
+        if (prop === 'isMounted')
+          return isMounted;
+        return;
+      },
+      set(target, prop, newValue) {
+        if (prop === 'listen') {
+          if (firstPass.current) { // This is a workaround for React.strictMode which add double the number of subscriptions.
+            subscriptions.current.forEach(listener => listener());
+            subscriptions.current.length = 0;
+            firstPass.current = false;
+          }
+          subscriptions.current.push(newValue);
+        }
+        return true;
+      },
+    });
+  }, [isMounted]);
+}
+
 export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {
   const isMounted = useIsMounted();
   const importerRef = useRef(importer);
