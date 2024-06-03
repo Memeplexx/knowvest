@@ -218,7 +218,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const autocompleteAction = isLastTag ? null : inputs.autocompleteAction;
       local.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
       synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
-      store.tags.$mergeMatching.id.$with(apiResponse.tag);
+      store.tags.$find.id.$eq(apiResponse.tag.id).$delete();
       store.synonymGroups.$mergeMatching.synonymId.$with(apiResponse.synonymGroups);
       notify.success('Tag archived');
     },

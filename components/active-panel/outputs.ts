@@ -21,7 +21,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     local.$patch({ allowNotePersister: false, loadingNote: true })
     const { tags, notes, activeNoteId, tagNotes } = store.$state;
     const apiResponse = await archiveNote(activeNoteId);
-    store.notes.$mergeMatching.id.$with(apiResponse.note);
+    store.notes.$find.id.$eq(apiResponse.note.id).$delete();
     local.$patch({ loadingNote: false, confirmDelete: false });
     const mostRecentlyViewedNoteId = notes
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
@@ -29,7 +29,7 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     const tagIds = tagNotes[mostRecentlyViewedNoteId]!.map(tag => tag.id);
     const synonymIds = tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
     store.synonymIds.$setUnique(synonymIds);
-    setTimeout(() => local.allowNotePersister.$set(true), 500);
+    setTimeout(() => local.allowNotePersister.$set(true), 500); // TODO: Fix this
     notify.success('Note deleted');
     popupRef.current?.hide();
   },

@@ -37,7 +37,7 @@ export const useInputs = () => {
 
   // Initialize data
   const mounted = useIsMounted();
-  if (session.data && mounted && !refs.current.initializingData && !store.stateInitialized.$state) {
+  if (session.data && mounted && !refs.current.initializingData && !stateInitialized) {
     refs.current.initializingData = true;
     void async function initializeData() {
       await initializeDb();
@@ -45,7 +45,12 @@ export const useInputs = () => {
       const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
       const apiResponse = await initialize({ ...session.data.user as UserDTO, after: notesFromDbSorted[0]?.dateUpdated ?? null });
       if (apiResponse.status === 'USER_CREATED')
-        return store.$patch({ ...databaseData, notes: [apiResponse.firstNote], activeNoteId: apiResponse.firstNote.id });
+        return store.$patch({
+          ...databaseData,
+          stateInitialized: true,
+          notes: [apiResponse.firstNote],
+          activeNoteId: apiResponse.firstNote.id
+        });
       if (apiResponse.notes.length)
         await writeToDb('notes', apiResponse.notes);
       if (apiResponse.tags.length)
@@ -58,14 +63,17 @@ export const useInputs = () => {
         await writeToDb('flashCards', apiResponse.flashCards);
       const activeNoteId = notesFromDbSorted[0]?.id // Database might be empty. If so, use the first note from the API response
         ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id;
-      store.$patch({ ...databaseData, activeNoteId });
+      store.$patch({
+        activeNoteId,
+        notes: [...databaseData.notes, ...apiResponse.notes].filter(n => 'isArchived' in n ? !n.isArchived : true),
+        tags: [...databaseData.tags, ...apiResponse.tags].filter(t => 'isArchived' in t ? !t.isArchived : true),
+        groups: [...databaseData.groups, ...apiResponse.groups].filter(g => 'isArchived' in g ? !g.isArchived : true),
+        synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
+        flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
+      });
       store.stateInitialized.$set(true);
     }();
   }
-
-  // const isBrowser = typeof window !== 'undefined';
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const thingy = useMemo(() => !isBrowser ? null : new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker, [isBrowser]);
 
   // Ensure that tag notes are kept in sync with the worker
   useEffect(() => {
@@ -92,11 +100,12 @@ export const useInputs = () => {
     }
 
     // Send the tags worker the initial data
+    const { notes, tags } = store.$state;
     worker.postMessage({
       type: 'initialize',
       data: {
-        notes: store.$state.notes,
-        tags: store.$state.tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
+        notes,
+        tags: tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
       }
     });
 
