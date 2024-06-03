@@ -96,17 +96,6 @@ export const textSelectorPlugin = (local: ActivePanelStore) => {
   });
 }
 
-export const editorHasTextUpdater = (local: ActivePanelStore) => {
-  return EditorView.updateListener.of(function editorHasTextUpdater(update) {
-    if (!update.docChanged)
-      return;
-    if (local.$state.editorHasText && !update.state.doc.length)
-      setTimeout(() => local.editorHasText.$set(false));
-    else if (!local.$state.editorHasText && !!update.state.doc.length)
-      setTimeout(() => local.editorHasText.$set(true));
-  });
-}
-
 export const pasteListener = EditorState.transactionFilter.of(tr => {
   if (tr.isUserEvent('input.paste')) {
     //

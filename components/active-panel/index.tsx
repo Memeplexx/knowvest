@@ -8,7 +8,7 @@ import { Popup } from '../popup';
 import { FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, CardWrapper, LoaderPlaceholder, TextEditor, TextEditorWrapper, Wrapper } from './styles';
+import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, CardWrapper, TextEditor, TextEditorWrapper, Wrapper } from './styles';
 
 
 
@@ -27,9 +27,6 @@ export const ActivePanel = (
             heading="Active"
             actions={<SettingsMenu {...fragmentProps} />}
             body={<EditorFragment {...fragmentProps} />}
-          />
-          <LoaderPlaceholder
-            if={inputs.loadingNote}
           />
         </>
       }

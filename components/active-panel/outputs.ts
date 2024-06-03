@@ -5,24 +5,21 @@ import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, notify }: Inputs) => ({
+export const useOutputs = ({ store, local, popupRef, editorView, editorRef, notify }: Inputs) => ({
   onClickCreateNote: async () => {
-    local.loadingNote.$set(true);
     const apiResponse = await createNote();
     store.notes.$push(apiResponse.note);
-    local.loadingNote.$set(false);
     store.activeNoteId.$set(apiResponse.note.id);
     store.synonymIds.$clear();
-    local.editorHasText.$set(false);
     notify.success('New note created');
     popupRef.current?.hide();
   },
   onClickConfirmRemoveNote: async () => {
-    local.$patch({ allowNotePersister: false, loadingNote: true })
+    local.allowNotePersister.$set(false);
     const { tags, notes, activeNoteId, tagNotes } = store.$state;
     const apiResponse = await archiveNote(activeNoteId);
     store.notes.$find.id.$eq(apiResponse.note.id).$delete();
-    local.$patch({ loadingNote: false, confirmDelete: false });
+    local.confirmDelete.$set(false);
     const mostRecentlyViewedNoteId = notes
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
     store.activeNoteId.$set(mostRecentlyViewedNoteId);
@@ -38,10 +35,8 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     popupRef.current?.hide();
   },
   onClickDuplicateNote: async () => {
-    local.loadingNote.$set(true);
     const apiResponse = await duplicateNote(store.$state.activeNoteId)
     store.notes.$push(apiResponse.note);
-    local.loadingNote.$set(false);
     popupRef.current?.hide();
   },
   onClickRequestDeleteNote: () => {
@@ -49,9 +44,6 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
   },
   selectionChanged: (selection: string) => {
     local.selection.$set(selection);
-  },
-  editorHasTextChanged: (hasText: boolean) => {
-    local.editorHasText.$set(hasText);
   },
   onClickCreateNewTagFromSelection: async () => {
     local.loadingSelection.$set(true);
@@ -64,18 +56,18 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
     store.tags.$push(apiResponse.tag);
     store.synonymIds.$merge(store.$state.tags.filter(t => t.id === apiResponse.tag.id).map(t => t.synonymId));
     local.selection.$set('');
-    codeMirror!.dispatch({ selection: { anchor: codeMirror!.state.selection.ranges[0]!.anchor } });
+    editorView!.dispatch({ selection: { anchor: editorView!.state.selection.ranges[0]!.anchor } });
     notify.success(`Tag "${apiResponse.tag.text}" created`);
   },
   onClickFilterNotesFromSelection: () => {
-    const { from, to } = codeMirror!.state.selection.ranges[0]!;
-    const selection = codeMirror!.state.doc.sliceString(from, to);
+    const { from, to } = editorView!.state.selection.ranges[0]!;
+    const selection = editorView!.state.doc.sliceString(from, to);
     store.synonymIds.$set(store.$state.tags.filter(t => selection.includes(t.text)).map(t => t.synonymId).distinct());
     local.selection.$set('');
     notify.success(`Filtered related notes`);
   },
   onClickSplitNoteFromSelection: async () => {
-    const range = codeMirror!.state.selection.ranges[0]!;
+    const range = editorView!.state.selection.ranges[0]!;
     local.loadingSelection.$set(true);
     const apiResponse = await splitNote(range.from, range.to, store.$state.activeNoteId);
     store.notes.$mergeMatching.id.$with(apiResponse.notes);
@@ -83,10 +75,10 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
       loadingSelection: false,
       selection: '',
     })
-    codeMirror!.dispatch({
+    editorView!.dispatch({
       changes: {
         from: 0,
-        to: codeMirror!.state.doc.length,
+        to: editorView!.state.doc.length,
         insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
       },
     })
@@ -111,11 +103,11 @@ export const useOutputs = ({ store, local, popupRef, codeMirror, editorRef, noti
       return;
     if (tupleIncludes(event.target.tagName, ['INPUT', 'TEXTAREA']))
       return;
-    codeMirror!.focus();
-    codeMirror!.dispatch(
+    editorView!.focus();
+    editorView!.dispatch(
       {
         selection: {
-          anchor: codeMirror!.state.selection.ranges[0]!.anchor,
+          anchor: editorView!.state.selection.ranges[0]!.anchor,
         }
       },
     );
