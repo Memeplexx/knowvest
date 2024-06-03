@@ -4,7 +4,7 @@ import { Card } from '../card';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Header, Icon, ListItem, ListItemsWrapper, LoaderPlaceholder, NoResultsIcon, NoResultsWrapper, Result, RightBorder } from './styles';
+import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, Result, RightBorder } from './styles';
 
 export function History(
   props: Props,
@@ -20,7 +20,7 @@ export function History(
       body={
         <>
           <ListItemsWrapper
-            if={inputs.stateInitialized && !!inputs.items.length}
+            if={!!inputs.items.length}
             children={inputs.items.map(note => (
               <ListItem
                 key={note.id}
@@ -46,16 +46,13 @@ export function History(
             ))}
           />
           <NoResultsWrapper
-            if={inputs.stateInitialized && !inputs.items.length}
+            if={!inputs.items.length}
             children={
               <>
                 <NoResultsIcon />
                 no historical notes
               </>
             }
-          />
-          <LoaderPlaceholder
-            if={!inputs.stateInitialized}
           />
         </>
       }

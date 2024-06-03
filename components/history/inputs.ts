@@ -6,7 +6,7 @@ import { initialState, pageSize } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { activeNoteId, notes, stateInitialized } } = useStore();
+  const { store, state: { activeNoteId, notes } } = useStore();
   const { local, state: { index } } = useLocalStore('historyItems', initialState);
 
   const cardRef = useRef<CardHandle>(null);
@@ -27,7 +27,6 @@ export const useInputs = () => {
     local,
     ...local.$state,
     items,
-    stateInitialized,
     cardRef,
   };
 }

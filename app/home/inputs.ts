@@ -13,10 +13,11 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { stateInitialized, tagNotesInitialized } } = useStore();
+  const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
-  const refs = useRef({ initializingData: false, loggingOut: false });
-  const result = { store, local, ...state };
+  const { stateInitialized } = state;
+  const refs = useRef({ initializingData: false, loggingOut: false, initializingNoteTags: false, worker: null as TagsWorker | null });
+  const result = { store, local, ...state, stateInitialized };
 
   useMediaQueryListener(store.mediaQuery.$set);
 
@@ -39,24 +40,29 @@ export const useInputs = () => {
   // Initialize data
   const component = useComponent();
 
-  // Do not instantiate the worker until certain conditions are met
+  // Do not continue under certain conditions
   if (!component.isMounted)
     return result;
+  if (!session.data)
+    return result;
 
-  if (session.data && !refs.current.initializingData /*&& !stateInitialized*/) {
+  if (!refs.current.initializingData) {
     refs.current.initializingData = true;
     void async function initializeData() {
       await initializeDb();
       const databaseData = await readFromDb();
       const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
       const apiResponse = await initialize({ ...session.data.user as UserDTO, after: notesFromDbSorted[0]?.dateUpdated ?? null });
-      if (apiResponse.status === 'USER_CREATED')
-        return store.$patch({
+      if (apiResponse.status === 'USER_CREATED') {
+        store.$patch({
           ...databaseData,
           stateInitialized: true,
           notes: [apiResponse.firstNote],
           activeNoteId: apiResponse.firstNote.id
         });
+        local.stateInitialized.$set(true);
+        return;
+      }
       await Promise.all([
         writeToDb('notes', apiResponse.notes),
         writeToDb('tags', apiResponse.tags),
@@ -64,22 +70,29 @@ export const useInputs = () => {
         writeToDb('synonymGroups', apiResponse.synonymGroups),
         writeToDb('flashCards', apiResponse.flashCards)
       ]);
-      const activeNoteId = notesFromDbSorted[0]?.id // Database might be empty. If so, use the first note from the API response
-        ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id;
-      store.$patch({
-        activeNoteId,
+      store.$patch({ // NOTE: Database might be empty. If so, use the first note from the API response
+        activeNoteId: notesFromDbSorted[0]?.id ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id,
         notes: [...databaseData.notes, ...apiResponse.notes].filter(n => 'isArchived' in n ? !n.isArchived : true),
         tags: [...databaseData.tags, ...apiResponse.tags].filter(t => 'isArchived' in t ? !t.isArchived : true),
         groups: [...databaseData.groups, ...apiResponse.groups].filter(g => 'isArchived' in g ? !g.isArchived : true),
         synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
         flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
       });
-      store.stateInitialized.$set(true);
+      local.stateInitialized.$set(true);
     }();
   }
 
+  if (!stateInitialized)
+    return result;
+
+  if (refs.current.worker)
+    return result;
+
+  console.log('rendering!')
+
   // Configure object which will be passed to the consumer
   const worker = new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker;
+  refs.current.worker = worker;
   component.listen = () => worker.terminate();
 
   // Ensure that changes to note tags in worker are sent to the store
@@ -90,22 +103,25 @@ export const useInputs = () => {
         store.tagNotes[noteId]!.$set(tags);
       }
     });
-    if (!store.$state.tagNotesInitialized) {
+    if (!local.$state.tagNotesInitialized) {
       const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!);
       store.synonymIds.$set(synonymIds);
-      store.tagNotesInitialized.$set(true);
+      local.tagNotesInitialized.$set(true);
     }
   }
 
   // Send the tags worker the initial data
-  const { notes, tags } = store.$state;
-  worker.postMessage({
-    type: 'initialize',
-    data: {
-      notes,
-      tags: tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
-    }
-  });
+  if (!refs.current.initializingNoteTags && stateInitialized) {
+    refs.current.initializingNoteTags = true;
+    const { notes, tags } = store.$state;
+    worker.postMessage({
+      type: 'initialize',
+      data: {
+        notes,
+        tags: tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
+      }
+    });
+  }
 
   // Ensure that changes to tags in the store are sent to the worker
   component.listen = store.tags.$onChange((tags, previousTags) => {

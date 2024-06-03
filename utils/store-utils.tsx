@@ -29,7 +29,6 @@ export const initialAppState = {
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
   stateInitialized: false,
-  tagNotesInitialized: false,
   writingNoteTags: false,
   tagNotes: {} as { [noteId: NoteId]: Array<TagResult> },
 };

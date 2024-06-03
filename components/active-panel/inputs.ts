@@ -37,7 +37,7 @@ import { autocompleteExtension, createNotePersisterExtension, editorHasTextUpdat
 
 export const useInputs = () => {
 
-  const { store, state: { notes, stateInitialized, tagNotesInitialized } } = useStore();
+  const { store, state: { notes } } = useStore();
   const { local } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
@@ -51,7 +51,6 @@ export const useInputs = () => {
     // Do not instantiate the editor until certain conditions are met
     if (!isMounted) return;
     if (!hasNote) return;
-    if (!tagNotesInitialized) return;
 
     // Create the CodeMirror editor
     codeMirror.current = new EditorView({
@@ -114,7 +113,7 @@ export const useInputs = () => {
       unsubscribeFromSynonymGroupsChange();
       codeMirror.current?.destroy();
     }
-  }, [store, local, isMounted, hasNote, tagNotesInitialized]);
+  }, [store, local, isMounted, hasNote]);
 
   return {
     store,
@@ -123,7 +122,6 @@ export const useInputs = () => {
     ...local.$state,
     mayDeleteNote: !!notes.length,
     popupRef,
-    stateInitialized,
     editorRef,
     codeMirror: codeMirror.current,
   };

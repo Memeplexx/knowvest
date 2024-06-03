@@ -4,7 +4,7 @@ import { Card } from '../card';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Header, Icon, ListItem, ListItemsWrapper, LoaderPlaceholder, NoResultsIcon, NoResultsWrapper, NoteCount, Result } from './styles';
+import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, NoteCount, Result } from './styles';
 
 
 export function Related(
@@ -26,7 +26,7 @@ export function Related(
       body={
         <>
           <ListItemsWrapper
-            if={inputs.stateInitialized && !!inputs.items.length}
+            if={!!inputs.items.length}
             children={inputs.items.map(note => (
               <ListItem
                 key={note.note.id}
@@ -51,16 +51,13 @@ export function Related(
             ))}
           />
           <NoResultsWrapper
-            if={inputs.stateInitialized && !inputs.items.length}
+            if={!inputs.items.length}
             children={
               <>
                 <NoResultsIcon />
                 no related notes
               </>
             }
-          />
-          <LoaderPlaceholder
-            if={!inputs.stateInitialized}
           />
         </>
       }

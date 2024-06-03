@@ -5,13 +5,12 @@ import { initialState, pageSize } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { notes, synonymIds, activeNoteId, stateInitialized, tagNotesInitialized, tagNotes } } = useStore();
+  const { store, state: { notes, synonymIds, activeNoteId, tagNotes } } = useStore();
   const { local, state: { index } } = useLocalStore('relatedItems', initialState);
 
   const cardRef = useRef<CardHandle>(null);
 
   const items = useMemo(() => {
-    if (!tagNotesInitialized) return [];
     return Object.entries(tagNotes)
       .filter(([noteId]) => +noteId !== activeNoteId)
       .map(([noteId, tags]) => ({
@@ -26,7 +25,7 @@ export const useInputs = () => {
         count,
         matches: `${count} match${count === 1 ? '' : 'es'}`,
       }));
-  }, [activeNoteId, index, notes, synonymIds, tagNotes, tagNotesInitialized]);
+  }, [activeNoteId, index, notes, synonymIds, tagNotes]);
 
   const noteCountString = useMemo(() => {
     return `${items.length} result${items.length === 1 ? '' : 's'}`;
@@ -36,7 +35,6 @@ export const useInputs = () => {
     store,
     local,
     items,
-    stateInitialized,
     noteCountString,
     cardRef,
   }

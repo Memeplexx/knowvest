@@ -128,6 +128,7 @@ const resultsCache = new Map<NoteId, Array<TagResult>>();
 
 onmessage = (event: MessageEvent<Incoming>) => {
   const { type, data } = event.data;
+  console.log('..', type)
   switch (type) {
     case 'initialize':
       return initialize(data);
@@ -149,6 +150,7 @@ onmessage = (event: MessageEvent<Incoming>) => {
 const sendToProvider = (data: Outgoing) => postMessage(data);
 
 const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => {
+  console.log('_____')
   allTags.push(...incomingTags);
   incomingTags.forEach(incomingTag => {
     trie.insert(incomingTag.text.toLowerCase(), incomingTag.id, incomingTag.synonymId!);

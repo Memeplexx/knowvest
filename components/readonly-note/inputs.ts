@@ -15,7 +15,7 @@ import { Props } from './constants';
 
 export const useInputs = (props: Props) => {
 
-  const { store, state: { tagNotesInitialized } } = useStore();
+  const { store } = useStore();
   const editorRef = useRef<HTMLDivElement>(null);
   const codeMirror = useRef<EditorView | null>(null);
   const isMounted = useIsMounted();
@@ -24,7 +24,6 @@ export const useInputs = (props: Props) => {
 
     // Do not instantiate the editor until certain conditions are met
     if (!isMounted) return;
-    if (!tagNotesInitialized) return;
     if (props.if === false) return;
 
     // Instantiate the editor
@@ -67,7 +66,7 @@ export const useInputs = (props: Props) => {
       unsubscribeFromSynonymGroupsChange();
       codeMirror.current?.destroy();
     }
-  }, [props.if, isMounted, props.note, store, tagNotesInitialized]);
+  }, [props.if, isMounted, props.note, store]);
 
   return {
     editorRef,

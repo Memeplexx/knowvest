@@ -27,7 +27,6 @@ export const ActivePanel = (
             heading="Active"
             actions={<SettingsMenu {...fragmentProps} />}
             body={<EditorFragment {...fragmentProps} />}
-            loading={!inputs.stateInitialized}
           />
           <LoaderPlaceholder
             if={inputs.loadingNote}

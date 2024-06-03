@@ -11,7 +11,6 @@ import {
   ActiveHeaderTag,
   Body,
   GroupHeaderTag,
-  LoaderPlaceholder,
   NoTagsPlaceholder,
   SettingsButton,
   SettingsIcon,
@@ -53,9 +52,6 @@ export const Tags = () => {
             <PlaceholderFragment
               {...fragmentProps}
             />
-            <LoaderPlaceholder
-              if={!inputs.stateInitialized}
-            />
           </>
         }
       />
@@ -66,7 +62,7 @@ export const Tags = () => {
 const PlaceholderFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
     <NoTagsPlaceholder
-      if={inputs.stateInitialized && !inputs.tagsForActiveNote.length}
+      if={!inputs.tagsForActiveNote.length}
       children={
         <>
           No tags associated with active note
@@ -85,7 +81,6 @@ const PlaceholderFragment = ({ inputs, outputs }: FragmentProps) => {
 const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
     <TagsSection
-      if={inputs.stateInitialized}
       children={
         <>
           <ActiveHeaderTag
@@ -124,7 +119,6 @@ const GroupSynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
     <>
       {inputs.groupsWithSynonyms.map(group => (
         <TagsSection
-          if={inputs.stateInitialized}
           key={group.groupId}
           children={
             <>

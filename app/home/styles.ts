@@ -3,6 +3,7 @@ import { ActivePanel } from "@/components/active-panel";
 import { ButtonIcon } from "@/components/button-icon";
 import { Tabs } from "@/components/card-with-tabs";
 import { History } from "@/components/history";
+import { Loader } from "@/components/loader";
 import { Related } from "@/components/related";
 import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
@@ -134,4 +135,9 @@ export const BodyWrapper = styled.div`
   > * {
     flex: 1;
   }
+`;
+
+export const LoaderPlaceholder = styled(Loader)`
+  z-index: 9;
+  background-image: linear-gradient(to right, #242020, #191919);
 `;

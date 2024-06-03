@@ -8,6 +8,8 @@ export const initialState = {
   tagsExpanded: false,
   headerExpanded: true,
   selectedTab: 'Tags',
+  stateInitialized: false,
+  tagNotesInitialized: false,
 };
 
 export type HomeStore = Store<typeof initialState>;
