@@ -2,7 +2,6 @@ import { AiOutlineLink } from "react-icons/ai";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 import { div } from "../html";
-import { Loader } from "../loader";
 import ReadonlyNote from "../readonly-note";
 
 export const Header = styled(div)`
@@ -68,9 +67,4 @@ export const NoResultsIcon = styled(WiCloudyWindy)`
 
 export const NoteCount = styled(div)`
   font-size: 12px;
-`;
-
-export const LoaderPlaceholder = styled(Loader)`
-  margin-top: 70px;
-  background-image: linear-gradient(to right, #242020, #191919);
 `;

@@ -4,7 +4,6 @@ import { PiStudentFill } from 'react-icons/pi';
 import styled, { css } from "styled-components";
 import { ButtonIcon } from "../button-icon";
 import { div } from "../html";
-import { Loader } from "../loader";
 
 export const Wrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;
@@ -68,8 +67,4 @@ export const FlashCardCount = styled.div`
   position: absolute;
   right: -5px;
   bottom: -5px;
-`;
-
-export const LoaderPlaceholder = styled(Loader)`
-  background-image: linear-gradient(to right, #242020, #191919);
 `;

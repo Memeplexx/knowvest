@@ -2,7 +2,6 @@ import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
 import { Card } from "../card";
 import { div } from "../html";
-import { Loader } from "../loader";
 
 
 export const Wrapper = styled.div`
@@ -13,11 +12,6 @@ export const Wrapper = styled.div`
 
 export const CardWrapper = styled(Card)`
   flex: 1;
-`;
-
-export const LoaderPlaceholder = styled(Loader)`
-  margin-top: 70px;
-  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const TextEditorWrapper = styled(div)`

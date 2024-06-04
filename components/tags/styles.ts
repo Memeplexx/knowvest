@@ -2,7 +2,6 @@ import { SettingsIcon as BaseSettingsIcon } from '@/utils/style-utils';
 import styled, { css } from 'styled-components';
 import { ButtonIcon } from '../button-icon';
 import { div, element } from '../html';
-import { Loader } from '../loader';
 
 export const Tag = styled(div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
   font-size: 12px;
@@ -80,9 +79,4 @@ export const NoTagsPlaceholder = styled(div)`
   gap: 8px;
   font-size: 14px;
   flex: 1;
-`;
-
-export const LoaderPlaceholder = styled(Loader)`
-  margin-top: 70px;
-  background-image: linear-gradient(to right, #242020, #191919);
 `;

@@ -92,29 +92,27 @@ export const useInputs = () => {
   const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
   const reviseTagsInEditor = () => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions);
   component.listen = () => editorView.destroy();
-  component.listen = store.synonymIds.$onChange(reviseTagsInEditor);
-  component.listen = store.synonymGroups.$onChange(reviseTagsInEditor);
-  component.listen = store.activeNoteId.$onChangeImmediate(activeNoteId => {
-    editorView.dispatch({
+  component.listen = store.synonymIds
+    .$onChange(reviseTagsInEditor);
+  component.listen = store.synonymGroups
+    .$onChange(reviseTagsInEditor);
+  component.listen = store.activeNoteId
+    .$onChangeImmediate(activeNoteId => editorView.dispatch({
       changes: {
         from: 0,
         to: editorView.state.doc.length,
         insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
       }
+    }))
+  component.listen = derive(store.activeNoteId, store.tagNotes)
+    .$with((activeNoteId, tagNotes) => tagNotes[activeNoteId]!)
+    .$onChangeImmediate(current => {
+      latestTagsFromWorker.length = 0;
+      latestTagsFromWorker.push(...current);
+      reviseTagsInEditor();
+      previousPositions.length = 0;
+      previousPositions.push(...current);
     });
-  })
-  component.listen = derive(
-    store.activeNoteId,
-    store.tagNotes,
-  ).$with((activeNoteId, tagNotes) => {
-    return tagNotes[activeNoteId]!
-  }).$onChangeImmediate(current => {
-    latestTagsFromWorker.length = 0;
-    latestTagsFromWorker.push(...current);
-    reviseTagsInEditor();
-    previousPositions.length = 0;
-    previousPositions.push(...current);
-  });
   component.done();
   return {
     ...result,

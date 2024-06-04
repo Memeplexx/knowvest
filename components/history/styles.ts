@@ -2,7 +2,6 @@ import { ClockIcon } from "@/utils/style-utils";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 import { div } from "../html";
-import { Loader } from "../loader";
 import ReadonlyNote from "../readonly-note";
 
 
@@ -76,9 +75,4 @@ export const NoResultsWrapper = styled(div)`
 export const NoResultsIcon = styled(WiCloudyWindy)`
   width: 64px;
   height: auto;
-`;
-
-export const LoaderPlaceholder = styled(Loader)`
-  margin-top: 70px;
-  background-image: linear-gradient(to right, #242020, #191919);
 `;
