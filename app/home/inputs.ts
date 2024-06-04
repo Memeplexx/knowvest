@@ -110,7 +110,10 @@ export const useInputs = () => {
     const previousTagIds = previousTags.map(t => t.id);
     const tagsToAdd = tags.filter(t => !previousTagIds.includes(t.id));
     const tagIdsToRemove = previousTagIds.filter(id => !tags.some(t => t.id === id));
-    const tagsToUpdate = tags.filter(t => previousTagIds.includes(t.id) && previousTags.find(pt => pt.id === t.id)!.text !== t.text);
+    const tagsToUpdate = tags.filter(t => {
+      const found = previousTags.find(pt => pt.id === t.id);
+      return found && found.text !== t.text;
+    });
     if (tagsToAdd.length) {
       previousTagIds.push(...tagsToAdd.map(t => t.id));
       worker.postMessage({ type: 'addTags', data: tagsToAdd });
