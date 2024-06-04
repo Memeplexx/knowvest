@@ -95,15 +95,16 @@ export const useInputs = () => {
     .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = derive(store.activeNoteId, store.noteTags)
     .$with((activeNoteId, noteTags) => noteTags[activeNoteId]!)
-    .$onChangeImmediate(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
+    .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = store.activeNoteId
-    .$onChangeImmediate(activeNoteId => editorView.dispatch({
+    .$onChange(activeNoteId => editorView.dispatch({
       changes: {
         from: 0,
         to: editorView.state.doc.length,
         insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
       }
     }));
+  doReviseTagsInEditor(store, editorView, store.$state.activeNoteId);
   component.done();
 
   return {
