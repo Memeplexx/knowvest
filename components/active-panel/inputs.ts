@@ -88,11 +88,14 @@ export const useInputs = () => {
     ],
   });
 
-  component.listen = () => editorView.destroy();
+  component.listen = editorView.destroy;
   component.listen = store.synonymIds
     .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = store.synonymGroups
     .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
+  component.listen = derive(store.activeNoteId, store.tagNotes)
+    .$with((activeNoteId, tagNotes) => tagNotes[activeNoteId]!)
+    .$onChangeImmediate(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = store.activeNoteId
     .$onChangeImmediate(activeNoteId => editorView.dispatch({
       changes: {
@@ -101,9 +104,6 @@ export const useInputs = () => {
         insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
       }
     }));
-  component.listen = derive(store.activeNoteId, store.tagNotes)
-    .$with((activeNoteId, tagNotes) => tagNotes[activeNoteId]!)
-    .$onChangeImmediate(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.done();
 
   return {

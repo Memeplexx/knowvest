@@ -76,7 +76,7 @@ export const useInputs = () => {
   // Configure object which will be passed to the consumer
   console.log('Initializing worker');
   const worker = new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker;
-  component.listen = () => worker.terminate();
+  component.listen = worker.terminate;
 
   // Ensure that changes to note tags in worker are sent to the store
   // TODO: Consider sending this data to the IndexedDB also.
@@ -142,21 +142,16 @@ export const useInputs = () => {
   });
 
   // Ensure that the indexedDB is updated when the store changes
-  component.listen = store.notes.$onChange(async (current, previous) => {
-    await writeToDb('notes', current.filter(t => !previous.includes(t)));
-  });
-  component.listen = store.tags.$onChange(async (current, previous) => {
-    await writeToDb('tags', current.filter(t => !previous.includes(t)));
-  });
-  component.listen = store.synonymGroups.$onChange(async (current, previous) => {
-    await writeToDb('synonymGroups', current.filter(t => !previous.includes(t)));
-  });
-  component.listen = store.groups.$onChange(async (current, previous) => {
-    await writeToDb('groups', current.filter(t => !previous.includes(t)));
-  });
-  component.listen = store.flashCards.$onChange(async (current, previous) => {
-    await writeToDb('flashCards', current.filter(t => !previous.includes(t)));
-  });
+  component.listen = store.notes
+    .$onChange(async (current, previous) => await writeToDb('notes', current.filter(t => !previous.includes(t))));
+  component.listen = store.tags
+    .$onChange(async (current, previous) => await writeToDb('tags', current.filter(t => !previous.includes(t))));
+  component.listen = store.synonymGroups
+    .$onChange(async (current, previous) => await writeToDb('synonymGroups', current.filter(t => !previous.includes(t))));
+  component.listen = store.groups
+    .$onChange(async (current, previous) => await writeToDb('groups', current.filter(t => !previous.includes(t))));
+  component.listen = store.flashCards
+    .$onChange(async (current, previous) => await writeToDb('flashCards', current.filter(t => !previous.includes(t))));
 
   return result;
 }

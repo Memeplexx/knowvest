@@ -1,4 +1,4 @@
-import { NoteId, TagId } from "@/actions/types";
+import { NoteId } from "@/actions/types";
 import { TagResult } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
@@ -136,15 +136,6 @@ export const titleFormatPlugin = ViewPlugin.fromClass(class {
   decorations: v => v.decorations,
 });
 
-
-export type tagType = 'primary' | 'secondary';
-
-export type ReviseEditorTagsArgs = {
-  editorView: EditorView,
-  addTags: { from: number, to: number, tagId: TagId, type: tagType }[],
-  removeTags: { from: number, to: number, tagId: TagId, type: tagType }[]
-};
-
 const mapRange = (range: { from: number, to: number }, change: ChangeDesc) => {
   try {
     const from = change.mapPos(range.from);
@@ -177,7 +168,7 @@ const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
     add: leftover
   })
 }
-const addRange = (ranges: DecorationSet, r: { from: number, to: number }, type: tagType) => {
+const addRange = (ranges: DecorationSet, r: { from: number, to: number }, type: TagType) => {
   ranges.between(r.from, r.to, (from, to) => {
     if (from < r.from) r = { from, to: r.to }
     if (to > r.to) r = { from: r.from, to }
@@ -196,7 +187,7 @@ const highlightedRanges = StateField.define({
     ranges = ranges.map(tr.changes)
     for (const e of tr.effects) {
       if (e.is(addHighlight)) {
-        ranges = addRange(ranges, e.value, (e.value as unknown as { type: tagType }).type);
+        ranges = addRange(ranges, e.value, (e.value as unknown as { type: TagType }).type);
       } else if (e.is(removeHighlight)) {
         ranges = cutRange(ranges, e.value);
       }
@@ -206,6 +197,7 @@ const highlightedRanges = StateField.define({
   provide: field => EditorView.decorations.from(field)
 });
 
+export type TagType = 'primary' | 'secondary';
 export const doReviseTagsInEditor = (
   store: Store<AppState>,
   codeMirror: EditorView,
@@ -213,7 +205,7 @@ export const doReviseTagsInEditor = (
 ) => {
   const { synonymIds, synonymGroups, tagNotes } = store.$state;
   const tags = tagNotes[noteId]!;
-  type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { type?: tagType }> }
+  type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { type?: TagType }> }
   const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];
   const groupSynonymIds = synonymGroups
     .filter(sg => synonymIds.includes(sg.synonymId))
@@ -223,7 +215,7 @@ export const doReviseTagsInEditor = (
   const newTagPositions = tags
     .flatMap(tag => ({
       ...tag,
-      type: primarySynonymIds.includes(tag.synonymId!) ? 'primary' : 'secondary' as tagType
+      type: primarySynonymIds.includes(tag.synonymId!) ? 'primary' : 'secondary' as TagType
     }));
   const removeTagPositions = previousPositions
     .filter(p => !newTagPositions.some(np => np.from === p.from && np.to === p.to && np.type === p.type));

@@ -44,15 +44,16 @@ export const useInputs = (props: Props) => {
       oneDark,
     ],
   });
-  component.listen = () => editor.destroy();
-  component.listen = store.tagNotes[props.note!.id]!
-    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, props.note!.id));
+  component.listen = editor.destroy;
+  const id = props.note!.id;
+  component.listen = store.tagNotes[id]!
+    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, id));
   component.listen = store.synonymIds
-    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, props.note!.id));
+    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, id));
   component.listen = store.synonymGroups
-    .$onChange(() => doReviseTagsInEditor(store, editor, props.note!.id));
+    .$onChange(() => doReviseTagsInEditor(store, editor, id));
   component.listen = store.tags
-    .$onChange(() => doReviseTagsInEditor(store, editor, props.note!.id));
+    .$onChange(() => doReviseTagsInEditor(store, editor, id));
   component.done();
   return {
     ...result,
