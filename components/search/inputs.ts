@@ -8,7 +8,7 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
-  const { store, state: { tags, groups, synonymGroups, notes, tagNotes } } = useStore();
+  const { store, state: { tags, groups, synonymGroups, notes, noteTags } } = useStore();
   const { local, state: { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const bodyRef = useForwardedRef(ref);
@@ -82,12 +82,12 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
       .map(t => t.id);
     tagIds.push(...tagIdsForGroups);
-    return Object.entries(tagNotes).flatMap(([noteId, tagSummaries]) => {
+    return Object.entries(noteTags).flatMap(([noteId, tagSummaries]) => {
       if (tagSummaries.some(tagSummary => tagIds.includes(tagSummary.id)))
         return notes.findOrThrow(n => n.id === +noteId as NoteId);
       return new Array<NoteDTO>();
     });
-  }, [tags, selectedGroupIds, tagNotes, selectedSynonymIds, synonymGroups, notes]);
+  }, [tags, selectedGroupIds, noteTags, selectedSynonymIds, synonymGroups, notes]);
 
   useResizeListener(useCallback(() => {
     const state = local.$state;

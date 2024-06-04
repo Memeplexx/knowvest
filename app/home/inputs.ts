@@ -83,8 +83,8 @@ export const useInputs = () => {
   let first = true;
   worker.onmessage = event => {
     event.data.forEach(({ noteId, tags }) => {
-      if (JSON.stringify(tags) !== JSON.stringify(store.$state.tagNotes[noteId])) {
-        store.tagNotes[noteId]!.$set(tags);
+      if (JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId])) {
+        store.noteTags[noteId]!.$set(tags);
       }
     });
     if (first) {

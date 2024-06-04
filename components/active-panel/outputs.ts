@@ -16,14 +16,14 @@ export const useOutputs = ({ store, local, popupRef, editorView, editorRef, noti
   },
   onClickConfirmRemoveNote: async () => {
     local.allowNotePersister.$set(false);
-    const { tags, notes, activeNoteId, tagNotes } = store.$state;
+    const { tags, notes, activeNoteId, noteTags } = store.$state;
     const apiResponse = await archiveNote(activeNoteId);
     store.notes.$find.id.$eq(apiResponse.note.id).$delete();
     local.confirmDelete.$set(false);
     const mostRecentlyViewedNoteId = notes
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
     store.activeNoteId.$set(mostRecentlyViewedNoteId);
-    const tagIds = tagNotes[mostRecentlyViewedNoteId]!.map(tag => tag.id);
+    const tagIds = noteTags[mostRecentlyViewedNoteId]!.map(tag => tag.id);
     const synonymIds = tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
     store.synonymIds.$setUnique(synonymIds);
     setTimeout(() => local.allowNotePersister.$set(true), 500); // TODO: Fix this

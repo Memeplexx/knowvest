@@ -5,12 +5,12 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { activeNoteId, tags, synonymIds, synonymGroups, groups, tagNotes } } = useStore();
+  const { store, state: { activeNoteId, tags, synonymIds, synonymGroups, groups, noteTags } } = useStore();
   const { local, state } = useLocalStore('tagsComponent', initialState);
   useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
   const tagsForActiveNote = useMemo(() => {
-    return tagNotes[activeNoteId]!
+    return noteTags[activeNoteId]!
       .map(tn => tn.synonymId)
       .distinct()
       .map(synonymId => tags.filter(t => t.synonymId === synonymId))
@@ -23,10 +23,10 @@ export const useInputs = () => {
           last: index === array.length - 1,
         })),
       }));
-  }, [tagNotes, activeNoteId, tags, synonymIds]);
+  }, [noteTags, activeNoteId, tags, synonymIds]);
 
   const groupsWithSynonyms = useMemo(() => {
-    return tagNotes[activeNoteId]!
+    return noteTags[activeNoteId]!
       .map(tn => tn.synonymId)
       .distinct()
       .flatMap(synonymId => synonymGroups.filter(sg => sg.synonymId === synonymId))
@@ -48,7 +48,7 @@ export const useInputs = () => {
               })),
           })),
       }));
-  }, [activeNoteId, groups, synonymGroups, synonymIds, tagNotes, tags]);
+  }, [activeNoteId, groups, synonymGroups, synonymIds, noteTags, tags]);
 
   const allActiveTagsSelected = useMemo(() => {
     return tagsForActiveNote

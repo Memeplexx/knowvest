@@ -88,13 +88,13 @@ export const useInputs = () => {
     ],
   });
 
-  component.listen = editorView.destroy;
+  component.listen = () => editorView.destroy();
   component.listen = store.synonymIds
     .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = store.synonymGroups
     .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
-  component.listen = derive(store.activeNoteId, store.tagNotes)
-    .$with((activeNoteId, tagNotes) => tagNotes[activeNoteId]!)
+  component.listen = derive(store.activeNoteId, store.noteTags)
+    .$with((activeNoteId, noteTags) => noteTags[activeNoteId]!)
     .$onChangeImmediate(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = store.activeNoteId
     .$onChangeImmediate(activeNoteId => editorView.dispatch({

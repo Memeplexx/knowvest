@@ -28,7 +28,7 @@ export const initialAppState = {
   mediaQuery: null as keyof typeof MediaQueries | null,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
-  tagNotes: {} as { [noteId: NoteId]: Array<TagResult> },
+  noteTags: {} as { [noteId: NoteId]: Array<TagResult> },
 };
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
