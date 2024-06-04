@@ -90,12 +90,11 @@ export const useInputs = () => {
   });
   const previousPositions = new Array<TagResult & { type?: tagType }>();
   const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
-  const reviseTagsInEditor = () => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions);
   component.listen = () => editorView.destroy();
   component.listen = store.synonymIds
-    .$onChange(reviseTagsInEditor);
+    .$onChange(() => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions));
   component.listen = store.synonymGroups
-    .$onChange(reviseTagsInEditor);
+    .$onChange(() => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions));
   component.listen = store.activeNoteId
     .$onChangeImmediate(activeNoteId => editorView.dispatch({
       changes: {
@@ -109,7 +108,7 @@ export const useInputs = () => {
     .$onChangeImmediate(current => {
       latestTagsFromWorker.length = 0;
       latestTagsFromWorker.push(...current);
-      reviseTagsInEditor();
+      doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions);
       previousPositions.length = 0;
       previousPositions.push(...current);
     });

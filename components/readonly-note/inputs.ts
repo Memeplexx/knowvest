@@ -46,19 +46,22 @@ export const useInputs = (props: Props) => {
     ],
   });
   component.listen = () => editor.destroy();
-  const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
-  const previousPositions = new Array<TagResult & { type?: tagType }>();
-  component.listen = store.tagNotes[props.note!.id]!.$onChangeImmediate(current => {
-    latestTagsFromWorker.length = 0;
-    latestTagsFromWorker.push(...current);
-    doReviseTagsInEditor(store, editor, latestTagsFromWorker, previousPositions);
-    previousPositions.length = 0;
-    previousPositions.push(...current);
-  });
-  const reviseTagsInEditor = () => doReviseTagsInEditor(store, editor, latestTagsFromWorker, previousPositions);
-  component.listen = store.synonymIds.$onChangeImmediate(reviseTagsInEditor);
-  component.listen = store.synonymGroups.$onChange(reviseTagsInEditor);
-  component.listen = store.tags.$onChange(reviseTagsInEditor);
+  const latestTags = new Array<TagResult & { type?: tagType }>();
+  const previousTags = new Array<TagResult & { type?: tagType }>();
+  component.listen = store.tagNotes[props.note!.id]!
+    .$onChangeImmediate(current => {
+      latestTags.length = 0;
+      latestTags.push(...current);
+      doReviseTagsInEditor(store, editor, latestTags, previousTags);
+      previousTags.length = 0;
+      previousTags.push(...current);
+    });
+  component.listen = store.synonymIds
+    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, latestTags, previousTags));
+  component.listen = store.synonymGroups
+    .$onChange(() => doReviseTagsInEditor(store, editor, latestTags, previousTags));
+  component.listen = store.tags
+    .$onChange(() => doReviseTagsInEditor(store, editor, latestTags, previousTags));
   component.done();
   return {
     ...result,
