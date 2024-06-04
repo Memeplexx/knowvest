@@ -15,7 +15,7 @@ export const useInputs = () => {
   const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
   const component = useComponent();
-  const result = { store, local, ...state, isDone: component.isDone };
+  const result = { store, local, ...state };
   useMediaQueryListener(store.mediaQuery.$set);
 
   // Update header visibility as required
@@ -36,12 +36,10 @@ export const useInputs = () => {
     return result;
   if (!session.data)
     return result;
-  if (!component.isPristine)
+  if (state.stage !== 'pristine')
     return result;
 
-  component.start();
   void async function initializeData() {
-    console.log('Initializing data');
     await initializeDb();
     const databaseData = await readFromDb();
     const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
@@ -65,7 +63,6 @@ export const useInputs = () => {
         notes: [apiResponse.firstNote],
         activeNoteId: apiResponse.firstNote.id
       });
-      console.log('User NOT found and data initialized');
     } else {
       await Promise.all([
         writeToDb('notes', apiResponse.notes),
@@ -82,11 +79,9 @@ export const useInputs = () => {
         synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
         flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
       });
-      console.log('User found and data initialized');
     }
 
     // Configure object which will be passed to the consumer
-    console.log('Initializing worker');
     const worker = new Worker(new URL('../../utils/tags-worker.ts', import.meta.url)) as TagsWorker;
     component.listen = () => worker.terminate();
 
@@ -94,17 +89,15 @@ export const useInputs = () => {
     // TODO: Consider sending this data to the IndexedDB also.
     let first = true;
     worker.onmessage = event => {
-      event.data.forEach(({ noteId, tags }) => {
-        if (JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId])) {
-          store.noteTags[noteId]!.$set(tags);
-        }
-      });
-      if (first) {
-        first = false;
-        const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!);
-        store.synonymIds.$set(synonymIds);
-        component.done();
-      }
+      event.data
+        .filter(({ noteId, tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
+        .forEach(({ noteId, tags }) => store.noteTags[noteId]!.$set(tags));
+      if (!first)
+        return;
+      first = false;
+      const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!);
+      store.synonymIds.$set(synonymIds);
+      local.stage.$set('done');
     }
 
     // Send the tags worker the initial data

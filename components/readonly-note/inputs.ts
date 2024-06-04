@@ -17,6 +17,7 @@ export const useInputs = (props: Props) => {
   const { store } = useStore();
   const editorRef = useRef<HTMLDivElement>(null);
   const component = useComponent();
+  const isDone = useRef(false)
   const result = { editorRef, editor: null as EditorView | null };
 
   // Do not instantiate the editor until certain conditions are met
@@ -24,11 +25,10 @@ export const useInputs = (props: Props) => {
     return result;
   if (props.if === false)
     return result;
-  if (!component.isPristine)
+  if (isDone.current)
     return result;
 
   // Instantiate the editor
-  component.start();
   const editor = new EditorView({
     doc: props.note!.text,
     parent: editorRef.current!,
@@ -54,7 +54,7 @@ export const useInputs = (props: Props) => {
     .$onChange(() => doReviseTagsInEditor(store, editor, id));
   component.listen = store.tags
     .$onChange(() => doReviseTagsInEditor(store, editor, id));
-  component.done();
+  isDone.current = true;
   return {
     ...result,
     editor

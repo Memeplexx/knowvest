@@ -17,10 +17,10 @@ export default function HomeInteractive() {
   return (
     <>
       <LoaderPlaceholder
-        if={!inputs.isDone}
+        if={inputs.stage !== 'done'}
       />
       <Frag
-        if={inputs.isDone}
+        if={inputs.stage === 'done'}
         children={
           <>
             <Navbar

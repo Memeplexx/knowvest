@@ -37,7 +37,7 @@ import { autocompleteExtension, createNotePersisterExtension, pasteListener, tex
 export const useInputs = () => {
 
   const { store, state: { notes } } = useStore();
-  const { local } = useLocalStore('activePanel', initialState);
+  const { local, state } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -56,10 +56,9 @@ export const useInputs = () => {
   // Do not instantiate the editor until certain conditions are met
   if (!component.isMounted)
     return result;
-  if (!component.isPristine)
+  if (state.stage !== 'pristine')
     return result;
 
-  component.start();
   const editorView = new EditorView({
     doc: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
     parent: editorRef.current!,
@@ -105,7 +104,7 @@ export const useInputs = () => {
       }
     }));
   doReviseTagsInEditor(store, editorView, store.$state.activeNoteId);
-  component.done();
+  local.stage.$set('done');
 
   return {
     ...result,

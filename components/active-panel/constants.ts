@@ -7,6 +7,7 @@ export const initialState = {
   allowNotePersister: true,
   confirmDelete: false,
   loadingSelection: false,
+  stage: 'pristine' as 'pristine' | 'done',
 };
 
 export type Inputs = ReturnType<typeof useInputs>;
