@@ -26,13 +26,13 @@ import {
   rectangularSelection
 } from '@codemirror/view';
 import { Highlighter } from '@lezer/highlight';
+import { derive } from 'olik/derive';
 import { useRef } from 'react';
 import { TagResult } from '../../utils/tags-worker';
 import { useNotifier } from '../notifier';
 import { PopupHandle } from '../popup/constants';
 import { initialState } from './constants';
 import { autocompleteExtension, createNotePersisterExtension, pasteListener, textSelectorPlugin } from './shared';
-
 
 
 export const useInputs = () => {
@@ -42,7 +42,6 @@ export const useInputs = () => {
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
   const editorRef = useRef<HTMLDivElement>(null);
-  const hasNote = !!store.$state.activeNoteId;
   const component = useComponent();
   const result = {
     store,
@@ -57,8 +56,6 @@ export const useInputs = () => {
 
   // Do not instantiate the editor until certain conditions are met
   if (!component.isMounted)
-    return result;
-  if (!hasNote)
     return result;
   if (!component.isPristine)
     return result;
@@ -91,29 +88,33 @@ export const useInputs = () => {
       oneDark,
     ],
   });
-  component.listen = () => editorView.destroy();
   const previousPositions = new Array<TagResult & { type?: tagType }>();
   const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
   const reviseTagsInEditor = () => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions);
-
-  // Listen to changes in active note as well as its tag notes, and notify the worker as required
-  let unsubscribeFromNoteTextChange: () => void;
-  component.listen = store.activeNoteId.$onChangeImmediate(activeNoteId => {
-    const note = store.$state.notes.findOrThrow(n => n.id === activeNoteId);
-    editorView.dispatch({ changes: { from: 0, to: editorView.state.doc.length, insert: note.text } });
-    unsubscribeFromNoteTextChange?.();
-    unsubscribeFromNoteTextChange = store.tagNotes[activeNoteId]!.$onChangeImmediate(current => {
-      latestTagsFromWorker.length = 0;
-      latestTagsFromWorker.push(...current);
-      reviseTagsInEditor();
-      previousPositions.length = 0;
-      previousPositions.push(...current);
-    });
-  })
-
-  // Listen to changes in tags and synonyms, and notify the worker as required
+  component.listen = () => editorView.destroy();
   component.listen = store.synonymIds.$onChange(reviseTagsInEditor);
   component.listen = store.synonymGroups.$onChange(reviseTagsInEditor);
+  component.listen = store.activeNoteId.$onChangeImmediate(activeNoteId => {
+    editorView.dispatch({
+      changes: {
+        from: 0,
+        to: editorView.state.doc.length,
+        insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
+      }
+    });
+  })
+  component.listen = derive(
+    store.activeNoteId,
+    store.tagNotes,
+  ).$with((activeNoteId, tagNotes) => {
+    return tagNotes[activeNoteId]!
+  }).$onChangeImmediate(current => {
+    latestTagsFromWorker.length = 0;
+    latestTagsFromWorker.push(...current);
+    reviseTagsInEditor();
+    previousPositions.length = 0;
+    previousPositions.push(...current);
+  });
   component.done();
   return {
     ...result,
