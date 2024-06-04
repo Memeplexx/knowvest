@@ -1,9 +1,9 @@
-import { TagId } from "@/actions/types";
+import { NoteId, TagId } from "@/actions/types";
 import { TagResult } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { DeepReadonlyArray, Store } from "olik";
+import { Store } from "olik";
 import { AppState } from "./store-utils";
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
@@ -209,10 +209,12 @@ const highlightedRanges = StateField.define({
 export const doReviseTagsInEditor = (
   store: Store<AppState>,
   codeMirror: EditorView,
-  tags: DeepReadonlyArray<TagResult & { type?: tagType }>,
-  previousPositions: DeepReadonlyArray<TagResult & { type?: tagType }>,
+  noteId: NoteId,
 ) => {
-  const { synonymIds, synonymGroups } = store.$state;
+  const { synonymIds, synonymGroups, tagNotes } = store.$state;
+  const tags = tagNotes[noteId]!;
+  type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { type?: tagType }> }
+  const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];
   const groupSynonymIds = synonymGroups
     .filter(sg => synonymIds.includes(sg.synonymId))
     .distinct()
@@ -234,4 +236,5 @@ export const doReviseTagsInEditor = (
   if (!codeMirror.state.field(highlightedRanges, false))
     effects.push(StateEffect.appendConfig.of([highlightedRanges]));
   codeMirror.dispatch({ effects });
+  (codeMirror as PreviousPositions).previousPositions = newTagPositions;
 };

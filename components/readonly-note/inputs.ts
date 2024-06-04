@@ -1,5 +1,5 @@
 import { oneDark } from '@/utils/codemirror-theme';
-import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, tagType, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useComponent } from '@/utils/react-utils';
 import { useStore } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
@@ -9,7 +9,6 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { Highlighter } from '@lezer/highlight';
 import { useRef } from 'react';
-import { TagResult } from '../../utils/tags-worker';
 import { Props } from './constants';
 
 
@@ -46,22 +45,14 @@ export const useInputs = (props: Props) => {
     ],
   });
   component.listen = () => editor.destroy();
-  const latestTags = new Array<TagResult & { type?: tagType }>();
-  const previousTags = new Array<TagResult & { type?: tagType }>();
   component.listen = store.tagNotes[props.note!.id]!
-    .$onChangeImmediate(current => {
-      latestTags.length = 0;
-      latestTags.push(...current);
-      doReviseTagsInEditor(store, editor, latestTags, previousTags);
-      previousTags.length = 0;
-      previousTags.push(...current);
-    });
+    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, props.note!.id));
   component.listen = store.synonymIds
-    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, latestTags, previousTags));
+    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, props.note!.id));
   component.listen = store.synonymGroups
-    .$onChange(() => doReviseTagsInEditor(store, editor, latestTags, previousTags));
+    .$onChange(() => doReviseTagsInEditor(store, editor, props.note!.id));
   component.listen = store.tags
-    .$onChange(() => doReviseTagsInEditor(store, editor, latestTags, previousTags));
+    .$onChange(() => doReviseTagsInEditor(store, editor, props.note!.id));
   component.done();
   return {
     ...result,

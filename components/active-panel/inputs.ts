@@ -1,5 +1,5 @@
 import { oneDark } from '@/utils/codemirror-theme';
-import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, tagType, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useComponent } from '@/utils/react-utils';
 import { useLocalStore, useStore } from '@/utils/store-utils';
 import {
@@ -28,7 +28,6 @@ import {
 import { Highlighter } from '@lezer/highlight';
 import { derive } from 'olik/derive';
 import { useRef } from 'react';
-import { TagResult } from '../../utils/tags-worker';
 import { useNotifier } from '../notifier';
 import { PopupHandle } from '../popup/constants';
 import { initialState } from './constants';
@@ -88,13 +87,12 @@ export const useInputs = () => {
       oneDark,
     ],
   });
-  const previousPositions = new Array<TagResult & { type?: tagType }>();
-  const latestTagsFromWorker = new Array<TagResult & { type?: tagType }>();
+
   component.listen = () => editorView.destroy();
   component.listen = store.synonymIds
-    .$onChange(() => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions));
+    .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = store.synonymGroups
-    .$onChange(() => doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions));
+    .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.listen = store.activeNoteId
     .$onChangeImmediate(activeNoteId => editorView.dispatch({
       changes: {
@@ -102,17 +100,12 @@ export const useInputs = () => {
         to: editorView.state.doc.length,
         insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
       }
-    }))
+    }));
   component.listen = derive(store.activeNoteId, store.tagNotes)
     .$with((activeNoteId, tagNotes) => tagNotes[activeNoteId]!)
-    .$onChangeImmediate(current => {
-      latestTagsFromWorker.length = 0;
-      latestTagsFromWorker.push(...current);
-      doReviseTagsInEditor(store, editorView, latestTagsFromWorker, previousPositions);
-      previousPositions.length = 0;
-      previousPositions.push(...current);
-    });
+    .$onChangeImmediate(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
   component.done();
+
   return {
     ...result,
     editorView,
