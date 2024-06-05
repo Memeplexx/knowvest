@@ -1,5 +1,5 @@
 import { initialize } from "@/actions/session";
-import { UserDTO } from "@/actions/types";
+import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
 import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
 import { useComponent } from "@/utils/react-utils";
 import { initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
@@ -102,13 +102,11 @@ export const useInputs = () => {
     }
 
     // Send the tags worker the initial data
-    const { notes, tags } = store.$state;
+    const sanitizeNote = (note: NoteDTO) => ({ ...note, text: note.text.toLowerCase() });
+    const sanitizeTag = (tag: TagDTO) => ({ id: tag.id, synonymId: tag.synonymId, text: tag.text.toLowerCase() });
     worker.postMessage({
       type: 'initialize',
-      data: {
-        notes,
-        tags: tags.map(t => ({ id: t.id, text: t.text, synonymId: t.synonymId }))
-      }
+      data: { notes: store.$state.notes.map(sanitizeNote), tags: store.$state.tags.map(sanitizeTag) }
     });
 
     // Ensure that changes to tags in the store are sent to the worker
@@ -122,14 +120,14 @@ export const useInputs = () => {
       });
       if (tagsToAdd.length) {
         previousTagIds.push(...tagsToAdd.map(t => t.id));
-        worker.postMessage({ type: 'addTags', data: tagsToAdd });
+        worker.postMessage({ type: 'addTags', data: tagsToAdd.map(sanitizeTag) });
       }
       if (tagIdsToRemove.length) {
         previousTagIds.remove(e => tagIdsToRemove.includes(e));
         worker.postMessage({ type: 'removeTags', data: tagIdsToRemove });
       }
       if (tagsToUpdate.length) {
-        worker.postMessage({ type: 'updateTags', data: tagsToUpdate });
+        worker.postMessage({ type: 'updateTags', data: tagsToUpdate.map(sanitizeTag) });
       }
     });
 
@@ -141,13 +139,13 @@ export const useInputs = () => {
       const notesToUpdate = notes.filter(n => previousNoteIds.includes(n.id) && previousNotes.find(pn => pn.id === n.id)!.text !== n.text);
       if (notesToAdd.length) {
         previousNoteIds.push(...notesToAdd.map(n => n.id));
-        worker.postMessage({ type: 'addNotes', data: notesToAdd });
+        worker.postMessage({ type: 'addNotes', data: notesToAdd.map(sanitizeNote) });
       }
       if (noteIdsToRemove.length) {
         previousNoteIds.remove(e => noteIdsToRemove.includes(e));
         noteIdsToRemove.forEach(id => worker.postMessage({ type: 'removeNote', data: id }));
       }
-      notesToUpdate.forEach(n => worker.postMessage({ type: 'updateNote', data: n }));
+      notesToUpdate.forEach(n => worker.postMessage({ type: 'updateNote', data: sanitizeNote(n) }));
     });
 
     // Ensure that the indexedDB is updated when the store changes

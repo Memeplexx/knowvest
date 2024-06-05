@@ -151,11 +151,11 @@ const sendToProvider = (data: Outgoing) => postMessage(data);
 const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => {
   allTags.push(...incomingTags);
   incomingTags.forEach(incomingTag => {
-    trie.insert(incomingTag.text.toLowerCase(), incomingTag.id, incomingTag.synonymId!);
+    trie.insert(incomingTag.text, incomingTag.id, incomingTag.synonymId!);
   });
   allNotes.push(...incomingNotes);
   const toPost = incomingNotes.map(incomingNote => {
-    const results = trie.search(incomingNote.text.toLowerCase());
+    const results = trie.search(incomingNote.text);
     resultsCache.set(incomingNote.id, results);
     return { noteId: incomingNote.id, tags: results };
   });
@@ -164,7 +164,7 @@ const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepRe
 }
 
 const addTags = (incomingTags: TagSummary[]) => {
-  const trieLocal = new Trie(); // we don't want to search ALL tags in ALL notes. Let's create a Trie to only search the tags that were added
+  const trieLocal = new Trie();
   incomingTags.forEach(incomingTag => {
     const found = allTags.find(t => t.id === incomingTag.id);
     if (found) throw new Error(`Tag already exists: ${JSON.stringify(found)}`);
@@ -176,13 +176,14 @@ const addTags = (incomingTags: TagSummary[]) => {
   const toPost = [] as Outgoing;
   allNotes.forEach(note => {
     const results = trieLocal.search(note.text.toLowerCase());
-    if (JSON.stringify(results) === JSON.stringify(resultsCache.get(note.id)!))
-      return;
-    resultsCache.set(note.id, results);
-    toPost.push({ noteId: note.id, tags: results });
+    if (!results.length) return;
+    const cacheItem = resultsCache.get(note.id)!;
+    cacheItem.push(...results);
+    toPost.push({ noteId: note.id, tags: cacheItem });
   });
   if (toPost.length)
     sendToProvider(toPost);
+
 }
 
 const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
@@ -264,7 +265,7 @@ const addNotes = (incomingNotes: DeepReadonlyArray<NoteDTO>) => {
 const updateNote = (incomingNote: NoteDTO) => {
   const found = allNotes.find(n => n.id === incomingNote.id);
   if (!found) throw new Error(`Note not found: ${JSON.stringify(incomingNote)}`);
-  found.text = incomingNote.text.toLowerCase();
+  found.text = incomingNote.text;
   const results = trie.search(found.text);
   if (JSON.stringify(results) === JSON.stringify(resultsCache.get(incomingNote.id)!))
     return;
