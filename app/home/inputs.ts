@@ -43,11 +43,12 @@ export const useInputs = () => {
   void async function initializeData() {
     await initializeDb();
     const databaseData = await readFromDb();
-    const notesFromDbSorted = databaseData.notes.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
-    const tagsFromDbSorted = databaseData.tags.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
-    const groupsFromDbSorted = databaseData.groups.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
-    const synonymGroupsFromDbSorted = databaseData.synonymGroups.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
-    const flashCardsFromDbSorted = databaseData.flashCards.sort((a, b) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime());
+    const sortByDateDesc = (a: { dateUpdated: Date | null }, b: { dateUpdated: Date | null }) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime();
+    const notesFromDbSorted = databaseData.notes.sort(sortByDateDesc);
+    const tagsFromDbSorted = databaseData.tags.sort(sortByDateDesc);
+    const groupsFromDbSorted = databaseData.groups.sort(sortByDateDesc);
+    const synonymGroupsFromDbSorted = databaseData.synonymGroups.sort(sortByDateDesc);
+    const flashCardsFromDbSorted = databaseData.flashCards.sort(sortByDateDesc);
     const apiResponse = await initialize({
       user: session.data.user as UserDTO,
       after: {
@@ -70,7 +71,7 @@ export const useInputs = () => {
         writeToDb('tags', apiResponse.tags),
         writeToDb('groups', apiResponse.groups),
         writeToDb('synonymGroups', apiResponse.synonymGroups),
-        writeToDb('flashCards', apiResponse.flashCards)
+        writeToDb('flashCards', apiResponse.flashCards),
       ]);
       const filterUnArchived = <T extends object>(item: T) => 'isArchived' in item ? !item.isArchived : true;
       store.$patch({ // NOTE: Database might be empty. If so, use the first note from the API response
