@@ -43,7 +43,7 @@ class Trie {
         }
       }
     }
-    return detectedTags.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+    return detectedTags.sort((a, b) => a.id - b.id);
   }
 
   remove(word: string) {
@@ -195,32 +195,54 @@ const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
   const toPost = [] as Outgoing;
   Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
     const filtered = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.id));
-    if (filtered.length < tagSummaries.length) { // where tags removed?
-      resultsCache.set(noteId, filtered);
-      toPost.push({ noteId, tags: filtered });
-    }
+    if (filtered.length === tagSummaries.length) return; // if note does not contain any of the removed tags, do not update resultsCache
+    resultsCache.set(noteId, filtered);
+    toPost.push({ noteId, tags: filtered });
   });
   if (toPost.length)
     sendToProvider(toPost);
 };
 
 const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
-  const tagsRemoved = new Array<TagId>();
+
+  // Create some local variables for later
+  const trieLocal = new Trie();
+  const incomingTagIds = incomingTags.map(t => t.id);
+  const toPost = [] as Outgoing;
+
+  // Start by removing old tags from the trie, re-inserting them into the trie, and updating the tag text in the allTags array
   incomingTags.forEach(incomingTag => {
     const tag = allTags.find(t => t.id === incomingTag.id);
     if (!tag) throw new Error(`Tag to update not found: ${JSON.stringify(incomingTag)}`);
-    trie.remove(tag.text.toLowerCase());
-    tagsRemoved.push(tag.id);
+    trie.remove(tag.text);
     trie.insert(incomingTag.text.toLowerCase(), tag.id, tag.synonymId!);
+    trieLocal.insert(incomingTag.text.toLowerCase(), tag.id, tag.synonymId!);
     tag.text = incomingTag.text;
   });
-  const toPost = [] as Outgoing;
+
+  // Remove old from resultsCache
   Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
-    const filtered = tagSummaries.filter(tagSummary => !tagsRemoved.includes(tagSummary.id));
-    if (filtered.length === tagSummaries.length) return; // if filtered tags are same length as original, no tags were removed
-    resultsCache.set(noteId, filtered);
-    toPost.push({ noteId, tags: filtered });
+    const tagSummariesWithIncomingTagsRemoved = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.id)).sort((a, b) => a.id - b.id);
+    if (tagSummariesWithIncomingTagsRemoved.length === tagSummaries.length) // if note does not contain any of the updated tags, do not update resultsCache
+      return;
+    resultsCache.set(noteId, tagSummariesWithIncomingTagsRemoved);
+    toPost.push({ noteId, tags: tagSummariesWithIncomingTagsRemoved });
   });
+
+  // Add new ro resultsCache
+  allNotes.forEach(note => {
+    const results = trieLocal.search(note.text);
+    if (!results.length) return; // if note does not contain any of the updated tags, do not update resultsCache or toPost array
+    const cacheItem = resultsCache.get(note.id)!;
+    cacheItem.push(...results);
+    cacheItem.sort((a, b) => a.id - b.id);
+    const toPostItem = toPost.find(p => p.noteId === note.id);
+    if (toPostItem)
+      toPostItem.tags.push(...results);
+    else
+      toPost.push({ noteId: note.id, tags: cacheItem });
+  });
+
   if (toPost.length)
     sendToProvider(toPost);
 }

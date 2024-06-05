@@ -39,6 +39,7 @@ export const useInputs = () => {
   if (state.stage !== 'pristine')
     return result;
 
+  local.stage.$set('initializeData');
   void async function initializeData() {
     await initializeDb();
     const databaseData = await readFromDb();
