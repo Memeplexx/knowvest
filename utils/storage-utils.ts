@@ -6,9 +6,8 @@ const eventTarget = <T = IDBOpenDBRequest>(event: Event) => event.target as T;
 
 export const writeToDb = <TableName extends keyof typeof indexedDbState, Records extends typeof indexedDbState[TableName]>(
   tableName: TableName,
-  tableRecord: Records
+  tableRecords: Records
 ) => new Promise<void>((resolve, reject) => {
-  const tableRecords = Array.isArray(tableRecord) ? tableRecord : tableRecord === null ? [] : [tableRecord];
   if (!tableRecords.length)
     return resolve();
   const request = openDatabase();

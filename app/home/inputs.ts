@@ -72,13 +72,14 @@ export const useInputs = () => {
         writeToDb('synonymGroups', apiResponse.synonymGroups),
         writeToDb('flashCards', apiResponse.flashCards)
       ]);
+      const filterUnArchived = <T extends object>(item: T) => 'isArchived' in item ? !item.isArchived : true;
       store.$patch({ // NOTE: Database might be empty. If so, use the first note from the API response
         activeNoteId: notesFromDbSorted[0]?.id ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id,
-        notes: [...databaseData.notes, ...apiResponse.notes].filter(n => 'isArchived' in n ? !n.isArchived : true),
-        tags: [...databaseData.tags, ...apiResponse.tags].filter(t => 'isArchived' in t ? !t.isArchived : true),
-        groups: [...databaseData.groups, ...apiResponse.groups].filter(g => 'isArchived' in g ? !g.isArchived : true),
-        synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(sg => 'isArchived' in sg ? !sg.isArchived : true),
-        flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(fc => 'isArchived' in fc ? !fc.isArchived : true),
+        notes: [...databaseData.notes, ...apiResponse.notes].filter(filterUnArchived),
+        tags: [...databaseData.tags, ...apiResponse.tags].filter(filterUnArchived),
+        groups: [...databaseData.groups, ...apiResponse.groups].filter(filterUnArchived),
+        synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(filterUnArchived),
+        flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(filterUnArchived),
       });
     }
 
