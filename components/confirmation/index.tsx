@@ -15,7 +15,7 @@ export const Confirmation = (
   return (
     <Modal
       onBackdropClick={outputs.onClickCancel}
-      onClose={outputs.onClose}
+      onClose={outputs.onClickCancel}
       if={props.if}
       children={
         <DialogBody
@@ -33,18 +33,18 @@ export const Confirmation = (
                     <CancelButton
                       selected={inputs.selection === 'cancel'}
                       highlighted={false}
-                      onMouseUp={outputs.onClickCancel}
-                      onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={outputs.onMouseDownCancel}
+                      onMouseLeave={outputs.onMouseLeaveButton}
+                      onClick={outputs.onClickCancel}
                       children={props.cancelText || 'Cancel'}
                       aria-label='Cancel'
                     />
                     <ConfirmButton
                       selected={inputs.selection === 'confirm'}
                       highlighted={false}
-                      onMouseUp={outputs.onClickConfirm}
-                      onMouseLeave={outputs.onMouseLeaveButton}
                       onMouseDown={outputs.onMouseDownConfirm}
+                      onMouseLeave={outputs.onMouseLeaveButton}
+                      onClick={outputs.onClickConfirm}
                       children={props.confirmText || 'Confirm'}
                       aria-label='Confirm'
                     />

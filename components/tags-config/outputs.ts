@@ -212,12 +212,14 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       shared.blurAutocompleteInput();
     },
     onClickConfirmArchiveTag: async () => {
+      console.log('!!!')
       const apiResponse = await archiveTag(inputs.tagId!);
       const isLastTag = inputs.tagsInSynonymGroup.length === 1;
       const synonymId = isLastTag ? null : inputs.synonymId;
       const autocompleteAction = isLastTag ? null : inputs.autocompleteAction;
       local.$patch({ tagId: null, synonymId, autocompleteText: '', modal: null, autocompleteAction });
-      synonymId && store.synonymIds.$filter.$eq(synonymId).$delete();
+      if (synonymId)
+        store.synonymIds.$filter.$eq(synonymId).$delete();
       store.tags.$find.id.$eq(apiResponse.tag.id).$delete();
       store.synonymGroups.$mergeMatching.synonymId.$with(apiResponse.synonymGroups);
       notify.success('Tag archived');

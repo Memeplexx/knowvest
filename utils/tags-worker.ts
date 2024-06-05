@@ -169,13 +169,13 @@ const addTags = (incomingTags: TagSummary[]) => {
     const found = allTags.find(t => t.id === incomingTag.id);
     if (found) throw new Error(`Tag already exists: ${JSON.stringify(found)}`);
     allTags.push(incomingTag);
-    const tagText = incomingTag.text.toLowerCase();
+    const tagText = incomingTag.text;
     trieLocal.insert(tagText, incomingTag.id, incomingTag.synonymId!);
     trie.insert(tagText, incomingTag.id, incomingTag.synonymId!);
   });
   const toPost = [] as Outgoing;
   allNotes.forEach(note => {
-    const results = trieLocal.search(note.text.toLowerCase());
+    const results = trieLocal.search(note.text);
     if (!results.length) return;
     const cacheItem = resultsCache.get(note.id)!;
     cacheItem.push(...results);
@@ -188,10 +188,10 @@ const addTags = (incomingTags: TagSummary[]) => {
 
 const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
   incomingTagIds.forEach(incomingTagId => {
+    trie.remove(allTags.find(t => t.id === incomingTagId)!.text);
     const index = allTags.findIndex(tag => tag.id === incomingTagId);
     if (index !== -1)
       allTags.splice(index, 1);
-    trie.remove(allTags.find(t => t.id === incomingTagId)!.text.toLowerCase());
   });
   const toPost = [] as Outgoing;
   Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
@@ -216,8 +216,8 @@ const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
     const tag = allTags.find(t => t.id === incomingTag.id);
     if (!tag) throw new Error(`Tag to update not found: ${JSON.stringify(incomingTag)}`);
     trie.remove(tag.text);
-    trie.insert(incomingTag.text.toLowerCase(), tag.id, tag.synonymId!);
-    trieLocal.insert(incomingTag.text.toLowerCase(), tag.id, tag.synonymId!);
+    trie.insert(incomingTag.text, tag.id, tag.synonymId!);
+    trieLocal.insert(incomingTag.text, tag.id, tag.synonymId!);
     tag.text = incomingTag.text;
   });
 
@@ -236,7 +236,6 @@ const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
     if (!results.length) return; // if note does not contain any of the updated tags, do not update resultsCache or toPost array
     const cacheItem = resultsCache.get(note.id)!;
     cacheItem.push(...results);
-    cacheItem.sort((a, b) => a.id - b.id);
     const toPostItem = toPost.find(p => p.noteId === note.id);
     if (toPostItem)
       toPostItem.tags.push(...results);

@@ -14,10 +14,11 @@ export const useInputs = () => {
       .map(tn => tn.synonymId)
       .distinct()
       .map(synonymId => tags.filter(t => t.synonymId === synonymId))
-      .map(tgs => ({
-        synonymId: tgs[0]!.synonymId,
-        selected: synonymIds.includes(tgs[0]!.synonymId),
-        tags: tgs.map((tag, index, array) => ({
+      .filter(tags => !!tags.length)
+      .map(tags => ({
+        synonymId: tags[0]!.synonymId,
+        selected: synonymIds.includes(tags[0]!.synonymId),
+        tags: tags.map((tag, index, array) => ({
           ...tag,
           first: index === 0,
           last: index === array.length - 1,
@@ -31,6 +32,7 @@ export const useInputs = () => {
       .distinct()
       .flatMap(synonymId => synonymGroups.filter(sg => sg.synonymId === synonymId))
       .groupBy(sg => sg.groupId)
+      .filter(sg => !!sg.length)
       .map(group => ({
         groupId: group[0]!.groupId,
         groupName: groups.findOrThrow(g => g.id === group[0]!.groupId).name,
