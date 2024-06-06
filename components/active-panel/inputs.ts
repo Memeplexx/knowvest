@@ -1,5 +1,5 @@
 import { oneDark } from '@/utils/codemirror-theme';
-import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useComponent } from '@/utils/react-utils';
 import { useLocalStore, useStore } from '@/utils/store-utils';
 import {
@@ -50,7 +50,7 @@ export const useInputs = () => {
     mayDeleteNote: !!notes.length,
     popupRef,
     editorRef,
-    editorView: null as EditorView | null,
+    editor: null as EditorView | null,
   };
 
   // Do not instantiate the editor until certain conditions are met
@@ -59,7 +59,7 @@ export const useInputs = () => {
   if (state.stage !== 'pristine')
     return result;
 
-  const editorView = new EditorView({
+  const editor = new EditorView({
     doc: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
     parent: editorRef.current!,
     extensions: [
@@ -87,27 +87,27 @@ export const useInputs = () => {
     ],
   });
 
-  component.listen = () => editorView.destroy();
+  component.listen = () => editor.destroy();
   component.listen = store.synonymIds
-    .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
+    .$onChange(() => reviseEditorTags(store, editor, store.$state.activeNoteId));
   component.listen = store.synonymGroups
-    .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
+    .$onChange(() => reviseEditorTags(store, editor, store.$state.activeNoteId));
   component.listen = derive(store.activeNoteId, store.noteTags)
     .$with((activeNoteId, noteTags) => noteTags[activeNoteId]!)
-    .$onChange(() => doReviseTagsInEditor(store, editorView, store.$state.activeNoteId));
+    .$onChange(() => reviseEditorTags(store, editor, store.$state.activeNoteId));
   component.listen = store.activeNoteId
-    .$onChange(activeNoteId => editorView.dispatch({
+    .$onChange(activeNoteId => editor.dispatch({
       changes: {
         from: 0,
-        to: editorView.state.doc.length,
+        to: editor.state.doc.length,
         insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
       }
     }));
-  doReviseTagsInEditor(store, editorView, store.$state.activeNoteId);
+  reviseEditorTags(store, editor, store.$state.activeNoteId);
   local.stage.$set('done');
 
   return {
     ...result,
-    editorView,
+    editor,
   };
 }

@@ -1,5 +1,5 @@
 import { oneDark } from '@/utils/codemirror-theme';
-import { bulletPointPlugin, doReviseTagsInEditor, inlineNotePlugin, noteBlockPlugin, titleFormatPlugin } from '@/utils/codemirror-utils';
+import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useComponent } from '@/utils/react-utils';
 import { useStore } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
@@ -47,13 +47,14 @@ export const useInputs = (props: Props) => {
   component.listen = () => editor.destroy();
   const id = props.note!.id;
   component.listen = store.noteTags[id]!
-    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, id));
+    .$onChange(() => reviseEditorTags(store, editor, id));
   component.listen = store.synonymIds
-    .$onChangeImmediate(() => doReviseTagsInEditor(store, editor, id));
+    .$onChange(() => reviseEditorTags(store, editor, id));
   component.listen = store.synonymGroups
-    .$onChange(() => doReviseTagsInEditor(store, editor, id));
+    .$onChange(() => reviseEditorTags(store, editor, id));
   component.listen = store.tags
-    .$onChange(() => doReviseTagsInEditor(store, editor, id));
+    .$onChange(() => reviseEditorTags(store, editor, id));
+  reviseEditorTags(store, editor, id);
   isDone.current = true;
   return {
     ...result,

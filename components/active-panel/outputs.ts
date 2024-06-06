@@ -5,7 +5,7 @@ import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, editorView, editorRef, notify }: Inputs) => ({
+export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }: Inputs) => ({
   onClickCreateNote: async () => {
     const apiResponse = await createNote();
     store.notes.$push(apiResponse.note);
@@ -56,18 +56,18 @@ export const useOutputs = ({ store, local, popupRef, editorView, editorRef, noti
     store.tags.$push(apiResponse.tag);
     store.synonymIds.$merge(store.$state.tags.filter(t => t.id === apiResponse.tag.id).map(t => t.synonymId));
     local.selection.$set('');
-    editorView!.dispatch({ selection: { anchor: editorView!.state.selection.ranges[0]!.anchor } });
+    editor!.dispatch({ selection: { anchor: editor!.state.selection.ranges[0]!.anchor } });
     notify.success(`Tag "${apiResponse.tag.text}" created`);
   },
   onClickFilterNotesFromSelection: () => {
-    const { from, to } = editorView!.state.selection.ranges[0]!;
-    const selection = editorView!.state.doc.sliceString(from, to);
+    const { from, to } = editor!.state.selection.ranges[0]!;
+    const selection = editor!.state.doc.sliceString(from, to);
     store.synonymIds.$set(store.$state.tags.filter(t => selection.includes(t.text)).map(t => t.synonymId).distinct());
     local.selection.$set('');
     notify.success(`Filtered related notes`);
   },
   onClickSplitNoteFromSelection: async () => {
-    const range = editorView!.state.selection.ranges[0]!;
+    const range = editor!.state.selection.ranges[0]!;
     local.loadingSelection.$set(true);
     const apiResponse = await splitNote(range.from, range.to, store.$state.activeNoteId);
     store.notes.$mergeMatching.id.$with(apiResponse.notes);
@@ -75,10 +75,10 @@ export const useOutputs = ({ store, local, popupRef, editorView, editorRef, noti
       loadingSelection: false,
       selection: '',
     })
-    editorView!.dispatch({
+    editor!.dispatch({
       changes: {
         from: 0,
-        to: editorView!.state.doc.length,
+        to: editor!.state.doc.length,
         insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
       },
     })
@@ -103,11 +103,11 @@ export const useOutputs = ({ store, local, popupRef, editorView, editorRef, noti
       return;
     if (tupleIncludes(event.target.tagName, ['INPUT', 'TEXTAREA']))
       return;
-    editorView!.focus();
-    editorView!.dispatch(
+    editor!.focus();
+    editor!.dispatch(
       {
         selection: {
-          anchor: editorView!.state.selection.ranges[0]!.anchor,
+          anchor: editor!.state.selection.ranges[0]!.anchor,
         }
       },
     );

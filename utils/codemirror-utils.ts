@@ -198,7 +198,7 @@ const highlightedRanges = StateField.define({
 });
 
 export type TagType = 'primary' | 'secondary';
-export const doReviseTagsInEditor = (
+export const reviseEditorTags = (
   store: Store<AppState>,
   codeMirror: EditorView,
   noteId: NoteId,
