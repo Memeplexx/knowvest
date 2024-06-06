@@ -48,7 +48,7 @@ Array.prototype.groupBy = function <T, P extends string | number>(fn: (el: T) =>
   return result;
 };
 
-Array.prototype.findOrThrow = function(predicate, onError) {
+Array.prototype.findOrThrow = function (predicate, onError) {
   const found = this.find(predicate);
   if (!found) {
     if (onError) {

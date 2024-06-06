@@ -73,15 +73,19 @@ export const textSelectorPlugin = (local: ActivePanelStore) => {
             let from = view.state.selection.main.from;
             const startChar = documentText[from]!;
             if (regexForAnyNumberAndAnyLetter.test(startChar))
-              while (regexForAnyNumberAndAnyLetter.test(documentText[from]!) && from < documentText.length - 1) { from++; }
+              while (regexForAnyNumberAndAnyLetter.test(documentText[from]!) && from < documentText.length - 1)
+                from++;
             else
-              while (!regexForAnyNumberAndAnyLetter.test(documentText[from - 1]!) && from > 0) { from--; }
+              while (!regexForAnyNumberAndAnyLetter.test(documentText[from - 1]!) && from > 0)
+                from--;
             let to = view.state.selection.main.to;
             const endChar = documentText[to - 1]!;
             if (regexForAnyNumberAndAnyLetter.test(endChar))
-              while (regexForAnyNumberAndAnyLetter.test(documentText[to]!) && to > 0) { to--; }
+              while (regexForAnyNumberAndAnyLetter.test(documentText[to]!) && to > 0)
+                to--;
             else
-              while (!regexForAnyNumberAndAnyLetter.test(documentText[to]!) && to < documentText.length) { to++; }
+              while (!regexForAnyNumberAndAnyLetter.test(documentText[to]!) && to < documentText.length)
+                to++;
             const selection = view.state.sliceDoc(from, to).toLowerCase();
             if (!selection.trim().length)
               return this.updateSelection('');

@@ -152,7 +152,6 @@ declare global {
   }
 
   interface ReadonlyArray<T> extends Omit<Array<T>, 'push' | 'pop' | 'shift' | 'unshift' | 'reverse' | 'sort' | 'splice'> {
-    
   }
 
 }
