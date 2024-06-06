@@ -212,7 +212,6 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       shared.blurAutocompleteInput();
     },
     onClickConfirmArchiveTag: async () => {
-      console.log('!!!')
       const apiResponse = await archiveTag(inputs.tagId!);
       const isLastTag = inputs.tagsInSynonymGroup.length === 1;
       const synonymId = isLastTag ? null : inputs.synonymId;

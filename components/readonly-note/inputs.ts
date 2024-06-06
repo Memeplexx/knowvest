@@ -56,8 +56,5 @@ export const useInputs = (props: Props) => {
     .$onChange(() => reviseEditorTags(store, editor, id));
   reviseEditorTags(store, editor, id);
   isDone.current = true;
-  return {
-    ...result,
-    editor
-  };
+  return result;
 }

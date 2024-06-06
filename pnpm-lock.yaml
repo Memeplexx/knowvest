@@ -75,11 +75,11 @@ dependencies:
     specifier: ^5.6.0
     version: 5.6.0(@babel/core@7.24.6)(next@14.1.0)(webpack@5.91.0)
   olik:
-    specifier: 1.0.109
-    version: 1.0.109
+    specifier: 1.0.110
+    version: 1.0.110
   olik-react:
-    specifier: 1.0.20
-    version: 1.0.20(olik@1.0.109)(vite@5.2.12)
+    specifier: 1.0.21
+    version: 1.0.21(olik@1.0.110)(vite@5.2.12)
   postcss:
     specifier: 8.4.23
     version: 8.4.23
@@ -4043,7 +4043,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.11.19
+      '@types/node': 20.12.13
       '@types/yargs': 17.0.24
       chalk: 4.1.2
     dev: false
@@ -5268,7 +5268,7 @@ packages:
     engines: {node: '>=8', npm: '>=6', yarn: '>=1'}
     dependencies:
       '@adobe/css-tools': 4.3.1
-      '@babel/runtime': 7.23.9
+      '@babel/runtime': 7.24.6
       '@types/testing-library__jest-dom': 5.14.9
       aria-query: 5.3.0
       chalk: 3.0.0
@@ -5428,12 +5428,6 @@ packages:
 
   /@types/node@18.19.33:
     resolution: {integrity: sha512-NR9+KrpSajr2qBVp/Yt5TU/rp+b5Mayi3+OlMlcg2cVCfRmcG5PWZ7S4+MG9PZ5gWBoc9Pd0BKSRViuBCRPu0A==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: false
-
-  /@types/node@20.11.19:
-    resolution: {integrity: sha512-7xMnVEcZFu0DikYjWOlRq7NTPETrm7teqUT2WkQjrTIkEgUyyGdWsj/Zg8bEJt5TNklzbPD1X3fqfsHw3SpapQ==}
     dependencies:
       undici-types: 5.26.5
     dev: false
@@ -8766,12 +8760,12 @@ packages:
     resolution: {integrity: sha512-GBEV4GRADeP+qtB2+6u61stea8mGcOT4mCtrYISZwfu9/ISHFJ/5zOMXYbpBE9RsS5+Gb63DW4FgmnKJ79Kf6w==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@babel/code-frame': 7.23.5
+      '@babel/code-frame': 7.24.6
       '@jest/types': 29.6.3
       '@types/stack-utils': 2.0.3
       chalk: 4.1.2
       graceful-fs: 4.2.11
-      micromatch: 4.0.5
+      micromatch: 4.0.7
       pretty-format: 29.7.0
       slash: 3.0.0
       stack-utils: 2.0.6
@@ -8791,7 +8785,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.11.19
+      '@types/node': 20.12.13
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -9862,21 +9856,21 @@ packages:
     engines: {node: ^10.13.0 || >=12.0.0}
     dev: false
 
-  /olik-react@1.0.20(olik@1.0.109)(vite@5.2.12):
-    resolution: {integrity: sha512-mfBNd3zxXfVq/M04Rj6d+X1T2FEoWXjW8yKrsrxsLt81v9DnyBNpRAld/09B2i+ac0PpwUbX1liS1np8RDbDyw==}
+  /olik-react@1.0.21(olik@1.0.110)(vite@5.2.12):
+    resolution: {integrity: sha512-UMmQ6UIVLFah3z9xyDTkWFbIaowKKu7VgoZZ7RHMYSpCBrLKN49l8LBCrCzM5G6sOLmT/HLIxqSWB8BwXv/kHQ==}
     peerDependencies:
       olik: ^1.0.8
     dependencies:
       '@testing-library/jest-dom': 5.17.0
       '@vitejs/plugin-react': 4.2.1(vite@5.2.12)
-      olik: 1.0.109
+      olik: 1.0.110
     transitivePeerDependencies:
       - supports-color
       - vite
     dev: false
 
-  /olik@1.0.109:
-    resolution: {integrity: sha512-aQLmweJ7BDHyQLPKxJBFcFu6hPKBaawRYJuQlISvK1HEQ2CiWlr5eZojj3PaypRts2ANlxMhI/JWMU11B/ynfQ==}
+  /olik@1.0.110:
+    resolution: {integrity: sha512-lHlc1HQ+LSijYb06fLdgbh9QL2O0ZKHnUstltFp5hMW3EaOtDXGUsgV4+BLaoPVokKmFWcKd1n89ckqeOVzhgQ==}
     dev: false
 
   /on-finished@2.3.0:

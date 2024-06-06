@@ -72,7 +72,6 @@ export const initializeDb = () => new Promise<void>(resolve => {
         console.log('Creating table:', tableName);
         db.createObjectStore(tableName, { keyPath: 'id', autoIncrement: false });
       });
-    // db.createObjectStore('', { keyPath: 'id', autoIncrement: false });
   };
   request.onsuccess = () => {
     resolve();

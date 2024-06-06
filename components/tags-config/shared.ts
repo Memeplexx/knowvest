@@ -89,15 +89,6 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return local.modal.$set(null);
     if (inputs.modalRef.current?.contains(eventTarget as HTMLElement))
       return;
-    local.$patch({
-      tagId: null,
-      groupId: null,
-      synonymId: null,
-      groupSynonymId: null,
-      autocompleteAction: null,
-      modal: null,
-      autocompleteText: '',
-    })
     props.onHide();
   }
   const onAutocompleteSelectedWhileNothingIsSelected = async ({ tagId }: { tagId: TagId }) => {

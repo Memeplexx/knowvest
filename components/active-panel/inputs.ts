@@ -42,6 +42,7 @@ export const useInputs = () => {
   const popupRef = useRef<PopupHandle>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const component = useComponent();
+  const editor = useRef<EditorView | null>(null);
   const result = {
     store,
     local,
@@ -50,7 +51,7 @@ export const useInputs = () => {
     mayDeleteNote: !!notes.length,
     popupRef,
     editorRef,
-    editor: null as EditorView | null,
+    editor: editor.current,
   };
 
   // Do not instantiate the editor until certain conditions are met
@@ -59,7 +60,7 @@ export const useInputs = () => {
   if (state.stage !== 'pristine')
     return result;
 
-  const editor = new EditorView({
+  editor.current = new EditorView({
     doc: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
     parent: editorRef.current!,
     extensions: [
@@ -87,27 +88,24 @@ export const useInputs = () => {
     ],
   });
 
-  component.listen = () => editor.destroy();
+  component.listen = () => editor.current!.destroy();
   component.listen = store.synonymIds
-    .$onChange(() => reviseEditorTags(store, editor, store.$state.activeNoteId));
+    .$onChange(() => reviseEditorTags(store, editor.current!, store.$state.activeNoteId));
   component.listen = store.synonymGroups
-    .$onChange(() => reviseEditorTags(store, editor, store.$state.activeNoteId));
+    .$onChange(() => reviseEditorTags(store, editor.current!, store.$state.activeNoteId));
   component.listen = derive(store.activeNoteId, store.noteTags)
     .$with((activeNoteId, noteTags) => noteTags[activeNoteId]!)
-    .$onChange(() => reviseEditorTags(store, editor, store.$state.activeNoteId));
+    .$onChange(() => reviseEditorTags(store, editor.current!, store.$state.activeNoteId));
   component.listen = store.activeNoteId
-    .$onChange(activeNoteId => editor.dispatch({
+    .$onChange(activeNoteId => editor.current!.dispatch({
       changes: {
         from: 0,
-        to: editor.state.doc.length,
+        to: editor.current!.state.doc.length,
         insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
       }
     }));
-  reviseEditorTags(store, editor, store.$state.activeNoteId);
+  reviseEditorTags(store, editor.current, store.$state.activeNoteId);
   local.stage.$set('done');
 
-  return {
-    ...result,
-    editor,
-  };
+  return result;
 }
