@@ -16,15 +16,14 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
   },
   onClickConfirmRemoveNote: async () => {
     local.allowNotePersister.$set(false);
-    const { tags, notes, activeNoteId, noteTags } = store.$state;
-    const apiResponse = await archiveNote(activeNoteId);
+    const apiResponse = await archiveNote(store.$state.activeNoteId);
     store.notes.$find.id.$eq(apiResponse.note.id).$delete();
     local.confirmDelete.$set(false);
-    const mostRecentlyViewedNoteId = notes
-      .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, notes[0])!.id;
-    store.activeNoteId.$set(mostRecentlyViewedNoteId);
-    const tagIds = noteTags[mostRecentlyViewedNoteId]!.map(tag => tag.id);
-    const synonymIds = tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
+    const nextMostRecentlyViewedNoteId = store.$state.notes
+      .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, store.$state.notes[0])!.id;
+    store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
+    const tagIds = store.$state.noteTags[nextMostRecentlyViewedNoteId]!.map(tag => tag.id);
+    const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
     store.synonymIds.$setUnique(synonymIds);
     setTimeout(() => local.allowNotePersister.$set(true), 500); // TODO: Fix this
     notify.success('Note deleted');

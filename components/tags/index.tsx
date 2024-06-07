@@ -84,7 +84,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
       children={
         <>
           <ActiveHeaderTag
-            if={!inputs.tagsForActiveNote.length}
+            if={!!inputs.tagsForActiveNote.length}
             $selected={inputs.allActiveTagsSelected}
             onClick={outputs.onChangeAllActiveTagsSelected}
             children='Active'

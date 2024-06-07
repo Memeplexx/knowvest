@@ -21,10 +21,11 @@ export const useInputs = () => {
       .sort((a, b) => b.count - a.count)
       .slice(0, (index + 1) * pageSize)
       .map(({ noteId, count }) => ({
-        note: notes.findOrThrow(n => n.id === +noteId),
+        note: notes.find(n => n.id === +noteId),
         count,
         matches: `${count} match${count === 1 ? '' : 'es'}`,
-      }));
+      }))
+      .filter(e => !!e.note); // note may not be found when note is deleted
   }, [activeNoteId, index, notes, synonymIds, noteTags]);
 
   const noteCountString = useMemo(() => {

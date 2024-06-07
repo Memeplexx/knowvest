@@ -204,7 +204,7 @@ export const reviseEditorTags = (
   noteId: NoteId,
 ) => {
   const { synonymIds, synonymGroups, noteTags } = store.$state;
-  const tags = noteTags[noteId]!;
+  const tags = noteTags[noteId]! ?? [];
   type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { type?: TagType }> }
   const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];
   const groupSynonymIds = synonymGroups

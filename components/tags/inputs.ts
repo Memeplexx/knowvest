@@ -10,6 +10,7 @@ export const useInputs = () => {
   useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
   const tagsForActiveNote = useMemo(() => {
+    if (!noteTags[activeNoteId]) return [];
     return noteTags[activeNoteId]!
       .map(tn => tn.synonymId)
       .distinct()
@@ -27,6 +28,7 @@ export const useInputs = () => {
   }, [noteTags, activeNoteId, tags, synonymIds]);
 
   const groupsWithSynonyms = useMemo(() => {
+    if (!noteTags[activeNoteId]) return [];
     return noteTags[activeNoteId]!
       .map(tn => tn.synonymId)
       .distinct()
