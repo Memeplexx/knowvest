@@ -21,7 +21,7 @@ export const useInputs = () => {
       .sort((a, b) => b.count - a.count)
       .slice(0, (index + 1) * pageSize)
       .map(({ noteId, count }) => ({
-        note: notes.find(n => n.id === +noteId),
+        note: notes.find(n => n.id === +noteId)!,
         count,
         matches: `${count} match${count === 1 ? '' : 'es'}`,
       }))
