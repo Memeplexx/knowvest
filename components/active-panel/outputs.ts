@@ -54,7 +54,7 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
     if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.fields.tagText);
     store.tags.$push(apiResponse.tag);
-    store.synonymIds.$merge(store.$state.tags.filter(t => t.id === apiResponse.tag.id).map(t => t.synonymId));
+    store.synonymIds.$push(apiResponse.tag.synonymId);
     local.selection.$set('');
     editor!.dispatch({ selection: { anchor: editor!.state.selection.ranges[0]!.anchor } });
     notify.success(`Tag "${apiResponse.tag.text}" created`);
