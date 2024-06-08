@@ -15,22 +15,20 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
     popupRef.current?.hide();
   },
   onClickConfirmRemoveNote: async () => {
-    local.allowNotePersister.$set(false);
     const apiResponse = await archiveNote(store.$state.activeNoteId);
     store.notes.$find.id.$eq(apiResponse.note.id).$delete();
-    local.confirmDelete.$set(false);
+    local.showConfirmDeleteDialog.$set(false);
     const nextMostRecentlyViewedNoteId = store.$state.notes
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, store.$state.notes[0])!.id;
     store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
     const tagIds = store.$state.noteTags[nextMostRecentlyViewedNoteId]!.map(tag => tag.id);
     const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
     store.synonymIds.$setUnique(synonymIds);
-    setTimeout(() => local.allowNotePersister.$set(true), 500); // TODO: Fix this
     notify.success('Note deleted');
     popupRef.current?.hide();
   },
   onClickCancelRemoveNote: () => {
-    local.confirmDelete.$set(false);
+    local.showConfirmDeleteDialog.$set(false);
     popupRef.current?.hide();
   },
   onClickDuplicateNote: async () => {
@@ -39,7 +37,7 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
     popupRef.current?.hide();
   },
   onClickRequestDeleteNote: () => {
-    local.confirmDelete.$set(true);
+    local.showConfirmDeleteDialog.$set(true);
   },
   selectionChanged: (selection: string) => {
     local.selection.$set(selection);

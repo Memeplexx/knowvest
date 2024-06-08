@@ -81,7 +81,7 @@ const SettingsMenu = ({ inputs, outputs }: FragmentProps) => {
         }
       />
       <Confirmation
-        if={inputs.confirmDelete}
+        if={inputs.showConfirmDeleteDialog}
         storeKey='deleteNote'
         onClose={outputs.onClickCancelRemoveNote}
         onConfirm={outputs.onClickConfirmRemoveNote}

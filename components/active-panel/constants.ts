@@ -4,8 +4,7 @@ import { useOutputs } from "./outputs";
 
 export const initialState = {
   selection: '',
-  allowNotePersister: true,
-  confirmDelete: false,
+  showConfirmDeleteDialog: false,
   loadingSelection: false,
   stage: 'pristine' as 'pristine' | 'done',
 };
