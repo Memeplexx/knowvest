@@ -62,8 +62,9 @@ export const useInputs = () => {
   if (state.stage !== 'pristine')
     return result;
 
+  const initialNoteId = store.$state.activeNoteId;
   editor.current = new EditorView({
-    doc: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
+    doc: store.$state.notes.findOrThrow(n => n.id === initialNoteId).text,
     parent: editorRef.current!,
     extensions: [
       history(),
@@ -91,13 +92,14 @@ export const useInputs = () => {
   });
 
   component.listen = () => editor.current!.destroy();
+  const doRemoveEditorTags = () => reviseEditorTags(store, editor.current!, store.$state.activeNoteId);
   component.listen = store.synonymIds
-    .$onChange(() => reviseEditorTags(store, editor.current!, store.$state.activeNoteId));
+    .$onChange(() => doRemoveEditorTags());
   component.listen = store.synonymGroups
-    .$onChange(() => reviseEditorTags(store, editor.current!, store.$state.activeNoteId));
+    .$onChange(() => doRemoveEditorTags());
   component.listen = derive(store.activeNoteId, store.noteTags)
     .$with((activeNoteId, noteTags) => noteTags[activeNoteId]!)
-    .$onChange(() => reviseEditorTags(store, editor.current!, store.$state.activeNoteId));
+    .$onChange(() => doRemoveEditorTags());
   component.listen = store.activeNoteId
     .$onChange(activeNoteId => editor.current!.dispatch({
       changes: {
@@ -106,7 +108,7 @@ export const useInputs = () => {
         insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
       }
     }));
-  reviseEditorTags(store, editor.current, store.$state.activeNoteId);
+  doRemoveEditorTags();
   local.stage.$set('done');
 
   return result;

@@ -44,7 +44,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const tagIds = store.$state.noteTags[noteId]!.map(tag => tag.id);
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.activeNoteId.$set(noteId);
-      store.synonymIds.$setUnique(synonymIds);
+      store.synonymIds.$set(synonymIds);
       props.onHide();
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {

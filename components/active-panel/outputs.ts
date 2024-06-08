@@ -22,8 +22,8 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
       .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, store.$state.notes[0])!.id;
     store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
     const tagIds = store.$state.noteTags[nextMostRecentlyViewedNoteId]!.map(tag => tag.id);
-    const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
-    store.synonymIds.$setUnique(synonymIds);
+    const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
+    store.synonymIds.$set(synonymIds);
     notify.success('Note deleted');
     popupRef.current?.hide();
   },

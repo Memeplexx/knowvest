@@ -18,7 +18,7 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onConfirmRemoveFlashCard: async (flashCardId: FlashCardId) => {
       const apiResponse = await archiveFlashCard(flashCardId);
-      store.flashCards.$mergeMatching.id.$with(apiResponse.flashCard);
+      store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$delete();
       notify.success('Flash card archived');
     },
     onCancelRemoveFlashCard: () => {

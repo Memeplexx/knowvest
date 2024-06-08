@@ -28,6 +28,30 @@ export const writeToDb = <TableName extends keyof typeof indexedDbState, Records
   }
 });
 
+export const deleteFromDb = <TableName extends keyof typeof indexedDbState>(
+  tableName: TableName,
+  ids: number[]
+) => new Promise<void>((resolve, reject) => {
+  if (!ids.length)
+    return resolve();
+  const request = openDatabase();
+  request.onsuccess = event => {
+    const db = eventTarget(event).result;
+    const transaction = db.transaction([tableName], 'readwrite');
+    const objectStore = transaction.objectStore(tableName);
+    ids
+      .filter(id => id !== null)
+      .forEach(id => objectStore.delete(id).onerror = error => console.error('Error adding data: ', error));
+    transaction.oncomplete = () => {
+      resolve();
+      db.close();
+    }
+  };
+  request.onerror = (event) => {
+    reject(event);
+  }
+});
+
 export const readFromDb = () => new Promise<typeof indexedDbState>(resolveOuter => {
   const request = openDatabase();
   request.onsuccess = (event) => {
