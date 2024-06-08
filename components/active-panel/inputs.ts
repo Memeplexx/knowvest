@@ -93,13 +93,11 @@ export const useInputs = () => {
 
   component.listen = () => editor.current!.destroy();
   const doRemoveEditorTags = () => reviseEditorTags(store, editor.current!, store.$state.activeNoteId);
-  component.listen = store.synonymIds
-    .$onChange(() => doRemoveEditorTags());
-  component.listen = store.synonymGroups
-    .$onChange(() => doRemoveEditorTags());
+  component.listen = store.synonymIds.$onChange(doRemoveEditorTags);
+  component.listen = store.synonymGroups.$onChange(doRemoveEditorTags);
   component.listen = derive(store.activeNoteId, store.noteTags)
     .$with((activeNoteId, noteTags) => noteTags[activeNoteId]!)
-    .$onChange(() => doRemoveEditorTags());
+    .$onChange(doRemoveEditorTags);
   component.listen = store.activeNoteId
     .$onChange(activeNoteId => editor.current!.dispatch({
       changes: {

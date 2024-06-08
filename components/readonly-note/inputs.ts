@@ -47,14 +47,10 @@ export const useInputs = (props: Props) => {
   component.listen = () => editor.destroy();
   const id = props.note!.id;
   const doRemoveEditorTags = () => reviseEditorTags(store, editor, id);
-  component.listen = store.noteTags[id]!
-    .$onChange(() => doRemoveEditorTags());
-  component.listen = store.synonymIds
-    .$onChange(() => doRemoveEditorTags());
-  component.listen = store.synonymGroups
-    .$onChange(() => doRemoveEditorTags());
-  component.listen = store.tags
-    .$onChange(() => doRemoveEditorTags());
+  component.listen = store.noteTags[id]!.$onChange(doRemoveEditorTags);
+  component.listen = store.synonymIds.$onChange(doRemoveEditorTags);
+  component.listen = store.synonymGroups.$onChange(doRemoveEditorTags);
+  component.listen = store.tags.$onChange(doRemoveEditorTags);
   doRemoveEditorTags();
   isDone.current = true;
   return result;
