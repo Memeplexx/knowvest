@@ -1,6 +1,7 @@
 import { initialize } from "@/actions/session";
 import { FlashCardDTO, GroupDTO, NoteDTO, SynonymGroupDTO, TagDTO, UserDTO } from "@/actions/types";
 import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
+import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
@@ -42,26 +43,25 @@ export const useInputs = () => {
   local.stage.$set('initializeData');
   void async function initializeData() {
     await initializeDb();
-    const databaseData = await readFromDb();
-    const sortByDateDesc = (a: { dateUpdated: Date | null }, b: { dateUpdated: Date | null }) => b.dateUpdated!.getTime() - a.dateUpdated!.getTime();
-    const notesFromDbSorted = databaseData.notes.sort(sortByDateDesc);
-    const tagsFromDbSorted = databaseData.tags.sort(sortByDateDesc);
-    const groupsFromDbSorted = databaseData.groups.sort(sortByDateDesc);
-    const synonymGroupsFromDbSorted = databaseData.synonymGroups.sort(sortByDateDesc);
-    const flashCardsFromDbSorted = databaseData.flashCards.sort(sortByDateDesc);
+    const databaseData = await PromiseObject({
+      notes: readFromDb('notes'),
+      tags: readFromDb('tags'),
+      groups: readFromDb('groups'),
+      synonymGroups: readFromDb('synonymGroups'),
+      flashCards: readFromDb('flashCards')
+    });
     const apiResponse = await initialize({
       user: session.data.user as UserDTO,
       after: {
-        notes: notesFromDbSorted[0]?.dateUpdated ?? null,
-        tags: tagsFromDbSorted[0]?.dateUpdated ?? null,
-        groups: groupsFromDbSorted[0]?.dateUpdated ?? null,
-        synonymGroups: synonymGroupsFromDbSorted[0]?.dateUpdated ?? null,
-        flashCards: flashCardsFromDbSorted[0]?.dateUpdated ?? null
+        notes: databaseData.notes[0]?.dateUpdated ?? null,
+        tags: databaseData.tags[0]?.dateUpdated ?? null,
+        groups: databaseData.groups[0]?.dateUpdated ?? null,
+        synonymGroups: databaseData.synonymGroups[0]?.dateUpdated ?? null,
+        flashCards: databaseData.flashCards[0]?.dateUpdated ?? null
       }
     });
     if (apiResponse.status === 'USER_CREATED') {
       store.$patch({
-        ...databaseData,
         notes: [apiResponse.firstNote],
         activeNoteId: apiResponse.firstNote.id
       });
@@ -75,7 +75,7 @@ export const useInputs = () => {
       ]);
       const filterUnArchived = <T extends object>(item: T) => 'isArchived' in item ? !item.isArchived : true;
       store.$patch({ // NOTE: Database might be empty. If so, use the first note from the API response
-        activeNoteId: notesFromDbSorted[0]?.id ?? apiResponse.notes.reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, apiResponse.notes[0])!.id,
+        activeNoteId: databaseData.notes[0]?.id ?? apiResponse.notes[0]!.id,
         notes: [...databaseData.notes, ...apiResponse.notes].filter(filterUnArchived),
         tags: [...databaseData.tags, ...apiResponse.tags].filter(filterUnArchived),
         groups: [...databaseData.groups, ...apiResponse.groups].filter(filterUnArchived),

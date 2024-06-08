@@ -1,7 +1,7 @@
 export function pipe<A0, A1>(arg0: A0, arg1: (arg0: A0) => A1): A1;
 export function pipe<A0, A1, A2>(arg0: A0, arg1: (arg0: A0) => A1, arg2: (arg1: A1) => A2): A2;
 export function pipe(arg0: unknown, ...fns: Array<(arg: unknown) => unknown>) {
-  return fns.reduce((prev, curr) => curr(prev), arg0);
+	return fns.reduce((prev, curr) => curr(prev), arg0);
 }
 
 export const is = {
@@ -48,3 +48,9 @@ export const is = {
 		return val instanceof HTMLElement;
 	},
 }
+
+export const PromiseObject = async <T extends object>(obj: { [K in keyof T]: Promise<T[K]> }) => {
+	const keys = Object.keys(obj) as (keyof T)[];
+	const arr = await Promise.all(keys.map(key => obj[key]));
+	return keys.reduce((acc, key, i) => ({ ...acc, [key]: arr[i] }), {} as T);
+};

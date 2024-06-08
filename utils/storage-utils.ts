@@ -4,7 +4,10 @@ import { indexedDbState } from "./store-utils";
 const openDatabase = () => indexedDB.open('knowvest', 1);
 const eventTarget = <T = IDBOpenDBRequest>(event: Event) => event.target as T;
 
-export const writeToDb = <TableName extends keyof typeof indexedDbState, Records extends typeof indexedDbState[TableName]>(
+export const writeToDb = <
+  TableName extends keyof typeof indexedDbState,
+  Records extends typeof indexedDbState[TableName]
+>(
   tableName: TableName,
   tableRecords: Records
 ) => new Promise<void>((resolve, reject) => {
@@ -28,7 +31,9 @@ export const writeToDb = <TableName extends keyof typeof indexedDbState, Records
   }
 });
 
-export const deleteFromDb = <TableName extends keyof typeof indexedDbState>(
+export const deleteFromDb = <
+  TableName extends keyof typeof indexedDbState
+>(
   tableName: TableName,
   ids: number[]
 ) => new Promise<void>((resolve, reject) => {
@@ -52,35 +57,34 @@ export const deleteFromDb = <TableName extends keyof typeof indexedDbState>(
   }
 });
 
-export const readFromDb = () => new Promise<typeof indexedDbState>(resolveOuter => {
+export const readFromDb = <
+  TableName extends keyof typeof indexedDbState,
+  Records extends typeof indexedDbState[TableName]
+>(
+  tableName: TableName
+) => new Promise<Records>(resolve => {
   const request = openDatabase();
   request.onsuccess = (event) => {
     const db = eventTarget(event).result;
-    const objectStoreNames = Array.from(db.objectStoreNames) as Array<keyof typeof indexedDbState>;
-    const readDatabasePromise = new Promise<typeof indexedDbState>((resolve, reject) => {
-      const transaction = db.transaction(objectStoreNames, 'readonly');
-      const results = { ...indexedDbState };
-      const readObjectStore = <T extends keyof typeof indexedDbState>(tableName: T) => new Promise<void>((resolveObjectStore, rejectObjectStore) => {
-        const objectStore = transaction.objectStore(tableName);
-        const getAllRequest = objectStore.getAll();
-        getAllRequest.onsuccess = event => {
-          results[tableName] = eventTarget<{ result: (typeof indexedDbState)[T] }>(event).result;
-          resolveObjectStore();
-        };
-        getAllRequest.onerror = event => {
-          rejectObjectStore(eventTarget(event).error);
-        }
-      })
-      Promise.all(objectStoreNames.map(readObjectStore))
-        .then(() => resolve(Object.keysTyped(results).mapToObject(k => k, k => results[k].filter(r => !(r as typeof r & { isArchived: boolean }).isArchived)) as typeof indexedDbState))
-        .catch(error => reject(error))
-        .finally(() => transaction.oncomplete = () => db.close());
-    });
-    readDatabasePromise
-      .then(results => resolveOuter(results))
-      .catch(error => console.error('Error reading database:', error));
+    const trans = db.transaction([tableName], 'readonly');
+    const store = trans.objectStore(tableName);
+    const index = store.index('dateUpdated');
+    const cursorRequest = index.openCursor(null, 'prev');
+    const res = new Array<unknown>();
+    cursorRequest.onsuccess = (e) => {
+      const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
+      if (cursor) {
+        res.push(cursor.value);
+        cursor.continue();
+      } else {
+        resolve(res as Records);
+      }
+    };
   };
   request.onerror = (event) => {
+    console.error('indexedDB: onerror', event.target);
+  }
+  request.onerror = event => {
     console.error('indexedDB: onerror', event.target);
   }
 });
@@ -95,6 +99,13 @@ export const initializeDb = () => new Promise<void>(resolve => {
       .forEach(tableName => {
         console.log('Creating table:', tableName);
         db.createObjectStore(tableName, { keyPath: 'id', autoIncrement: false });
+      });
+    Object.keysTyped(indexedDbState)
+      .map(tableName => request.transaction!.objectStore(tableName))
+      .filter(objectStore => !objectStore.indexNames.contains('dateUpdated'))
+      .forEach(objectStore => {
+        console.log('Adding index');
+        objectStore.createIndex('dateUpdated', 'dateUpdated', { unique: false });
       });
   };
   request.onsuccess = () => {
