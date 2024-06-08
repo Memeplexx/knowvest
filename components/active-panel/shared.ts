@@ -24,21 +24,26 @@ export const autocompleteExtension = (store: Store<AppState>) => {
   })
 };
 
-export const createNotePersisterExtension = ({ debounce, store, local }: { debounce: number, store: Store<AppState>, local: ActivePanelStore }) => {
+export const createNotePersisterExtension = ({ debounce, store }: { debounce: number, store: Store<AppState> }) => {
   let timestamp = Date.now();
   const doNoteUpdate = async (noteId: NoteId, docText: string) => {
     if (Date.now() - timestamp < debounce) return;
-    if (!local.$state.allowNotePersister) return;
     if (docText === store.$state.notes.findOrThrow(n => n.id === noteId).text) return;
     const apiResponse = await updateNote(noteId, docText);
     store.notes.$mergeMatching.id.$with(apiResponse.note);
   }
   return EditorView.updateListener.of(update => {
     if (!update.docChanged) return;
-    if (!local.$state.allowNotePersister) return;
     timestamp = Date.now();
     const docText = update.state.doc.toString();
-    setTimeout(() => doNoteUpdate(store.$state.activeNoteId, docText), debounce);
+    const currentActiveNoteId = store.$state.activeNoteId;
+
+    setTimeout(() => {
+      const activeNoteIdHasChanged = currentActiveNoteId !== store.$state.activeNoteId;
+      if (activeNoteIdHasChanged)
+        return;
+      doNoteUpdate(store.$state.activeNoteId, docText).catch(console.error);
+    }, debounce);
   });
 }
 

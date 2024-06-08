@@ -17,3 +17,4 @@ export type Outputs = ReturnType<typeof useOutputs>;
 export type FragmentProps = { inputs: Inputs, outputs: Outputs };
 
 export type ActivePanelStore = Store<typeof initialState>;
+

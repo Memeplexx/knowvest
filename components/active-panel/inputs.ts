@@ -79,7 +79,7 @@ export const useInputs = () => {
       EditorView.contentAttributes.of({ spellcheck: 'on', autocapitalize: 'on' }),
       keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...foldKeymap, ...completionKeymap, ...lintKeymap]),
       autocompleteExtension(store),
-      createNotePersisterExtension({ debounce: 500, store, local }),
+      createNotePersisterExtension({ debounce: 500, store }),
       textSelectorPlugin(local),
       pasteListener,
       bulletPointPlugin,
