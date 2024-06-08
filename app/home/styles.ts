@@ -56,6 +56,7 @@ export const ExpandHeaderToggleButton = styled(BaseToggleButton)`
 
 export const ActivePane = styled(ActivePanel)`
   flex: 1;
+  overflow-y: auto;
 `;
 
 export const TabsPanel = styled(Tabs) <{ $expanded: boolean }>`

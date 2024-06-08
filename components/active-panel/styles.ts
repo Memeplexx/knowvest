@@ -27,6 +27,7 @@ export const TextEditor = styled(div)`
   ${monoFontFamily.style};
   font-size: 12px;
   color: lightgray;
+  margin-bottom: 110px;
 `;
 
 export const ActiveSelectionListItem = styled.div`
@@ -40,7 +41,7 @@ export const ActiveSelectionListItem = styled.div`
   }
 `;
 
-export const ActiveSelection = styled(div)`
+export const SelectionOptions = styled(div)`
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -53,24 +54,17 @@ export const ActiveSelection = styled(div)`
   background-image: linear-gradient(to right,#6f0097,#6b005c);
   user-select: none;
   user-select: none;
-  position: relative;
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
   &:hover {
     background-color: #040404;
     box-shadow: 0px 0px 16px 0px rgba(0,0,0,1);
   }
 `;
 
-export const ActiveSelectionInstructions = styled(div)`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  svg {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-export const ActiveSelectionTagName = styled.div`
+export const SelectionText = styled.div`
   font-weight: 600;
   font-size: 14px;
   text-align: end;

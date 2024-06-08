@@ -8,7 +8,7 @@ import { Popup } from '../popup';
 import { FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActiveSelection, ActiveSelectionInstructions, ActiveSelectionListItem, ActiveSelectionTagName, CardWrapper, TextEditor, TextEditorWrapper, Wrapper } from './styles';
+import { ActiveSelectionListItem, CardWrapper, SelectionOptions, SelectionText, TextEditor, TextEditorWrapper, Wrapper } from './styles';
 
 
 
@@ -101,43 +101,37 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
           <TextEditor
             ref={inputs.editorRef}
           />
-          <ActiveSelection
+          <SelectionOptions
             if={!!inputs.selection}
             children={
               <>
-                <ActiveSelectionTagName
+                <SelectionText
                   children={'"' + inputs.selection + '"'}
                 />
-                <ActiveSelectionInstructions
+                <ActiveSelectionListItem
+                  onClick={outputs.onClickCreateNewTagFromSelection}
                   children={
                     <>
-                      <ActiveSelectionListItem
-                        onClick={outputs.onClickCreateNewTagFromSelection}
-                        children={
-                          <>
-                            <AddIcon />
-                            Create a new tag out of selection
-                          </>
-                        }
-                      />
-                      <ActiveSelectionListItem
-                        onClick={outputs.onClickSplitNoteFromSelection}
-                        children={
-                          <>
-                            <SplitIcon />
-                            Move selection out into a new note
-                          </>
-                        }
-                      />
-                      <ActiveSelectionListItem
-                        onClick={outputs.onClickFilterNotesFromSelection}
-                        children={
-                          <>
-                            <FilterIcon />
-                            Filter notes similar to selection
-                          </>
-                        }
-                      />
+                      <AddIcon />
+                      Create a new tag out of selection
+                    </>
+                  }
+                />
+                <ActiveSelectionListItem
+                  onClick={outputs.onClickSplitNoteFromSelection}
+                  children={
+                    <>
+                      <SplitIcon />
+                      Move selection out into a new note
+                    </>
+                  }
+                />
+                <ActiveSelectionListItem
+                  onClick={outputs.onClickFilterNotesFromSelection}
+                  children={
+                    <>
+                      <FilterIcon />
+                      Filter notes similar to selection
                     </>
                   }
                 />

@@ -103,12 +103,10 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
     if (tupleIncludes(event.target.tagName, ['INPUT', 'TEXTAREA']))
       return;
     editor!.focus();
-    editor!.dispatch(
-      {
-        selection: {
-          anchor: editor!.state.selection.ranges[0]!.anchor,
-        }
-      },
-    );
+    editor!.dispatch({
+      selection: {
+        anchor: editor!.state.selection.ranges[0]!.anchor,
+      }
+    });
   }),
 })
