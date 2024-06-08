@@ -27,7 +27,7 @@ export const Tags = () => {
   return (
     <>
       <Modal
-        if={inputs.configure}
+        if={!!inputs.configureTags}
         children={
           <TagsConfig
             onHide={outputs.onHideDialog}

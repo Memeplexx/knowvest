@@ -109,11 +109,22 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   children={'"' + inputs.selection + '"'}
                 />
                 <ActiveSelectionListItem
+                  if={!inputs.selectionIsTag}
                   onClick={outputs.onClickCreateNewTagFromSelection}
                   children={
                     <>
                       <AddIcon />
                       Create a new tag out of selection
+                    </>
+                  }
+                />
+                <ActiveSelectionListItem
+                  if={inputs.selectionIsTag}
+                  onClick={outputs.onClickConfigureSelectedTag}
+                  children={
+                    <>
+                      <SettingsIcon />
+                      Configure selected tag
                     </>
                   }
                 />

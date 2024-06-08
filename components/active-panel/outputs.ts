@@ -44,6 +44,9 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
   selectionChanged: (selection: string) => {
     local.selection.$set(selection);
   },
+  onClickConfigureSelectedTag: () => {
+    store.configureTags.$set(store.$state.tags.findOrThrow(t => t.text === local.$state.selection).id);
+  },
   onClickCreateNewTagFromSelection: async () => {
     local.loadingSelection.$set(true);
     const apiResponse = await createTagFromActiveNote(local.$state.selection);

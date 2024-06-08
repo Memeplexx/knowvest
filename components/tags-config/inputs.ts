@@ -12,7 +12,14 @@ import { initialState } from './constants';
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   const { store, state: { tags, groups, synonymGroups, activeNoteId } } = useStore();
-  const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', initialState);
+  const firstSelectedTag = useMemo(() => store.$state.tags.find(t => t.id === store.$state.configureTags), [store]);
+  const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', {
+    ...initialState,
+    tagId: firstSelectedTag?.id ?? null,
+    synonymId: firstSelectedTag?.synonymId ?? null,
+    autocompleteText: firstSelectedTag?.text ?? '',
+    autocompleteAction: firstSelectedTag ? 'addSynonymsToActiveSynonyms' : null
+  });
   useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });

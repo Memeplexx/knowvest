@@ -30,7 +30,7 @@ export const TextEditor = styled(div)`
   margin-bottom: 110px;
 `;
 
-export const ActiveSelectionListItem = styled.div`
+export const ActiveSelectionListItem = styled(div)`
   display: flex;
   gap: 4px;
   font-size: 13px;

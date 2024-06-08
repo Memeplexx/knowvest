@@ -27,7 +27,7 @@ import {
 } from '@codemirror/view';
 import { Highlighter } from '@lezer/highlight';
 import { derive } from 'olik/derive';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useNotifier } from '../notifier';
 import { PopupHandle } from '../popup/constants';
 import { initialState } from './constants';
@@ -43,6 +43,7 @@ export const useInputs = () => {
   const editorRef = useRef<HTMLDivElement>(null);
   const component = useComponent();
   const editor = useRef<EditorView | null>(null);
+  const selectionIsTag = useMemo(() => store.$state.tags.some(t => t.text === state.selection), [state.selection, store])
   const result = {
     store,
     local,
@@ -52,6 +53,7 @@ export const useInputs = () => {
     popupRef,
     editorRef,
     editor: editor.current,
+    selectionIsTag,
   };
 
   // Do not instantiate the editor until certain conditions are met

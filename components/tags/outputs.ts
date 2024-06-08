@@ -25,12 +25,12 @@ export const useOutputs = (inputs: Inputs) => {
       store.synonymIds.$pushMany(synonymIds);
     },
     onShowDialog: () => {
-      local.configure.$set(true);
+      store.configureTags.$set(true);
     },
     onHideDialog: () => {
-      if (!local.$state.configure)
+      if (!store.$state.configureTags)
         return;
-      local.configure.$set(false);
+      store.configureTags.$set(false);
     },
     onMouseOverGroupTag: (hoveringGroupId: GroupId, hoveringSynonymId: SynonymId) => {
       local.$patch({ hoveringGroupId, hoveringSynonymId });

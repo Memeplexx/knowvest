@@ -5,7 +5,7 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { activeNoteId, tags, synonymIds, synonymGroups, groups, noteTags } } = useStore();
+  const { store, state: { activeNoteId, tags, synonymIds, synonymGroups, groups, noteTags, configureTags } } = useStore();
   const { local, state } = useLocalStore('tagsComponent', initialState);
   useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
@@ -72,5 +72,6 @@ export const useInputs = () => {
     tagsForActiveNote,
     allGroupTagsSelected,
     allActiveTagsSelected,
+    configureTags,
   };
 };

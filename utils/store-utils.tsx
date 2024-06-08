@@ -3,7 +3,7 @@ import { Store, createStore } from 'olik';
 import { augmentForReact, createUseStoreHook } from 'olik-react';
 import { configureDevtools } from 'olik/devtools';
 import { createContext, useMemo } from "react";
-import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, SynonymGroupDTO, SynonymId, TagDTO } from '../actions/types';
+import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, SynonymGroupDTO, SynonymId, TagDTO, TagId } from '../actions/types';
 import { MediaQueries } from './dom-utils';
 import { TagResult } from './tags-worker';
 
@@ -25,6 +25,7 @@ export const indexedDbState = {
 
 export const initialAppState = {
   ...indexedDbState,
+  configureTags: false as boolean | TagId,
   mediaQuery: null as keyof typeof MediaQueries | null,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
