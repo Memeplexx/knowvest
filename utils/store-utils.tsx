@@ -1,5 +1,5 @@
 "use client";
-import { Store, createStore } from 'olik';
+import { DeepReadonlyArray, Store, createStore } from 'olik';
 import { augmentForReact, createUseStoreHook } from 'olik-react';
 import { configureDevtools } from 'olik/devtools';
 import { createContext, useMemo } from "react";
@@ -15,12 +15,16 @@ export const StoreContext = createContext<Store<AppState> | undefined>(undefined
 
 export const { useStore, useLocalStore } = createUseStoreHook(StoreContext);
 
+const newArray = function <T>() {
+  return new Array<T>() as DeepReadonlyArray<T>;
+}
+
 export const indexedDbState = {
-  tags: new Array<TagDTO>(),
-  notes: new Array<NoteDTO>(),
-  groups: new Array<GroupDTO>(),
-  synonymGroups: new Array<SynonymGroupDTO>(),
-  flashCards: new Array<FlashCardDTO>(),
+  tags: newArray<TagDTO>(),
+  notes: newArray<NoteDTO>(),
+  groups: newArray<GroupDTO>(),
+  synonymGroups: newArray<SynonymGroupDTO>(),
+  flashCards: newArray<FlashCardDTO>(),
 }
 
 export const initialAppState = {
@@ -28,8 +32,8 @@ export const initialAppState = {
   configureTags: false as boolean | TagId,
   mediaQuery: null as keyof typeof MediaQueries | null,
   activeNoteId: 0 as NoteId,
-  synonymIds: new Array<SynonymId>(),
-  noteTags: {} as { [noteId: NoteId]: Array<TagResult> },
+  synonymIds: newArray<SynonymId>(),
+  noteTags: {} as { [noteId: NoteId]: DeepReadonlyArray<TagResult> },
 };
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {

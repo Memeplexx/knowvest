@@ -77,7 +77,7 @@ export const readFromDb = <
         res.push(cursor.value);
         cursor.continue();
       } else {
-        resolve(res as Records);
+        resolve(res as unknown as Records);
       }
     };
   };
