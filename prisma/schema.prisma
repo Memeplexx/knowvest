@@ -16,8 +16,7 @@ model Note {
   userId      Int         @map("user_id")
   user        User        @relation(fields: [userId], references: [id])
   dateCreated DateTime    @map("date_created")
-  dateUpdated DateTime?   @default(now()) @updatedAt @map("date_updated")
-  dateViewed  DateTime?   @map("date_viewed")
+  dateUpdated DateTime    @default(now()) @updatedAt @map("date_updated")
   isArchived  Boolean     @default(false) @map("is_archived")
   flashCards  FlashCard[]
 

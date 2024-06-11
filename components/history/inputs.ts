@@ -14,11 +14,11 @@ export const useInputs = () => {
   const items = useMemo(() => {
     return notes
       .filter(note => activeNoteId !== note.id)
-      .sort((a, b) => b.dateViewed!.getTime() - a.dateViewed!.getTime())
+      .sort((a, b) => b.dateUpdated.getTime() - a.dateUpdated.getTime())
       .slice(0, (index + 1) * pageSize)
       .map(note => ({
         ...note,
-        date: formatDistanceToNow(note.dateViewed!, { addSuffix: true }),
+        date: formatDistanceToNow(note.dateUpdated!, { addSuffix: true }),
       }));
   }, [activeNoteId, index, notes]);
 

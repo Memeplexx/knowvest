@@ -19,7 +19,9 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
     store.notes.$find.id.$eq(apiResponse.note.id).$delete();
     local.showConfirmDeleteDialog.$set(false);
     const nextMostRecentlyViewedNoteId = store.$state.notes
-      .reduce((prev, curr) => prev!.dateViewed! > curr.dateViewed! ? prev : curr, store.$state.notes[0])!.id;
+      .reduce((prev, curr) => prev!.dateUpdated! > curr.dateUpdated! ? prev : curr, store.$state.notes[0])!.id;
+    // const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
+
     store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
     const tagIds = store.$state.noteTags[nextMostRecentlyViewedNoteId]!.map(tag => tag.id);
     const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();

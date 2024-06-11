@@ -33,7 +33,7 @@ export const initialize = ({ user: { name, email, image }, after }: {
       data: {
         userId: user.id,
         text: '# Welcome to Knowledge Harvest! ## This is your first note. Remove this text to get started ❤️',
-        dateViewed: now,
+        dateUpdated: now,
         dateCreated: now,
       }
     });

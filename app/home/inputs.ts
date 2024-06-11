@@ -1,5 +1,5 @@
 import { initialize } from "@/actions/session";
-import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
+import { FlashCardDTO, GroupDTO, NoteDTO, SynonymGroupDTO, TagDTO, UserDTO } from "@/actions/types";
 import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
@@ -143,24 +143,24 @@ export const useInputs = () => {
     });
 
     // Ensure that the indexedDB is updated when the store changes
-    component.listen = store.notes.$onInsertElements(async notes => await writeToDb('notes', notes));
-    component.listen = store.notes.$onUpdateElements(async notes => await writeToDb('notes', notes));
+    component.listen = store.notes.$onInsertElements(async notes => await writeToDb('notes', notes as NoteDTO[]));
+    component.listen = store.notes.$onUpdateElements(async notes => await writeToDb('notes', notes as NoteDTO[]));
     component.listen = store.notes.$onDeleteElements(async notes => await deleteFromDb('notes', notes.map(n => n.id)));
 
-    component.listen = store.tags.$onInsertElements(async tags => await writeToDb('tags', tags));
-    component.listen = store.tags.$onUpdateElements(async tags => await writeToDb('tags', tags));
+    component.listen = store.tags.$onInsertElements(async tags => await writeToDb('tags', tags as TagDTO[]));
+    component.listen = store.tags.$onUpdateElements(async tags => await writeToDb('tags', tags as TagDTO[]));
     component.listen = store.tags.$onDeleteElements(async tags => await deleteFromDb('tags', tags.map(t => t.id)));
 
-    component.listen = store.synonymGroups.$onInsertElements(async synonymGroups => await writeToDb('synonymGroups', synonymGroups));
-    component.listen = store.synonymGroups.$onUpdateElements(async synonymGroups => await writeToDb('synonymGroups', synonymGroups));
+    component.listen = store.synonymGroups.$onInsertElements(async synonymGroups => await writeToDb('synonymGroups', synonymGroups as SynonymGroupDTO[]));
+    component.listen = store.synonymGroups.$onUpdateElements(async synonymGroups => await writeToDb('synonymGroups', synonymGroups as SynonymGroupDTO[]));
     component.listen = store.synonymGroups.$onDeleteElements(async synonymGroups => await deleteFromDb('synonymGroups', synonymGroups.map(p => p.id)));
 
-    component.listen = store.groups.$onInsertElements(async groups => await writeToDb('groups', groups));
-    component.listen = store.groups.$onUpdateElements(async groups => await writeToDb('groups', groups));
+    component.listen = store.groups.$onInsertElements(async groups => await writeToDb('groups', groups as GroupDTO[]));
+    component.listen = store.groups.$onUpdateElements(async groups => await writeToDb('groups', groups as GroupDTO[]));
     component.listen = store.groups.$onDeleteElements(async groups => await deleteFromDb('groups', groups.map(p => p.id)));
 
-    component.listen = store.flashCards.$onInsertElements(async flashCards => await writeToDb('flashCards', flashCards));
-    component.listen = store.flashCards.$onUpdateElements(async flashCards => await writeToDb('flashCards', flashCards));
+    component.listen = store.flashCards.$onInsertElements(async flashCards => await writeToDb('flashCards', flashCards as FlashCardDTO[]));
+    component.listen = store.flashCards.$onUpdateElements(async flashCards => await writeToDb('flashCards', flashCards as FlashCardDTO[]));
     component.listen = store.flashCards.$onDeleteElements(async flashCards => await deleteFromDb('flashCards', flashCards.map(p => p.id)));
   }();
 

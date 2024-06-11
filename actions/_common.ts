@@ -75,9 +75,9 @@ export const listUnArchivedTagIdsWithTagText = async ({ userId, noteText }: { us
 }
 
 export type EntityToDto<T>
-  = T extends Note ? NoteDTO
+  = T extends Tag ? TagDTO
+  : T extends Note ? NoteDTO
   : T extends FlashCard ? FlashCardDTO
-  : T extends Tag ? TagDTO
   : T extends Group ? GroupDTO
   : T extends SynonymGroup ? SynonymGroupDTO
   : T extends Synonym ? SynonymDTO
