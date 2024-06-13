@@ -8,10 +8,14 @@ import { useLocalStore, useStore } from "@/utils/store-utils";
 import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { configureDevtools } from "olik/devtools";
 import { initialState } from "./constants";
 
 
 export const useInputs = () => {
+
+  if (typeof (navigator) !== 'undefined' && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
+    configureDevtools();
 
   const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
@@ -129,7 +133,7 @@ export const useInputs = () => {
     });
 
     // Ensure that changes to notes in the store are sent to the worker
-    component.listen = store.notes.$onChange((notes, previousNotes) => {
+    component.listen = store.notes.$onChange((notes, previousNotes) => { // TODO: change to use $onChangeArray
       const previousNoteIds = previousNotes.map(n => n.id);
       const notesToAdd = notes.filter(n => !previousNoteIds.includes(n.id));
       const noteIdsToRemove = previousNoteIds.filter(id => !notes.some(n => n.id === id));
@@ -143,25 +147,31 @@ export const useInputs = () => {
     });
 
     // Ensure that the indexedDB is updated when the store changes
-    component.listen = store.notes.$onInsertElements(async notes => await writeToDb('notes', notes as NoteDTO[]));
-    component.listen = store.notes.$onUpdateElements(async notes => await writeToDb('notes', notes as NoteDTO[]));
-    component.listen = store.notes.$onDeleteElements(async notes => await deleteFromDb('notes', notes.map(n => n.id)));
-
-    component.listen = store.tags.$onInsertElements(async tags => await writeToDb('tags', tags as TagDTO[]));
-    component.listen = store.tags.$onUpdateElements(async tags => await writeToDb('tags', tags as TagDTO[]));
-    component.listen = store.tags.$onDeleteElements(async tags => await deleteFromDb('tags', tags.map(t => t.id)));
-
-    component.listen = store.synonymGroups.$onInsertElements(async synonymGroups => await writeToDb('synonymGroups', synonymGroups as SynonymGroupDTO[]));
-    component.listen = store.synonymGroups.$onUpdateElements(async synonymGroups => await writeToDb('synonymGroups', synonymGroups as SynonymGroupDTO[]));
-    component.listen = store.synonymGroups.$onDeleteElements(async synonymGroups => await deleteFromDb('synonymGroups', synonymGroups.map(p => p.id)));
-
-    component.listen = store.groups.$onInsertElements(async groups => await writeToDb('groups', groups as GroupDTO[]));
-    component.listen = store.groups.$onUpdateElements(async groups => await writeToDb('groups', groups as GroupDTO[]));
-    component.listen = store.groups.$onDeleteElements(async groups => await deleteFromDb('groups', groups.map(p => p.id)));
-
-    component.listen = store.flashCards.$onInsertElements(async flashCards => await writeToDb('flashCards', flashCards as FlashCardDTO[]));
-    component.listen = store.flashCards.$onUpdateElements(async flashCards => await writeToDb('flashCards', flashCards as FlashCardDTO[]));
-    component.listen = store.flashCards.$onDeleteElements(async flashCards => await deleteFromDb('flashCards', flashCards.map(p => p.id)));
+    component.listen = store.notes.$onChangeArray(async ({ deleted, inserted, updated }) => {
+      const toAddOrUpdate = [...inserted, ...updated];
+      if (toAddOrUpdate.length) await writeToDb('notes', toAddOrUpdate as NoteDTO[]);
+      if (deleted.length) await deleteFromDb('notes', deleted.map(n => n.id));
+    })
+    component.listen = store.tags.$onChangeArray(async ({ deleted, inserted, updated }) => {
+      const toAddOrUpdate = [...inserted, ...updated];
+      if (toAddOrUpdate.length) await writeToDb('tags', toAddOrUpdate as TagDTO[]);
+      if (deleted.length) await deleteFromDb('tags', deleted.map(t => t.id));
+    });
+    component.listen = store.synonymGroups.$onChangeArray(async ({ deleted, inserted, updated }) => {
+      const toAddOrUpdate = [...inserted, ...updated];
+      if (toAddOrUpdate.length) await writeToDb('synonymGroups', toAddOrUpdate as SynonymGroupDTO[]);
+      if (deleted.length) await deleteFromDb('synonymGroups', deleted.map(p => p.id));
+    });
+    component.listen = store.groups.$onChangeArray(async ({ deleted, inserted, updated }) => {
+      const toAddOrUpdate = [...inserted, ...updated];
+      if (toAddOrUpdate.length) await writeToDb('groups', toAddOrUpdate as GroupDTO[]);
+      if (deleted.length) await deleteFromDb('groups', deleted.map(p => p.id));
+    });
+    component.listen = store.flashCards.$onChangeArray(async ({ deleted, inserted, updated }) => {
+      const toAddOrUpdate = [...inserted, ...updated];
+      if (toAddOrUpdate.length) await writeToDb('flashCards', toAddOrUpdate as FlashCardDTO[]);
+      if (deleted.length) await deleteFromDb('flashCards', deleted.map(p => p.id));
+    });
   }();
 
   return result;

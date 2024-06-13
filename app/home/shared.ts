@@ -8,7 +8,7 @@ export const useSharedFunctions = ({ store }: Inputs) => ({
     const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
     store.activeNoteId.$set(noteId);
     store.synonymIds.$set(synonymIds);
-    store.notes.$find.id.$eq(noteId).dateUpdated.$set(new Date());
-    await viewNote(noteId);
+    const apiResponse = await viewNote(noteId);
+    store.notes.$find.id.$eq(noteId).dateUpdated.$set(apiResponse.note.dateUpdated);
   }
 });
