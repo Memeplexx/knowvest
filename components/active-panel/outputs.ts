@@ -1,12 +1,11 @@
 import { archiveNote, createNote, duplicateNote, splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
-import { notesSorted } from "@/utils/store-utils";
 import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }: Inputs) => ({
+export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, notesSorted }: Inputs) => ({
   onClickCreateNote: async () => {
     const apiResponse = await createNote();
     store.notes.$push(apiResponse.note);
@@ -19,7 +18,7 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
     const apiResponse = await archiveNote(store.$state.activeNoteId);
     store.notes.$find.id.$eq(apiResponse.note.id).$delete();
     local.showConfirmDeleteDialog.$set(false);
-    const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
+    const nextMostRecentlyViewedNoteId = notesSorted[0]!.id;
     store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
     const tagIds = store.$state.noteTags[nextMostRecentlyViewedNoteId]!.map(tag => tag.id);
     const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();

@@ -36,7 +36,7 @@ import { autocompleteExtension, createNotePersisterExtension, pasteListener, tex
 
 export const useInputs = () => {
 
-  const { store, state: { notes } } = useStore();
+  const { store, state: { notes }, derivations: { notesSorted } } = useStore();
   const { local, state } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
@@ -54,6 +54,7 @@ export const useInputs = () => {
     editorRef,
     editor: editor.current,
     selectionIsTag,
+    notesSorted,
   };
 
   // Do not instantiate the editor until certain conditions are met
