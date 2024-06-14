@@ -6,7 +6,6 @@ export const initialState = {
   selection: '',
   showConfirmDeleteDialog: false,
   loadingSelection: false,
-  initialized: false,
 };
 
 export type Inputs = ReturnType<typeof useInputs>;

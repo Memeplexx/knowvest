@@ -60,7 +60,7 @@ export const useInputs = () => {
   // Do not instantiate the editor until certain conditions are met
   if (!component.isMounted)
     return result;
-  if (state.initialized)
+  if (component.hasStartedAsyncProcess)
     return result;
 
   editor.current = new EditorView({
@@ -107,7 +107,7 @@ export const useInputs = () => {
       }
     }));
   doRemoveEditorTags();
-  local.initialized.$toggle();
+  component.completeAsyncProcess();
 
   return result;
 }

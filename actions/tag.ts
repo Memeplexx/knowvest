@@ -67,6 +67,13 @@ export const createTagFromActiveNote = (tagText: string) => respond(async () => 
   if (await prisma.tag.findFirst({ where: { text: tagText, userId, isArchived: false } }))
     return { status: 'CONFLICT', fields: { tagText: 'A tag with this name already exists.' } } as const;
 
+  // Check if an archived tag with the same text exists and restore it if so
+  const existingArchivedTagWithSameText = await prisma.tag.findFirst({ where: { text: tagText, userId, isArchived: true } });
+  if (existingArchivedTagWithSameText) {
+    await prisma.tag.update({ where: { id: existingArchivedTagWithSameText.id }, data: { isArchived: false } });
+    return { status: 'TAG_RESTORED', tag: existingArchivedTagWithSameText } as const;
+  }
+
   // Create a new synonym for the new tag to belong to
   const synonym = await prisma.synonym.create({ data: {} });
 

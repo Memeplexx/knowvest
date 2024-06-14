@@ -17,7 +17,6 @@ export const useInputs = (props: Props) => {
   const { store } = useStore();
   const editorRef = useRef<HTMLDivElement>(null);
   const component = useComponent();
-  const isDone = useRef(false)
   const result = { editorRef, editor: null as EditorView | null };
 
   // Do not instantiate the editor until certain conditions are met
@@ -25,7 +24,7 @@ export const useInputs = (props: Props) => {
     return result;
   if (props.if === false)
     return result;
-  if (isDone.current)
+  if (component.hasCompletedAsyncProcess)
     return result;
 
   // Instantiate the editor
@@ -51,6 +50,6 @@ export const useInputs = (props: Props) => {
   component.listen = store.synonymGroups.$onChange(doRemoveEditorTags);
   component.listen = store.tags.$onChange(doRemoveEditorTags);
   doRemoveEditorTags();
-  isDone.current = true;
+  component.completeAsyncProcess();
   return result;
 }
