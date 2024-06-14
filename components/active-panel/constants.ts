@@ -6,7 +6,7 @@ export const initialState = {
   selection: '',
   showConfirmDeleteDialog: false,
   loadingSelection: false,
-  stage: 'pristine' as 'pristine' | 'done',
+  initialized: false,
 };
 
 export type Inputs = ReturnType<typeof useInputs>;

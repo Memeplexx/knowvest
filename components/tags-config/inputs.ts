@@ -102,9 +102,9 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
         if (groupId)
           return t.synonymId !== synonymId && !synonymGroups
             .filter(sg => sg.groupId === groupId)
-            .some(sg => sg.synonymId === t.synonymId);
+            .some(sg => sg.synonymId === t.synonymId)
         else
-          return !synonymId || t.synonymId !== synonymId;
+          return !synonymId || t.synonymId !== synonymId
       })
       .map(t => ({
         value: t.id,

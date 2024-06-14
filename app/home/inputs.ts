@@ -102,7 +102,7 @@ export const useInputs = () => {
       if (!first)
         return;
       first = false;
-      const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!);
+      const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!).distinct();
       store.synonymIds.$set(synonymIds);
       local.stage.$set('done');
     }

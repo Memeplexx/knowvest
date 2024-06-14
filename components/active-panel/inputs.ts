@@ -36,14 +36,14 @@ import { autocompleteExtension, createNotePersisterExtension, pasteListener, tex
 
 export const useInputs = () => {
 
-  const { store, state: { notes }, derivations: { notesSorted } } = useStore();
+  const { store, state: { notes, tags, activeNoteId }, derivations: { notesSorted } } = useStore();
   const { local, state } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const component = useComponent();
   const editor = useRef<EditorView | null>(null);
-  const selectionIsTag = useMemo(() => store.$state.tags.some(t => t.text === state.selection), [state.selection, store])
+  const selectionIsTag = useMemo(() => tags.some(t => t.text === state.selection), [state.selection, tags]);
   const result = {
     store,
     local,
@@ -60,12 +60,11 @@ export const useInputs = () => {
   // Do not instantiate the editor until certain conditions are met
   if (!component.isMounted)
     return result;
-  if (state.stage !== 'pristine')
+  if (state.initialized)
     return result;
 
-  const initialNoteId = store.$state.activeNoteId;
   editor.current = new EditorView({
-    doc: store.$state.notes.findOrThrow(n => n.id === initialNoteId).text,
+    doc: notes.findOrThrow(n => n.id === activeNoteId).text,
     parent: editorRef.current!,
     extensions: [
       history(),
@@ -108,7 +107,7 @@ export const useInputs = () => {
       }
     }));
   doRemoveEditorTags();
-  local.stage.$set('done');
+  local.initialized.$toggle();
 
   return result;
 }
