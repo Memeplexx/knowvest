@@ -3,8 +3,8 @@ import { TagResult } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
-import { Store } from "olik";
-import { AppState } from "./store-utils";
+import { AppStore } from "./store-utils";
+
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
   decorations: DecorationSet;
@@ -199,7 +199,7 @@ const highlightedRanges = StateField.define({
 
 export type TagType = 'primary' | 'secondary';
 export const reviseEditorTags = (
-  store: Store<AppState>,
+  store: AppStore,
   codeMirror: EditorView,
   noteId: NoteId,
 ) => {

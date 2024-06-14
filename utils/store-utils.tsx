@@ -1,6 +1,5 @@
 "use client";
-import { createStore } from 'olik';
-import { createUseStoreHook } from 'olik-react';
+import { createStoreHooks } from 'olik-react';
 import { configureSortModule } from 'olik/sort';
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, SynonymGroupDTO, SynonymId, TagDTO, TagId } from '../actions/types';
 import { MediaQueries } from './dom-utils';
@@ -8,7 +7,7 @@ import { TagResult } from './tags-worker';
 
 configureSortModule();
 
-export type AppState = typeof initialAppState;
+
 
 export const indexedDbState = {
   tags: new Array<TagDTO>(),
@@ -27,8 +26,8 @@ export const initialAppState = {
   noteTags: {} as { [noteId: NoteId]: Array<TagResult> },
 };
 
-const store = createStore(initialAppState);
-
-export const { useStore, useLocalStore } = createUseStoreHook(store, {
+export const { useStore, useLocalStore } = createStoreHooks(initialAppState, store => ({
   notesSorted: store.notes.$createSortedList.$withId.id.$sortedBy.dateUpdated.$descending(),
-});
+}));
+
+export type AppStore = ReturnType<typeof useStore>['store'];

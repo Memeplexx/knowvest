@@ -1,6 +1,4 @@
 import { NoteId } from "@/actions/types";
-import { AppState } from "@/utils/store-utils";
-import { Store } from "olik";
 import { type HTMLAttributes } from 'react';
 import { useInputs } from "./inputs";
 
@@ -15,5 +13,3 @@ export const initialState = {
 }
 
 export const pageSize = 10;
-
-export type HistoryItemsStore = Store<AppState & { historyItems: typeof initialState }>;
