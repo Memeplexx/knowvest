@@ -21,6 +21,7 @@ export const useInputs = () => {
         selected: synonymIds.includes(tags[0]!.synonymId),
         tags: tags.map((tag, index, array) => ({
           ...tag,
+          text: tag.text.replace(/\s/g, '_'),
           first: index === 0,
           last: index === array.length - 1,
         })),
@@ -47,6 +48,7 @@ export const useInputs = () => {
               .filter(t => t.synonymId === sg.synonymId)
               .map((tag, index, array) => ({
                 ...tag,
+                text: tag.text.replace(/\s/g, '_'),
                 first: index === 0,
                 last: index === array.length - 1,
               })),

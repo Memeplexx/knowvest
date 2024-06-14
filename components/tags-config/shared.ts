@@ -8,7 +8,7 @@ import { Inputs, Props } from './constants';
 export const useSharedFunctions = (props: Props, inputs: Inputs) => {
   const { store, local, notify } = inputs;
   const completeCreateTagForSynonym = async () => {
-    const apiResponse = await createTagForSynonym(inputs.autocompleteText.trim(), inputs.synonymId === null ? undefined : inputs.synonymId);
+    const apiResponse = await createTagForSynonym(inputs.autocompleteText, inputs.synonymId === null ? undefined : inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.tagId.$set(apiResponse.tag.id);
@@ -17,7 +17,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
     blurAutocompleteInput();
   }
   const completeCreateTag = async () => {
-    const apiResponse = await createTag(inputs.autocompleteText.trim());
+    const apiResponse = await createTag(inputs.autocompleteText);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.text);
     local.$patch({ synonymId: apiResponse.tag.synonymId, tagId: apiResponse.tag.id });
@@ -29,8 +29,10 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
   const completeCreateTagForGroup = async () => {
     if (!inputs.groupId || !inputs.synonymId)
       return;
-    const apiResponse = await createTagForGroup(inputs.autocompleteText.trim(), inputs.groupId, inputs.synonymId);
+    const apiResponse = await createTagForGroup(inputs.autocompleteText, inputs.groupId, inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
+      return notify.error(apiResponse.fields.text);
+    if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.fields.text);
     local.autocompleteText.$set('');
     store.tags.$mergeMatching.id.$with(apiResponse.tag);
@@ -41,7 +43,7 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
   const completeCreateGroup = async () => {
     if (!inputs.synonymId)
       throw new Error();
-    const apiResponse = await createGroup(inputs.autocompleteText.trim(), inputs.synonymId);
+    const apiResponse = await createGroup(inputs.autocompleteText, inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')
       return notify.error(apiResponse.fields.name);
     if (apiResponse.status === 'CONFLICT')
@@ -67,10 +69,12 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
   const completeEditTag = async () => {
     if (!inputs.tagId)
       throw new Error();
-    const apiResponse = await updateTag(inputs.tagId, inputs.autocompleteText.trim())
+    const apiResponse = await updateTag(inputs.tagId, inputs.autocompleteText)
     if (apiResponse.status === 'TAG_UNCHANGED')
       return notify.info('Tag unchanged');
     if (apiResponse.status === 'BAD_REQUEST')
+      return notify.error(apiResponse.fields.text);
+    if (apiResponse.status === 'CONFLICT')
       return notify.error(apiResponse.fields.text);
     store.tags.$mergeMatching.id.$with(apiResponse.tag);
     notify.success('Tag updated');

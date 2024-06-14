@@ -35,7 +35,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
       .filter(tag => tag.synonymId === synonymId)
       .map((tag, index, array) => ({
         id: tag.id,
-        text: tagId === tag.id || (!tagId && tagId === tag.id) ? autocompleteText : tag.text,
+        text: (tagId === tag.id || (!tagId && tagId === tag.id) ? autocompleteText : tag.text).replace(/\s/g, '_'),
         first: index === 0,
         last: index === array.length - 1,
         selected: tag.id === tagId,
@@ -63,6 +63,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
                   .filter(t => t.synonymId === sg.synonymId)
                   .map((tag, index, array) => ({
                     ...tag,
+                    text: tag.text.replace(/\s/g, '_'),
                     first: index === 0,
                     last: index === array.length - 1,
                   })),

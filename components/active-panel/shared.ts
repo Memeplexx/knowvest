@@ -71,7 +71,7 @@ export const textSelectorPlugin = (local: ActivePanelStore) => {
             if (node.type.name !== 'Document')
               return;
             const selection = view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to).toLowerCase();
-            if (!selection.trim().length)
+            if (!selection.trim())
               return this.updateSelection('');
             this.updateSelection(selection);
           },

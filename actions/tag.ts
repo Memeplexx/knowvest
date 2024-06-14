@@ -7,7 +7,7 @@ export const createTag = (text: string) => respond(async () => {
 
   // Validate
   const userId = await getUserId();
-  if (!text.trim().length)
+  if (!text.trim())
     return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const;
   if (await prisma.tag.findFirst({ where: { text, userId, isArchived: false } }))
     return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const;
@@ -26,13 +26,21 @@ export const createTag = (text: string) => respond(async () => {
 export const updateTag = (tagId: TagId, text: string) => respond(async () => {
 
   // Validate
+  const userId = await getUserId();
   const tag = await validateTagId(tagId);
-  if (!text.trim().length)
+  if (!text.trim())
     return { status: 'BAD_REQUEST', fields: { text: 'Tag name cannot be empty' } } as const;
   if (tag.text === text)
     return { status: 'TAG_UNCHANGED' } as const;
   if (await prisma.tag.findFirst({ where: { text, isArchived: false } }))
-    return { status: 'BAD_REQUEST', fields: { text: 'A tag with this name already exists.' } } as const;
+    return { status: 'CONFLICT', fields: { text: 'A tag with this name already exists.' } } as const;
+
+  // Check if an archived tag with the same text exists and restore it if so
+  const existingArchivedTagWithSameText = await prisma.tag.findFirst({ where: { text, userId, isArchived: true } });
+  if (existingArchivedTagWithSameText) {
+    const tag = await prisma.tag.update({ where: { id: existingArchivedTagWithSameText.id }, data: { isArchived: false } });
+    return { status: 'TAG_RESTORED', tag } as const;
+  }
 
   // Update the tag text
   const tagUpdated = await prisma.tag.update({ where: { id: tagId }, data: { text } });
@@ -62,7 +70,7 @@ export const createTagFromActiveNote = (tagText: string) => respond(async () => 
 
   // Validate
   const userId = await getUserId();
-  if (!tagText.trim().length)
+  if (!tagText.trim())
     return { status: 'BAD_REQUEST', fields: { tagText: 'Tag name cannot be empty' } } as const;
   if (await prisma.tag.findFirst({ where: { text: tagText, userId, isArchived: false } }))
     return { status: 'CONFLICT', fields: { tagText: 'A tag with this name already exists.' } } as const;
@@ -70,8 +78,8 @@ export const createTagFromActiveNote = (tagText: string) => respond(async () => 
   // Check if an archived tag with the same text exists and restore it if so
   const existingArchivedTagWithSameText = await prisma.tag.findFirst({ where: { text: tagText, userId, isArchived: true } });
   if (existingArchivedTagWithSameText) {
-    await prisma.tag.update({ where: { id: existingArchivedTagWithSameText.id }, data: { isArchived: false } });
-    return { status: 'TAG_RESTORED', tag: existingArchivedTagWithSameText } as const;
+    const tag = await prisma.tag.update({ where: { id: existingArchivedTagWithSameText.id }, data: { isArchived: false } });
+    return { status: 'TAG_RESTORED', tag } as const;
   }
 
   // Create a new synonym for the new tag to belong to
