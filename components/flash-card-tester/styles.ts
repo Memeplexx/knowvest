@@ -2,6 +2,7 @@ import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 import { Button } from "../button";
 import { div, element } from "../html";
+import ReadonlyNote from "../readonly-note";
 
 export const Container = styled.div`
   width: 600px;
@@ -13,6 +14,9 @@ export const Container = styled.div`
 
 export const Question = styled(div)`
   flex: 1;
+`;
+
+export const Answer = styled(element(ReadonlyNote))`
 `;
 
 export const Body = styled(div)`

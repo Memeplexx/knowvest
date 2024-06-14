@@ -22,8 +22,6 @@ export const useInputs = (props: Props) => {
   // Do not instantiate the editor until certain conditions are met
   if (!component.isMounted)
     return result;
-  if (props.if === false)
-    return result;
   if (component.hasCompletedAsyncProcess)
     return result;
 

@@ -7,5 +7,4 @@ export type Props = {
   synonymIds: Readable<SynonymId[]>,
   className?: string | undefined;
   onClick?: () => void;
-  if?: boolean;
 } & HTMLProps<HTMLDivElement>;
