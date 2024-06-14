@@ -8,7 +8,6 @@ export const initialState = {
   tagsExpanded: false,
   headerExpanded: true,
   selectedTab: 'Tags',
-  stage: 'pristine' as 'pristine' | 'initializeData' | 'fetchingNoteTags' | 'done',
 };
 
 export type HomeStore = Store<typeof initialState>;

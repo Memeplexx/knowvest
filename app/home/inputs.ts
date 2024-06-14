@@ -20,7 +20,7 @@ export const useInputs = () => {
   const { store } = useStore();
   const { local, state } = useLocalStore('home', initialState);
   const component = useComponent();
-  const result = { store, local, ...state };
+  const result = { store, local, ...state, isReady: component.hasCompletedAsyncProcess };
   useMediaQueryListener(store.mediaQuery.$set);
 
   // Update header visibility as required
@@ -41,11 +41,11 @@ export const useInputs = () => {
     return result;
   if (!session.data)
     return result;
-  if (state.stage !== 'pristine')
+  if (component.hasStartedAsyncProcess)
     return result;
 
-  local.stage.$set('initializeData');
   void async function initializeData() {
+    component.startAsyncProcessing();
     await initializeDb();
     const databaseData = await PromiseObject({
       notes: readFromDb('notes'),
@@ -104,7 +104,7 @@ export const useInputs = () => {
       first = false;
       const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!).distinct();
       store.synonymIds.$set(synonymIds);
-      local.stage.$set('done');
+      component.completeAsyncProcess();
     }
 
     // Send the tags worker the initial data
@@ -116,34 +116,23 @@ export const useInputs = () => {
     });
 
     // Ensure that changes to tags in the store are sent to the worker
-    component.listen = store.tags.$onChange((tags, previousTags) => {
-      const previousTagIds = previousTags.map(t => t.id);
-      const tagsToAdd = tags.filter(t => !previousTagIds.includes(t.id));
-      const tagIdsToRemove = previousTagIds.filter(id => !tags.some(t => t.id === id));
-      const tagsToUpdate = tags.filter(t => {
-        const found = previousTags.find(pt => pt.id === t.id);
-        return found && found.text !== t.text;
-      });
-      if (tagsToAdd.length)
-        worker.postMessage({ type: 'addTags', data: tagsToAdd.map(sanitizeTag) });
-      if (tagIdsToRemove.length)
-        worker.postMessage({ type: 'removeTags', data: tagIdsToRemove });
-      if (tagsToUpdate.length)
-        worker.postMessage({ type: 'updateTags', data: tagsToUpdate.map(sanitizeTag) });
-    });
+    component.listen = store.tags.$onChangeArray(({ deleted, inserted, updated }) => {
+      if (inserted.length)
+        worker.postMessage({ type: 'addTags', data: inserted.map(sanitizeTag) });
+      if (deleted.length)
+        worker.postMessage({ type: 'removeTags', data: deleted.map(t => t.id) });
+      if (updated.length)
+        worker.postMessage({ type: 'updateTags', data: updated.map(sanitizeTag) });
+    })
 
     // Ensure that changes to notes in the store are sent to the worker
-    component.listen = store.notes.$onChange((notes, previousNotes) => { // TODO: change to use $onChangeArray
-      const previousNoteIds = previousNotes.map(n => n.id);
-      const notesToAdd = notes.filter(n => !previousNoteIds.includes(n.id));
-      const noteIdsToRemove = previousNoteIds.filter(id => !notes.some(n => n.id === id));
-      const notesToUpdate = notes.filter(n => previousNoteIds.includes(n.id) && previousNotes.find(pn => pn.id === n.id)!.text !== n.text);
-      if (notesToAdd.length)
-        worker.postMessage({ type: 'addNotes', data: notesToAdd.map(sanitizeNote) });
-      if (noteIdsToRemove.length)
-        noteIdsToRemove.forEach(id => worker.postMessage({ type: 'removeNote', data: id }));
-      if (notesToUpdate.length)
-        notesToUpdate.forEach(n => worker.postMessage({ type: 'updateNote', data: sanitizeNote(n) }));
+    component.listen = store.notes.$onChangeArray(({ deleted, inserted, updated }) => {
+      if (inserted.length)
+        worker.postMessage({ type: 'addNotes', data: inserted.map(sanitizeNote) });
+      if (deleted.length)
+        deleted.forEach(n => worker.postMessage({ type: 'removeNote', data: n.id }));
+      if (updated.length)
+        updated.forEach(n => worker.postMessage({ type: 'updateNote', data: sanitizeNote(n) }));
     });
 
     // Ensure that the indexedDB is updated when the store changes

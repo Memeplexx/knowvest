@@ -63,6 +63,7 @@ export const usePropsWithDefaults = <P extends Record<string, unknown>, I extend
 
 export const useComponent = () => {
   const [isMounted, setIsMounted] = useState(false);
+  const [asyncState, setAsyncState] = useState<'pristine' | 'processing' | 'done'>('pristine');
   const subscriptions = useRef<(() => void)[]>([]);
   useEffect(() => {
     setIsMounted(true);
@@ -74,10 +75,25 @@ export const useComponent = () => {
   }, []);
   const firstPass = useRef(true);
   firstPass.current = true
-  return useMemo(() => new Proxy({} as { isMounted: boolean, listen: () => void }, {
+  return useMemo(() => new Proxy({} as {
+    isMounted: boolean,
+    listen: () => void,
+    hasStartedAsyncProcess: boolean,
+    hasCompletedAsyncProcess: boolean,
+    startAsyncProcessing: () => boolean,
+    completeAsyncProcess: () => void
+  }, {
     get: (_, prop) => {
       if (prop === 'isMounted')
         return isMounted;
+      if (prop === 'hasStartedAsyncProcess')
+        return asyncState !== 'pristine';
+      if (prop === 'hasCompletedAsyncProcess')
+        return asyncState === 'done';
+      if (prop === 'startAsyncProcessing')
+        return () => setAsyncState('processing');
+      if (prop === 'completeAsyncProcess')
+        return () => setAsyncState('done');
       return;
     },
     set(_, prop, newValue) {
@@ -91,7 +107,7 @@ export const useComponent = () => {
       }
       return true;
     },
-  }), [isMounted]);
+  }), [isMounted, asyncState]);
 }
 
 export const useRecord = <R extends Record<string, unknown>>(record: R) => {
