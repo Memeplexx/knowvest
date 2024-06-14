@@ -10,6 +10,9 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   padding: 16px;
+  @media (max-width: calc(600px + 16px)) {
+    width: calc(100vw);
+  }
 `;
 
 export const Question = styled(div)`
