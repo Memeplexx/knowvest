@@ -9,24 +9,18 @@ configureSortModule();
 
 
 
-export const indexedDbState = {
+export const { useStore, useLocalStore } = createStoreHooks({
   tags: new Array<TagDTO>(),
   notes: new Array<NoteDTO>(),
   groups: new Array<GroupDTO>(),
   synonymGroups: new Array<SynonymGroupDTO>(),
   flashCards: new Array<FlashCardDTO>(),
-}
-
-export const initialAppState = {
-  ...indexedDbState,
   configureTags: false as boolean | TagId,
   mediaQuery: null as keyof typeof MediaQueries | null,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
   noteTags: {} as { [noteId: NoteId]: Array<TagResult> },
-};
-
-export const { useStore, useLocalStore } = createStoreHooks(initialAppState, store => ({
+}, store => ({
   notesSorted: store.notes.$createSortedList.$withId.id.$sortedBy.dateUpdated.$descending(),
 }));
 

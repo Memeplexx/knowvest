@@ -1,5 +1,5 @@
 import { initialize } from "@/actions/session";
-import { FlashCardDTO, GroupDTO, NoteDTO, SynonymGroupDTO, TagDTO, UserDTO } from "@/actions/types";
+import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
 import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
@@ -149,27 +149,27 @@ export const useInputs = () => {
     // Ensure that the indexedDB is updated when the store changes
     component.listen = store.notes.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('notes', toAddOrUpdate as NoteDTO[]);
+      if (toAddOrUpdate.length) await writeToDb('notes', toAddOrUpdate);
       if (deleted.length) await deleteFromDb('notes', deleted.map(n => n.id));
     })
     component.listen = store.tags.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('tags', toAddOrUpdate as TagDTO[]);
+      if (toAddOrUpdate.length) await writeToDb('tags', toAddOrUpdate);
       if (deleted.length) await deleteFromDb('tags', deleted.map(t => t.id));
     });
     component.listen = store.synonymGroups.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('synonymGroups', toAddOrUpdate as SynonymGroupDTO[]);
+      if (toAddOrUpdate.length) await writeToDb('synonymGroups', toAddOrUpdate);
       if (deleted.length) await deleteFromDb('synonymGroups', deleted.map(p => p.id));
     });
     component.listen = store.groups.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('groups', toAddOrUpdate as GroupDTO[]);
+      if (toAddOrUpdate.length) await writeToDb('groups', toAddOrUpdate);
       if (deleted.length) await deleteFromDb('groups', deleted.map(p => p.id));
     });
     component.listen = store.flashCards.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('flashCards', toAddOrUpdate as FlashCardDTO[]);
+      if (toAddOrUpdate.length) await writeToDb('flashCards', toAddOrUpdate);
       if (deleted.length) await deleteFromDb('flashCards', deleted.map(p => p.id));
     });
   }();

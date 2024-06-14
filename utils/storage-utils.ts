@@ -1,12 +1,22 @@
-import { indexedDbState } from "./store-utils";
+import { FlashCardDTO, GroupDTO, NoteDTO, SynonymGroupDTO, TagDTO } from "@/actions/types";
+import { DeepReadonly } from "olik";
 
 
 const openDatabase = () => indexedDB.open('knowvest', 1);
 const eventTarget = <T = IDBOpenDBRequest>(event: Event) => event.target as T;
 
+const dbInitialState = {
+  notes: new Array<NoteDTO>(),
+  tags: new Array<TagDTO>(),
+  groups: new Array<GroupDTO>(),
+  synonymGroups: new Array<SynonymGroupDTO>(),
+  flashCards: new Array<FlashCardDTO>(),
+} as const;
+type DbState = typeof dbInitialState;
+
 export const writeToDb = <
-  TableName extends keyof typeof indexedDbState,
-  Records extends typeof indexedDbState[TableName]
+  TableName extends keyof DbState,
+  Records extends DeepReadonly<DbState[TableName]>
 >(
   tableName: TableName,
   tableRecords: Records
@@ -32,7 +42,7 @@ export const writeToDb = <
 });
 
 export const deleteFromDb = <
-  TableName extends keyof typeof indexedDbState
+  TableName extends keyof DbState,
 >(
   tableName: TableName,
   ids: number[]
@@ -58,8 +68,8 @@ export const deleteFromDb = <
 });
 
 export const readFromDb = <
-  TableName extends keyof typeof indexedDbState,
-  Records extends typeof indexedDbState[TableName]
+  TableName extends keyof DbState,
+  Records extends DeepReadonly<DbState[TableName]>
 >(
   tableName: TableName
 ) => new Promise<Records>(resolve => {
@@ -94,13 +104,13 @@ export const initializeDb = () => new Promise<void>(resolve => {
   request.onupgradeneeded = (event) => {
     console.log('indexedDB: onupgradeneeded', event);
     const db = eventTarget(event).result;
-    Object.keysTyped(indexedDbState)
+    Object.keysTyped(dbInitialState)
       .filter(tableName => !db.objectStoreNames.contains(tableName))
       .forEach(tableName => {
         console.log('Creating table:', tableName);
         db.createObjectStore(tableName, { keyPath: 'id', autoIncrement: false });
       });
-    Object.keysTyped(indexedDbState)
+    Object.keysTyped(dbInitialState)
       .map(tableName => request.transaction!.objectStore(tableName))
       .filter(objectStore => !objectStore.indexNames.contains('dateUpdated'))
       .forEach(objectStore => {
