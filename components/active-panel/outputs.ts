@@ -1,29 +1,26 @@
-import { archiveNote, duplicateNote, splitNote } from "@/actions/note";
+import { archiveNote, createNote, duplicateNote, splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
+import { notesSorted } from "@/utils/store-utils";
 import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, notesSorted }: Inputs) => {
+export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }: Inputs) => {
   const result = {
     onClickCreateNote: async () => {
-
-      console.log(result.onClickCreateNote.name)
-
-      // const apiResponse = await createNote();
-      // store.notes.$push(apiResponse.note);
-      // store.activeNoteId.$set(apiResponse.note.id);
-      // store.synonymIds.$clear();
-      // notify.success('New note created');
-      // popupRef.current?.hide();
-      // store.$log(onClickCreateNote.name)
+      const apiResponse = await createNote();
+      store.notes.$push(apiResponse.note);
+      store.activeNoteId.$set(apiResponse.note.id);
+      store.synonymIds.$clear();
+      notify.success('New note created');
+      popupRef.current?.hide();
     },
     onClickConfirmRemoveNote: async () => {
       const apiResponse = await archiveNote(store.$state.activeNoteId);
       store.notes.$find.id.$eq(apiResponse.note.id).$delete();
       local.showConfirmDeleteDialog.$set(false);
-      const nextMostRecentlyViewedNoteId = notesSorted[0]!.id;
+      const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
       store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
       const tagIds = store.$state.noteTags[nextMostRecentlyViewedNoteId]!.map(tag => tag.id);
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
@@ -36,7 +33,7 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, 
       popupRef.current?.hide();
     },
     onClickDuplicateNote: async () => {
-      const apiResponse = await duplicateNote(store.$state.activeNoteId)
+      const apiResponse = await duplicateNote(store.$state.activeNoteId);
       store.notes.$push(apiResponse.note);
       popupRef.current?.hide();
     },

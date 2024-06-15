@@ -1,4 +1,4 @@
-import { useLocalStore, useStore } from "@/utils/store-utils";
+import { useDerivations, useLocalStore, useStore } from "@/utils/store-utils";
 import { formatDistanceToNow } from "date-fns";
 import { useMemo, useRef } from "react";
 import { CardHandle } from "../card/constants";
@@ -7,7 +7,8 @@ import { initialState, pageSize } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { activeNoteId }, derivations: { notesSorted } } = useStore();
+  const { store, state: { activeNoteId } } = useStore();
+  const { notesSorted } = useDerivations();
   const { local, state: { index } } = useLocalStore('historyItems', initialState);
 
   const cardRef = useRef<CardHandle>(null);

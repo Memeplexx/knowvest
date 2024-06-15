@@ -44,7 +44,11 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onClickTagSynonym: (tagId: TagId, event: MouseEvent<HTMLElement>) => {
       event.stopPropagation();
       if (inputs.tagId === tagId)
-        return local.$patch({ tagId: null, autocompleteText: '', groupSynonymId: null })
+        return local.$patch({
+          tagId: null,
+          autocompleteText: '',
+          groupSynonymId: null
+        })
       local.$patch({
         tagId,
         groupId: null,

@@ -75,11 +75,11 @@ dependencies:
     specifier: ^5.6.0
     version: 5.6.0(@babel/core@7.24.6)(next@14.1.0)(webpack@5.91.0)
   olik:
-    specifier: 1.0.118
-    version: 1.0.118
+    specifier: 1.0.122
+    version: 1.0.122
   olik-react:
-    specifier: 1.0.23
-    version: 1.0.23(olik@1.0.118)(vite@5.2.12)
+    specifier: 1.0.26
+    version: 1.0.26(olik@1.0.122)(vite@5.2.12)
   postcss:
     specifier: 8.4.23
     version: 8.4.23
@@ -9856,21 +9856,21 @@ packages:
     engines: {node: ^10.13.0 || >=12.0.0}
     dev: false
 
-  /olik-react@1.0.23(olik@1.0.118)(vite@5.2.12):
-    resolution: {integrity: sha512-hBOILHpCG1hs2FPgAR+leD/KeCCjWywf439NgIHLjAuIetzu06bZ2iisrJNeXIUnnAsvVjbPEzxw6L6hHcFWrw==}
+  /olik-react@1.0.26(olik@1.0.122)(vite@5.2.12):
+    resolution: {integrity: sha512-PEA92Zxbz0nt8BDWMtEtqLnJ0bm10X4OVmswUkk83PVA7Qdb0iG7vyaQNm5knbSHETgqIBWXOAE4EQAww4wYyg==}
     peerDependencies:
       olik: ^1.0.8
     dependencies:
       '@testing-library/jest-dom': 5.17.0
       '@vitejs/plugin-react': 4.2.1(vite@5.2.12)
-      olik: 1.0.118
+      olik: 1.0.122
     transitivePeerDependencies:
       - supports-color
       - vite
     dev: false
 
-  /olik@1.0.118:
-    resolution: {integrity: sha512-WHJSerbdG9AXCTvN8HF4QmKA23jlCq2dHXhdsVnTpDFdEyifN8k+0hiaVu7Fh2oEJkJ7riVQtrSwZUC75p7QxQ==}
+  /olik@1.0.122:
+    resolution: {integrity: sha512-G8AaPban7ejPLilOzZeHO+ihlLRvt6PU/vchuklVfipfJZzbbxDg9On8+3QOLKob0fbkyKmWleV7Q5FEp5tg6w==}
     dev: false
 
   /on-finished@2.3.0:

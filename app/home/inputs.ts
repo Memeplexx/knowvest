@@ -78,14 +78,13 @@ export const useInputs = () => {
         writeToDb('flashCards', apiResponse.flashCards),
       ]);
       const filterUnArchived = <T extends object>(item: T) => 'isArchived' in item ? !item.isArchived : true;
-      store.$patch({ // NOTE: Database might be empty. If so, use the first note from the API response
-        activeNoteId: databaseData.notes[0]?.id ?? apiResponse.notes[0]!.id,
-        notes: [...databaseData.notes, ...apiResponse.notes].filter(filterUnArchived),
-        tags: [...databaseData.tags, ...apiResponse.tags].filter(filterUnArchived),
-        groups: [...databaseData.groups, ...apiResponse.groups].filter(filterUnArchived),
-        synonymGroups: [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(filterUnArchived),
-        flashCards: [...databaseData.flashCards, ...apiResponse.flashCards].filter(filterUnArchived),
-      });
+      const notes = [...databaseData.notes, ...apiResponse.notes].filter(filterUnArchived);
+      const tags = [...databaseData.tags, ...apiResponse.tags].filter(filterUnArchived);
+      const groups = [...databaseData.groups, ...apiResponse.groups].filter(filterUnArchived);
+      const synonymGroups = [...databaseData.synonymGroups, ...apiResponse.synonymGroups].filter(filterUnArchived);
+      const flashCards = [...databaseData.flashCards, ...apiResponse.flashCards].filter(filterUnArchived)
+      const activeNoteId = notes[0]!.id;
+      store.$patch({ activeNoteId, notes, tags, groups, synonymGroups, flashCards });
     }
 
     // Configure object which will be passed to the consumer
