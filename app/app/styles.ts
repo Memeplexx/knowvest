@@ -11,6 +11,4 @@ export const Wrapper = styled(div)`
   flex-direction: column;
   ${defaultFontFamily.style};
   background-color: black;
-
-  
 `;
