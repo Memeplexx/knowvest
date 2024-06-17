@@ -21,7 +21,6 @@ export const useInputs = () => {
 
   return {
     ...local.$state,
-    isMounted: component.isMounted,
     local,
   };
 }

@@ -2,7 +2,7 @@
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import LoginButton from './page/page-interactive';
+import PageInteractive from './page/page-interactive';
 import { CenterContent, Divider, Title, Wrapper } from './page/styles';
 
 export default async function Index() {
@@ -19,7 +19,7 @@ export default async function Index() {
                 children="know-vest"
               />
               <Divider />
-              <LoginButton
+              <PageInteractive
                 aria-label='Sign in'
               />
             </>
