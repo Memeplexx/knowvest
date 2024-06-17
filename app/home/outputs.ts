@@ -3,35 +3,29 @@ import { Inputs, initialState } from "./constants";
 import { useSharedFunctions } from "./shared";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { local, similarExpanded, historyExpanded, tagsExpanded, headerExpanded } = inputs;
+  const { store, local, similarExpanded, historyExpanded, tagsExpanded } = inputs;
   const shared = useSharedFunctions(inputs);
   return {
     onClickHistoryToggle: () => {
       local.$patch({
         ...initialState,
-        headerExpanded: headerExpanded,
         historyExpanded: !historyExpanded,
       });
     },
     onClickSimilarToggle: () => {
       local.$patch({
         ...initialState,
-        headerExpanded,
         similarExpanded: !similarExpanded,
       });
     },
     onClickTagsToggle: () => {
       local.$patch({
         ...initialState,
-        headerExpanded,
         tagsExpanded: !tagsExpanded,
       });
     },
     onClickHeaderToggle: () => {
-      local.$patch({
-        ...initialState,
-        headerExpanded: !headerExpanded,
-      });
+      store.headerExpanded.$toggle();
     },
     onClickRelatedNote: async (noteId: NoteId) => {
       if (similarExpanded)

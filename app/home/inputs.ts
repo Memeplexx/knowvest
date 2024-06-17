@@ -1,6 +1,7 @@
 import { initialize } from "@/actions/session";
 import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
-import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
+import { useHeaderResizer } from "@/utils/app-utils";
+import { useMediaQueryListener } from "@/utils/dom-utils";
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
@@ -17,19 +18,14 @@ export const useInputs = () => {
   if (typeof (navigator) !== 'undefined' && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
     configureDevtools();
 
-  const { store } = useStore();
+  const { store, state: { headerExpanded } } = useStore();
   const { local, state } = useLocalStore('home', initialState);
   const component = useComponent();
-  const result = { store, local, ...state, isReady: component.hasCompletedAsyncProcess };
+  const result = { store, local, headerExpanded, ...state, isReady: component.hasCompletedAsyncProcess };
   useMediaQueryListener(store.mediaQuery.$set);
 
   // Update header visibility as required
-  useResizeListener(() => {
-    if (window.innerWidth >= MediaQueries.md && !local.$state.headerExpanded)
-      local.headerExpanded.$set(true);
-    else if (window.innerWidth < MediaQueries.md && local.$state.headerExpanded)
-      local.headerExpanded.$set(false);
-  });
+  useHeaderResizer(store);
 
   // Log user out if session expired
   const session = useSession();
@@ -47,6 +43,8 @@ export const useInputs = () => {
   void async function initializeData() {
     component.startAsyncProcess();
     await initializeDb();
+    if (store.$state.activeNoteId)
+      return component.completeAsyncProcess();
     const databaseData = await PromiseObject({
       notes: readFromDb('notes'),
       tags: readFromDb('tags'),

@@ -1,35 +1,60 @@
+"use client"
+import { Button } from '@/components/button';
+import { ButtonIcon } from '@/components/button-icon';
+import { div, element } from '@/components/html';
+import { Loader } from '@/components/loader';
+import ReadonlyNote from '@/components/readonly-note';
+import { defaultFontFamily, mobileBreakPoint } from '@/utils/style-utils';
 import { IoMdCloseCircle } from 'react-icons/io';
 import styled, { css } from "styled-components";
-import { Button } from "../button";
-import { ButtonIcon } from "../button-icon";
-import { div, element } from "../html";
-import ReadonlyNote from "../readonly-note";
-import { dialogWidth, tabsHeight } from "./constants";
 
-export const Container = styled(div)`
-  width: ${dialogWidth}px;
-  height: 600px;
-  max-height: 600px;
+const gap = '4px';
+
+
+export const Wrapper = styled.div`
+  min-height: 0;
+  width: 100vw;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  @media (max-width: ${dialogWidth}px) {
-    width: calc(100vw - 16px);
-    height: calc(100vh - 16px);
-    max-height: calc(100vh - 16px);
-  }
+  ${defaultFontFamily.style};
+  background-color: black;
 `;
 
-export const MainContent = styled(div)`
-  flex: 1;
+export const Container = styled(div)`
+  /* display: flex;
+  flex-direction: column;
+  background-image: linear-gradient(to right, #242020, #191919); */
+
+  min-height: 0;
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  ${defaultFontFamily.style};
+  background-color: black;
+`;
+
+export const BodyWrapper = styled(div)`
+  /* flex: 1;
   display: flex;
   flex-direction: row;
   gap: 24px;
   padding: 24px;
-  max-height: 100%;
-  @media (max-width: ${dialogWidth}px) {
-    padding: 0;
-    width: calc(100vw - 16px);
-    max-height: calc(100vh - (${tabsHeight} + 16px));
+  max-height: 100%; */
+  min-height: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: ${gap};
+  flex: 1;
+  height: auto;
+  position: relative;
+  @media (min-width: ${mobileBreakPoint}) {
+    margin: ${gap};
+  }
+  > * {
+    flex: 1;
   }
 `;
 
@@ -37,7 +62,6 @@ export const TabsWrapper = styled(div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: ${tabsHeight};
 `;
 
 export const TabTitle = styled(div)`
@@ -61,10 +85,8 @@ export const LeftContent = styled(div)`
   display: flex;
   flex-direction: column;
   gap: 32px;
-  @media (max-width: ${dialogWidth}px) {
-    padding: 16px;
-    max-height: 100%;
-  }
+  padding: 16px;
+  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const RightContent = styled(div)`
@@ -75,9 +97,7 @@ export const RightContent = styled(div)`
   overflow-x: hidden;
   background-color: rgba(0,0,0,0.2);
   padding: 16px;
-  @media (max-width: ${dialogWidth}px) {
-    max-height: 100%;
-  }
+  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const TagsOuterWrapper = styled(div)`
@@ -161,4 +181,9 @@ export const Result = styled(ReadonlyNote)`
   &:hover {
     background-color: rgba(0,0,0,0.4);
   }
+`;
+
+export const LoaderPlaceholder = styled(Loader)`
+  z-index: 9;
+  background-image: linear-gradient(to right, #242020, #191919);
 `;

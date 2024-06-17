@@ -6,7 +6,6 @@ export type Props = HTMLAttributes<HTMLDivElement> & IfProps;
 
 export const initialState = {
   showOptions: false,
-  showSearchDialog: false,
   showFlashCardsDialog: false,
 };
 

@@ -1,64 +1,60 @@
 "use client";
+import { Autocomplete } from '@/components/autocomplete';
+import { Navbar } from '@/components/navbar';
 import { CloseIcon } from '@/utils/style-utils';
-import { Fragment, forwardRef, type ForwardedRef } from 'react';
-import { Autocomplete } from '../autocomplete';
-import { AutocompleteOptionType, FragmentProps, Props } from './constants';
+import { Fragment } from 'react';
+import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, CategoryWrapper, CloseButton, Container, LeftContent, MainContent, RemoveButton, RemoveIcon, Result, RightContent, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, BodyWrapper, CategoryWrapper, CloseButton, LeftContent, RemoveButton, RemoveIcon, Result, RightContent, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
-export const SearchDialog = forwardRef(function SearchDialog(
-  props: Props,
-  ref: ForwardedRef<HTMLDivElement>
-) {
-  const inputs = useInputs(ref);
-  const outputs = useOutputs(props, inputs);
+export default function SearchInteractive() {
+  const inputs = useInputs();
+  const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <Container
-      ref={inputs.bodyRef}
-      children={
-        <>
-          <TabsFragment
-            {...fragmentProps}
-          />
-          <MainContent
-            children={
-              <>
-                <LeftContent
-                  if={inputs.showSearchPane}
-                  children={
-                    <>
-                      <SearchFragment
-                        {...fragmentProps}
-                      />
-                      <TagsOuterWrapper
-                        children={
-                          <>
-                            <SynonymsFragment
-                              {...fragmentProps}
-                            />
-                            <GroupsFragment
-                              {...fragmentProps}
-                            />
-                          </>
-                        }
-                      />
-                    </>
-                  }
-                />
-                <ResultsFragment
-                  {...fragmentProps}
-                />
-              </>
-            }
-          />
-        </>
-      }
-    />
+    <>
+      <Navbar
+        if={inputs.headerExpanded}
+      />
+      <TabsFragment
+        {...fragmentProps}
+      />
+      <BodyWrapper
+        children={
+          <>
+            <LeftContent
+              if={inputs.showSearchPane}
+              children={
+                <>
+                  <SearchFragment
+                    {...fragmentProps}
+                  />
+                  <TagsOuterWrapper
+                    children={
+                      <>
+                        <SynonymsFragment
+                          {...fragmentProps}
+                        />
+                        <GroupsFragment
+                          {...fragmentProps}
+                        />
+                      </>
+                    }
+                  />
+                </>
+              }
+            />
+            <ResultsFragment
+              {...fragmentProps}
+            />
+          </>
+        }
+      />
+    </>
   );
-});
+}
 
 const TabsFragment = ({ inputs, outputs }: FragmentProps) => {
   return (

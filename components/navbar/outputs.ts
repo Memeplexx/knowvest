@@ -10,12 +10,6 @@ export const useOutputs = (inputs: Inputs) => {
     onClickSignOut: async () => {
       await signOut();
     },
-    onClickSearchButton: () => {
-      local.showSearchDialog.$set(true);
-    },
-    onHideSearchDialog: () => {
-      local.showSearchDialog.$set(false);
-    },
     onClickFlashCardsButton: () => {
       local.showFlashCardsDialog.$set(true);
     },

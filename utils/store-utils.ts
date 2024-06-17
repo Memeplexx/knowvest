@@ -19,6 +19,7 @@ const initialState = {
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
   noteTags: {} as { [noteId: NoteId]: Array<TagResult> },
+  headerExpanded: true,
 }
 
 const store = createStore(initialState);

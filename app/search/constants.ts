@@ -9,10 +9,6 @@ export type Outputs = ReturnType<typeof useOutputs>;
 
 export type FragmentProps = { inputs: Inputs, outputs: Outputs };
 
-export type Props = {
-  onHide: () => void,
-};
-
 export type SearchResultType = 'synonym' | 'group';
 
 export type AutocompleteIdType = SynonymId | GroupId;

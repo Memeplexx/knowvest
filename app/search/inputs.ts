@@ -1,17 +1,24 @@
 import { GroupId, NoteDTO, NoteId, SynonymId } from "@/actions/types";
+import { AutocompleteHandle } from "@/components/autocomplete/constants";
+import { useHeaderResizer } from "@/utils/app-utils";
 import { useResizeListener } from "@/utils/dom-utils";
-import { useForwardedRef } from "@/utils/react-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
-import { ForwardedRef, useCallback, useMemo, useRef } from "react";
-import { AutocompleteHandle } from "../autocomplete/constants";
+import { redirect, useRouter } from "next/navigation";
+import { useCallback, useMemo, useRef } from "react";
 import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
-export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
+export const useInputs = () => {
 
-  const { store, state: { tags, groups, synonymGroups, notes, noteTags } } = useStore();
+  const { store, state: { headerExpanded, tags, groups, synonymGroups, notes, noteTags } } = useStore();
   const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
-  const bodyRef = useForwardedRef(ref);
+  const router = useRouter();
+
+  if (!notes.length)
+    redirect('/home');
+
+  // Update header visibility as required
+  useHeaderResizer(store);
 
   const autocompleteSynonymOptions = useMemo(() => {
     return tags
@@ -104,14 +111,16 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   return {
     store,
     local,
+    headerExpanded,
     ...local.$state,
     autocompleteRef,
-    bodyRef,
     autocompleteOptions: autocompleteOptionsFilteredBySearchString,
     selectedSynonymTags,
     selectedGroupTags,
     notesByTags,
+    notes,
     tabTitleText: showingTab === 'search' ? 'Search' : 'Results',
     tabButtonText: showingTab === 'search' ? `Results (${notesByTags.length})` : 'Search',
+    router,
   }
 }

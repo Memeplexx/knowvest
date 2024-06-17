@@ -6,7 +6,6 @@ export const initialState = {
   historyExpanded: false,
   similarExpanded: false,
   tagsExpanded: false,
-  headerExpanded: true,
   selectedTab: 'Tags',
 };
 

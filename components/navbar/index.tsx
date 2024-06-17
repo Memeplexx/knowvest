@@ -1,11 +1,11 @@
 "use client";
 import { PopupOption } from '@/utils/style-utils';
+import Link from 'next/link';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
 import { FlashCardTester } from '../flash-card-tester';
 import { Modal } from '../modal';
 import { Popup } from '../popup';
-import { SearchDialog } from '../search';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -17,14 +17,6 @@ export const Navbar = (props: Props) => {
   const outputs = useOutputs(inputs);
   return (
     <>
-      <Modal
-        if={inputs.showSearchDialog}
-        children={
-          <SearchDialog
-            onHide={outputs.onHideSearchDialog}
-          />
-        }
-      />
       <Modal
         if={inputs.showFlashCardsDialog}
         onClose={outputs.onHideFlashCardsDialog}
@@ -62,10 +54,14 @@ export const Navbar = (props: Props) => {
                       </>
                     }
                   />
-                  <SearchButton
-                    aria-label='Search'
-                    onClick={outputs.onClickSearchButton}
-                    children={<SearchIcon />}
+                  <Link
+                    href='/search'
+                    children={
+                      <SearchButton
+                        aria-label='Search'
+                        children={<SearchIcon />}
+                      />
+                    }
                   />
                   <Popup
                     storeKey='userMenu'

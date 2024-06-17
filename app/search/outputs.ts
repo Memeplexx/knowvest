@@ -1,22 +1,10 @@
 import { GroupId, NoteId, SynonymId } from "@/actions/types";
-import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { MouseEvent } from "react";
-import { Inputs, Props } from "./constants";
+import { Inputs } from "./constants";
 
-export const useOutputs = (props: Props, inputs: Inputs) => {
+export const useOutputs = (inputs: Inputs) => {
   const { store, local } = inputs;
   return {
-    onClickDocument: useEventHandlerForDocument('click', event => {
-      // if (event.target.parentNode === null) // element was removed from the DOM
-      //   return;
-      // if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT'))
-      //   return;
-      // if (inputs.showAutocompleteOptions)
-      //   return local.showAutocompleteOptions.$set(false);
-      // if (inputs.bodyRef.current?.contains(event.target))
-      //   return;
-      // props.onHide();
-    }),
     onAutocompleteSelected: (value: string | null) => {
       inputs.autocompleteText && local.autocompleteText.$set('');
       const selection = inputs.autocompleteOptions.findOrThrow(o => o.value === value);
@@ -49,7 +37,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.activeNoteId.$set(noteId);
       store.synonymIds.$set(synonymIds);
-      props.onHide();
+      inputs.router.push('/home');
+      // props.onHide();
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {
       local.showAutocompleteOptions.$set(showAutocompleteOptions);
@@ -57,13 +46,13 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onAutocompleteInputFocused: () => {
       local.showAutocompleteOptions.$set(true);
     },
-    onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
-      if (event.key !== 'Escape')
-        return;
-      if (inputs.showAutocompleteOptions)
-        return local.showAutocompleteOptions.$set(false);
-      props.onHide();
-    }),
+    // onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
+    //   if (event.key !== 'Escape')
+    //     return;
+    //   if (inputs.showAutocompleteOptions)
+    //     return local.showAutocompleteOptions.$set(false);
+    //   props.onHide();
+    // }),
     onClickTabButton: () => {
       if (inputs.showingTab === 'search')
         return local.$patch({ showingTab: 'results', showSearchPane: false, showResultsPane: true })
@@ -71,7 +60,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
         return local.$patch({ showingTab: 'search', showSearchPane: true, showResultsPane: false })
     },
     onClickCloseButton: () => {
-      props.onHide();
+      // props.onHide();
     },
     onClickToggleSynonym: (synonymId: SynonymId) => (event: MouseEvent) => {
       event.stopPropagation();
