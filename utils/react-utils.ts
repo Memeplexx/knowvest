@@ -80,7 +80,7 @@ export const useComponent = () => {
     listen: () => void,
     hasStartedAsyncProcess: boolean,
     hasCompletedAsyncProcess: boolean,
-    startAsyncProcessing: () => boolean,
+    startAsyncProcess: () => boolean,
     completeAsyncProcess: () => void
   }, {
     get: (_, prop) => {
@@ -90,7 +90,7 @@ export const useComponent = () => {
         return asyncState !== 'pristine';
       if (prop === 'hasCompletedAsyncProcess')
         return asyncState === 'done';
-      if (prop === 'startAsyncProcessing')
+      if (prop === 'startAsyncProcess')
         return () => setAsyncState('processing');
       if (prop === 'completeAsyncProcess')
         return () => setAsyncState('done');

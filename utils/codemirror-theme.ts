@@ -1,6 +1,6 @@
-import { EditorView } from '@codemirror/view'
-import { Extension } from '@codemirror/state'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { Extension } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
 import { Highlighter, tags as t } from '@lezer/highlight'
 
 // Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
@@ -110,10 +110,10 @@ export const oneDarkTheme = EditorView.theme({
     }
   },
   '.cm-highlight': {
-    backgroundColor: '#b100b159',
+    backgroundColor: '#b100b1c2',
     borderRadius: '10px',
-    padding: '1px 6px',
-    margin: '-1px -6px',
+    padding: '0 6px',
+    margin: '0 -6px',
     color: '#FFF',
     display: 'inline-block',
   },
@@ -121,10 +121,10 @@ export const oneDarkTheme = EditorView.theme({
     color: '#FFF!important',
   },
   '.cm-highlight-2': {
-    backgroundColor: '#00b1b159',
+    backgroundColor: '#b100b159',
     borderRadius: '10px',
-    padding: '1px 6px',
-    margin: '-1px -6px',
+    padding: '0 6px',
+    margin: '0 -6px',
     color: '#FFF',
     display: 'inline-block',
   },

@@ -1,8 +1,9 @@
-import { NoteId } from "@/actions/types";
+import { NoteId, SynonymId } from "@/actions/types";
 import { TagResult } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
+import { DeepReadonlyArray } from "olik/*";
 import { AppStore } from "./store-utils";
 
 
@@ -202,8 +203,9 @@ export const reviseEditorTags = (
   store: AppStore,
   codeMirror: EditorView,
   noteId: NoteId,
+  synonymIds: DeepReadonlyArray<SynonymId>,
 ) => {
-  const { synonymIds, synonymGroups, noteTags } = store.$state;
+  const { synonymGroups, noteTags } = store.$state;
   const tags = noteTags[noteId]! ?? [];
   type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { type?: TagType }> }
   const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];

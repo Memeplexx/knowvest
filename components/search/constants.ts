@@ -32,6 +32,7 @@ export type AutocompleteOptionType = {
 export const initialState = {
   autocompleteText: '',
   selectedSynonymIds: new Array<SynonymId>(),
+  enabledSynonymIds: new Array<SynonymId>(),
   selectedGroupIds: new Array<GroupId>(),
   showingTab: 'search' as 'search' | 'results',
   showSearchPane: true,

@@ -1,38 +1,42 @@
 import { GroupId, NoteId, SynonymId } from "@/actions/types";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
+import { MouseEvent } from "react";
 import { Inputs, Props } from "./constants";
-import { onSelectGroup, onSelectSynonym } from "./shared";
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
   const { store, local } = inputs;
   return {
     onClickDocument: useEventHandlerForDocument('click', event => {
-      if (event.target.parentNode === null) // element was removed from the DOM
-        return;
-      if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT'))
-        return;
-      if (inputs.showAutocompleteOptions)
-        return local.showAutocompleteOptions.$set(false);
-      if (inputs.bodyRef.current?.contains(event.target))
-        return;
-      props.onHide();
+      // if (event.target.parentNode === null) // element was removed from the DOM
+      //   return;
+      // if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT'))
+      //   return;
+      // if (inputs.showAutocompleteOptions)
+      //   return local.showAutocompleteOptions.$set(false);
+      // if (inputs.bodyRef.current?.contains(event.target))
+      //   return;
+      // props.onHide();
     }),
     onAutocompleteSelected: (value: string | null) => {
       inputs.autocompleteText && local.autocompleteText.$set('');
       const selection = inputs.autocompleteOptions.findOrThrow(o => o.value === value);
-      if (selection.type === 'synonym')
-        return onSelectSynonym(inputs, selection.id as SynonymId);
-      if (selection.type === 'group')
-        return onSelectGroup(inputs, selection.id as GroupId);
+      if (selection.type === 'synonym') {
+        local.selectedSynonymIds.$push(selection.id as SynonymId);
+        local.enabledSynonymIds.$push(selection.id as SynonymId);
+      }
+      if (selection.type === 'group') {
+        local.selectedGroupIds.$push(selection.id as GroupId);
+        local.enabledSynonymIds.$pushMany(store.$state.tags.filter(tag => tag.synonymId === selection.id).map(t => t.synonymId));
+      }
     },
     onAutocompleteInputChange: (value: string) => {
       local.autocompleteText.$set(value);
     },
-    onClickSelectedSynonym: (synonymId: SynonymId) => {
-      onSelectSynonym(inputs, synonymId);
+    onClickRemoveSynonym: (synonymId: SynonymId) => {
+      local.selectedSynonymIds.$find.$eq(synonymId).$delete();
     },
-    onClickSelectedGroup: (groupId: GroupId) => {
-      onSelectGroup(inputs, groupId);
+    onClickRemoveGroup: (groupId: GroupId) => {
+      local.selectedGroupIds.$find.$eq(groupId).$delete();
     },
     onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => {
       local.hoveredSynonymId.$set(hoveredSynonymId);
@@ -68,6 +72,14 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     },
     onClickCloseButton: () => {
       props.onHide();
+    },
+    onClickToggleSynonym: (synonymId: SynonymId) => (event: MouseEvent) => {
+      event.stopPropagation();
+      const toggledSynonymIds = local.$state.enabledSynonymIds;
+      if (toggledSynonymIds.includes(synonymId))
+        local.enabledSynonymIds.$set(toggledSynonymIds.filter(id => id !== synonymId));
+      else
+        local.enabledSynonymIds.$set([...toggledSynonymIds, synonymId]);
     },
   };
 }

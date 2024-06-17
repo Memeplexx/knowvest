@@ -1,4 +1,4 @@
-import { NoteDTO, NoteId } from "@/actions/types";
+import { GroupId, NoteDTO, NoteId, SynonymId } from "@/actions/types";
 import { useResizeListener } from "@/utils/dom-utils";
 import { useForwardedRef } from "@/utils/react-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
@@ -9,33 +9,49 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
 
   const { store, state: { tags, groups, synonymGroups, notes, noteTags } } = useStore();
-  const { local, state: { selectedGroupIds, selectedSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
+  const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const bodyRef = useForwardedRef(ref);
 
+  const autocompleteSynonymOptions = useMemo(() => {
+    return tags
+      .groupBy(tags => tags.synonymId)
+      .map(tags => ({
+        value: `${tags[0]!.synonymId}-synonym`,
+        type: 'synonym',
+        label: tags.map(t => t.text).join(', '),
+        id: tags[0]!.synonymId,
+      } as AutocompleteOptionType))
+  }, [tags]);
+
+  const autocompleteSynonymOptionsFilteredBySelection = useMemo(() => {
+    return autocompleteSynonymOptions
+      .filter(option => !selectedSynonymIds.includes(option.id as SynonymId))
+  }, [autocompleteSynonymOptions, selectedSynonymIds]);
+
+  const autocompleteGroupOptions = useMemo(() => {
+    return groups
+      .map(group => ({
+        value: `${group.id}-group`,
+        type: 'group',
+        label: group.name,
+        id: group.id,
+      } as AutocompleteOptionType))
+  }, [groups]);
+
+  const autocompleteGroupOptionsFilteredBySelection = useMemo(() => {
+    return autocompleteGroupOptions
+      .filter(option => !selectedGroupIds.includes(option.id as GroupId))
+  }, [autocompleteGroupOptions, selectedGroupIds]);
+
   const allAutocompleteOptions = useMemo(() => {
     return [
-      ...tags
-        .groupBy(tags => tags.synonymId)
-        .map(tags => ({
-          value: `${tags[0]!.synonymId}-synonym`,
-          type: 'synonym',
-          label: tags.map(t => t.text).join(', '),
-          id: tags[0]!.synonymId,
-          selected: selectedSynonymIds.includes(tags[0]!.synonymId),
-        } as AutocompleteOptionType)),
-      ...groups
-        .map(group => ({
-          value: `${group.id}-group`,
-          type: 'group',
-          label: group.name,
-          id: group.id,
-          selected: selectedGroupIds.includes(group.id),
-        } as AutocompleteOptionType)),
+      ...autocompleteSynonymOptionsFilteredBySelection,
+      ...autocompleteGroupOptionsFilteredBySelection,
     ]
-  }, [groups, selectedGroupIds, selectedSynonymIds, tags]);
+  }, [autocompleteGroupOptionsFilteredBySelection, autocompleteSynonymOptionsFilteredBySelection]);
 
-  const autocompleteOptions = useMemo(() => {
+  const autocompleteOptionsFilteredBySearchString = useMemo(() => {
     const autocompleteTextToLowerCase = autocompleteText.toLowerCase();
     return allAutocompleteOptions
       .filter(o => o.label.toLowerCase().includes(autocompleteTextToLowerCase))
@@ -44,12 +60,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   const selectedSynonymTags = useMemo(() => {
     return selectedSynonymIds
       .map(synonymId => tags
-        .filter(tag => tag.synonymId === synonymId)
-        .map((tag, index, array) => ({
-          ...tag,
-          first: index === 0,
-          last: index === array.length - 1,
-        })))
+        .filter(tag => tag.synonymId === synonymId))
   }, [selectedSynonymIds, tags]);
 
   const selectedGroupTags = useMemo(() => {
@@ -62,32 +73,21 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
           .map(sg => ({
             synonymId: sg.synonymId,
             tags: tags
-              .filter(t => t.synonymId === sg.synonymId)
-              .map((tags, index, array) => ({
-                ...tags,
-                first: index === 0,
-                last: index === array.length - 1,
-              })),
-          }))
+              .filter(t => t.synonymId === sg.synonymId),
+          })).filter(s => s.tags.length > 0)
       }))
   }, [groups, selectedGroupIds, synonymGroups, tags]);
 
   const notesByTags = useMemo(() => {
     const tagIds = tags
-      .filter(t => selectedSynonymIds.includes(t.synonymId))
+      .filter(t => selectedSynonymIds.includes(t.synonymId) && enabledSynonymIds.includes(t.synonymId))
       .map(t => t.id);
-    const tagIdsForGroups = selectedGroupIds
-      .flatMap(groupId => synonymGroups.filter(sg => sg.groupId === groupId))
-      .map(sg => sg.synonymId)
-      .flatMap(synonymId => tags.filter(t => t.synonymId === synonymId))
-      .map(t => t.id);
-    tagIds.push(...tagIdsForGroups);
     return Object.entries(noteTags).flatMap(([noteId, tagSummaries]) => {
       if (tagSummaries.some(tagSummary => tagIds.includes(tagSummary.id)))
         return notes.findOrThrow(n => n.id === +noteId as NoteId);
       return new Array<NoteDTO>();
     });
-  }, [tags, selectedGroupIds, noteTags, selectedSynonymIds, synonymGroups, notes]);
+  }, [tags, noteTags, selectedSynonymIds, enabledSynonymIds, notes]);
 
   useResizeListener(useCallback(() => {
     const state = local.$state;
@@ -107,7 +107,7 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     ...local.$state,
     autocompleteRef,
     bodyRef,
-    autocompleteOptions,
+    autocompleteOptions: autocompleteOptionsFilteredBySearchString,
     selectedSynonymTags,
     selectedGroupTags,
     notesByTags,

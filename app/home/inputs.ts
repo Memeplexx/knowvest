@@ -45,7 +45,7 @@ export const useInputs = () => {
     return result;
 
   void async function initializeData() {
-    component.startAsyncProcessing();
+    component.startAsyncProcess();
     await initializeDb();
     const databaseData = await PromiseObject({
       notes: readFromDb('notes'),

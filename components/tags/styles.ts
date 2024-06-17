@@ -12,7 +12,7 @@ export const Tag = styled(div) <{ $selected: boolean, $first: boolean, $last: bo
   cursor: pointer;
   display: flex;
   ${p => p.$selected && css`
-    background-color: #b100b159;
+    background-color: #b100b1c2;
     z-index: 1;
   `}
   ${p => p.$first && css`

@@ -1,7 +1,8 @@
+import { IoMdCloseCircle } from 'react-icons/io';
 import styled, { css } from "styled-components";
 import { Button } from "../button";
 import { ButtonIcon } from "../button-icon";
-import { button, div } from "../html";
+import { div, element } from "../html";
 import ReadonlyNote from "../readonly-note";
 import { dialogWidth, tabsHeight } from "./constants";
 
@@ -84,6 +85,7 @@ export const TagsOuterWrapper = styled(div)`
   flex-direction: column;
   gap: 32px;
   overflow-y: auto;
+  overflow: visible;
 `;
 
 export const TagsWrapper = styled(div)`
@@ -99,36 +101,58 @@ export const CategoryWrapper = styled(div)`
   flex-direction: column;
 `;
 
-export const AutocompleteOption = styled(div) <{ $selected: boolean }>`
+export const AutocompleteOption = styled(div)`
   display: flex;
   gap: 8px;
-  ${p => p.$selected && css`text-decoration: underline;`}
 `;
 
-export const Tag = styled(button) <{ $hovered: boolean, $first?: boolean, $last?: boolean }>`
+export const Tag = styled(div) <{ $hovered: boolean, $disabled: boolean, $leftMost?: boolean, $rightMost?: boolean, $rightGap?: boolean }>`
   font-size: 12px;
-  height: 20px;
+  height: 24px;
   display: flex;
   align-items: center;
-  padding: 0 8px;
+  padding: 4px;
   transition: all 0.2s;
-  background-color: #000;
-  color: #FFF;
+  background-color: #FFF;
+  color: #000;
+  border-color: rgba(255,255,255,0.2);
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-style: solid;
   cursor: pointer;
+  ${p => p.$rightGap && css`
+    margin-right: 4px;
+  `}
   ${p => p.$hovered && css`
-    background-color: #FFF;
-    color: #000;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.6);
+    border-color: rgba(255,255,255,0.4);
   `}
-  ${p => p.$first && css`
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+  ${p => p.$disabled && css`
+    background-color: #000;
+    color: #FFF;
   `}
-  ${p => p.$last && css`
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    margin-right: 12px;
+  ${p => p.$leftMost && css`
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    padding-left: 8px;
+    border-left-width: 1px;
+  `}
+  ${p => p.$rightMost && css`
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-right-width: 1px;
+    padding: 0;
   `}
 `;
+
+export const RemoveButton = styled(ButtonIcon)`
+`;
+
+export const RemoveIcon = styled(element(IoMdCloseCircle))`
+`;
+
 
 export const Result = styled(ReadonlyNote)`
   cursor: pointer;
