@@ -1,9 +1,8 @@
 import { GroupId, NoteDTO, NoteId, SynonymId } from "@/actions/types";
 import { AutocompleteHandle } from "@/components/autocomplete/constants";
-import { useHeaderResizer } from "@/utils/app-utils";
 import { useResizeListener } from "@/utils/dom-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef } from "react";
 import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
@@ -13,12 +12,6 @@ export const useInputs = () => {
   const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
-
-  if (!notes.length)
-    redirect('/home');
-
-  // Update header visibility as required
-  useHeaderResizer(store);
 
   const autocompleteSynonymOptions = useMemo(() => {
     return tags

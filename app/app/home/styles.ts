@@ -5,7 +5,7 @@ import { Tabs } from "@/components/card-with-tabs";
 import { History } from "@/components/history";
 import { Loader } from "@/components/loader";
 import { Related } from "@/components/related";
-import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
+import { mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
 
 const gap = '4px';
@@ -109,16 +109,6 @@ export const RelatedPanel = styled(Related) <{ $expanded: boolean }>`
     top: 0;
     transform: translateX(${p => p.$expanded ? '0' : `calc(100% + ${gap})`});
   }
-`;
-
-export const Wrapper = styled.div`
-  min-height: 0;
-  width: 100vw;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  ${defaultFontFamily.style};
-  background-color: black;
 `;
 
 export const BodyWrapper = styled.div`

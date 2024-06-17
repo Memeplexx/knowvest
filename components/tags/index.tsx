@@ -2,8 +2,6 @@
 import { Fragment } from 'react';
 
 import { Button } from '../button';
-import { Modal } from '../modal';
-import { TagsConfig } from '../tags-config';
 import { FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -26,14 +24,6 @@ export const Tags = () => {
   const fragmentProps = { inputs, outputs };
   return (
     <>
-      <Modal
-        if={!!inputs.configureTags}
-        children={
-          <TagsConfig
-            onHide={outputs.onHideDialog}
-          />
-        }
-      />
       <SettingsButton
         if={!!inputs.tagsForActiveNote.length}
         children={<SettingsIcon />}

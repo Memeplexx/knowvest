@@ -4,44 +4,14 @@ import { ButtonIcon } from '@/components/button-icon';
 import { div, element } from '@/components/html';
 import { Loader } from '@/components/loader';
 import ReadonlyNote from '@/components/readonly-note';
-import { defaultFontFamily, mobileBreakPoint } from '@/utils/style-utils';
+import { mobileBreakPoint } from '@/utils/style-utils';
 import { IoMdCloseCircle } from 'react-icons/io';
 import styled, { css } from "styled-components";
 
 const gap = '4px';
 
 
-export const Wrapper = styled.div`
-  min-height: 0;
-  width: 100vw;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  ${defaultFontFamily.style};
-  background-color: black;
-`;
-
-export const Container = styled(div)`
-  /* display: flex;
-  flex-direction: column;
-  background-image: linear-gradient(to right, #242020, #191919); */
-
-  min-height: 0;
-  width: 100vw;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  ${defaultFontFamily.style};
-  background-color: black;
-`;
-
 export const BodyWrapper = styled(div)`
-  /* flex: 1;
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  padding: 24px;
-  max-height: 100%; */
   min-height: 0;
   display: grid;
   grid-auto-flow: column;

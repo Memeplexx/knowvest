@@ -1,5 +1,5 @@
 "use client";
-import { PopupOption } from '@/utils/style-utils';
+import { PopupOption, SettingsIcon } from '@/utils/style-utils';
 import Link from 'next/link';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
@@ -30,13 +30,18 @@ export const Navbar = (props: Props) => {
         $show={!!props.if}
         children={
           <>
-            <ImageLogo
-              width={44}
-              height={44}
-              src={farmImage}
-              alt='logo'
-              placeholder="blur"
-              blurDataURL={farmImage.src}
+            <Link
+              href='./home'
+              children={
+                <ImageLogo
+                  width={44}
+                  height={44}
+                  src={farmImage}
+                  alt='logo'
+                  placeholder="blur"
+                  blurDataURL={farmImage.src}
+                />
+              }
             />
             <RightContent
               children={
@@ -55,7 +60,16 @@ export const Navbar = (props: Props) => {
                     }
                   />
                   <Link
-                    href='/search'
+                    href='./tags-config'
+                    children={
+                      <SearchButton
+                        aria-label='Tags Config'
+                        children={<SettingsIcon />}
+                      />
+                    }
+                  />
+                  <Link
+                    href='./search'
                     children={
                       <SearchButton
                         aria-label='Search'

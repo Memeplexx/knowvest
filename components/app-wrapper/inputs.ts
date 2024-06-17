@@ -1,16 +1,14 @@
 import { initialize } from "@/actions/session";
 import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
-import { useHeaderResizer } from "@/utils/app-utils";
-import { useMediaQueryListener } from "@/utils/dom-utils";
+import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
-import { useLocalStore, useStore } from "@/utils/store-utils";
+import { useStore } from "@/utils/store-utils";
 import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { configureDevtools } from "olik/devtools";
-import { initialState } from "./constants";
 
 
 export const useInputs = () => {
@@ -19,13 +17,17 @@ export const useInputs = () => {
     configureDevtools();
 
   const { store, state: { headerExpanded } } = useStore();
-  const { local, state } = useLocalStore('home', initialState);
   const component = useComponent();
-  const result = { store, local, headerExpanded, ...state, isReady: component.hasCompletedAsyncProcess };
+  const result = { store, headerExpanded, isReady: component.hasCompletedAsyncProcess };
   useMediaQueryListener(store.mediaQuery.$set);
 
   // Update header visibility as required
-  useHeaderResizer(store);
+  useResizeListener(() => {
+    if (window.innerWidth >= MediaQueries.md && !store.$state.headerExpanded)
+      store.headerExpanded.$set(true);
+    else if (window.innerWidth < MediaQueries.md && store.$state.headerExpanded)
+      store.headerExpanded.$set(false);
+  });
 
   // Log user out if session expired
   const session = useSession();

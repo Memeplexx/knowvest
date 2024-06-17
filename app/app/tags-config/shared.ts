@@ -2,10 +2,10 @@ import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '
 import { addTagToSynonym, createTagForSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
-import { Inputs, Props } from './constants';
+import { Inputs } from './constants';
 
 
-export const useSharedFunctions = (props: Props, inputs: Inputs) => {
+export const useSharedFunctions = (inputs: Inputs) => {
   const { store, local, notify } = inputs;
   const completeCreateTagForSynonym = async () => {
     const apiResponse = await createTagForSynonym(inputs.autocompleteText, inputs.synonymId === null ? undefined : inputs.synonymId);
@@ -91,9 +91,9 @@ export const useSharedFunctions = (props: Props, inputs: Inputs) => {
       return local.$patch({ groupSynonymId: null, autocompleteText: '' });
     if (inputs.modal)
       return local.modal.$set(null);
-    if (inputs.modalRef.current?.contains(eventTarget as HTMLElement))
-      return;
-    props.onHide();
+    // if (inputs.modalRef.current?.contains(eventTarget as HTMLElement))
+    //   return;
+    // props.onHide();
   }
   const onAutocompleteSelectedWhileNothingIsSelected = async ({ tagId }: { tagId: TagId }) => {
     const tag = store.$state.tags.findOrThrow(t => t.id === tagId);

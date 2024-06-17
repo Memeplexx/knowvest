@@ -1,10 +1,9 @@
 "use client";
-import { forwardRef, type ForwardedRef } from 'react';
 
-import { CloseIcon, PopupOption, PopupOptions, SettingsIcon } from '@/utils/style-utils';
-import { Autocomplete } from '../autocomplete';
-import { Confirmation } from '../confirmation';
-import { AutocompleteOptionType, FragmentProps, Props } from './constants';
+import { Autocomplete } from '@/components/autocomplete';
+import { Confirmation } from '@/components/confirmation';
+import { PopupOption, PopupOptions, SettingsIcon } from '@/utils/style-utils';
+import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import {
@@ -14,62 +13,64 @@ import {
   Body,
   BodyGroup,
   BodyHeader,
-  CloseButton,
-  Container,
   CustomGroupNameInput,
   Footer,
   FooterButton,
+  LeftContent,
   PageTitle,
+  RightContent,
   SettingsButton,
   Tag,
   TagGroup,
 } from './styles';
 
 
-export const TagsConfig = forwardRef(function TagsConfig(
-  props: Props,
-  ref: ForwardedRef<HTMLDivElement>
-) {
-  const inputs = useInputs(ref);
-  const outputs = useOutputs(props, inputs);
+export default function TagsConfigInteractive() {
+  const inputs = useInputs();
+  const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <Container
-      ref={inputs.modalRef}
-      children={
-        <>
-          <Body
-            children={
-              <>
+    <>
+      <Body
+        children={
+          <>
+            <LeftContent
+              children={
                 <SearchFragment
                   {...fragmentProps}
                 />
-                <SynonymsFragment
-                  {...fragmentProps}
-                />
-                <GroupsFragment
-                  {...fragmentProps}
-                />
-              </>
-            }
+              }
+            />
+            <RightContent
+              children={
+                <>
+                  <SynonymsFragment
+                    {...fragmentProps}
+                  />
+                  <GroupsFragment
+                    {...fragmentProps}
+                  />
+                </>
+              }
+            />
+          </>
+        }
+      />
+      <Footer
+        if={!!inputs.synonymId}
+        children={
+          <FooterButton
+            onClick={outputs.onClickStartOver}
+            children='Start over'
+            aria-label='Start over'
+            title='Manage a new tag'
+            highlighted={true}
           />
-          <Footer
-            children={
-              <FooterButton
-                if={!!inputs.synonymId}
-                onClick={outputs.onClickStartOver}
-                children='Start over'
-                aria-label='Start over'
-                title='Manage a new tag'
-                highlighted={true}
-              />
-            }
-          />
-        </>
-      }
-    />
+        }
+      />
+    </>
   );
-});
+}
 
 const SearchFragment = ({ inputs, outputs }: FragmentProps) => (
   <BodyGroup
@@ -77,15 +78,9 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => (
       <>
         <BodyHeader
           children={
-            <>
-              <PageTitle
-                children={inputs.instruction}
-              />
-              <CloseButton
-                children={<CloseIcon />}
-                onClick={outputs.onClickCloseButton}
-              />
-            </>
+            <PageTitle
+              children={inputs.instruction}
+            />
           }
         />
         <Autocomplete<AutocompleteOptionType>

@@ -1,6 +1,5 @@
 "use client";
 import { Autocomplete } from '@/components/autocomplete';
-import { Navbar } from '@/components/navbar';
 import { CloseIcon } from '@/utils/style-utils';
 import { Fragment } from 'react';
 import { AutocompleteOptionType, FragmentProps } from './constants';
@@ -15,9 +14,6 @@ export default function SearchInteractive() {
   const fragmentProps = { inputs, outputs };
   return (
     <>
-      <Navbar
-        if={inputs.headerExpanded}
-      />
       <TabsFragment
         {...fragmentProps}
       />

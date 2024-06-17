@@ -1,4 +1,5 @@
-import { ComponentType, ForwardedRef, forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { ComponentType, ForwardedRef, FunctionComponent, forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { is } from "./logic-utils";
 
 export const createComponent = <Props, Inputs extends object, Outputs extends object, Handle>(
@@ -132,4 +133,13 @@ export const useUnknownPropsStripper = (props: object) => {
   return Object.keys(props)
     .filter(k => whitelist.includes(k))
     .reduce((acc, key) => Object.assign(acc, { [key]: props[key as keyof typeof props] }), {});
+}
+
+export const useComponentDownloader = <P>(importer: () => Promise<{ default: FunctionComponent<P> }>) => {
+  const component = useComponent();
+  const importerRef = useRef(importer);
+  return useMemo(() => {
+    if (!component.isMounted) return null;
+    return dynamic(importerRef.current);
+  }, [component.isMounted]);
 }

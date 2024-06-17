@@ -1,17 +1,16 @@
-import { useMemo, useRef, type ForwardedRef } from 'react';
+import { useMemo, useRef } from 'react';
 
-import { useForwardedRef } from '@/utils/react-utils';
+import { AutocompleteHandle } from '@/components/autocomplete/constants';
+import { useNotifier } from '@/components/notifier';
 import { useLocalStore, useStore } from '@/utils/store-utils';
 import { useFloating } from '@floating-ui/react';
 import { addToWhitelist } from 'olik/devtools';
-import { AutocompleteHandle } from '../autocomplete/constants';
-import { useNotifier } from '../notifier';
 import { initialState } from './constants';
 
 
-export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
+export const useInputs = () => {
 
-  const { store, state: { tags, groups, synonymGroups, activeNoteId } } = useStore();
+  const { store, state: { headerExpanded, notes, tags, groups, synonymGroups, activeNoteId } } = useStore();
   const firstSelectedTag = useMemo(() => store.$state.tags.find(t => t.id === store.$state.configureTags), [store]);
   const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', {
     ...initialState,
@@ -25,7 +24,6 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
   const settingsButtonRef = modal === 'synonymOptions' ? floatingRef.refs.setReference : null;
   const synonymOptionsRef = modal === 'synonymOptions' ? floatingRef.refs.setFloating : null;
-  const modalRef = useForwardedRef(ref);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const selectedTagRef = useRef<HTMLDivElement>(null);
   const notify = useNotifier();
@@ -142,12 +140,13 @@ export const useInputs = (ref: ForwardedRef<HTMLDivElement>) => {
     tagsInCustomGroups,
     tagsInSynonymGroup,
     floatingRef,
-    modalRef,
     autocompleteRef,
     selectedTagRef,
     settingsButtonRef,
     synonymOptionsRef,
     notify,
+    notes,
+    headerExpanded,
   };
 }
 

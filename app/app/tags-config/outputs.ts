@@ -4,12 +4,12 @@ import { archiveTag } from '@/actions/tag';
 import { GroupId, SynonymId, TagId } from '@/actions/types';
 import { TypedKeyboardEvent, useEventHandlerForDocument } from '@/utils/dom-utils';
 import { type ChangeEvent, type MouseEvent } from 'react';
-import { Inputs, Props } from './constants';
+import { Inputs } from './constants';
 import { useSharedFunctions } from './shared';
 
 
-export const useOutputs = (props: Props, inputs: Inputs) => {
-  const shared = useSharedFunctions(props, inputs);
+export const useOutputs = (inputs: Inputs) => {
+  const shared = useSharedFunctions(inputs);
   const { store, local, notify } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
@@ -188,10 +188,10 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onClickRenameTag: () => {
       shared.focusAutocompleteInput();
     },
-    onClickDocument: useEventHandlerForDocument('click', event => {
-      if (event.detail === 0) return; // Events with a detail of 0 come from enter presses of autocomplete option. (https://github.com/facebook/react/issues/3907#issuecomment-363948471)
-      shared.doCancel(event.target);
-    }),
+    // onClickDocument: useEventHandlerForDocument('click', event => {
+    //   if (event.detail === 0) return; // Events with a detail of 0 come from enter presses of autocomplete option. (https://github.com/facebook/react/issues/3907#issuecomment-363948471)
+    //   shared.doCancel(event.target);
+    // }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
       if (event.key !== 'Escape')
         return;
@@ -264,9 +264,6 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     },
     onShowAutocompleteOptionsChange: (showAutocompleteOptions: boolean) => {
       local.showAutocompleteOptions.$set(showAutocompleteOptions)
-    },
-    onClickCloseButton: () => {
-      props.onHide();
     },
   };
 }

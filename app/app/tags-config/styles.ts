@@ -1,9 +1,21 @@
-import { mobileBreakPoint } from '@/utils/style-utils';
+"use client"
+import { Button } from '@/components/button';
+import { ButtonIcon } from '@/components/button-icon';
+import { div, element } from '@/components/html';
+import { Loader } from '@/components/loader';
+import { defaultFontFamily, mobileBreakPoint } from '@/utils/style-utils';
 import styled, { css } from 'styled-components';
-import { Button } from '../button';
-import { ButtonIcon } from '../button-icon';
-import { div, element } from '../html';
 
+
+export const Wrapper = styled.div`
+  min-height: 0;
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  ${defaultFontFamily.style};
+  background-color: black;
+`;
 
 
 export const CloseButton = styled(ButtonIcon)`
@@ -79,15 +91,19 @@ export const Container = styled(div)`
 export const Body = styled(div)`
   flex: 1;
   display: flex;
-  gap: 16px;
-  flex-direction: column;
+  gap: 4px;
   pointer-events: none;
+  padding: 4px;
 `;
 
 export const Footer = styled(div)`
   display: flex;
   flex-direction: column;
   place-items: end;
+  background-image: linear-gradient(to right, #242020, #191919);
+  margin: 4px;
+  margin-top: 0;
+  padding: 16px;
   @media (max-width: 540px) {
     padding: 8px;
   }
@@ -141,4 +157,21 @@ export const AutocompleteOptionLabel = styled.div`
 
 export const AutocompleteOptionSynonyms = styled.div`
   color: grey;
+`;
+
+export const LoaderPlaceholder = styled(Loader)`
+  z-index: 9;
+  background-image: linear-gradient(to right, #242020, #191919);
+`;
+
+export const LeftContent = styled.div`
+  flex: 1;
+  padding: 16px;
+  background-image: linear-gradient(to right, #242020, #191919);
+`;
+
+export const RightContent = styled.div`
+  flex: 1;
+  padding: 16px;
+  background-image: linear-gradient(to right, #242020, #191919);
 `;

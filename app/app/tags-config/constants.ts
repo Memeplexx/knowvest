@@ -47,10 +47,6 @@ export const initialState = {
   hoveringSynonymId: null as null | SynonymId,
 };
 
-export type Props = {
-  onHide: () => void,
-};
-
 export type Inputs = ReturnType<typeof useInputs>;
 
 export type Outputs = ReturnType<typeof useOutputs>;
