@@ -7,7 +7,7 @@ import { Inputs } from "./constants";
 
 
 export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }: Inputs) => {
-  const result = {
+  return {
     onClickCreateNote: async () => {
       const apiResponse = await createNote();
       store.notes.$push(apiResponse.note);
@@ -112,5 +112,4 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
       });
     }),
   };
-  return result;
 }

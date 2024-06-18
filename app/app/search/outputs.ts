@@ -15,7 +15,7 @@ export const useOutputs = (inputs: Inputs) => {
       }
       if (selection.type === 'group') {
         local.selectedGroupIds.$push(selection.id as GroupId);
-        local.enabledSynonymIds.$pushMany(store.$state.tags.filter(tag => tag.synonymId === selection.id).map(t => t.synonymId));
+        local.enabledSynonymIds.$pushMany(store.$state.tags.filter(tag => tag.synonymId === selection.id).map(t => t.synonymId).distinct());
       }
     },
     onAutocompleteInputChange: (value: string) => {

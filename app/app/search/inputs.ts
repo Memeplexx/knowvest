@@ -51,7 +51,7 @@ export const useInputs = () => {
     ]
   }, [autocompleteGroupOptionsFilteredBySelection, autocompleteSynonymOptionsFilteredBySelection]);
 
-  const autocompleteOptionsFilteredBySearchString = useMemo(() => {
+  const autocompleteOptions = useMemo(() => {
     const autocompleteTextToLowerCase = autocompleteText.toLowerCase();
     return allAutocompleteOptions
       .filter(o => o.label.toLowerCase().includes(autocompleteTextToLowerCase))
@@ -107,7 +107,7 @@ export const useInputs = () => {
     headerExpanded,
     ...local.$state,
     autocompleteRef,
-    autocompleteOptions: autocompleteOptionsFilteredBySearchString,
+    autocompleteOptions,
     selectedSynonymTags,
     selectedGroupTags,
     notesByTags,
