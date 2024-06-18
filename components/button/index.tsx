@@ -2,7 +2,7 @@
 import { useUnknownPropsStripper } from "@/utils/react-utils";
 import { ForwardedRef, forwardRef } from "react";
 import { Props } from "./constants";
-import { Wrapper } from "./styles";
+import { ButtonWrapper } from "./styles";
 
 export const Button = forwardRef(function Button(
   props: Props,
@@ -10,7 +10,7 @@ export const Button = forwardRef(function Button(
 ) {
   const htmlProps = useUnknownPropsStripper(props);
   return (
-    <Wrapper
+    <ButtonWrapper
       {...htmlProps}
       $highlighted={props.highlighted ?? false}
       ref={ref}

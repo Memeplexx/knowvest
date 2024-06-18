@@ -1,7 +1,15 @@
-import { SettingsIcon as BaseSettingsIcon } from '@/utils/style-utils';
 import styled, { css } from 'styled-components';
-import { ButtonIcon } from '../button-icon';
-import { div, element } from '../html';
+import { div } from '../html';
+
+
+
+export const TagsWrapper = styled(div)`
+  flex: 1;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
 
 export const Tag = styled(div) <{ $selected: boolean, $first: boolean, $last: boolean }>`
   font-size: 12px;
@@ -38,14 +46,7 @@ export const ActiveHeaderTag = styled(Tag)`
 export const GroupHeaderTag = styled(Tag)`
 `;
 
-export const SettingsButton = styled(element(ButtonIcon))`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 5;
-`;
-
-export const TagsWrapper = styled.div`
+export const SynonymsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   column-gap: 2px;
@@ -57,17 +58,6 @@ export const TagsSection = styled(div)`
   flex-direction: column;
   gap: 8px;
   align-items: start;
-`;
-
-export const Body = styled(div)`
-  flex: 1;
-  max-height: 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-
-export const SettingsIcon = styled(BaseSettingsIcon)`
 `;
 
 export const NoTagsPlaceholder = styled(div)`

@@ -1,14 +1,14 @@
 "use client";
 import { ForwardedRef, forwardRef } from "react";
 import { Props } from "./constants";
-import { Wrapper } from "./styles";
+import { ButtonIconWrapper } from "./styles";
 
 export const ButtonIcon = forwardRef(function ButtonIcon(
   props: Props,
   ref?: ForwardedRef<HTMLButtonElement>
 ) {
   return (
-    <Wrapper
+    <ButtonIconWrapper
       {...props}
       ref={ref}
       children={props.children}

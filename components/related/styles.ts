@@ -1,8 +1,13 @@
 import { AiOutlineLink } from "react-icons/ai";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
+import { Card } from "../card";
 import { div } from "../html";
 import ReadonlyNote from "../readonly-note";
+
+
+export const RelatedWrapper = styled(Card)`
+`;
 
 export const Header = styled(div)`
   display: flex;

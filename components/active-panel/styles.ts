@@ -4,7 +4,7 @@ import { Card } from "../card";
 import { div } from "../html";
 
 
-export const Wrapper = styled.div`
+export const ActivePanelWrapper = styled.div`
   position: relative;
   display: flex;
   background-image: linear-gradient(to right,#101010,#1d1d1d);

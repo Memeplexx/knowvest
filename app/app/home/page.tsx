@@ -4,15 +4,15 @@ import { Tags } from '@/components/tags';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/style-utils';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActivePane, BodyWrapper, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, RelatedPanel, TabsPanel } from './styles';
+import { ActivePane, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, HomeWrapper, RelatedPanel, TabsPanel } from './styles';
 
 
 
-export default function HomeInteractive() {
+export default function Page() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
-    <BodyWrapper
+    <HomeWrapper
       children={
         <>
           <HistoryPanel

@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { NotificationContext, Props, defaultProps, snackbarStatuses } from "./constants";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { Container, Message, Popup } from "./styles";
+import { Message, NotifierWrapper, Popup } from "./styles";
 
 export const useNotifier = () => useContext(NotificationContext)!
 
@@ -18,7 +18,7 @@ export function NotifierProvider(props: Props) {
         children={props.children}
       />
       {!inputs.initialized ? <></> : createPortal(
-        <Container
+        <NotifierWrapper
           ref={inputs.floatingRef.refs.setReference}
           children={
             <Popup

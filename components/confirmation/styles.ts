@@ -1,7 +1,11 @@
 import styled from "styled-components";
 import { Button } from "../button";
 import { div } from "../html";
+import { Modal } from "../modal";
 
+
+export const ConfirmationWrapper = styled(Modal)`
+`;
 
 export const DialogBody = styled(div)`
   display: flex;

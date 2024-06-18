@@ -7,11 +7,9 @@ import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import {
   ActiveHeaderTag,
-  Body,
   GroupHeaderTag,
   NoTagsPlaceholder,
-  SettingsButton,
-  SettingsIcon,
+  SynonymsWrapper,
   Tag,
   TagsSection,
   TagsWrapper,
@@ -23,29 +21,21 @@ export const Tags = () => {
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <>
-      <SettingsButton
-        if={!!inputs.tagsForActiveNote.length}
-        children={<SettingsIcon />}
-        onClick={outputs.onShowDialog}
-        aria-label='Settings'
-      />
-      <Body
-        children={
-          <>
-            <SynonymsFragment
-              {...fragmentProps}
-            />
-            <GroupSynonymsFragment
-              {...fragmentProps}
-            />
-            <PlaceholderFragment
-              {...fragmentProps}
-            />
-          </>
-        }
-      />
-    </>
+    <TagsWrapper
+      children={
+        <>
+          <SynonymsFragment
+            {...fragmentProps}
+          />
+          <GroupSynonymsFragment
+            {...fragmentProps}
+          />
+          <PlaceholderFragment
+            {...fragmentProps}
+          />
+        </>
+      }
+    />
   )
 }
 
@@ -81,7 +71,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
             $first={true}
             $last={true}
           />
-          <TagsWrapper
+          <SynonymsWrapper
             children={inputs.tagsForActiveNote.map(synonyms => (
               <Fragment
                 key={synonyms.synonymId}
@@ -119,7 +109,7 @@ const GroupSynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                 $first={true}
                 $last={true}
               />
-              <TagsWrapper
+              <SynonymsWrapper
                 children={group.synonyms.map(synonym => synonym.tags.map(tag => (
                   <Tag
                     key={tag.id}

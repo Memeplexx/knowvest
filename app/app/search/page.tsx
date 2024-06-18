@@ -4,10 +4,10 @@ import { Fragment } from 'react';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, BodyGroup, BodyHeader, BodyWrapper, CategoryWrapper, Footer, FooterButton, LeftContent, NoResultsIcon, NoResultsWrapper, PageTitle, RemoveButton, RemoveIcon, Result, RightContent, SearchIcon, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, LeftContent, NoResultsIcon, NoResultsWrapper, PageTitle, RemoveButton, RemoveIcon, Result, RightContent, SearchIcon, SearchWrapper, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
-export default function SearchInteractive() {
+export default function Page() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
@@ -16,7 +16,7 @@ export default function SearchInteractive() {
       <TabsFragment
         {...fragmentProps}
       />
-      <BodyWrapper
+      <SearchWrapper
         children={
           <>
             <LeftContent

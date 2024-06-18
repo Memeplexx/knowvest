@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { button } from "../html";
 
 
-export const Wrapper = styled(button) <{ selected?: boolean }>`
+export const ButtonIconWrapper = styled(button) <{ selected?: boolean }>`
   cursor: pointer;
   width: 30px;
   height: 30px;

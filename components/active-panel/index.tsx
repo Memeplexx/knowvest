@@ -8,7 +8,7 @@ import { Popup } from '../popup';
 import { FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActiveSelectionListItem, CardWrapper, SelectionOptions, SelectionText, TextEditor, TextEditorWrapper, Wrapper } from './styles';
+import { ActivePanelWrapper, ActiveSelectionListItem, CardWrapper, SelectionOptions, SelectionText, TextEditor, TextEditorWrapper } from './styles';
 
 
 
@@ -19,7 +19,7 @@ export const ActivePanel = (
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <Wrapper
+    <ActivePanelWrapper
       {...props}
       children={
         <>

@@ -28,7 +28,7 @@ import {
 } from './styles';
 
 
-export default function TagsConfigInteractive() {
+export default function Page() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };

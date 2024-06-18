@@ -1,10 +1,9 @@
 "use client";
 import { useUnknownPropsStripper } from '@/utils/react-utils';
-import { Card } from '../card';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, NoteCount, Result } from './styles';
+import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, NoteCount, RelatedWrapper, Result } from './styles';
 
 
 export function Related(
@@ -13,7 +12,7 @@ export function Related(
   const inputs = useInputs();
   const outputs = useOutputs(props, inputs);
   return (
-    <Card
+    <RelatedWrapper
       {...useUnknownPropsStripper(props)}
       ref={inputs.cardRef}
       heading='Related'

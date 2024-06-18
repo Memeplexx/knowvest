@@ -132,33 +132,28 @@ export const useInputs = () => {
     component.listen = store.notes.$onChangeArray(({ deleted, inserted, updated }) => {
       worker.postMessage({ type: 'addNotes', data: inserted.map(sanitizeNote) });
       deleted.forEach(n => worker.postMessage({ type: 'removeNote', data: n.id }));
-      updated.forEach(n => worker.postMessage({ type: 'updateNote', data: sanitizeNote(n) }));
+      updated.map(sanitizeNote).forEach(data => worker.postMessage({ type: 'updateNote', data }));
     });
 
     // Ensure that the indexedDB is updated when the store changes
     component.listen = store.notes.$onChangeArray(async ({ deleted, inserted, updated }) => {
-      const toAddOrUpdate = [...inserted, ...updated];
-      await writeToDb('notes', toAddOrUpdate);
+      await writeToDb('notes', [...inserted, ...updated]);
       await deleteFromDb('notes', deleted.map(n => n.id));
     })
     component.listen = store.tags.$onChangeArray(async ({ deleted, inserted, updated }) => {
-      const toAddOrUpdate = [...inserted, ...updated];
-      await writeToDb('tags', toAddOrUpdate);
+      await writeToDb('tags', [...inserted, ...updated]);
       await deleteFromDb('tags', deleted.map(t => t.id));
     });
     component.listen = store.synonymGroups.$onChangeArray(async ({ deleted, inserted, updated }) => {
-      const toAddOrUpdate = [...inserted, ...updated];
-      await writeToDb('synonymGroups', toAddOrUpdate);
+      await writeToDb('synonymGroups', [...inserted, ...updated]);
       await deleteFromDb('synonymGroups', deleted.map(p => p.id));
     });
     component.listen = store.groups.$onChangeArray(async ({ deleted, inserted, updated }) => {
-      const toAddOrUpdate = [...inserted, ...updated];
-      await writeToDb('groups', toAddOrUpdate);
+      await writeToDb('groups', [...inserted, ...updated]);
       await deleteFromDb('groups', deleted.map(p => p.id));
     });
     component.listen = store.flashCards.$onChangeArray(async ({ deleted, inserted, updated }) => {
-      const toAddOrUpdate = [...inserted, ...updated];
-      await writeToDb('flashCards', toAddOrUpdate);
+      await writeToDb('flashCards', [...inserted, ...updated]);
       await deleteFromDb('flashCards', deleted.map(p => p.id));
     });
   }();

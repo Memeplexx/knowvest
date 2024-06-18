@@ -3,14 +3,28 @@ import { ActivePanel } from "@/components/active-panel";
 import { ButtonIcon } from "@/components/button-icon";
 import { Tabs } from "@/components/card-with-tabs";
 import { History } from "@/components/history";
-import { Loader } from "@/components/loader";
 import { Related } from "@/components/related";
 import { mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
 
 const gap = '4px';
 
-
+export const HomeWrapper = styled.div`
+  min-height: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: ${gap};
+  flex: 1;
+  height: auto;
+  position: relative;
+  @media (min-width: ${mobileBreakPoint}) {
+    margin: ${gap};
+  }
+  > * {
+    flex: 1;
+  }
+`;
 
 const BaseToggleButton = styled(ButtonIcon) <{ selected?: boolean }>`
   width: 32px;
@@ -109,26 +123,4 @@ export const RelatedPanel = styled(Related) <{ $expanded: boolean }>`
     top: 0;
     transform: translateX(${p => p.$expanded ? '0' : `calc(100% + ${gap})`});
   }
-`;
-
-export const BodyWrapper = styled.div`
-  min-height: 0;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  gap: ${gap};
-  flex: 1;
-  height: auto;
-  position: relative;
-  @media (min-width: ${mobileBreakPoint}) {
-    margin: ${gap};
-  }
-  > * {
-    flex: 1;
-  }
-`;
-
-export const LoaderPlaceholder = styled(Loader)`
-  z-index: 9;
-  background-image: linear-gradient(to right, #242020, #191919);
 `;

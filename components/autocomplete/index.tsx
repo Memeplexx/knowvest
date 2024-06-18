@@ -3,7 +3,7 @@ import { forwardRef, type ForwardedRef } from 'react';
 import { AutocompleteHandle, OptionBase, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ClearIcon, ClearTextButton, ClearTextButtonWrapper, Container, ErrorMsg, Input, OptionItem, Options } from './styles';
+import { AutocompleteWrapper, ClearIcon, ClearTextButton, ClearTextButtonWrapper, ErrorMsg, Input, OptionItem, Options } from './styles';
 
 
 export const Autocomplete = forwardRef(function Autocomplete<Option extends OptionBase>(
@@ -13,7 +13,7 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
   const inputs = useInputs(props, forwardedRef);
   const outputs = useOutputs(props, inputs);
   return (
-    <Container
+    <AutocompleteWrapper
       tabIndex={0}
       ref={inputs.containerRef}
       children={

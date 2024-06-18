@@ -12,7 +12,7 @@ import styled, { css } from "styled-components";
 const gap = '4px';
 
 
-export const BodyWrapper = styled(div)`
+export const SearchWrapper = styled(div)`
   min-height: 0;
   display: grid;
   grid-auto-flow: column;

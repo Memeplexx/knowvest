@@ -3,7 +3,7 @@ import { CiCircleAlert, CiCircleCheck, CiCircleInfo } from 'react-icons/ci';
 import styled from "styled-components";
 import { snackbarStatus, snackbarStatuses } from './constants';
 
-export const Container = styled.div`
+export const NotifierWrapper = styled.div`
   position: fixed;
   left: 0;
   bottom: 0;

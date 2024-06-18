@@ -2,14 +2,14 @@
 import { useUnknownPropsStripper } from "@/utils/react-utils";
 import { Props } from "./constants";
 import { useInputs } from "./inputs";
-import { Body, Container, Header, Tab, Underline } from "./styles";
+import { Body, CardsWithTabsWrapper, Header, Tab, Underline } from "./styles";
 
 export const Tabs = (
   props: Props,
 ) => {
   const inputs = useInputs(props);
   return (
-    <Container
+    <CardsWithTabsWrapper
       {...useUnknownPropsStripper(props)}
       heading={
         <Header

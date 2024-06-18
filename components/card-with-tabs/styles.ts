@@ -1,6 +1,13 @@
 import styled from "styled-components";
 import { Card } from "../card";
 
+
+export const CardsWithTabsWrapper = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  background-image: linear-gradient(to right, #242020, #191919);
+`;
+
 export const Header = styled.div`
   display: flex;
   gap: 16px;
@@ -25,10 +32,4 @@ export const Underline = styled.div`
 
 export const Body = styled.div`
   display: flex;
-`;
-
-export const Container = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  background-image: linear-gradient(to right, #242020, #191919);
 `;

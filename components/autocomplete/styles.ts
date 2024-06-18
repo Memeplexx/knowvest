@@ -5,6 +5,11 @@ import { ButtonIcon } from '../button-icon';
 import { button, div, element, input } from '../html';
 
 
+export const AutocompleteWrapper = styled.div`
+  position: relative;
+  display: flex;
+`;
+
 export const ClearTextButtonWrapper = styled(div)`
   position: absolute;
   top: 0;
@@ -22,11 +27,6 @@ export const ClearIcon = styled(CloseIcon)`
   pointer-events: none;
   width: auto;
   height: auto;
-`;
-
-export const Container = styled.div`
-  position: relative;
-  display: flex;
 `;
 
 export const Input = styled(input) <{ $hasError: boolean }>`

@@ -1,9 +1,8 @@
 "use client";
-import { Modal } from '../modal';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ButtonWrapper, CancelButton, ConfirmButton, DialogBody, Header, Message } from './styles';
+import { ButtonWrapper, CancelButton, ConfirmButton, ConfirmationWrapper, DialogBody, Header, Message } from './styles';
 
 
 
@@ -13,7 +12,7 @@ export const Confirmation = (
   const inputs = useInputs(props);
   const outputs = useOutputs(props, inputs);
   return (
-    <Modal
+    <ConfirmationWrapper
       onBackdropClick={outputs.onClickCancel}
       onClose={outputs.onClickCancel}
       if={props.if}

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { div } from "../html";
 
 
-export const Wrapper = styled(div)`
+export const ReadonlyNoteWrapper = styled(div)`
   ${monoFontFamily.style};
   font-size: 12px;
   padding-left: 0px;

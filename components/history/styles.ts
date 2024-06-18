@@ -1,9 +1,13 @@
 import { ClockIcon } from "@/utils/style-utils";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
+import { Card } from "../card";
 import { div } from "../html";
 import ReadonlyNote from "../readonly-note";
 
+
+export const HistoryWrapper = styled(Card)`
+`;
 
 export const Header = styled.div`
   display: flex;

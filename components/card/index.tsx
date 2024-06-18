@@ -4,7 +4,7 @@ import { forwardRef, type ForwardedRef } from 'react';
 import { CardHandle, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Body, Header, LoaderPlaceholder, Wrapper } from './styles';
+import { Body, CardWrapper, Header, LoaderPlaceholder } from './styles';
 
 export const Card = forwardRef(function Card(
   props: Props,
@@ -13,7 +13,7 @@ export const Card = forwardRef(function Card(
   const inputs = useInputs(ref);
   const outputs = useOutputs(props, inputs);
   return (
-    <Wrapper
+    <CardWrapper
       id={props.id}
       {...useUnknownPropsStripper(props)}
       children={

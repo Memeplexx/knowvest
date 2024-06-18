@@ -3,7 +3,7 @@ import { div } from "../html";
 import { Loader } from "../loader";
 
 
-export const Wrapper = styled(div)`
+export const CardWrapper = styled(div)`
   display: flex;
   flex-direction: column;
   position: relative;
