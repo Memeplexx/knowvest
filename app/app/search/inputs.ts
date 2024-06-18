@@ -1,4 +1,4 @@
-import { GroupId, NoteDTO, NoteId, SynonymId } from "@/actions/types";
+import { GroupId, SynonymId } from "@/actions/types";
 import { AutocompleteHandle } from "@/components/autocomplete/constants";
 import { useResizeListener } from "@/utils/dom-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
@@ -82,11 +82,10 @@ export const useInputs = () => {
     const tagIds = tags
       .filter(t => selectedSynonymIds.includes(t.synonymId) && enabledSynonymIds.includes(t.synonymId))
       .map(t => t.id);
-    return Object.entries(noteTags).flatMap(([noteId, tagSummaries]) => {
-      if (tagSummaries.some(tagSummary => tagIds.includes(tagSummary.id)))
-        return notes.findOrThrow(n => n.id === +noteId as NoteId);
-      return new Array<NoteDTO>();
-    });
+    return noteTags
+      .filter(noteTag => tagIds.includes(noteTag.id))
+      .distinct()
+      .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
   }, [tags, noteTags, selectedSynonymIds, enabledSynonymIds, notes]);
 
   useResizeListener(useCallback(() => {

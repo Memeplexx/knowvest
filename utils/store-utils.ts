@@ -18,7 +18,7 @@ const initialState = {
   mediaQuery: null as keyof typeof MediaQueries | null,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
-  noteTags: {} as { [noteId: NoteId]: Array<TagResult> },
+  noteTags: new Array<TagResult & { noteId: NoteId }>(),
   headerExpanded: true,
   showLoader: false,
 }

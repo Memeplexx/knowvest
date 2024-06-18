@@ -206,7 +206,7 @@ export const reviseEditorTags = (
   synonymIds: DeepReadonlyArray<SynonymId>,
 ) => {
   const { synonymGroups, noteTags } = store.$state;
-  const tags = noteTags[noteId]! ?? [];
+  const tags = noteTags.filter(nt => nt.noteId === noteId);
   type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { type?: TagType }> }
   const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];
   const groupSynonymIds = synonymGroups

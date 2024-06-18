@@ -11,11 +11,12 @@ export const useInputs = () => {
   const cardRef = useRef<CardHandle>(null);
 
   const items = useMemo(() => {
-    return Object.entries(noteTags)
-      .filter(([noteId]) => +noteId !== activeNoteId)
-      .map(([noteId, tags]) => ({
-        noteId,
-        count: tags.filter(t => synonymIds.includes(t.synonymId!)).length,
+    return noteTags
+      .filter(nt => nt.noteId !== activeNoteId)
+      .groupBy(nt => nt.noteId)
+      .map(group => ({
+        noteId: group[0]!.noteId,
+        count: group.filter(nt => synonymIds.includes(nt.synonymId!)).length,
       }))
       .filter(({ count }) => count > 0)
       .sort((a, b) => b.count - a.count)

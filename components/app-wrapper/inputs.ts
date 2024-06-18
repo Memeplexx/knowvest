@@ -97,7 +97,15 @@ export const useInputs = () => {
     worker.onmessage = event => {
       event.data
         .filter(({ noteId, tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
-        .forEach(({ noteId, tags }) => store.noteTags[noteId]!.$set(tags));
+        .forEach(({ noteId, tags }) => {
+          const currentNoteTagsForNote = store.$state.noteTags.filter(nt => nt.noteId === noteId);
+          const toRemove = currentNoteTagsForNote.filter(nt => !tags.some(t => t.id === nt.id)).map(nt => nt.id);
+          const toInsert = tags.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id));
+          if (toRemove.length)
+            store.noteTags.$filter.id.$in(toRemove).$delete();
+          if (toInsert.length)
+            store.noteTags.$pushMany(toInsert.map(t => ({ ...t, noteId })));
+        });
       if (!first)
         return;
       first = false;
