@@ -1,6 +1,4 @@
 "use client";
-import { ActiveNoteFlashCards } from '@/components/active-note-flash-cards';
-import { Tags } from '@/components/tags';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/style-utils';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -27,10 +25,7 @@ export default function Page() {
                   $expanded={inputs.tagsExpanded}
                   selection={inputs.selectedTab}
                   onSelectTab={outputs.onSelectTab}
-                  options={[
-                    { label: 'Tags', panel: Tags },
-                    { label: 'Flashcards', panel: ActiveNoteFlashCards },
-                  ]}
+                  options={inputs.tabOptions}
                 />
               </>
             }
