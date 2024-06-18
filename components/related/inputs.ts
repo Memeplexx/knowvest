@@ -18,13 +18,13 @@ export const useInputs = () => {
         noteId: group[0]!.noteId,
         count: group.filter(nt => synonymIds.includes(nt.synonymId!)).length,
       }))
-      .filter(({ count }) => count > 0)
+      .filter(e => e.count > 0)
       .sort((a, b) => b.count - a.count)
       .slice(0, (index + 1) * pageSize)
-      .map(({ noteId, count }) => ({
-        note: notes.find(n => n.id === +noteId)!,
-        count,
-        matches: `${count} match${count === 1 ? '' : 'es'}`,
+      .map(e => ({
+        note: notes.find(n => n.id === e.noteId)!,
+        count: e.count,
+        matches: `${e.count} match${e.count === 1 ? '' : 'es'}`,
       }))
       .filter(e => !!e.note); // note may not be found when note is deleted
   }, [activeNoteId, index, notes, synonymIds, noteTags]);

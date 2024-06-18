@@ -106,8 +106,7 @@ export const useInputs = () => {
           if (toInsert.length)
             store.noteTags.$pushMany(toInsert.map(t => ({ ...t, noteId })));
         });
-      if (!first)
-        return;
+      if (!first) return;
       first = false;
       const synonymIds = event.data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!).distinct();
       store.synonymIds.$set(synonymIds);
@@ -124,49 +123,43 @@ export const useInputs = () => {
 
     // Ensure that changes to tags in the store are sent to the worker
     component.listen = store.tags.$onChangeArray(({ deleted, inserted, updated }) => {
-      if (inserted.length)
-        worker.postMessage({ type: 'addTags', data: inserted.map(sanitizeTag) });
-      if (deleted.length)
-        worker.postMessage({ type: 'removeTags', data: deleted.map(t => t.id) });
-      if (updated.length)
-        worker.postMessage({ type: 'updateTags', data: updated.map(sanitizeTag) });
+      worker.postMessage({ type: 'addTags', data: inserted.map(sanitizeTag) });
+      worker.postMessage({ type: 'removeTags', data: deleted.map(t => t.id) });
+      worker.postMessage({ type: 'updateTags', data: updated.map(sanitizeTag) });
     })
 
     // Ensure that changes to notes in the store are sent to the worker
     component.listen = store.notes.$onChangeArray(({ deleted, inserted, updated }) => {
-      if (inserted.length)
-        worker.postMessage({ type: 'addNotes', data: inserted.map(sanitizeNote) });
-      if (deleted.length)
-        deleted.forEach(n => worker.postMessage({ type: 'removeNote', data: n.id }));
-      if (updated.length)
-        updated.forEach(n => worker.postMessage({ type: 'updateNote', data: sanitizeNote(n) }));
+      worker.postMessage({ type: 'addNotes', data: inserted.map(sanitizeNote) });
+      deleted.forEach(n => worker.postMessage({ type: 'removeNote', data: n.id }));
+      updated.forEach(n => worker.postMessage({ type: 'updateNote', data: sanitizeNote(n) }));
     });
 
     // Ensure that the indexedDB is updated when the store changes
     component.listen = store.notes.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('notes', toAddOrUpdate);
-      if (deleted.length) await deleteFromDb('notes', deleted.map(n => n.id));
+      await writeToDb('notes', toAddOrUpdate);
+      await deleteFromDb('notes', deleted.map(n => n.id));
     })
     component.listen = store.tags.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('tags', toAddOrUpdate);
-      if (deleted.length) await deleteFromDb('tags', deleted.map(t => t.id));
+      await writeToDb('tags', toAddOrUpdate);
+      await deleteFromDb('tags', deleted.map(t => t.id));
     });
     component.listen = store.synonymGroups.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('synonymGroups', toAddOrUpdate);
-      if (deleted.length) await deleteFromDb('synonymGroups', deleted.map(p => p.id));
+      await writeToDb('synonymGroups', toAddOrUpdate);
+      await deleteFromDb('synonymGroups', deleted.map(p => p.id));
     });
     component.listen = store.groups.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('groups', toAddOrUpdate);
-      if (deleted.length) await deleteFromDb('groups', deleted.map(p => p.id));
+      await writeToDb('groups', toAddOrUpdate);
+      await deleteFromDb('groups', deleted.map(p => p.id));
     });
     component.listen = store.flashCards.$onChangeArray(async ({ deleted, inserted, updated }) => {
       const toAddOrUpdate = [...inserted, ...updated];
-      if (toAddOrUpdate.length) await writeToDb('flashCards', toAddOrUpdate);
-      if (deleted.length) await deleteFromDb('flashCards', deleted.map(p => p.id));
+      await writeToDb('flashCards', toAddOrUpdate);
+      await deleteFromDb('flashCards', deleted.map(p => p.id));
     });
   }();
 

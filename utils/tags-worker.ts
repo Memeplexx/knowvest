@@ -164,6 +164,7 @@ const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepRe
 }
 
 const addTags = (incomingTags: TagSummary[]) => {
+  if (!incomingTags.length) return;
   const trieLocal = new Trie();
   incomingTags.forEach(incomingTag => {
     const found = allTags.find(t => t.id === incomingTag.id);
@@ -187,6 +188,7 @@ const addTags = (incomingTags: TagSummary[]) => {
 }
 
 const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
+  if (!incomingTagIds.length) return;
   incomingTagIds.forEach(incomingTagId => {
     trie.remove(allTags.find(t => t.id === incomingTagId)!.text);
     const index = allTags.findIndex(tag => tag.id === incomingTagId);
@@ -205,6 +207,7 @@ const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
 };
 
 const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
+  if (!incomingTags.length) return;
 
   // Create some local variables for later
   const trieLocal = new Trie();
