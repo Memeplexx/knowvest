@@ -24,8 +24,9 @@ export const useOutputs = (inputs: Inputs) => {
       local.focusedGroupNameInputText.$set(groupName);
     },
     onCustomGroupNameKeyUp: async (event: TypedKeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter')
-        return await shared.completeEditGroupName();
+      if (event.key === 'Enter') {
+        return await shared.completeEditGroupName(event);
+      }
       if (event.key === 'Escape') {
         event.target.blur();
         event.stopPropagation();
@@ -189,8 +190,8 @@ export const useOutputs = (inputs: Inputs) => {
       shared.focusAutocompleteInput();
     },
     onClickDocument: useEventHandlerForDocument('click', event => {
-      if (event.detail === 0) return; // Events with a detail of 0 come from enter presses of autocomplete option. (https://github.com/facebook/react/issues/3907#issuecomment-363948471)
-      shared.doCancel(event.target);
+      // if (event.detail === 0) return; // Events with a detail of 0 come from enter presses of autocomplete option. (https://github.com/facebook/react/issues/3907#issuecomment-363948471)
+      // shared.doCancel(event.target);
     }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
       if (event.key !== 'Escape')

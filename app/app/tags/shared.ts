@@ -2,6 +2,7 @@ import { addSynonymToGroup, createGroup, createTagForGroup, updateGroup } from '
 import { addTagToSynonym, createTagForSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
+import { TypedKeyboardEvent } from '@/utils/dom-utils';
 import { Inputs } from './constants';
 
 
@@ -54,7 +55,7 @@ export const useSharedFunctions = (inputs: Inputs) => {
     notify.success('Group created');
     blurAutocompleteInput();
   }
-  const completeEditGroupName = async () => {
+  const completeEditGroupName = async (event: TypedKeyboardEvent<HTMLInputElement>) => {
     if (!inputs.groupId)
       throw new Error();
     const apiResponse = await updateGroup(inputs.groupId, inputs.focusedGroupNameInputText);
@@ -65,6 +66,7 @@ export const useSharedFunctions = (inputs: Inputs) => {
     store.groups.$mergeMatching.id.$with(apiResponse.group);
     notify.success('Group updated');
     blurAutocompleteInput();
+    event.target.blur();
   }
   const completeEditTag = async () => {
     if (!inputs.tagId)

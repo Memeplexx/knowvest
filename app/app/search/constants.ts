@@ -21,8 +21,8 @@ export type AutocompleteOptionType = {
   id: AutocompleteIdType,
   value: string | null,
   label: string,
+  count: number,
   type: SearchResultType,
-  selected: boolean,
 };
 
 export const initialState = {

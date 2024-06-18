@@ -19,10 +19,11 @@ export const useInputs = () => {
       .map(tags => ({
         value: `${tags[0]!.synonymId}-synonym`,
         type: 'synonym',
-        label: tags.map(t => t.text).join(', '),
+        label: `${tags.map(t => t.text).join(', ')}`,
+        count: noteTags.filter(nt => tags.some(t => t.synonymId === nt.synonymId)).map(nt => nt.noteId).distinct().length,
         id: tags[0]!.synonymId,
       } as AutocompleteOptionType))
-  }, [tags]);
+  }, [noteTags, tags]);
 
   const autocompleteSynonymOptionsFilteredBySelection = useMemo(() => {
     return autocompleteSynonymOptions
@@ -31,13 +32,15 @@ export const useInputs = () => {
 
   const autocompleteGroupOptions = useMemo(() => {
     return groups
-      .map(group => ({
+      .map(group => ({ group, groupSynonymIds: synonymGroups.filter(sg => sg.groupId === group.id).map(sg => sg.synonymId) }))
+      .map(({ group, groupSynonymIds }) => ({
         value: `${group.id}-group`,
         type: 'group',
         label: group.name,
         id: group.id,
-      } as AutocompleteOptionType))
-  }, [groups]);
+        count: noteTags.filter(nt => groupSynonymIds.includes(nt.synonymId!)).map(nt => nt.noteId).distinct().length,
+      } as AutocompleteOptionType));
+  }, [groups, noteTags, synonymGroups]);
 
   const autocompleteGroupOptionsFilteredBySelection = useMemo(() => {
     return autocompleteGroupOptions
@@ -61,6 +64,7 @@ export const useInputs = () => {
     return selectedSynonymIds
       .map(synonymId => tags
         .filter(tag => tag.synonymId === synonymId))
+      .filter(tags => tags.length > 0)
   }, [selectedSynonymIds, tags]);
 
   const selectedGroupTags = useMemo(() => {
@@ -84,7 +88,7 @@ export const useInputs = () => {
       .map(t => t.id);
     return noteTags
       .filter(noteTag => tagIds.includes(noteTag.id))
-      .distinct()
+      .distinct(nt => nt.noteId)
       .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
   }, [tags, noteTags, selectedSynonymIds, enabledSynonymIds, notes]);
 

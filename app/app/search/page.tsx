@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, LeftContent, NoResultsIcon, NoResultsWrapper, PageTitle, RemoveButton, RemoveIcon, Result, RightContent, SearchIcon, SearchWrapper, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, LeftContent, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, RemoveButton, RemoveIcon, Result, RightContent, SearchIcon, SearchWrapper, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
 export default function Page() {
@@ -35,7 +35,6 @@ export default function Page() {
                         <GroupsFragment
                           {...fragmentProps}
                         />
-
                       </>
                     }
                   />
@@ -115,7 +114,16 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
             onInputFocused={outputs.onAutocompleteInputFocused}
             renderOption={option => (
               <AutocompleteOption
-                children={option.label}
+                children={
+                  <>
+                    <OptionLabel
+                      children={option.label}
+                    />
+                    <OptionLabelSuffix
+                      children={option.count}
+                    />
+                  </>
+                }
               />
             )}
           />

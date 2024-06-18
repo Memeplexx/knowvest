@@ -15,7 +15,9 @@ export const useOutputs = (inputs: Inputs) => {
       }
       if (selection.type === 'group') {
         local.selectedGroupIds.$push(selection.id as GroupId);
-        local.enabledSynonymIds.$pushMany(store.$state.tags.filter(tag => tag.synonymId === selection.id).map(t => t.synonymId).distinct());
+        const groupSynonymIds = store.$state.synonymGroups.filter(sg => sg.groupId === selection.id).map(sg => sg.synonymId).distinct();
+        local.selectedSynonymIds.$merge(groupSynonymIds);
+        local.enabledSynonymIds.$merge(groupSynonymIds);
       }
     },
     onAutocompleteInputChange: (value: string) => {

@@ -95,6 +95,13 @@ export const CategoryWrapper = styled(div)`
 export const AutocompleteOption = styled(div)`
   display: flex;
   gap: 8px;
+  justify-content: space-between;
+`;
+
+export const OptionLabel = styled(div)`
+`;
+
+export const OptionLabelSuffix = styled(div)`
 `;
 
 export const Tag = styled(div) <{ $hovered: boolean, $disabled: boolean, $leftMost?: boolean, $rightMost?: boolean, $rightGap?: boolean }>`
