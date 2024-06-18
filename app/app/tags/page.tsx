@@ -22,6 +22,7 @@ import {
   SettingsButton,
   Tag,
   TagGroup,
+  TagsWrapper,
 } from './styles';
 
 
@@ -30,45 +31,49 @@ export default function TagsConfigInteractive() {
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <>
-      <Body
-        children={
-          <>
-            <LeftContent
-              children={
-                <SearchFragment
-                  {...fragmentProps}
+    <TagsWrapper
+      children={
+        <>
+          <Body
+            children={
+              <>
+                <LeftContent
+                  children={
+                    <SearchFragment
+                      {...fragmentProps}
+                    />
+                  }
                 />
-              }
-            />
-            <RightContent
-              children={
-                <>
-                  <SynonymsFragment
-                    {...fragmentProps}
-                  />
-                  <GroupsFragment
-                    {...fragmentProps}
-                  />
-                </>
-              }
-            />
-          </>
-        }
-      />
-      <Footer
-        if={!!inputs.synonymId}
-        children={
-          <FooterButton
-            onClick={outputs.onClickStartOver}
-            children='Start over'
-            aria-label='Start over'
-            title='Manage a new tag'
-            highlighted={true}
+                <RightContent
+                  children={
+                    <>
+                      <SynonymsFragment
+                        {...fragmentProps}
+                      />
+                      <GroupsFragment
+                        {...fragmentProps}
+                      />
+                    </>
+                  }
+                />
+              </>
+            }
           />
-        }
-      />
-    </>
+          <Footer
+            if={!!inputs.synonymId}
+            children={
+              <FooterButton
+                onClick={outputs.onClickStartOver}
+                children='Start over'
+                aria-label='Start over'
+                title='Manage a new tag'
+                highlighted={true}
+              />
+            }
+          />
+        </>
+      }
+    />
   );
 }
 

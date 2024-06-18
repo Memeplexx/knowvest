@@ -136,6 +136,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                         $hovered={tags[0]!.synonymId === inputs.hoveredSynonymId}
                         $rightMost={true}
                         $disabled={false}
+                        $rightGap={true}
                         onMouseOver={() => outputs.onMouseOverSelectedSynonym(tags[0]!.synonymId)}
                         onMouseOut={outputs.onMouseOutSelectedSynonym}
                         children={

@@ -1,19 +1,9 @@
 import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/actions/flashcard";
-import { useEventHandlerForDocument } from "@/utils/dom-utils";
-import { Inputs, Props } from "./constants";
+import { Inputs } from "./constants";
 
-export const useOutputs = (props: Props, inputs: Inputs) => {
-  const { local, notify, bodyRef, items, store } = inputs;
+export const useOutputs = (inputs: Inputs) => {
+  const { local, notify, items, store } = inputs;
   return {
-    onClickDocument: useEventHandlerForDocument('click', event => {
-      if (event.target.parentNode === null) // element was removed from the DOM
-        return;
-      if (event.target.hasAncestorWithTagNames('BUTTON', 'INPUT'))
-        return;
-      if (bodyRef.current?.contains(event.target))
-        return;
-      props.onHide();
-    }),
     onToggleView: () => {
       local.showQuestions.$toggle();
     },

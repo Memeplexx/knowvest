@@ -20,6 +20,7 @@ const initialState = {
   synonymIds: new Array<SynonymId>(),
   noteTags: {} as { [noteId: NoteId]: Array<TagResult> },
   headerExpanded: true,
+  showLoader: false,
 }
 
 const store = createStore(initialState);

@@ -55,7 +55,7 @@ export const LeftContent = styled(div)`
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 16px;
+  padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
 `;
 
@@ -66,7 +66,7 @@ export const RightContent = styled(div)`
   overflow-y: auto;
   overflow-x: hidden;
   background-color: rgba(0,0,0,0.2);
-  padding: 16px;
+  padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
 `;
 

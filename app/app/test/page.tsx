@@ -1,18 +1,14 @@
 "use client";
 import { FaSadCry, FaSmileBeam } from "react-icons/fa";
-import { Props } from "./constants";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { Answer, Body, Container, Footer, FooterRightContent, NextButton, NoResults, NoResultsIcon, Question, ToggleViewButton } from "./styles";
 
-export const FlashCardTester = (
-  props: Props
-) => {
+export default function Page() {
   const inputs = useInputs();
-  const outputs = useOutputs(props, inputs);
+  const outputs = useOutputs(inputs);
   return (
     <Container
-      ref={inputs.bodyRef}
       children={
         <>
           <Body

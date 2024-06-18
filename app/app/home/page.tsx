@@ -1,7 +1,6 @@
 "use client";
 import { ActiveNoteFlashCards } from '@/components/active-note-flash-cards';
 import { Tags } from '@/components/tags';
-import '@/utils/polyfills';
 import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/style-utils';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';

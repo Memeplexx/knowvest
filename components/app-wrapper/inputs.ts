@@ -16,9 +16,9 @@ export const useInputs = () => {
   if (typeof (navigator) !== 'undefined' && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
     configureDevtools();
 
-  const { store, state: { headerExpanded } } = useStore();
+  const { store, state: { headerExpanded, showLoader } } = useStore();
   const component = useComponent();
-  const result = { store, headerExpanded, isReady: component.hasCompletedAsyncProcess };
+  const result = { store, headerExpanded, isReady: component.hasCompletedAsyncProcess, showLoader };
   useMediaQueryListener(store.mediaQuery.$set);
 
   // Update header visibility as required

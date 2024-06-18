@@ -1,18 +1,16 @@
+import { Button } from "@/components/button";
+import { div, element } from "@/components/html";
+import ReadonlyNote from "@/components/readonly-note";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
-import { Button } from "../button";
-import { div, element } from "../html";
-import ReadonlyNote from "../readonly-note";
+
 
 export const Container = styled.div`
-  width: 600px;
-  height: 600px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  @media (max-width: calc(600px + 16px)) {
-    width: calc(100vw);
-  }
+  padding: 4px;
+  gap: 4px;
 `;
 
 export const Question = styled(div)`
@@ -25,11 +23,15 @@ export const Answer = styled(element(ReadonlyNote))`
 export const Body = styled(div)`
   flex: 1;
   display: flex;
+  background-image: linear-gradient(to right, #242020, #191919);
+  padding: 60px;
 `;
 
 export const Footer = styled(div)`
   display: flex;
   justify-content: space-between;
+  background-image: linear-gradient(to right, #242020, #191919);
+  padding: 16px 60px;
 `;
 
 export const ToggleViewButton = styled(Button)`

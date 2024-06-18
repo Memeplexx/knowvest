@@ -5,11 +5,11 @@ import styled, { css } from "styled-components";
 import { ButtonIcon } from "../button-icon";
 import { div } from "../html";
 
-export const Wrapper = styled.div<{ $show?: boolean }>`
+export const NavBarWrapper = styled.div<{ $show?: boolean }>`
   z-index: 2;
   display: flex;
   align-items: center;
-  padding: 8px;
+  padding: 8px 24px;
   transition: 0.2s all;
   justify-content: space-between;
   gap: 12px;
@@ -51,13 +51,19 @@ export const UserImage = styled(Image)`
   cursor: pointer;
 `;
 
-export const SearchButton = styled(ButtonIcon)`
+export const SearchButton = styled(ButtonIcon) <{ $active: boolean }>`
   background-color: rgba(255,255,255,0.2);
+  ${p => p.$active && css`
+    border: 1px solid #FFF;
+  `}
 `;
 
-export const FlashCardButton = styled(ButtonIcon)`
+export const FlashCardButton = styled(ButtonIcon) <{ $active: boolean }>`
   position: relative;
   background-color: rgba(255,255,255,0.2);
+  ${p => p.$active && css`
+    border: 1px solid #FFF;
+  `}
 `;
 
 export const FlashCardIcon = styled(PiStudentFill)`

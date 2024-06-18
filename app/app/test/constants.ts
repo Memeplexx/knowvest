@@ -1,9 +1,5 @@
 import { useInputs } from "./inputs";
 
-export type Props = {
-  onHide: () => void,
-};
-
 export const initialState = {
   showOptions: false,
   showSearchDialog: false,

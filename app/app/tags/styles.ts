@@ -3,22 +3,15 @@ import { Button } from '@/components/button';
 import { ButtonIcon } from '@/components/button-icon';
 import { div, element } from '@/components/html';
 import { Loader } from '@/components/loader';
-import { defaultFontFamily, mobileBreakPoint } from '@/utils/style-utils';
+import { mobileBreakPoint } from '@/utils/style-utils';
 import styled, { css } from 'styled-components';
 
 
-export const Wrapper = styled.div`
-  min-height: 0;
-  width: 100vw;
-  height: 100%;
+export const TagsWrapper = styled(div)`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  ${defaultFontFamily.style};
-  background-color: black;
-`;
-
-
-export const CloseButton = styled(ButtonIcon)`
+  display: flex;
 `;
 
 export const BodyHeader = styled(div)`
@@ -103,7 +96,7 @@ export const Footer = styled(div)`
   background-image: linear-gradient(to right, #242020, #191919);
   margin: 4px;
   margin-top: 0;
-  padding: 16px;
+  padding: 16px 60px;
   @media (max-width: 540px) {
     padding: 8px;
   }
@@ -166,12 +159,12 @@ export const LoaderPlaceholder = styled(Loader)`
 
 export const LeftContent = styled.div`
   flex: 1;
-  padding: 16px;
+  padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const RightContent = styled.div`
   flex: 1;
-  padding: 16px;
+  padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
 `;

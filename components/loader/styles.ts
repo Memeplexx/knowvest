@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 
 export const Container = styled.div<{ $if: boolean }>`
-  transition: all 0.4s 0.4s;
+  transition: all 0.4s;
   cursor: not-allowed;
   display: flex;
   align-items: center;

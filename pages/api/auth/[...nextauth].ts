@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   session: {
-    maxAge: 60 * 60 * 8
+    maxAge: 60 * 60 * 8 * 4
   },
   pages: {
     signIn: "/login",

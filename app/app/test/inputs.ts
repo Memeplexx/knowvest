@@ -1,7 +1,7 @@
+import { useNotifier } from "@/components/notifier";
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { isAfter } from "date-fns";
-import { useMemo, useRef } from "react";
-import { useNotifier } from "../notifier";
+import { useMemo } from "react";
 import { initialState } from "./constants";
 
 export const useInputs = () => {
@@ -9,7 +9,6 @@ export const useInputs = () => {
   const { store, state: { flashCards } } = useStore();
   const { local } = useLocalStore('flashCardTester', initialState);
   const notify = useNotifier();
-  const bodyRef = useRef<HTMLDivElement>(null);
 
   const items = useMemo(() => {
     return flashCards
@@ -23,6 +22,5 @@ export const useInputs = () => {
     ...local.$state,
     items,
     notify,
-    bodyRef,
   }
 }

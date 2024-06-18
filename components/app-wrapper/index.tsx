@@ -8,7 +8,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
   return (
     <>
       <LoaderPlaceholder
-        if={!inputs.isReady}
+        if={!inputs.isReady || inputs.showLoader}
       />
       <Wrapper
         if={inputs.isReady}
