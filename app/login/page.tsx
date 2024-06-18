@@ -5,7 +5,7 @@ import { LoginEvents } from "./events";
 import { CenterContent, Divider, ProviderButton, Providers, SubTitle, Title, Wrapper } from "./styles";
 
 
-export default async function PageInteractive() {
+export default async function Page() {
   const providers = Object.values(authOptions.providers);
   return (
     <>

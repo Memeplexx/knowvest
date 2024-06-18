@@ -8,7 +8,7 @@ import { CenterContent, Divider, Title, Wrapper } from './page/styles';
 export default async function Index() {
   const session = await getServerSession(authOptions);
   if (session)
-    redirect('/home');
+    redirect('/app/home');
   return (
     <Wrapper
       children={

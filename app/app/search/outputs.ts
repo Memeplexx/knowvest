@@ -37,7 +37,7 @@ export const useOutputs = (inputs: Inputs) => {
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.activeNoteId.$set(noteId);
       store.synonymIds.$set(synonymIds);
-      inputs.router.push('/home');
+      inputs.router.push('./home');
       // props.onHide();
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {
