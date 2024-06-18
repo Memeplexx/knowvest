@@ -1,4 +1,5 @@
 import { GroupId, NoteId, SynonymId } from "@/actions/types";
+import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { MouseEvent } from "react";
 import { Inputs } from "./constants";
 
@@ -38,7 +39,6 @@ export const useOutputs = (inputs: Inputs) => {
       store.activeNoteId.$set(noteId);
       store.synonymIds.$set(synonymIds);
       inputs.router.push('./home');
-      // props.onHide();
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {
       local.showAutocompleteOptions.$set(showAutocompleteOptions);
@@ -46,21 +46,17 @@ export const useOutputs = (inputs: Inputs) => {
     onAutocompleteInputFocused: () => {
       local.showAutocompleteOptions.$set(true);
     },
-    // onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
-    //   if (event.key !== 'Escape')
-    //     return;
-    //   if (inputs.showAutocompleteOptions)
-    //     return local.showAutocompleteOptions.$set(false);
-    //   props.onHide();
-    // }),
+    onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
+      if (event.key !== 'Escape')
+        return;
+      if (inputs.showAutocompleteOptions)
+        return local.showAutocompleteOptions.$set(false);
+    }),
     onClickTabButton: () => {
       if (inputs.showingTab === 'search')
         return local.$patch({ showingTab: 'results', showSearchPane: false, showResultsPane: true })
       if (inputs.showingTab === 'results')
         return local.$patch({ showingTab: 'search', showSearchPane: true, showResultsPane: false })
-    },
-    onClickCloseButton: () => {
-      // props.onHide();
     },
     onClickToggleSynonym: (synonymId: SynonymId) => (event: MouseEvent) => {
       event.stopPropagation();
@@ -70,5 +66,11 @@ export const useOutputs = (inputs: Inputs) => {
       else
         local.enabledSynonymIds.$set([...toggledSynonymIds, synonymId]);
     },
+    onClickStartOver: () => {
+      local.selectedSynonymIds.$set([]);
+      local.selectedGroupIds.$set([]);
+      local.enabledSynonymIds.$set([]);
+      local.autocompleteText.$set('');
+    }
   };
 }

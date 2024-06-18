@@ -1,11 +1,10 @@
 "use client";
 import { Autocomplete } from '@/components/autocomplete';
-import { CloseIcon } from '@/utils/style-utils';
 import { Fragment } from 'react';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, BodyWrapper, CategoryWrapper, CloseButton, LeftContent, RemoveButton, RemoveIcon, Result, RightContent, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, BodyGroup, BodyHeader, BodyWrapper, CategoryWrapper, Footer, FooterButton, LeftContent, NoResultsIcon, NoResultsWrapper, PageTitle, RemoveButton, RemoveIcon, Result, RightContent, SearchIcon, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
 export default function SearchInteractive() {
@@ -36,6 +35,7 @@ export default function SearchInteractive() {
                         <GroupsFragment
                           {...fragmentProps}
                         />
+
                       </>
                     }
                   />
@@ -46,6 +46,18 @@ export default function SearchInteractive() {
               {...fragmentProps}
             />
           </>
+        }
+      />
+      <Footer
+        if={!!inputs.notesByTags.length}
+        children={
+          <FooterButton
+            onClick={outputs.onClickStartOver}
+            children='Start over'
+            aria-label='Start over'
+            title='Manage a new tag'
+            highlighted={true}
+          />
         }
       />
     </>
@@ -70,11 +82,6 @@ const TabsFragment = ({ inputs, outputs }: FragmentProps) => {
                   aria-label={inputs.tabButtonText}
                   highlighted={false}
                 />
-                <CloseButton
-                  children={<CloseIcon />}
-                  onClick={outputs.onClickCloseButton}
-                  aria-label='Close'
-                />
               </>
             }
           />
@@ -86,22 +93,36 @@ const TabsFragment = ({ inputs, outputs }: FragmentProps) => {
 
 const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
-    <Autocomplete<AutocompleteOptionType>
-      ref={inputs.autocompleteRef}
-      options={inputs.autocompleteOptions}
-      inputPlaceholder='Search Tags and Groups'
-      onValueChange={outputs.onAutocompleteSelected}
-      onInputTextChange={outputs.onAutocompleteInputChange}
-      inputText={inputs.autocompleteText}
-      onShowOptionsChange={outputs.onAutocompleteShowOptionsChange}
-      showOptions={inputs.showAutocompleteOptions}
-      onInputFocused={outputs.onAutocompleteInputFocused}
-      renderOption={option => (
-        <AutocompleteOption
-          children={option.label}
-        />
-      )}
+    <BodyGroup
+      children={
+        <>
+          <BodyHeader
+            children={
+              <PageTitle
+                children='Search Tags and Groups'
+              />
+            }
+          />
+          <Autocomplete<AutocompleteOptionType>
+            ref={inputs.autocompleteRef}
+            options={inputs.autocompleteOptions}
+            inputPlaceholder='Start typing...'
+            onValueChange={outputs.onAutocompleteSelected}
+            onInputTextChange={outputs.onAutocompleteInputChange}
+            inputText={inputs.autocompleteText}
+            onShowOptionsChange={outputs.onAutocompleteShowOptionsChange}
+            showOptions={inputs.showAutocompleteOptions}
+            onInputFocused={outputs.onAutocompleteInputFocused}
+            renderOption={option => (
+              <AutocompleteOption
+                children={option.label}
+              />
+            )}
+          />
+        </>
+      }
     />
+
   )
 }
 
@@ -214,14 +235,32 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
     <RightContent
       if={inputs.showResultsPane}
-      children={inputs.notesByTags.map(note => (
-        <Result
-          key={note.id}
-          note={note}
-          synonymIds={inputs.local.enabledSynonymIds}
-          onClick={() => outputs.onClickResult(note.id)}
-        />
-      ))}
+      children={
+        <>
+          {inputs.notesByTags.map(note => (
+            <Result
+              key={note.id}
+              note={note}
+              synonymIds={inputs.local.enabledSynonymIds}
+              onClick={() => outputs.onClickResult(note.id)}
+            />
+          ))}
+          <NoResultsWrapper
+            if={!inputs.notesByTags.length}
+            children={
+              <>
+                <NoResultsIcon
+                  if={!!inputs.autocompleteText}
+                />
+                <SearchIcon
+                  if={!inputs.autocompleteText}
+                />
+                {inputs.autocompleteText ? 'No results found' : 'Start typing to search'}
+              </>
+            }
+          />
+        </>
+      }
     />
   )
 }

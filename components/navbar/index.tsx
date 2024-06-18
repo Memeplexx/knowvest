@@ -21,6 +21,7 @@ export const Navbar = (props: Props) => {
         <>
           <Link
             href='./home'
+            onClick={outputs.onClickNavigate}
             children={
               <ImageLogo
                 width={44}

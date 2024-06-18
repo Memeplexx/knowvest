@@ -91,9 +91,6 @@ export const useSharedFunctions = (inputs: Inputs) => {
       return local.$patch({ groupSynonymId: null, autocompleteText: '' });
     if (inputs.modal)
       return local.modal.$set(null);
-    // if (inputs.modalRef.current?.contains(eventTarget as HTMLElement))
-    //   return;
-    // props.onHide();
   }
   const onAutocompleteSelectedWhileNothingIsSelected = async ({ tagId }: { tagId: TagId }) => {
     const tag = store.$state.tags.findOrThrow(t => t.id === tagId);

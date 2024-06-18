@@ -2,10 +2,11 @@
 import { Button } from '@/components/button';
 import { ButtonIcon } from '@/components/button-icon';
 import { div, element } from '@/components/html';
-import { Loader } from '@/components/loader';
 import ReadonlyNote from '@/components/readonly-note';
 import { mobileBreakPoint } from '@/utils/style-utils';
+import { GiLighthouse } from 'react-icons/gi';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { WiCloudyWindy } from 'react-icons/wi';
 import styled, { css } from "styled-components";
 
 const gap = '4px';
@@ -153,7 +154,67 @@ export const Result = styled(ReadonlyNote)`
   }
 `;
 
-export const LoaderPlaceholder = styled(Loader)`
-  z-index: 9;
+export const BodyGroup = styled(div) <{ $active?: boolean }>`
+  flex-direction: column;
+  column-gap: 16px;
+  row-gap: 8px;
+  display: flex;
+  padding: 24px;
+  margin: 0 -24px;
+  pointer-events: all;
+  ${p => p.$active && css`
+    background-color: rgba(0,0,0,0.1);
+  `}
+  @media (max-width: ${mobileBreakPoint}) {
+    margin: 0;
+    padding: 8px;
+  }
+`;
+
+export const BodyHeader = styled(div)`
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 40px;
+`;
+
+export const PageTitle = styled.div`
+`;
+
+export const NoResultsWrapper = styled(div)`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: grey;
+`;
+
+export const NoResultsIcon = styled(element(WiCloudyWindy))`
+  width: 64px;
+  height: auto;
+`;
+
+export const SearchIcon = styled(element(GiLighthouse))`
+  width: 64px;
+  height: auto;
+`;
+
+export const Footer = styled(div)`
+  display: flex;
+  flex-direction: column;
+  place-items: end;
   background-image: linear-gradient(to right, #242020, #191919);
+  margin: 4px;
+  margin-top: 0;
+  padding: 16px 60px;
+  @media (max-width: 540px) {
+    padding: 8px;
+  }
+`;
+
+export const FooterButton = styled(element(Button))`
 `;

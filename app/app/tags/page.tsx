@@ -17,8 +17,10 @@ import {
   Footer,
   FooterButton,
   LeftContent,
+  NoResultsWrapper,
   PageTitle,
   RightContent,
+  SearchIcon,
   SettingsButton,
   Tag,
   TagGroup,
@@ -52,6 +54,17 @@ export default function TagsConfigInteractive() {
                       />
                       <GroupsFragment
                         {...fragmentProps}
+                      />
+                      <NoResultsWrapper
+                        if={!inputs.tagsInSynonymGroup.length && !inputs.tagsInCustomGroups.length}
+                        children={
+                          <>
+                            <SearchIcon
+                              if={!inputs.autocompleteText}
+                            />
+                            start typing to search
+                          </>
+                        }
                       />
                     </>
                   }

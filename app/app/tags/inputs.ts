@@ -124,10 +124,10 @@ export const useInputs = () => {
     if (tagId)
       return 'Update selected Tag';
     if (synonymId)
-      return 'Search for Tag to add to active Group';
+      return 'Search for a Tag to add to active Group';
     if (groupId)
-      return 'Search for Tag to add to selected Group';
-    return 'Search for Tag or create a new Tag';
+      return 'Search for a Tag to add to selected Group';
+    return 'Search for a Tag or create a new Tag';
   }, [groupId, synonymId, tagId]);
 
   return {

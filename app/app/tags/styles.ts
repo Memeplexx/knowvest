@@ -4,6 +4,7 @@ import { ButtonIcon } from '@/components/button-icon';
 import { div, element } from '@/components/html';
 import { Loader } from '@/components/loader';
 import { mobileBreakPoint } from '@/utils/style-utils';
+import { GiLighthouse } from 'react-icons/gi';
 import styled, { css } from 'styled-components';
 
 
@@ -167,4 +168,20 @@ export const RightContent = styled.div`
   flex: 1;
   padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
+  display: flex;
+  flex-direction: column;
+`;
+
+export const NoResultsWrapper = styled(div)`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: grey;
+`;
+
+export const SearchIcon = styled(element(GiLighthouse))`
+  width: 64px;
+  height: auto;
 `;
