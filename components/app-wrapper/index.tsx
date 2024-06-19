@@ -25,6 +25,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
                   position='left'
                   onShow={outputs.onShowDrawer}
                   show={inputs.showDrawer}
+                  size={200}
                   menuContent={
                     <Menu
                       children={

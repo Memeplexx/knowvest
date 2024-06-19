@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { div } from "../html";
-import { LeftNav } from "../leftnav";
 import { Loader } from "../loader";
+import { SideNav } from "../sidenav";
 
 export const LoaderPlaceholder = styled(Loader)`
   flex: 1;
@@ -20,14 +20,13 @@ export const AppWrapperWrapper = styled(div)`
 export const Inner = styled(div)`
   flex: 1;
   display: flex;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
 `;
 
-export const Drawer = styled(LeftNav)`
+export const Drawer = styled(SideNav)`
 `;
 
 export const Menu = styled.div`
-  width: 180px;
   color: black;
 `;
