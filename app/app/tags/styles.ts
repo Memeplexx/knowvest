@@ -2,7 +2,6 @@
 import { Button } from '@/components/button';
 import { ButtonIcon } from '@/components/button-icon';
 import { div, element } from '@/components/html';
-import { Loader } from '@/components/loader';
 import { mobileBreakPoint } from '@/utils/style-utils';
 import { GiLighthouse } from 'react-icons/gi';
 import styled, { css } from 'styled-components';
@@ -13,6 +12,17 @@ export const TagsWrapper = styled(div)`
   display: flex;
   flex-direction: column;
   display: flex;
+`;
+
+export const Body = styled(div)`
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  pointer-events: none;
+  padding: 4px;
+  @media (max-width: ${mobileBreakPoint}) {
+    flex-direction: column;
+  }
 `;
 
 export const BodyHeader = styled(div)`
@@ -68,28 +78,6 @@ export const PageTitle = styled.div`
 export const FooterButton = styled(element(Button))`
 `;
 
-export const Container = styled(div)`
-  padding: 0 24px 24px 24px;
-  width: 540px;
-  height: 800px;
-  max-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  @media (max-width: 540px) {
-    max-width: 100%;
-    padding: 0;
-  }
-`;
-
-export const Body = styled(div)`
-  flex: 1;
-  display: flex;
-  gap: 4px;
-  pointer-events: none;
-  padding: 4px;
-`;
-
 export const Footer = styled(div)`
   display: flex;
   flex-direction: column;
@@ -98,7 +86,7 @@ export const Footer = styled(div)`
   margin: 4px;
   margin-top: 0;
   padding: 16px 60px;
-  @media (max-width: 540px) {
+  @media (max-width: ${mobileBreakPoint}) {
     padding: 8px;
   }
 `;
@@ -153,15 +141,15 @@ export const AutocompleteOptionSynonyms = styled.div`
   color: grey;
 `;
 
-export const LoaderPlaceholder = styled(Loader)`
-  z-index: 9;
-  background-image: linear-gradient(to right, #242020, #191919);
-`;
-
 export const LeftContent = styled.div`
   flex: 1;
   padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
+  @media (max-width: ${mobileBreakPoint}) {
+    margin: 0;
+    padding: 0;
+    flex: 0;
+  }
 `;
 
 export const RightContent = styled.div`
@@ -170,6 +158,10 @@ export const RightContent = styled.div`
   background-image: linear-gradient(to right, #242020, #191919);
   display: flex;
   flex-direction: column;
+  @media (max-width: ${mobileBreakPoint}) {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 export const NoResultsWrapper = styled(div)`

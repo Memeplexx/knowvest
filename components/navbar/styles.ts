@@ -24,6 +24,16 @@ export const NavBarWrapper = styled.div<{ $show?: boolean }>`
 export const ImageLogo = styled(Image)`
 `;
 
+export const LeftContent = styled(div)`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+`;
+
+export const PageTitle = styled.div`
+  font-size: 24px;
+`;
+
 export const RightContent = styled(div)`
   display: flex;
   gap: 8px;

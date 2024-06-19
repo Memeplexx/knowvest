@@ -8,7 +8,7 @@ import { Popup } from '../popup';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, NavBarWrapper, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
+import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, LeftContent, NavBarWrapper, PageTitle, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
 
 
 export const Navbar = (props: Props) => {
@@ -19,18 +19,27 @@ export const Navbar = (props: Props) => {
       $show={!!props.if}
       children={
         <>
-          <Link
-            href='./home'
-            onClick={outputs.onClickNavigate}
+          <LeftContent
             children={
-              <ImageLogo
-                width={44}
-                height={44}
-                src={farmImage}
-                alt='logo'
-                placeholder="blur"
-                blurDataURL={farmImage.src}
-              />
+              <>
+                <Link
+                  href='./home'
+                  onClick={outputs.onClickNavigate}
+                  children={
+                    <ImageLogo
+                      width={44}
+                      height={44}
+                      src={farmImage}
+                      alt='logo'
+                      placeholder="blur"
+                      blurDataURL={farmImage.src}
+                    />
+                  }
+                />
+                <PageTitle
+                  children={inputs.pageTitle}
+                />
+              </>
             }
           />
           <RightContent

@@ -58,6 +58,9 @@ export const LeftContent = styled(div)`
   gap: 32px;
   padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
+  @media screen and (max-width: ${mobileBreakPoint}) {
+    padding: 16px;
+  }
 `;
 
 export const RightContent = styled(div)`
@@ -69,6 +72,9 @@ export const RightContent = styled(div)`
   background-color: rgba(0,0,0,0.2);
   padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
+  @media screen and (max-width: ${mobileBreakPoint}) {
+    padding: 16px;
+  }
 `;
 
 export const TagsOuterWrapper = styled(div)`
@@ -174,7 +180,7 @@ export const BodyGroup = styled(div) <{ $active?: boolean }>`
   `}
   @media (max-width: ${mobileBreakPoint}) {
     margin: 0;
-    padding: 8px;
+    padding: 0;
   }
 `;
 

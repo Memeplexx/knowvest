@@ -11,18 +11,33 @@ export const useInputs = () => {
   const { store, state: { flashCards } } = useStore();
   const { local } = useLocalStore('navBar', initialState);
   useMemo(() => addToWhitelist([store.showLoader]), [store]);
-  const routerPatchName = usePathname()!;
-  const previousRoutePath = useRef(routerPatchName);
-  if (previousRoutePath.current !== routerPatchName) {
-    previousRoutePath.current = routerPatchName;
+  const routerPathName = usePathname()!;
+  const previousRoutePath = useRef(routerPathName);
+  if (previousRoutePath.current !== routerPathName) {
+    previousRoutePath.current = routerPathName;
     store.showLoader.$set(false);
   }
+  const pageTitle = useMemo(() => {
+    switch (routerPathName) {
+      case '/app/home':
+        return 'Home';
+      case '/app/tags':
+        return 'Configure Tags';
+      case '/app/search':
+        return 'Search for Notes';
+      case '/app/test':
+        return 'Flash Card Tester';
+      default:
+        return 'Unknown';
+    }
+  }, [routerPathName]);
 
   return {
     ...local.$state,
+    pageTitle,
     store,
     local,
-    routerPatchName,
+    routerPatchName: routerPathName,
     session: useSession().data,
     flashCardCount: useMemo(() => flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length, [flashCards]),
   }
