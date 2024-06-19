@@ -5,7 +5,7 @@ import styled, { css } from "styled-components";
 import { ButtonIcon } from "../button-icon";
 import { div } from "../html";
 
-export const NavBarWrapper = styled.div<{ $show?: boolean }>`
+export const NavBarWrapper = styled.div`
   z-index: 2;
   display: flex;
   align-items: center;
@@ -14,11 +14,8 @@ export const NavBarWrapper = styled.div<{ $show?: boolean }>`
   justify-content: space-between;
   gap: 12px;
   background-image: linear-gradient(to right, #131313, #212121);
-  margin-top: -64px;
   position: relative;
-  ${p => p.$show && css`
-    margin-top: 0;
-  `}
+  margin-top: 0;
 `;
 
 export const ImageLogo = styled(Image)`

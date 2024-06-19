@@ -15,17 +15,3 @@ export const AppWrapperWrapper = styled(div)`
   display: flex;
   flex-direction: column;
 `;
-
-// export const Inner = styled(div)`
-//   flex: 1;
-//   display: flex;
-//   overflow: hidden;
-//   position: relative;
-// `;
-
-// export const Drawer = styled(SideNav)`
-// `;
-
-// export const Menu = styled.div`
-//   color: black;
-// `;

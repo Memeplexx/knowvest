@@ -52,6 +52,8 @@ export const MenuContent = styled.div`
   background-color: #fff;
   flex: 1;
   display: flex;
+  flex-direction: column;
+  color: black;
 `;
 
 export const SideNavOverlay = styled.div<{ $show: boolean }>`

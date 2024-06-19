@@ -8,7 +8,7 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { flashCards } } = useStore();
+  const { store, state: { flashCards, mediaQuery } } = useStore();
   const { local } = useLocalStore('navBar', initialState);
   useMemo(() => addToWhitelist([store.showLoader]), [store]);
   const routerPathName = usePathname()!;
@@ -18,19 +18,20 @@ export const useInputs = () => {
     store.showLoader.$set(false);
   }
   const pageTitle = useMemo(() => {
+    const narrow = mediaQuery === 'md' || mediaQuery === 'sm' || mediaQuery === 'xs';
     switch (routerPathName) {
       case '/app/home':
         return 'Home';
       case '/app/tags':
-        return 'Configure Tags';
+        return narrow ? 'Tags' : 'Configure Tags';
       case '/app/search':
-        return 'Search for Notes';
+        return narrow ? 'Search' : 'Search for Notes';
       case '/app/test':
-        return 'Flash Card Tester';
+        return narrow ? 'Test' : 'Flash Card Tester';
       default:
         return 'Unknown';
     }
-  }, [routerPathName]);
+  }, [routerPathName, mediaQuery]);
 
   return {
     ...local.$state,

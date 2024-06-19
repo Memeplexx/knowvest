@@ -5,18 +5,16 @@ import Link from 'next/link';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
 import { Popup } from '../popup';
-import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, LeftContent, NavBarWrapper, PageTitle, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
 
 
-export const Navbar = (props: Props) => {
+export const Navbar = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
     <NavBarWrapper
-      $show={!!props.if}
       children={
         <>
           <LeftContent
