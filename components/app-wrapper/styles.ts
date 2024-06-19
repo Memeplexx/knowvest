@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { div } from "../html";
 import { Loader } from "../loader";
-import { SideNav } from "../sidenav";
 
 export const LoaderPlaceholder = styled(Loader)`
   flex: 1;
@@ -17,16 +16,16 @@ export const AppWrapperWrapper = styled(div)`
   flex-direction: column;
 `;
 
-export const Inner = styled(div)`
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-`;
+// export const Inner = styled(div)`
+//   flex: 1;
+//   display: flex;
+//   overflow: hidden;
+//   position: relative;
+// `;
 
-export const Drawer = styled(SideNav)`
-`;
+// export const Drawer = styled(SideNav)`
+// `;
 
-export const Menu = styled.div`
-  color: black;
-`;
+// export const Menu = styled.div`
+//   color: black;
+// `;

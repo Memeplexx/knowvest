@@ -1,12 +1,11 @@
 "use client"
 import { Navbar } from "../navbar";
 import { useInputs } from "./inputs";
-import { useOutputs } from "./outputs";
-import { AppWrapperWrapper, Drawer, Inner, LoaderPlaceholder, Menu } from "./styles";
+import { AppWrapperWrapper, LoaderPlaceholder } from "./styles";
 
 export function AppWrapper({ children }: { children: React.ReactNode }) {
   const inputs = useInputs();
-  const outputs = useOutputs(inputs);
+  // const outputs = useOutputs(inputs);
   return (
     <>
       <LoaderPlaceholder
@@ -17,9 +16,11 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
         children={
           <>
             <Navbar
-              if={inputs.headerExpanded}
+              // if={inputs.headerExpanded}
+              if={true}
             />
-            <Inner
+            {children}
+            {/* <Inner
               children={
                 <Drawer
                   position='left'
@@ -40,7 +41,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
                   mainContent={children}
                 />
               }
-            />
+            /> */}
           </>
         }
       />

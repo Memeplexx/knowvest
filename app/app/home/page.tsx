@@ -1,8 +1,8 @@
 "use client";
-import { DownIcon, LeftIcon, RightIcon, UpIcon } from '@/utils/style-utils';
+import { LeftIcon, RightIcon, UpIcon } from '@/utils/style-utils';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActivePane, CenterPanel, ExpandHeaderToggleButton, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, HomeWrapper, RelatedPanel, TabsPanel } from './styles';
+import { ActivePane, CenterPanel, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, HomeWrapper, RelatedPanel, TabsPanel } from './styles';
 
 
 
@@ -46,12 +46,12 @@ export default function Page() {
             children={<UpIcon />}
             aria-label='Expand Tags'
           />
-          <ExpandHeaderToggleButton
+          {/* <ExpandHeaderToggleButton
             selected={inputs.headerExpanded}
             onClick={outputs.onClickHeaderToggle}
             children={<DownIcon />}
             aria-label='Expand Header'
-          />
+          /> */}
           <ExpandRelatedToggleButton
             selected={inputs.similarExpanded}
             onClick={outputs.onClickSimilarToggle}

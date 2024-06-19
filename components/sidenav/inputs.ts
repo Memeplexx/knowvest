@@ -10,7 +10,7 @@ export const useInputs = (propsIncoming: PropsWithChildren<Props>) => {
 
   const props = usePropsWithDefaults({ ...propsIncoming }, defaultProps);
 
-  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0 }));
+  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, config: { friction: 0 } }));
 
   const bind = useDrag(({ down, movement: [mx, my] }) => {
     switch (props.position) {
