@@ -26,7 +26,7 @@ export type ElementProps = ReplaceKeyboardEvents<HTMLElement, HTMLAttributes<HTM
 const propsToOmit = ['if', 'children'];
 
 const stripUnKnownProps = function <P extends { children?: ReactNode } & IfProps>(props: P) {
-  return Object.keysTyped(props)
+  return (Object.keys(props) as Array<keyof P>)
     .filter(key => !propsToOmit.includes(key as string))
     .reduce((acc, key) => { acc[key] = props[key]; return acc; }, {} as P);
 }

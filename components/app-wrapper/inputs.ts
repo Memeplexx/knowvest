@@ -4,11 +4,12 @@ import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
-import { useStore } from "@/utils/store-utils";
+import { useLocalStore, useStore } from "@/utils/store-utils";
 import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { configureDevtools } from "olik/devtools";
+import { initialState } from "./constants";
 
 
 export const useInputs = () => {
@@ -17,8 +18,9 @@ export const useInputs = () => {
     configureDevtools();
 
   const { store, state: { headerExpanded, showLoader } } = useStore();
+  const { local, state } = useLocalStore('appWrapper', initialState);
   const component = useComponent();
-  const result = { store, headerExpanded, isReady: component.hasCompletedAsyncProcess, showLoader };
+  const result = { store, headerExpanded, isReady: component.hasCompletedAsyncProcess, showLoader, ...state, local };
   useMediaQueryListener(store.mediaQuery.$set);
 
   // Update header visibility as required

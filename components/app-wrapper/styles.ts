@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { div } from "../html";
+import { LeftNav } from "../leftnav";
 import { Loader } from "../loader";
 
 export const LoaderPlaceholder = styled(Loader)`
@@ -8,10 +9,25 @@ export const LoaderPlaceholder = styled(Loader)`
   background-image: linear-gradient(to right, #242020, #191919);
 `;
 
-export const Wrapper = styled(div)`
+export const AppWrapperWrapper = styled(div)`
   flex: 1;
   max-height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+`;
+
+export const Inner = styled(div)`
+  flex: 1;
+  display: flex;
+  overflow: auto;
+  position: relative;
+`;
+
+export const Drawer = styled(LeftNav)`
+`;
+
+export const Menu = styled.div`
+  width: 180px;
+  color: black;
 `;
