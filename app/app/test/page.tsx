@@ -2,13 +2,13 @@
 import { FaSadCry, FaSmileBeam } from "react-icons/fa";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { Answer, Body, Container, Footer, FooterRightContent, NextButton, NoResults, NoResultsIcon, Question, ToggleViewButton } from "./styles";
+import { Answer, Body, Footer, FooterRightContent, NextButton, NoResults, NoResultsIcon, Question, TestWrapper, ToggleViewButton } from "./styles";
 
 export default function Page() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
-    <Container
+    <TestWrapper
       children={
         <>
           <Body
