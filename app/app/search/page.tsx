@@ -54,8 +54,8 @@ export default function Page() {
                   if={inputs.isMobileWidth}
                   onClick={outputs.onClickTabButton}
                   highlighted={false}
-                  children={inputs.showResultsPane ? 'Search' : `Results (${inputs.notesByTags.length})`}
-                  aria-label={inputs.showResultsPane ? 'Search' : 'Results'}
+                  children={inputs.showResultsPane ? 'View search' : `View results (${inputs.notesByTags.length})`}
+                  aria-label={inputs.showResultsPane ? 'View search' : 'View results'}
                 />
               }
             />
