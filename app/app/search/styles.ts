@@ -197,12 +197,10 @@ export const SearchIcon = styled(element(GiLighthouse))`
 export const Footer = styled(div)`
   display: flex;
   background-image: linear-gradient(to right, #131313, #212121);
-  margin: 4px;
-  margin-top: 0;
   padding: 16px 60px;
   justify-content: space-between;
   @media (max-width: ${mobileBreakPoint}) {
-    padding: 8px;
+    padding: 8px 24px;
   }
 `;
 

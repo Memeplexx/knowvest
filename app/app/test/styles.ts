@@ -35,7 +35,7 @@ export const Footer = styled(div)`
   background-image: linear-gradient(to right, #131313, #212121);
   padding: 16px 60px;
   @media screen and (max-width: ${mobileBreakPoint}) {
-    padding: 8px 16px; 
+    padding: 8px 24px;
   }
 `;
 
