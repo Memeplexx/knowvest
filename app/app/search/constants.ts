@@ -30,7 +30,7 @@ export const initialState = {
   selectedSynonymIds: new Array<SynonymId>(),
   enabledSynonymIds: new Array<SynonymId>(),
   selectedGroupIds: new Array<GroupId>(),
-  showingTab: 'search' as 'search' | 'results',
+  showingPane: 'search' as 'search' | 'results',
   showSearchPane: true,
   showResultsPane: true,
   screenIsNarrow: false,

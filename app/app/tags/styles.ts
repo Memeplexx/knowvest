@@ -17,9 +17,7 @@ export const TagsWrapper = styled(div)`
 export const Body = styled(div)`
   flex: 1;
   display: flex;
-  gap: 4px;
   pointer-events: none;
-  padding: 4px;
   @media (max-width: ${mobileBreakPoint}) {
     flex-direction: column;
   }
@@ -68,7 +66,7 @@ export const BodyGroup = styled(div) <{ $active?: boolean }>`
   }
   @media (max-width: ${mobileBreakPoint}) {
     margin: 0;
-    padding: 8px;
+    padding: 24px;
   }
 `;
 
@@ -82,7 +80,7 @@ export const Footer = styled(div)`
   display: flex;
   flex-direction: column;
   place-items: end;
-  background-image: linear-gradient(to right, #242020, #191919);
+  background-image: linear-gradient(to right, #131313, #212121);
   margin: 4px;
   margin-top: 0;
   padding: 16px 60px;

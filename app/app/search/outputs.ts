@@ -55,10 +55,10 @@ export const useOutputs = (inputs: Inputs) => {
         return local.showAutocompleteOptions.$set(false);
     }),
     onClickTabButton: () => {
-      if (inputs.showingTab === 'search')
-        return local.$patch({ showingTab: 'results', showSearchPane: false, showResultsPane: true })
-      if (inputs.showingTab === 'results')
-        return local.$patch({ showingTab: 'search', showSearchPane: true, showResultsPane: false })
+      if (inputs.showingPane === 'search')
+        return local.$patch({ showingPane: 'results', showSearchPane: false, showResultsPane: true })
+      if (inputs.showingPane === 'results')
+        return local.$patch({ showingPane: 'search', showSearchPane: true, showResultsPane: false })
     },
     onClickToggleSynonym: (synonymId: SynonymId) => (event: MouseEvent) => {
       event.stopPropagation();

@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, LeftContent, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, RemoveButton, RemoveIcon, Result, RightContent, SearchIcon, SearchWrapper, TabButton, TabTitle, TabsButtons, TabsWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, RemoveButton, RemoveIcon, Result, ResultsContent, SearchContent, SearchIcon, SearchWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
 export default function Page() {
@@ -13,13 +13,10 @@ export default function Page() {
   const fragmentProps = { inputs, outputs };
   return (
     <>
-      <TabsFragment
-        {...fragmentProps}
-      />
       <SearchWrapper
         children={
           <>
-            <LeftContent
+            <SearchContent
               if={inputs.showSearchPane}
               children={
                 <>
@@ -50,44 +47,30 @@ export default function Page() {
       <Footer
         if={!!inputs.notesByTags.length}
         children={
-          <FooterButton
-            onClick={outputs.onClickStartOver}
-            children='Start over'
-            aria-label='Start over'
-            title='Manage a new tag'
-            highlighted={true}
-          />
+          <>
+            <div
+              children={
+                <FooterButton
+                  if={inputs.isMobileWidth}
+                  onClick={outputs.onClickTabButton}
+                  highlighted={false}
+                  children={inputs.showResultsPane ? 'Search' : `Results (${inputs.notesByTags.length})`}
+                  aria-label={inputs.showResultsPane ? 'Search' : 'Results'}
+                />
+              }
+            />
+            <FooterButton
+              onClick={outputs.onClickStartOver}
+              children='Start over'
+              aria-label='Start over'
+              title='Start a new search'
+              highlighted={true}
+            />
+          </>
         }
       />
     </>
   );
-}
-
-const TabsFragment = ({ inputs, outputs }: FragmentProps) => {
-  return (
-    <TabsWrapper
-      if={inputs.screenIsNarrow}
-      children={
-        <>
-          <TabTitle
-            children={inputs.tabTitleText}
-          />
-          <TabsButtons
-            children={
-              <>
-                <TabButton
-                  children={inputs.tabButtonText}
-                  onClick={outputs.onClickTabButton}
-                  aria-label={inputs.tabButtonText}
-                  highlighted={false}
-                />
-              </>
-            }
-          />
-        </>
-      }
-    />
-  )
 }
 
 const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
@@ -241,7 +224,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
 
 const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
-    <RightContent
+    <ResultsContent
       if={inputs.showResultsPane}
       children={
         <>

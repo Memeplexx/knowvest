@@ -29,29 +29,7 @@ export const SearchWrapper = styled(div)`
   }
 `;
 
-export const TabsWrapper = styled(div)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const TabTitle = styled(div)`
-  padding-left: 16px;
-`;
-
-export const TabsButtons = styled.div`
-  display: flex;
-  gap: 16px;
-  margin-right: 16px;
-`;
-
-export const TabButton = styled(Button)`
-`;
-
-export const CloseButton = styled(ButtonIcon)`
-`;
-
-export const LeftContent = styled(div)`
+export const SearchContent = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -59,11 +37,11 @@ export const LeftContent = styled(div)`
   padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
   @media screen and (max-width: ${mobileBreakPoint}) {
-    padding: 16px;
+    padding: 24px;
   }
 `;
 
-export const RightContent = styled(div)`
+export const ResultsContent = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -218,13 +196,12 @@ export const SearchIcon = styled(element(GiLighthouse))`
 
 export const Footer = styled(div)`
   display: flex;
-  flex-direction: column;
-  place-items: end;
-  background-image: linear-gradient(to right, #242020, #191919);
+  background-image: linear-gradient(to right, #131313, #212121);
   margin: 4px;
   margin-top: 0;
   padding: 16px 60px;
-  @media (max-width: 540px) {
+  justify-content: space-between;
+  @media (max-width: ${mobileBreakPoint}) {
     padding: 8px;
   }
 `;

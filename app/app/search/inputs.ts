@@ -8,8 +8,8 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { headerExpanded, tags, groups, synonymGroups, notes, noteTags } } = useStore();
-  const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingTab, showSearchPane } } = useLocalStore('search', initialState);
+  const { store, state: { headerExpanded, tags, groups, synonymGroups, notes, noteTags, mediaQuery } } = useStore();
+  const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
 
@@ -96,13 +96,15 @@ export const useInputs = () => {
     const state = local.$state;
     const screenIsNarrow = window.innerWidth < dialogWidth;
     const payload = {
-      showSearchPane: !screenIsNarrow || showingTab === 'search',
-      showResultsPane: !screenIsNarrow || showingTab === 'results',
+      showSearchPane: !screenIsNarrow || showingPane === 'search',
+      showResultsPane: !screenIsNarrow || showingPane === 'results',
       screenIsNarrow,
     };
     if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow)
       local.$patch(payload);
-  }, [local, showSearchPane, showingTab]));
+  }, [local, showSearchPane, showingPane]));
+
+  const isMobileWidth = mediaQuery === 'xs' || mediaQuery === 'sm'
 
   return {
     store,
@@ -115,8 +117,9 @@ export const useInputs = () => {
     selectedGroupTags,
     notesByTags,
     notes,
-    tabTitleText: showingTab === 'search' ? 'Search' : 'Results',
-    tabButtonText: showingTab === 'search' ? `Results (${notesByTags.length})` : 'Search',
+    showSearchPane: showingPane === 'search',
+    showResultsPane: !isMobileWidth || showingPane === 'results',
     router,
+    isMobileWidth,
   }
 }

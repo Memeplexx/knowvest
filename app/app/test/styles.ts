@@ -10,8 +10,6 @@ export const Container = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 4px;
-  gap: 4px;
 `;
 
 export const Question = styled(div)`
@@ -26,12 +24,15 @@ export const Body = styled(div)`
   display: flex;
   background-image: linear-gradient(to right, #242020, #191919);
   padding: 60px;
+  @media screen and (max-width: ${mobileBreakPoint}) {
+    padding: 24px; 
+  }
 `;
 
 export const Footer = styled(div)`
   display: flex;
   justify-content: space-between;
-  background-image: linear-gradient(to right, #242020, #191919);
+  background-image: linear-gradient(to right, #131313, #212121);
   padding: 16px 60px;
   @media screen and (max-width: ${mobileBreakPoint}) {
     padding: 8px 16px; 
