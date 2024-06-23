@@ -2,6 +2,7 @@
 import '@/utils/polyfills';
 import { PopupOption, SettingsIcon } from '@/utils/style-utils';
 import Link from 'next/link';
+import { HTMLAttributes } from 'react';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
 import { Popup } from '../popup';
@@ -10,11 +11,12 @@ import { useOutputs } from './outputs';
 import { FlashCardButton, FlashCardCount, FlashCardIcon, ImageLogo, LeftContent, NavBarWrapper, PageTitle, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
 
 
-export const Navbar = () => {
+export const Navbar = (props: HTMLAttributes<HTMLDivElement>) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
     <NavBarWrapper
+      {...props}
       children={
         <>
           <LeftContent
@@ -22,7 +24,6 @@ export const Navbar = () => {
               <>
                 <Link
                   href='./home'
-                  onClick={outputs.onClickNavigate}
                   children={
                     <ImageLogo
                       width={44}
@@ -45,7 +46,6 @@ export const Navbar = () => {
               <>
                 <Link
                   href='./test'
-                  onClick={outputs.onClickNavigate}
                   children={
                     <FlashCardButton
                       $active={inputs.routerPatchName.endsWith('/test')}
@@ -62,7 +62,6 @@ export const Navbar = () => {
                 />
                 <Link
                   href='./tags'
-                  onClick={outputs.onClickNavigate}
                   children={
                     <SearchButton
                       $active={inputs.routerPatchName.endsWith('/tags')}
@@ -73,7 +72,6 @@ export const Navbar = () => {
                 />
                 <Link
                   href='./search'
-                  onClick={outputs.onClickNavigate}
                   children={
                     <SearchButton
                       $active={inputs.routerPatchName.endsWith('/search')}

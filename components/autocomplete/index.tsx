@@ -1,9 +1,10 @@
 "use client";
+import { UpIcon } from '@/utils/style-utils';
 import { forwardRef, type ForwardedRef } from 'react';
 import { AutocompleteHandle, OptionBase, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteWrapper, ClearIcon, ClearTextButton, ClearTextButtonWrapper, ErrorMsg, Input, OptionItem, Options } from './styles';
+import { AutocompleteWrapper, ButtonsWrapper, ClearIcon, ClearTextButton, CloseOptionsButton, ErrorMsg, Input, OptionItem, Options } from './styles';
 
 
 export const Autocomplete = forwardRef(function Autocomplete<Option extends OptionBase>(
@@ -30,15 +31,24 @@ export const Autocomplete = forwardRef(function Autocomplete<Option extends Opti
             $hasError={!!props.error}
             disabled={props.disabled}
           />
-          <ClearTextButtonWrapper
+          <ButtonsWrapper
             children={
-              <ClearTextButton
-                if={!!props.inputText.trim() && !props.disabled}
-                onClick={outputs.onClickClearText}
-                title="Clear text"
-                aria-label='Clear text'
-                children={<ClearIcon />}
-              />
+              <>
+                <CloseOptionsButton
+                  if={props.showOptions && !!inputs.options.length}
+                  onClick={outputs.onClickHideOptions}
+                  title="Hide options"
+                  aria-label='Hide options'
+                  children={<UpIcon />}
+                />
+                <ClearTextButton
+                  if={!!props.inputText.trim() && !props.disabled}
+                  onClick={outputs.onClickClearText}
+                  title="Clear text"
+                  aria-label='Clear text'
+                  children={<ClearIcon />}
+                />
+              </>
             }
           />
           <ErrorMsg

@@ -8,14 +8,13 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
   return (
     <>
       <LoaderPlaceholder
-        if={!inputs.isReady || inputs.showLoader}
+        if={!inputs.isReady}
       />
       <AppWrapperWrapper
         if={inputs.isReady}
         children={
           <>
-            <Navbar
-            />
+            <Navbar />
             {children}
           </>
         }

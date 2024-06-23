@@ -83,8 +83,8 @@ export default async function RootLayout({
                     />
                   }
                 />
-                <SpeedInsights />
-                <Analytics />
+                <SpeedInsights debug={false} />
+                <Analytics debug={false} />
               </>
             }
           />

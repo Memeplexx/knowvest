@@ -61,5 +61,8 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
     onClickClearText: () => {
       props.onInputTextChange('');
     },
+    onClickHideOptions: () => {
+      props.onShowOptionsChange(false);
+    }
   };
 }

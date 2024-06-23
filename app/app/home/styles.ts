@@ -62,12 +62,6 @@ export const ExpandRelatedToggleButton = styled(BaseToggleButton)`
   transform: translateY(-50%) rotate(${p => !p.selected ? '0' : '180deg'});;
 `;
 
-export const ExpandHeaderToggleButton = styled(BaseToggleButton)`
-  left: 50%;
-  top: ${gap};
-  transform: translateX(-50%) rotate(${p => !p.selected ? '0' : '180deg'});;
-`;
-
 export const ActivePane = styled(ActivePanel)`
   flex: 1;
   overflow-y: auto;

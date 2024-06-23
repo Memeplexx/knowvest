@@ -1,6 +1,7 @@
 import { Button } from "@/components/button";
 import { div, element } from "@/components/html";
 import ReadonlyNote from "@/components/readonly-note";
+import { mobileBreakPoint } from "@/utils/style-utils";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 
@@ -32,6 +33,9 @@ export const Footer = styled(div)`
   justify-content: space-between;
   background-image: linear-gradient(to right, #242020, #191919);
   padding: 16px 60px;
+  @media screen and (max-width: ${mobileBreakPoint}) {
+    padding: 8px 16px; 
+  }
 `;
 
 export const ToggleViewButton = styled(Button)`

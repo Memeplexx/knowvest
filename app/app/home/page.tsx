@@ -46,12 +46,6 @@ export default function Page() {
             children={<UpIcon />}
             aria-label='Expand Tags'
           />
-          {/* <ExpandHeaderToggleButton
-            selected={inputs.headerExpanded}
-            onClick={outputs.onClickHeaderToggle}
-            children={<DownIcon />}
-            aria-label='Expand Header'
-          /> */}
           <ExpandRelatedToggleButton
             selected={inputs.similarExpanded}
             onClick={outputs.onClickSimilarToggle}

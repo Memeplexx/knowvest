@@ -10,7 +10,7 @@ export const AutocompleteWrapper = styled.div`
   display: flex;
 `;
 
-export const ClearTextButtonWrapper = styled(div)`
+export const ButtonsWrapper = styled(div)`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -21,6 +21,9 @@ export const ClearTextButtonWrapper = styled(div)`
 `;
 
 export const ClearTextButton = styled(element(ButtonIcon))`
+`;
+
+export const CloseOptionsButton = styled(element(ButtonIcon))`
 `;
 
 export const ClearIcon = styled(CloseIcon)`
