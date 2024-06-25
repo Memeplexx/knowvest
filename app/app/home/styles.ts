@@ -1,8 +1,10 @@
 "use client";
+import { ActiveNoteFlashCards } from "@/components/active-note-flash-cards";
 import { ActivePanel } from "@/components/active-panel";
 import { ButtonIcon } from "@/components/button-icon";
 import { Tabs } from "@/components/card-with-tabs";
 import { History } from "@/components/history";
+import { element } from "@/components/html";
 import { Related } from "@/components/related";
 import { mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
@@ -44,55 +46,20 @@ const BaseToggleButton = styled(ButtonIcon) <{ selected?: boolean }>`
   }
 `;
 
-export const ExpandHistoryToggleButton = styled(BaseToggleButton)`
-  top: 50%;
-  left: ${gap};
-  transform: translateY(-50%) rotate(${p => !p.selected ? '0' : '180deg'});;
-`;
-
-export const ExpandTagsToggleButton = styled(BaseToggleButton)`
-  left: 50%;
-  bottom: ${gap};
-  transform: translateX(-50%) rotate(${p => !p.selected ? '0' : '180deg'});;
-`;
-
-export const ExpandRelatedToggleButton = styled(BaseToggleButton)`
-  top: 50%;
-  right: ${gap};
-  transform: translateY(-50%) rotate(${p => !p.selected ? '0' : '180deg'});;
-`;
-
 export const ActivePane = styled(ActivePanel)`
   flex: 1;
   overflow-y: auto;
 `;
 
-export const TabsPanel = styled(Tabs) <{ $expanded: boolean }>`
-  transition: transform 0.2s ease-out;
-  flex: 1;
-  @media (max-width: ${mobileBreakPoint}) {
-    z-index: 2;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    transform: translateY(${p => p.$expanded ? '0' : `calc(100% + ${gap})`});
-    z-index: ${p => p.$expanded ? 5 : 0};
-  }
+export const FlashCardPane = styled(element(ActiveNoteFlashCards))`
 `;
 
-export const HistoryPanel = styled(History) <{ $expanded: boolean }>`
-  @media (max-width: ${mobileBreakPoint}) {
-    transition: transform 0.2s ease-out;
-    z-index: 2;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    transform: translateX(${p => p.$expanded ? '0' : `calc(-100% - ${gap})`});
-  }
+export const TabsPanel = styled(element(Tabs))`
+  transition: transform 0.2s ease-out;
+  flex: 1;
+`;
+
+export const HistoryPanel = styled(element(History))`
 `;
 
 export const CenterPanel = styled.div`
@@ -106,15 +73,5 @@ export const CenterPanel = styled.div`
   }
 `;
 
-export const RelatedPanel = styled(Related) <{ $expanded: boolean }>`
-  @media (max-width: ${mobileBreakPoint}) {
-    transition: transform 0.2s ease-out;
-    z-index: 1;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    transform: translateX(${p => p.$expanded ? '0' : `calc(100% + ${gap})`});
-  }
+export const RelatedPanel = styled(element(Related))`
 `;

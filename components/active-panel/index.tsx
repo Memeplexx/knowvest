@@ -24,8 +24,12 @@ export const ActivePanel = (
       children={
         <>
           <CardWrapper
-            heading="Active"
-            actions={<SettingsMenu {...fragmentProps} />}
+            heading={
+              <>
+                Active
+                <SettingsMenu {...fragmentProps} />
+              </>
+            }
             body={<EditorFragment {...fragmentProps} />}
           />
         </>

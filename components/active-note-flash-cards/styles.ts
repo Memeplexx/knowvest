@@ -1,6 +1,7 @@
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 import { ButtonIcon } from "../button-icon";
+import { Card } from "../card";
 import { TextAreaDebounced } from "../debounced";
 import { div, element } from "../html";
 
@@ -8,16 +9,13 @@ import { div, element } from "../html";
 export const Container = styled.div`
   flex: 1;
   display: flex;
+  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const CreateNewButton = styled(ButtonIcon)`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 5;
 `;
 
-export const FlashCardWrapper = styled(div)`
+export const FlashCardWrapper = styled(Card)`
   flex: 1;
   display: flex;
   flex-direction: column;

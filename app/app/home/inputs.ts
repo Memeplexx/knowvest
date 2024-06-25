@@ -6,8 +6,9 @@ import { initialState } from "./constants";
 
 
 export const useInputs = () => {
-  const { store, state: { headerExpanded } } = useStore();
+  const { store, state: { mediaQuery } } = useStore();
   const { local, state } = useLocalStore('home', initialState);
+  const isMobileWidth = mediaQuery === 'xs' || mediaQuery === 'sm';
   const tabOptions = useMemo(() => [
     { label: 'Tags', panel: Tags },
     { label: 'Flashcards', panel: ActiveNoteFlashCards },
@@ -15,8 +16,8 @@ export const useInputs = () => {
   return {
     store,
     local,
-    headerExpanded,
     tabOptions,
+    isMobileWidth,
     ...state
   };
 }

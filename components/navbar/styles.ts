@@ -1,12 +1,13 @@
-import { SearchIcon as BaseSearchIcon } from "@/utils/style-utils";
+import { SearchIcon as BaseSearchIcon, mobileBreakPoint } from "@/utils/style-utils";
 import Image from "next/image";
+import Link from "next/link";
 import { PiStudentFill } from 'react-icons/pi';
 import styled, { css } from "styled-components";
 import { ButtonIcon } from "../button-icon";
-import { div } from "../html";
+import { div, element } from "../html";
 
 export const NavBarWrapper = styled.div`
-  z-index: 2;
+  z-index: 11;
   display: flex;
   align-items: center;
   padding: 8px 24px;
@@ -16,7 +17,16 @@ export const NavBarWrapper = styled.div`
   background-image: linear-gradient(to right, #131313, #212121);
   position: relative;
   margin-top: 0;
+  height: 64px;
+  @media screen and (max-width: ${mobileBreakPoint}) {
+    border-bottom: 0.2px solid #5a5a5a; 
+  }
 `;
+
+export const HomeLink = styled(element(Link))`
+`;
+
+
 
 export const ImageLogo = styled(Image)`
 `;

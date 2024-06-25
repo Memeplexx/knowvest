@@ -8,7 +8,7 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { headerExpanded, tags, groups, synonymGroups, notes, noteTags, mediaQuery } } = useStore();
+  const { store, state: { tags, groups, synonymGroups, notes, noteTags, mediaQuery } } = useStore();
   const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
@@ -109,7 +109,6 @@ export const useInputs = () => {
   return {
     store,
     local,
-    headerExpanded,
     ...local.$state,
     autocompleteRef,
     autocompleteOptions,

@@ -2,7 +2,7 @@ import { signOut } from "next-auth/react";
 import { Inputs } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { local } = inputs;
+  const { local, store } = inputs;
   return {
     onClickUserButton: () => {
       local.showOptions.$toggle()
@@ -10,5 +10,6 @@ export const useOutputs = (inputs: Inputs) => {
     onClickSignOut: async () => {
       await signOut();
     },
+
   };
 }

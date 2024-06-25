@@ -1,5 +1,6 @@
+import { CgMenuGridO } from "react-icons/cg";
 import styled from "styled-components";
-import { div } from "../html";
+import { button, div, element } from "../html";
 import { Loader } from "../loader";
 
 
@@ -9,6 +10,17 @@ export const CardWrapper = styled(div)`
   position: relative;
   overflow: hidden;
   background-image: linear-gradient(to right, #242020, #191919);
+`;
+
+export const HamburgerButton = styled(button)`
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+`;
+
+export const HamburgerIcon = styled(element(CgMenuGridO))`
+  width: 100%;
+  height: 100%;
 `;
 
 export const Header = styled(div)`
@@ -29,11 +41,6 @@ export const Header = styled(div)`
   letter-spacing: 4px;
   background-image: linear-gradient(to right, #242020, #191919);
   padding: 16px;
-  :first-child {
-    display: flex;
-    align-self: stretch;
-    align-items: center;
-  }
 `;
 
 export const Body = styled(div)`

@@ -1,8 +1,7 @@
 "use client";
-import { LeftIcon, RightIcon, UpIcon } from '@/utils/style-utils';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActivePane, CenterPanel, ExpandHistoryToggleButton, ExpandRelatedToggleButton, ExpandTagsToggleButton, HistoryPanel, HomeWrapper, RelatedPanel, TabsPanel } from './styles';
+import { ActivePane, CenterPanel, FlashCardPane, HistoryPanel, HomeWrapper, RelatedPanel } from './styles';
 
 
 
@@ -14,43 +13,22 @@ export default function Page() {
       children={
         <>
           <HistoryPanel
-            $expanded={inputs.historyExpanded}
+            if={!inputs.isMobileWidth}
             onSelectNote={outputs.onClickHistoricalNote}
           />
           <CenterPanel
             children={
               <>
                 <ActivePane />
-                <TabsPanel
-                  $expanded={inputs.tagsExpanded}
-                  selection={inputs.selectedTab}
-                  onSelectTab={outputs.onSelectTab}
-                  options={inputs.tabOptions}
+                <FlashCardPane
+                  if={!inputs.isMobileWidth}
                 />
               </>
             }
           />
           <RelatedPanel
-            $expanded={inputs.similarExpanded}
+            if={!inputs.isMobileWidth}
             onSelectNote={outputs.onClickRelatedNote}
-          />
-          <ExpandHistoryToggleButton
-            selected={inputs.historyExpanded}
-            onClick={outputs.onClickHistoryToggle}
-            children={<RightIcon />}
-            aria-label='Expand History'
-          />
-          <ExpandTagsToggleButton
-            selected={inputs.tagsExpanded}
-            onClick={outputs.onClickTagsToggle}
-            children={<UpIcon />}
-            aria-label='Expand Tags'
-          />
-          <ExpandRelatedToggleButton
-            selected={inputs.similarExpanded}
-            onClick={outputs.onClickSimilarToggle}
-            children={<LeftIcon />}
-            aria-label='Expand Related'
           />
         </>
       }

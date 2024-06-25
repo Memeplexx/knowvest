@@ -1,15 +1,14 @@
 import { initialize } from "@/actions/session";
 import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
-import { MediaQueries, useMediaQueryListener, useResizeListener } from "@/utils/dom-utils";
+import { useMediaQueryListener } from "@/utils/dom-utils";
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
-import { useLocalStore, useStore } from "@/utils/store-utils";
+import { useStore } from "@/utils/store-utils";
 import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { configureDevtools } from "olik/devtools";
-import { initialState } from "./constants";
 
 
 export const useInputs = () => {
@@ -17,19 +16,12 @@ export const useInputs = () => {
   if (typeof (navigator) !== 'undefined' && !/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
     configureDevtools();
 
-  const { store, state: { headerExpanded } } = useStore();
-  const { local, state } = useLocalStore('appWrapper', initialState);
-  const component = useComponent();
-  const result = { store, headerExpanded, isReady: component.hasCompletedAsyncProcess, ...state, local };
-  useMediaQueryListener(store.mediaQuery.$set);
+  const routerPathName = usePathname()!;
 
-  // Update header visibility as required
-  useResizeListener(() => {
-    if (window.innerWidth >= MediaQueries.md && !store.$state.headerExpanded)
-      store.headerExpanded.$set(true);
-    else if (window.innerWidth < MediaQueries.md && store.$state.headerExpanded)
-      store.headerExpanded.$set(false);
-  });
+  const { store, state: { showMenu, mediaQuery } } = useStore();
+  const component = useComponent();
+  const result = { store, isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth: mediaQuery === 'xs' || mediaQuery === 'sm' };
+  useMediaQueryListener(store.mediaQuery.$set);
 
   // Log user out if session expired
   const session = useSession();

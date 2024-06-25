@@ -1,9 +1,12 @@
 "use client";
 import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { FilterIcon } from '@/utils/style-utils';
+import { ButtonIcon } from '../button-icon';
+import { Popup } from '../popup';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, NoteCount, RelatedWrapper, Result } from './styles';
+import { FilterPopup, Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, RelatedWrapper, Result } from './styles';
 
 
 export function Related(
@@ -15,13 +18,26 @@ export function Related(
     <RelatedWrapper
       {...useUnknownPropsStripper(props)}
       ref={inputs.cardRef}
-      heading='Related'
       onScrolledToBottom={outputs.onScrolledToBottom}
-      actions={(
-        <NoteCount
-          children={inputs.noteCountString}
-        />
-      )}
+      heading={
+        <>
+          Related ({inputs.items.length})
+          <Popup
+            storeKey='relatedMenu'
+            // ref={inputs.popupRef}
+            trigger={props => (
+              <ButtonIcon
+                {...props}
+                aria-label='Filter'
+                children={<FilterIcon />}
+              />
+            )}
+            overlay={
+              <FilterPopup />
+            }
+          />
+        </>
+      }
       body={
         <>
           <ListItemsWrapper

@@ -5,7 +5,6 @@ import { div } from '../html';
 
 export const TagsWrapper = styled(div)`
   flex: 1;
-  max-height: 300px;
   display: flex;
   flex-direction: column;
   gap: 24px;

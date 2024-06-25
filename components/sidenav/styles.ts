@@ -49,7 +49,6 @@ export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThresh
 `;
 
 export const MenuContent = styled.div`
-  background-color: #fff;
   flex: 1;
   display: flex;
   flex-direction: column;

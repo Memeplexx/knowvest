@@ -12,3 +12,5 @@ export const initialState = {
   hoveringGroupId: null as null | GroupId,
   hoveringSynonymId: null as null | SynonymId,
 }
+
+export type TagsProps = { className?: string }

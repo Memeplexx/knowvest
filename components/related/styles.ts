@@ -4,9 +4,14 @@ import styled from "styled-components";
 import { Card } from "../card";
 import { div } from "../html";
 import ReadonlyNote from "../readonly-note";
+import { Tags } from "../tags";
 
 
 export const RelatedWrapper = styled(Card)`
+`;
+
+export const FilterPopup = styled(Tags)`
+  padding: 8px;
 `;
 
 export const Header = styled(div)`

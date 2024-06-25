@@ -1,11 +1,14 @@
 "use client";
 
+import { useStore } from "@/utils/store-utils";
 import { ForwardedRef, useImperativeHandle, useRef } from "react";
 import { CardHandle } from "./constants";
 
 export const useInputs = (
   ref: ForwardedRef<CardHandle>
 ) => {
+
+  const { store, state: { mediaQuery } } = useStore();
 
   const headRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -17,9 +20,11 @@ export const useInputs = (
   }), []);
 
   return {
+    store,
     headRef,
     bodyRef,
     previousScrollOffset,
     headerOffset,
+    isMobileWidth: mediaQuery === 'xs' || mediaQuery === 'sm',
   };
 }

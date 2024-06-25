@@ -2,7 +2,7 @@
 import { Fragment } from 'react';
 
 import { Button } from '../button';
-import { FragmentProps } from './constants';
+import { FragmentProps, TagsProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import {
@@ -16,12 +16,13 @@ import {
 } from './styles';
 
 
-export const Tags = () => {
+export const Tags = (props: TagsProps) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
     <TagsWrapper
+      {...props}
       children={
         <>
           <SynonymsFragment

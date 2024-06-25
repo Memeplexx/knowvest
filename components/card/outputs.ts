@@ -1,7 +1,7 @@
 import { Inputs, Props } from "./constants";
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
-  const { previousScrollOffset, bodyRef, headRef, headerOffset } = inputs;
+  const { previousScrollOffset, bodyRef, headRef, headerOffset, store } = inputs;
   return {
     onBodyScroll: () => {
       const isScrollingDown = previousScrollOffset.current < bodyRef.current!.scrollTop;
@@ -16,6 +16,9 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
       const element = bodyRef.current!;
       if (Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) < 1)
         props.onScrolledToBottom?.();
-    }
+    },
+    onClickHamburger: () => {
+      store.showMenu.$toggle();
+    },
   };
 }

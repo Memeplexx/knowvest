@@ -29,15 +29,10 @@ export const useInputs = () => {
       .filter(e => !!e.note); // note may not be found when note is deleted
   }, [activeNoteId, index, notes, synonymIds, noteTags]);
 
-  const noteCountString = useMemo(() => {
-    return `${items.length} result${items.length === 1 ? '' : 's'}`;
-  }, [items]);
-
   return {
     store,
     local,
     items,
-    noteCountString,
     cardRef,
   }
 

@@ -143,3 +143,10 @@ export const useComponentDownloader = <P>(importer: () => Promise<{ default: Fun
     return dynamic(importerRef.current);
   }, [component.isMounted]);
 }
+
+export const useValueChanged = <T>(value: T, onChange: (value: T) => void) => {
+  const valueRef = useRef(value);
+  if (valueRef.current !== value)
+    onChange(value);
+  valueRef.current = value;
+}

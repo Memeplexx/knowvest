@@ -3,7 +3,7 @@ import { isAfter } from "date-fns";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { addToWhitelist } from "olik/devtools";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { initialState } from "./constants";
 
 export const useInputs = () => {
@@ -12,11 +12,11 @@ export const useInputs = () => {
   const { local } = useLocalStore('navBar', initialState);
   useMemo(() => addToWhitelist([store.showLoader]), [store]);
   const routerPathName = usePathname()!;
-  const previousRoutePath = useRef(routerPathName);
-  if (previousRoutePath.current !== routerPathName) {
-    previousRoutePath.current = routerPathName;
-    store.showLoader.$set(false);
-  }
+  // const previousRoutePath = useRef(routerPathName);
+  // if (previousRoutePath.current !== routerPathName) {
+  //   previousRoutePath.current = routerPathName;
+  //   store.showLoader.$set(false);
+  // }
   const pageTitle = useMemo(() => {
     const narrow = mediaQuery === 'md' || mediaQuery === 'sm' || mediaQuery === 'xs';
     switch (routerPathName) {
@@ -41,5 +41,6 @@ export const useInputs = () => {
     routerPatchName: routerPathName,
     session: useSession().data,
     flashCardCount: useMemo(() => flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length, [flashCards]),
+    isMobileWidth: mediaQuery === 'xs' || mediaQuery === 'sm',
   }
 }
