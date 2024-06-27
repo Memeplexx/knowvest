@@ -93,10 +93,15 @@ export const useInputs = () => {
         .filter(({ noteId, tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
         .forEach(({ noteId, tags }) => {
           const currentNoteTagsForNote = store.$state.noteTags.filter(nt => nt.noteId === noteId);
-          const toRemove = currentNoteTagsForNote.filter(nt => !tags.some(t => t.id === nt.id)).map(nt => nt.id);
-          const toInsert = tags.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id));
+          const toRemove = currentNoteTagsForNote.filter(nt => !tags.some(t => t.id === nt.id && nt.from === t.from && nt.to === t.to));
+          const toInsert = tags.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id && nt.from === t.from && nt.to === t.to));
           if (toRemove.length)
-            store.noteTags.$filter.id.$in(toRemove).$delete();
+            store.noteTags
+              .$filter.noteId.$eq(noteId)
+              .$and.id.$in(toRemove.map(t => t.id))
+              .$and.from.$in(toRemove.map(t => t.from))
+              .$and.to.$in(toRemove.map(t => t.to))
+              .$delete();
           if (toInsert.length)
             store.noteTags.$pushMany(toInsert.map(t => ({ ...t, noteId })));
         });
