@@ -98,9 +98,9 @@ export const useInputs = () => {
           if (toRemove.length)
             store.noteTags
               .$filter.noteId.$eq(noteId)
-              .$and.id.$in(toRemove.map(t => t.id))
-              .$and.from.$in(toRemove.map(t => t.from))
-              .$and.to.$in(toRemove.map(t => t.to))
+              .$and.id.$in(toRemove.map(t => t.id).distinct())
+              .$and.from.$in(toRemove.map(t => t.from).distinct())
+              .$and.to.$in(toRemove.map(t => t.to).distinct())
               .$delete();
           if (toInsert.length)
             store.noteTags.$pushMany(toInsert.map(t => ({ ...t, noteId })));
