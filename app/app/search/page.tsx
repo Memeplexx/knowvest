@@ -11,7 +11,12 @@ export default function Page() {
     return <Search />;
   return (
     <SearchContainer
-      heading="Search"
+      heading={
+        <>
+          Search
+          <div />
+        </>
+      }
       body={<Search />}
     />
   );

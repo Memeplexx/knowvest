@@ -14,7 +14,12 @@ export function History(
     <HistoryWrapper
       {...useUnknownPropsStripper(props)}
       ref={inputs.cardRef}
-      heading='Recent'
+      heading={
+        <>
+          History
+          <div />
+        </>
+      }
       onScrolledToBottom={outputs.onScrolledToBottom}
       body={
         <>
