@@ -72,12 +72,6 @@ export const MenuItemLink = styled(Link) <{ $active?: boolean }>`
   `}
 `;
 
-export const MenuItemLineSeparator = styled(div)`
-  height: 1px;
-  background-color: #5a5a5a;
-  margin: 14px 0;
-`;
-
 export const MenuItemSeparator = styled(div)`
   height: 30px;
 `;
