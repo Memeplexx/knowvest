@@ -34,6 +34,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
               onShow={inputs.store.showMenu.$set}
               show={inputs.showMenu}
               size={280}
+              edgeThreshold={25}
               position="left"
               menuContent={
                 <>
