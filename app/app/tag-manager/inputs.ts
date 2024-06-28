@@ -10,7 +10,7 @@ import { initialState } from './constants';
 
 export const useInputs = () => {
 
-  const { store, state: { headerExpanded, notes, tags, groups, synonymGroups, activeNoteId } } = useStore();
+  const { store, state: { notes, tags, groups, synonymGroups, activeNoteId } } = useStore();
   const firstSelectedTag = useMemo(() => store.$state.tags.find(t => t.id === store.$state.configureTags), [store]);
   const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', {
     ...initialState,
@@ -146,7 +146,6 @@ export const useInputs = () => {
     synonymOptionsRef,
     notify,
     notes,
-    headerExpanded,
   };
 }
 

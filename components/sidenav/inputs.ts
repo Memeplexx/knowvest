@@ -17,7 +17,7 @@ export const useInputs = (propsIncoming: PropsWithChildren<Props>) => {
 
   useValueChanged(props.show, show => api.start({ x: show ? props.size : 0 }));
 
-  const bind = useDrag(({ down, movement: [mx, my], last }) => {
+  const bind = useDrag(({ down, movement: [mx, my] }) => {
     switch (props.position) {
       case 'left': {
         if (mx === 0)

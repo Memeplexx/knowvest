@@ -36,7 +36,7 @@ import { autocompleteExtension, createNotePersisterExtension, pasteListener, tex
 
 export const useInputs = () => {
 
-  const { store, state: { notes, tags, activeNoteId } } = useStore();
+  const { store, state: { notes, tags, activeNoteId, flashCards } } = useStore();
   const { local, state } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
@@ -44,6 +44,7 @@ export const useInputs = () => {
   const component = useComponent();
   const editor = useRef<EditorView | null>(null);
   const selectionIsTag = useMemo(() => tags.some(t => t.text === state.selection), [state.selection, tags]);
+  const noteFlashCards = useMemo(() => flashCards.filter(fc => fc.noteId === activeNoteId).sort((a, b) => b.dateUpdated.getTime() - a.dateUpdated.getTime()), [activeNoteId, flashCards]);
   const result = {
     store,
     local,
@@ -54,6 +55,7 @@ export const useInputs = () => {
     editorRef,
     editor: editor.current,
     selectionIsTag,
+    noteFlashCards,
   };
 
   // Do not instantiate the editor until certain conditions are met

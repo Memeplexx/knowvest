@@ -12,11 +12,6 @@ export const useInputs = () => {
   const { local } = useLocalStore('navBar', initialState);
   useMemo(() => addToWhitelist([store.showLoader]), [store]);
   const routerPathName = usePathname()!;
-  // const previousRoutePath = useRef(routerPathName);
-  // if (previousRoutePath.current !== routerPathName) {
-  //   previousRoutePath.current = routerPathName;
-  //   store.showLoader.$set(false);
-  // }
   const pageTitle = useMemo(() => {
     const narrow = mediaQuery === 'md' || mediaQuery === 'sm' || mediaQuery === 'xs';
     switch (routerPathName) {

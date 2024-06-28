@@ -1,6 +1,7 @@
 "use client";
 import { AddIcon, CreateIcon, DeleteIcon, DuplicateIcon, FilterIcon, PopupOption, SettingsIcon, SplitIcon } from '@/utils/style-utils';
 import { type HTMLAttributes } from 'react';
+import { CiCreditCard2 } from 'react-icons/ci';
 import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
 import { Loader } from '../loader';
@@ -8,7 +9,7 @@ import { Popup } from '../popup';
 import { FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActivePanelWrapper, ActiveSelectionListItem, CardWrapper, SelectionOptions, SelectionText, TextEditor, TextEditorWrapper } from './styles';
+import { ActivePanelWrapper, ActiveSelectionListItem, CardWrapper, DeleteButton, FlashCard, SelectionOptions, SelectionText, TextArea, TextEditor, TextEditorWrapper } from './styles';
 
 
 
@@ -27,10 +28,21 @@ export const ActivePanel = (
             heading={
               <>
                 Active
-                <SettingsMenu {...fragmentProps} />
+                <SettingsMenu
+                  {...fragmentProps}
+                />
               </>
             }
-            body={<EditorFragment {...fragmentProps} />}
+            body={
+              <>
+                <EditorFragment
+                  {...fragmentProps}
+                />
+                <FlashCardFragment
+                  {...fragmentProps}
+                />
+              </>
+            }
           />
         </>
       }
@@ -78,6 +90,15 @@ const SettingsMenu = ({ inputs, outputs }: FragmentProps) => {
                 <>
                   Delete this note
                   <DeleteIcon />
+                </>
+              }
+            />
+            <PopupOption
+              onClick={outputs.onClickCreateFlashCard}
+              children={
+                <>
+                  Create Flash Card
+                  <CiCreditCard2 />
                 </>
               }
             />
@@ -159,5 +180,37 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
         </>
       }
     />
+  );
+}
+
+const FlashCardFragment = ({ inputs, outputs }: FragmentProps) => {
+  return (
+    <>
+      {inputs.noteFlashCards.map(flashCard => (
+        <FlashCard
+          key={flashCard.id}
+          children={
+            <>
+              <TextArea
+                value={flashCard.text}
+                onChangeDebounced={outputs.onChangeFlashCardText(flashCard.id)}
+              />
+              <DeleteButton
+                onClick={outputs.onClickRequestDeleteFlashCard}
+                children={<DeleteIcon />}
+              />
+              <Confirmation
+                if={inputs.showConfirmDeleteFlashCardDialog}
+                storeKey='deleteFlashCard'
+                onClose={outputs.onClickCancelRemoveFlashCard}
+                onConfirm={outputs.onClickConfirmDeleteFlashCard(flashCard.id)}
+                title='Delete Flash Card requested'
+                message='Are you sure you want to delete this flash card?'
+              />
+            </>
+          }
+        />
+      ))}
+    </>
   );
 }

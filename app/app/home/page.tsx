@@ -1,7 +1,7 @@
 "use client";
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActivePane, CenterPanel, FlashCardPane, HistoryPanel, HomeWrapper, RelatedPanel } from './styles';
+import { ActivePane, HistoryPanel, HomeWrapper, RelatedPanel } from './styles';
 
 
 
@@ -16,16 +16,7 @@ export default function Page() {
             if={!inputs.isMobileWidth}
             onSelectNote={outputs.onClickHistoricalNote}
           />
-          <CenterPanel
-            children={
-              <>
-                <ActivePane />
-                <FlashCardPane
-                  if={!inputs.isMobileWidth}
-                />
-              </>
-            }
-          />
+          <ActivePane />
           <RelatedPanel
             if={!inputs.isMobileWidth}
             onSelectNote={outputs.onClickRelatedNote}

@@ -5,6 +5,7 @@ import { useOutputs } from "./outputs";
 export const initialState = {
   selection: '',
   showConfirmDeleteDialog: false,
+  showConfirmDeleteFlashCardDialog: false,
   loadingSelection: false,
 };
 

@@ -1,5 +1,7 @@
+import { archiveFlashCard, createFlashCard, updateFlashCardText } from "@/actions/flashcard";
 import { archiveNote, createNote, duplicateNote, splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
+import { FlashCardId } from "@/actions/types";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { notesSorted } from "@/utils/store-utils";
 import { tupleIncludes } from "olik";
@@ -111,5 +113,26 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
         }
       });
     }),
+    onClickCreateFlashCard: async () => {
+      const apiResponse = await createFlashCard(store.$state.activeNoteId);
+      store.flashCards.$push(apiResponse.flashCard);
+      popupRef.current?.hide();
+    },
+    onChangeFlashCardText: (flashCardId: FlashCardId) => async (text: string) => {
+      const apiResponse = await updateFlashCardText(flashCardId, text);
+      store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$set(apiResponse.flashCard);
+    },
+    onClickRequestDeleteFlashCard: async () => {
+      local.showConfirmDeleteFlashCardDialog.$set(true);
+    },
+    onClickConfirmDeleteFlashCard: (flashCardId: FlashCardId) => async () => {
+      const apiResponse = await archiveFlashCard(flashCardId);
+      store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$delete();
+      notify.success('Flash Card Deleted');
+      local.showConfirmDeleteFlashCardDialog.$set(false);
+    },
+    onClickCancelRemoveFlashCard: () => {
+      local.showConfirmDeleteFlashCardDialog.$set(false);
+    }
   };
 }

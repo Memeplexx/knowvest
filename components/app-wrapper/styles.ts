@@ -24,7 +24,6 @@ export const AppWrapperWrapper = styled(div)`
 `;
 
 export const MenuContent = styled(div)`
-  margin-top: 64px;
   padding-top: 30px;
   background-image: linear-gradient(to right, #101010, #1d1d1d);
   color: #b4b4b4;
@@ -54,12 +53,12 @@ export const MenuItem = styled(div) <{ $active?: boolean }>`
 export const MenuItemLink = styled(Link) <{ $active?: boolean }>`
   padding: 12px 28px;
   cursor: pointer;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
   display: flex;
   gap: 12px;
   align-items: center;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
   svg {
     width: 24px;
     height: 24px;

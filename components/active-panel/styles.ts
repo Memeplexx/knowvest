@@ -1,6 +1,8 @@
 import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
+import { ButtonIcon } from "../button-icon";
 import { Card } from "../card";
+import { TextAreaDebounced } from "../debounced";
 import { div } from "../html";
 
 
@@ -71,4 +73,32 @@ export const SelectionText = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+`;
+
+export const FlashCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  background-color: rgba(0,0,0,0.4);
+  border-radius: 4px;
+  margin-top: 4px;
+  position: relative;
+`;
+
+export const DeleteButton = styled(ButtonIcon)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: grey;
+`;
+
+export const TextArea = styled(TextAreaDebounced)`
+  padding: 8px;
+  padding-right: 24px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  &:focus {
+    border-color: #949494;
+  }
 `;
