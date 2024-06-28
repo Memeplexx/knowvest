@@ -2,13 +2,13 @@
 import { BiLogOutCircle } from "react-icons/bi";
 import { CiSettings } from "react-icons/ci";
 import { FiEdit } from "react-icons/fi";
-import { GrConfigure, GrTest } from "react-icons/gr";
+import { GrConfigure } from "react-icons/gr";
 import { IoSearch } from "react-icons/io5";
 import { MdHistory } from "react-icons/md";
 import { PiPlugsConnectedFill, PiStudentFill } from "react-icons/pi";
 import { Frag } from "../html";
 import { useInputs } from "./inputs";
-import { AppWrapperWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLineSeparator, MenuItemLink, MenuItemSeparator, SideNavWrapper, TopBar } from "./styles";
+import { AppWrapperWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLink, MenuItemSeparator, SideNavWrapper, TopBar } from "./styles";
 
 export function AppWrapper({ children }: { children: React.ReactNode }) {
   const inputs = useInputs();
@@ -57,41 +57,32 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
                           children={
                             <>
                               <PiPlugsConnectedFill />
-                              View Related
+                              Related Notes
                             </>
                           }
                         />
-                        <MenuItemLink
-                          href="./active-flash-cards"
-                          $active={inputs.routerPathName === '/app/active-flash-cards'}
-                          children={
-                            <>
-                              <GrTest />
-                              Flash Cards
-                            </>
-                          }
-                        />
-                        <MenuItemLineSeparator />
-                        <MenuItemLink
-                          href="./search"
-                          $active={inputs.routerPathName === '/app/search'}
-                          children={
-                            <>
-                              <IoSearch />
-                              Search
-                            </>
-                          }
-                        />
+                        <MenuItemSeparator />
                         <MenuItemLink
                           href="./history"
                           $active={inputs.routerPathName === '/app/history'}
                           children={
                             <>
                               <MdHistory />
-                              History
+                              Note History
                             </>
                           }
                         />
+                        <MenuItemLink
+                          href="./search"
+                          $active={inputs.routerPathName === '/app/search'}
+                          children={
+                            <>
+                              <IoSearch />
+                              Search Notes
+                            </>
+                          }
+                        />
+                        <MenuItemSeparator />
                         <MenuItemLink
                           href="./test"
                           $active={inputs.routerPathName === '/app/test'}
