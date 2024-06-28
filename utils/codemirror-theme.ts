@@ -110,25 +110,17 @@ export const oneDarkTheme = EditorView.theme({
     }
   },
   '.cm-highlight': {
-    // backgroundColor: '#b100b1c2',
-    // borderRadius: '10px',
-    // padding: '0 6px',
-    // margin: '0 -6px',
     color: '#FFF',
     display: 'inline-block',
-    borderBottom: '2px solid rgb(177, 0, 177)',
+    borderBottom: '2px solid #b100b1',
   },
   '.cm-highlight >*': {
     color: '#FFF!important',
   },
   '.cm-highlight-2': {
-    // backgroundColor: '#b100b159',
-    // borderRadius: '10px',
-    // padding: '0 6px',
-    // margin: '0 -6px',
     color: '#FFF',
     display: 'inline-block',
-    borderBottom: '2px solid #b100b159',
+    borderBottom: '2px solid #18b100',
   },
   '.cm-highlight-2 >*': {
     color: '#FFF!important',
