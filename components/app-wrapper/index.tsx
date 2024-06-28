@@ -29,7 +29,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
               children={children}
             />
             <SideNavWrapper
-              // if={inputs.isMobileWidth}
+              if={inputs.isMobileWidth}
               style={{ zIndex: 9 }}
               onShow={inputs.store.showMenu.$set}
               show={inputs.showMenu}

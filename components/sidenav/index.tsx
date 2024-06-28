@@ -20,6 +20,7 @@ export const SideNav = (propsIncoming: PropsWithChildren<Props>) => {
           <MenuContent
             ref={inputs.menuRef}
             children={inputs.props.menuContent}
+            style={{ border: `2px solid ${inputs.props.show ? 'white' : 'transparent'}` }}
           />
         }
       />
