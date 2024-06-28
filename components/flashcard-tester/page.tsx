@@ -4,7 +4,7 @@ import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { Answer, Body, Footer, FooterRightContent, NextButton, NoResults, NoResultsIcon, Question, TestWrapper, ToggleViewButton } from "./styles";
 
-export default function Page() {
+export function FlashCardTester() {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
