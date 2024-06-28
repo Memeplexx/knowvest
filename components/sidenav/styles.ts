@@ -6,6 +6,10 @@ import { Position } from './constants';
 
 export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThreshold: number, $position: Position }>`
   position: absolute;
+  background-color: transparent;
+  z-index: 10;
+  touch-action: none;
+  display: flex;
   ${p => {
     switch (p.$position) {
       case 'left':
@@ -42,10 +46,6 @@ export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThresh
         `;
     }
   }}
-  background-color: transparent;
-  z-index: 10;
-  touch-action: none;
-  display: flex;
 `;
 
 export const MenuContent = styled.div`

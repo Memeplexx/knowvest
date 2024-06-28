@@ -33,7 +33,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
               style={{ zIndex: 9 }}
               onShow={e => inputs.store.showMenu.$set(e)}
               show={inputs.showMenu}
-              size={280}
+              size={100}
               position="left"
               menuContent={
                 <>
