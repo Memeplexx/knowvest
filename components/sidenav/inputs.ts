@@ -23,9 +23,9 @@ export const useInputs = (propsIncoming: PropsWithChildren<Props>) => {
         if (mx === 0)
           return;
         if (mx < 0)
-          props.onShow(false);
+          return props.onShow(false);
         if (mx >= props.size)
-          props.onShow(true);
+          return props.onShow(true);
         if (!down)
           api.start({ x: mx < props.size ? 0 : Math.min(props.size, mx) });
         else
