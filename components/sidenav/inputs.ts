@@ -1,4 +1,4 @@
-import { usePropsWithDefaults } from "@/utils/react-utils";
+import { usePropsWithDefaults, useValueChanged } from "@/utils/react-utils";
 import { useDrag } from "@use-gesture/react";
 import { PropsWithChildren, useRef } from "react";
 import { useSpring } from "react-spring";
@@ -15,7 +15,7 @@ export const useInputs = (propsIncoming: PropsWithChildren<Props>) => {
 
   const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, config: { friction: 0 } }));
 
-  // useValueChanged(props.show, show => api.start({ x: show ? props.size : 0 }));
+  useValueChanged(props.show, show => api.start({ x: show ? props.size : 0 }));
 
   const bind = useDrag(({ down, movement: [mx, my] }) => {
     switch (props.position) {
@@ -26,10 +26,10 @@ export const useInputs = (propsIncoming: PropsWithChildren<Props>) => {
           props.onShow(false);
         if (mx >= props.size)
           props.onShow(true);
-        if (!down)
-          api.start({ x: mx < props.size ? 0 : Math.min(props.size, mx) });
-        else
-          api.start({ x: Math.min(props.size, mx) });
+        // if (!down)
+        //   api.start({ x: mx < props.size ? 0 : Math.min(props.size, mx) });
+        // else
+        api.start({ x: Math.min(props.size, mx) });
         break;
       }
       case 'right': {
