@@ -20,16 +20,16 @@ export const useInputs = (propsIncoming: PropsWithChildren<Props>) => {
   const bind = useDrag(({ down, movement: [mx, my] }) => {
     switch (props.position) {
       case 'left': {
-        if (mx === 0)
-          return;
-        if (mx < 0)
-          props.onShow(false);
-        if (mx >= props.size)
-          props.onShow(true);
+        // if (mx === 0)
+        //   return;
+        // if (mx < 0)
+        //   props.onShow(false);
+        // if (mx >= props.size)
+        //   props.onShow(true);
         // if (!down)
         //   api.start({ x: mx < props.size ? 0 : Math.min(props.size, mx) });
         // else
-        // api.start({ x: Math.min(props.size, mx) });
+        //   api.start({ x: Math.min(props.size, mx) });
         break;
       }
       case 'right': {
