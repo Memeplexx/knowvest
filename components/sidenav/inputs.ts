@@ -29,7 +29,7 @@ export const useInputs = (propsIncoming: PropsWithChildren<Props>) => {
         // if (!down)
         //   api.start({ x: mx < props.size ? 0 : Math.min(props.size, mx) });
         // else
-        api.start({ x: Math.min(props.size, mx) });
+        // api.start({ x: Math.min(props.size, mx) });
         break;
       }
       case 'right': {
