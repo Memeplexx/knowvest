@@ -11,7 +11,7 @@ export const SideNav = (propsIncoming: PropsWithChildren<Props>) => {
   return (
     <>
       <SideNavWrapper
-        {...inputs.bind()}
+        // {...inputs.bind()}
         style={{ x: inputs.x, y: inputs.y }}
         $size={inputs.props.size}
         $edgeThreshold={inputs.props.edgeThreshold!}
