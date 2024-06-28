@@ -19,13 +19,7 @@ export const SideNav = (propsIncoming: PropsWithChildren<Props>) => {
         children={
           <MenuContent
             ref={inputs.menuRef}
-            children={
-              <>
-                <div style={{ color: 'white', textAlign: 'end' }}>{inputs.n}</div>
-                {inputs.props.menuContent}
-              </>
-            }
-          // style={{ border: `2px solid ${inputs.props.show ? 'white' : 'transparent'}` }}
+            children={inputs.props.menuContent}
           />
         }
       />
