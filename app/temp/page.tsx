@@ -1,4 +1,5 @@
 "use client"
+import { Frag } from "@/components/html";
 import { BiLogOutCircle } from "react-icons/bi";
 import { CiSettings } from "react-icons/ci";
 import { FiEdit } from "react-icons/fi";
@@ -6,11 +7,10 @@ import { GrConfigure } from "react-icons/gr";
 import { IoSearch } from "react-icons/io5";
 import { MdHistory } from "react-icons/md";
 import { PiPlugsConnectedFill, PiStudentFill } from "react-icons/pi";
-import { Frag } from "../html";
 import { useInputs } from "./inputs";
 import { AppWrapperWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLink, MenuItemSeparator, SideNavWrapper, TopBar } from "./styles";
 
-export function AppWrapper({ children }: { children: React.ReactNode }) {
+export default function AppWrapper() {
   const inputs = useInputs();
   return (
     <>
@@ -26,7 +26,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
             />
             <Frag
               if={!inputs.isMobileWidth}
-              children={children}
+            // children={children}
             />
             <SideNavWrapper
               if={inputs.isMobileWidth}
@@ -125,7 +125,9 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
                   }
                 />
               }
-              mainContent={children}
+              mainContent={
+                'Some Content'
+              }
             />
           </>
         }
