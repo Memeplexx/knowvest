@@ -26,6 +26,7 @@ import {
   rectangularSelection
 } from '@codemirror/view';
 import { Highlighter } from '@lezer/highlight';
+import { useRouter } from 'next/navigation';
 import { derive } from 'olik/derive';
 import { useMemo, useRef } from 'react';
 import { useNotifier } from '../notifier';
@@ -43,6 +44,7 @@ export const useInputs = () => {
   const editorRef = useRef<HTMLDivElement>(null);
   const component = useComponent();
   const editor = useRef<EditorView | null>(null);
+  const router = useRouter();
   const selectionIsTag = useMemo(() => tags.some(t => t.text === state.selection), [state.selection, tags]);
   const noteFlashCards = useMemo(() => flashCards.filter(fc => fc.noteId === activeNoteId).sort((a, b) => b.dateUpdated.getTime() - a.dateUpdated.getTime()), [activeNoteId, flashCards]);
   const result = {
@@ -56,6 +58,7 @@ export const useInputs = () => {
     editor: editor.current,
     selectionIsTag,
     noteFlashCards,
+    router,
   };
 
   // Do not instantiate the editor until certain conditions are met

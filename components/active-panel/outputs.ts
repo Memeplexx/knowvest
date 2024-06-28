@@ -8,7 +8,7 @@ import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }: Inputs) => {
+export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, router }: Inputs) => {
   return {
     onClickCreateNote: async () => {
       const apiResponse = await createNote();
@@ -47,6 +47,7 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify }
     },
     onClickConfigureSelectedTag: () => {
       store.configureTags.$set(store.$state.tags.findOrThrow(t => t.text === local.$state.selection).id);
+      router.push('./tag-manager');
     },
     onClickCreateNewTagFromSelection: async () => {
       local.loadingSelection.$set(true);
