@@ -14,12 +14,17 @@ export const SideNav = (propsIncoming: PropsWithChildren<Props>) => {
         {...inputs.bind()}
         style={{ x: inputs.x, y: inputs.y }}
         $size={inputs.props.size}
-        $edgeThreshold={inputs.props.edgeThreshold!}
+        $edgeThreshold={inputs.props.edgeThreshold}
         $position={inputs.props.position}
         children={
           <MenuContent
             ref={inputs.menuRef}
-            children={inputs.props.menuContent}
+            children={
+              <>
+                <div style={{ color: 'white', textAlign: 'end' }}>{inputs.n}</div>
+                {inputs.props.menuContent}
+              </>
+            }
           // style={{ border: `2px solid ${inputs.props.show ? 'white' : 'transparent'}` }}
           />
         }

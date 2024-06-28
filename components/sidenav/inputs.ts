@@ -1,6 +1,6 @@
 import { useValueChanged } from "@/utils/react-utils";
 import { useDrag } from "@use-gesture/react";
-import { PropsWithChildren, useRef } from "react";
+import { PropsWithChildren, useRef, useState } from "react";
 import { useSpring } from "react-spring";
 import { Props } from "./constants";
 
@@ -13,7 +13,12 @@ export const useInputs = (props: PropsWithChildren<Props>) => {
 
   const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, config: { friction: 0 } }));
 
-  useValueChanged(props.show, show => api.start({ x: show ? props.size : 0 }));
+  const [n, setN] = useState(0);
+
+  useValueChanged(props.show, show => {
+    api.start({ x: show ? props.size : 0 });
+    setN(n + 1);
+  });
 
   const bind = useDrag(({ down, movement: [mx, my] }) => {
     switch (props.position) {
@@ -79,5 +84,6 @@ export const useInputs = (props: PropsWithChildren<Props>) => {
     menuRef,
     props,
     api,
+    n,
   }
 }
