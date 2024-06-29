@@ -2,7 +2,7 @@
 import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
+export const LoginWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   background-image: url(images/backdrop-red.svg);
