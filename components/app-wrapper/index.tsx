@@ -7,6 +7,7 @@ import { IoSearch } from "react-icons/io5";
 import { MdHistory } from "react-icons/md";
 import { PiPlugsConnectedFill, PiStudentFill } from "react-icons/pi";
 import { Frag } from "../html";
+import { Inputs } from "./constants";
 import { useInputs } from "./inputs";
 import { AppWrapperWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLink, MenuItemSeparator, SideNavWrapper, TopBar } from "./styles";
 
@@ -36,100 +37,104 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
               size={280}
               edgeThreshold={25}
               position="left"
-              menuContent={
-                <MenuContent
-                  onClick={() => inputs.store.showMenu.$set(false)}
-                  children={
-                    <>
-                      <MenuItemLink
-                        href="./home"
-                        $active={inputs.routerPathName === '/app/home'}
-                        children={
-                          <>
-                            <FiEdit />
-                            Active Note
-                          </>
-                        }
-                      />
-                      <MenuItemLink
-                        href="./related"
-                        $active={inputs.routerPathName === '/app/related'}
-                        children={
-                          <>
-                            <PiPlugsConnectedFill />
-                            Related Notes
-                          </>
-                        }
-                      />
-                      <MenuItemSeparator />
-                      <MenuItemLink
-                        href="./history"
-                        $active={inputs.routerPathName === '/app/history'}
-                        children={
-                          <>
-                            <MdHistory />
-                            Note History
-                          </>
-                        }
-                      />
-                      <MenuItemLink
-                        href="./search"
-                        $active={inputs.routerPathName === '/app/search'}
-                        children={
-                          <>
-                            <IoSearch />
-                            Search Notes
-                          </>
-                        }
-                      />
-                      <MenuItemSeparator />
-                      <MenuItemLink
-                        href="./test"
-                        $active={inputs.routerPathName === '/app/test'}
-                        children={
-                          <>
-                            <PiStudentFill />
-                            Test Me
-                          </>
-                        }
-                      />
-                      <MenuItemSeparator />
-                      <MenuItemLink
-                        href="./tag-manager"
-                        $active={inputs.routerPathName === '/app/tag-manager'}
-                        children={
-                          <>
-                            <GrConfigure />
-                            Tag Manager
-                          </>
-                        }
-                      />
-                      <MenuItem
-                        children={
-                          <>
-                            <CiSettings />
-                            App Settings
-                          </>
-                        }
-                      />
-                      <MenuItemSeparator />
-                      <MenuItem
-                        children={
-                          <>
-                            <BiLogOutCircle />
-                            Sign Out
-                          </>
-                        }
-                      />
-                    </>
-                  }
-                />
-              }
+              menuContent={<MenuFragment inputs={inputs} />}
               mainContent={children}
             />
           </>
         }
       />
     </>
+  )
+}
+
+const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
+  return (
+    <MenuContent
+      onClick={() => inputs.store.showMenu.$set(false)}
+      children={
+        <>
+          <MenuItemLink
+            href="./home"
+            $active={inputs.routerPathName === '/app/home'}
+            children={
+              <>
+                <FiEdit />
+                Active Note
+              </>
+            }
+          />
+          <MenuItemLink
+            href="./related"
+            $active={inputs.routerPathName === '/app/related'}
+            children={
+              <>
+                <PiPlugsConnectedFill />
+                Related Notes
+              </>
+            }
+          />
+          <MenuItemSeparator />
+          <MenuItemLink
+            href="./history"
+            $active={inputs.routerPathName === '/app/history'}
+            children={
+              <>
+                <MdHistory />
+                Note History
+              </>
+            }
+          />
+          <MenuItemLink
+            href="./search"
+            $active={inputs.routerPathName === '/app/search'}
+            children={
+              <>
+                <IoSearch />
+                Search Notes
+              </>
+            }
+          />
+          <MenuItemSeparator />
+          <MenuItemLink
+            href="./test"
+            $active={inputs.routerPathName === '/app/test'}
+            children={
+              <>
+                <PiStudentFill />
+                Test Me
+              </>
+            }
+          />
+          <MenuItemSeparator />
+          <MenuItemLink
+            href="./tag-manager"
+            $active={inputs.routerPathName === '/app/tag-manager'}
+            children={
+              <>
+                <GrConfigure />
+                Tag Manager
+              </>
+            }
+          />
+          <MenuItem
+            children={
+              <>
+                <CiSettings />
+                App Settings
+              </>
+            }
+          />
+          <MenuItemSeparator />
+          <MenuItem
+            children={
+              <>
+                <BiLogOutCircle />
+                Sign Out
+              </>
+            }
+          />
+        </>
+      }
+    />
   )
 }
