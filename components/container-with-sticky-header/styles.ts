@@ -28,6 +28,7 @@ export const StickyHeader = styled(div)`
   top: 0;
   right: 0;
   left: 0;
+  z-index: 10;
 `;
 
 export const Body = styled(div) <{ $headerHeight: number }>`

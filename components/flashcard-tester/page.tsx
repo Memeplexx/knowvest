@@ -33,7 +33,7 @@ export function FlashCardTester() {
             children={
               <>
                 <ToggleViewButton
-                  children={inputs.showQuestions ? 'Peek Answer' : 'Back to Question'}
+                  children={inputs.showQuestions ? 'Peek' : 'Back to Question'}
                   onClick={outputs.onToggleView}
                 />
                 <FooterRightContent
