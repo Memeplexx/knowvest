@@ -11,7 +11,7 @@ export const useInputs = (props: PropsWithChildren<Props>) => {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0/*, config: { friction: 0 }*/ }));
+  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0 }));
 
   useValueChanged(props.show, show => api.start({ x: show ? props.size : 0 }));
 
