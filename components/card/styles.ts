@@ -1,7 +1,6 @@
 import { CgMenuGridO } from "react-icons/cg";
 import styled from "styled-components";
 import { button, div, element } from "../html";
-import { Loader } from "../loader";
 
 
 export const CardWrapper = styled(div)`
@@ -56,9 +55,4 @@ export const Body = styled(div)`
     margin-top: 70px;
     flex: 1;
   }
-`;
-
-export const LoaderPlaceholder = styled(Loader)`
-  margin-top: 70px;
-  background-image: linear-gradient(to right, #242020, #191919);
 `;

@@ -4,7 +4,6 @@ import { useInputs } from "./inputs";
 export type Props = {
   heading?: string | JSX.Element,
   body: JSX.Element | null,
-  loading?: boolean,
   onScrolledToBottom?: () => void,
 } & HTMLAttributes<HTMLElement>;
 
