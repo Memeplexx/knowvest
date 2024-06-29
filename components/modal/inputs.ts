@@ -5,7 +5,7 @@ import { Props, animationDuration } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const { state: { mediaQuery } } = useStore();
+  const { state: { isMobileWidth } } = useStore();
   const [showInternal, setShowInternal] = useState(props.if);
 
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -34,8 +34,6 @@ export const useInputs = (props: Props) => {
       isClosingRef.current = false;
     }, animationDuration);
   }
-
-  const isMobileWidth = mediaQuery === 'xs' || mediaQuery === 'sm';
 
   return {
     backdropRef,

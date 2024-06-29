@@ -8,12 +8,12 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { flashCards, mediaQuery } } = useStore();
+  const { store, state: { flashCards, isMobileWidth } } = useStore();
   const { local } = useLocalStore('navBar', initialState);
   useMemo(() => addToWhitelist([store.showLoader]), [store]);
   const routerPathName = usePathname()!;
   const pageTitle = useMemo(() => {
-    const narrow = mediaQuery === 'md' || mediaQuery === 'sm' || mediaQuery === 'xs';
+    const narrow = isMobileWidth;
     switch (routerPathName) {
       case '/app/home':
         return 'Home';
@@ -26,7 +26,7 @@ export const useInputs = () => {
       default:
         return 'Unknown';
     }
-  }, [routerPathName, mediaQuery]);
+  }, [routerPathName, isMobileWidth]);
 
   return {
     ...local.$state,
@@ -36,6 +36,6 @@ export const useInputs = () => {
     routerPatchName: routerPathName,
     session: useSession().data,
     flashCardCount: useMemo(() => flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length, [flashCards]),
-    isMobileWidth: mediaQuery === 'xs' || mediaQuery === 'sm',
+    isMobileWidth,
   }
 }

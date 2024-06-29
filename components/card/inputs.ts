@@ -8,7 +8,7 @@ export const useInputs = (
   ref: ForwardedRef<CardHandle>
 ) => {
 
-  const { store, state: { mediaQuery } } = useStore();
+  const { store, state: { isMobileWidth } } = useStore();
 
   const headRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -25,6 +25,6 @@ export const useInputs = (
     bodyRef,
     previousScrollOffset,
     headerOffset,
-    isMobileWidth: mediaQuery === 'xs' || mediaQuery === 'sm',
+    isMobileWidth,
   };
 }

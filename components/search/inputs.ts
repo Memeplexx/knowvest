@@ -8,7 +8,7 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { tags, groups, synonymGroups, notes, noteTags, mediaQuery } } = useStore();
+  const { store, state: { tags, groups, synonymGroups, notes, noteTags, isMobileWidth } } = useStore();
   const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } } = useLocalStore('search', initialState);
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
@@ -103,8 +103,6 @@ export const useInputs = () => {
     if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow)
       local.$patch(payload);
   }, [local, showSearchPane, showingPane]));
-
-  const isMobileWidth = mediaQuery === 'xs' || mediaQuery === 'sm'
 
   return {
     store,

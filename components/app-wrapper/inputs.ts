@@ -1,6 +1,5 @@
 import { initialize } from "@/actions/session";
 import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
-import { useMediaQueryListener } from "@/utils/dom-utils";
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
@@ -9,6 +8,7 @@ import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
 import { redirect, usePathname } from "next/navigation";
 import { configureDevtools } from "olik/devtools";
+import { useEffect } from "react";
 
 
 export const useInputs = () => {
@@ -17,11 +17,17 @@ export const useInputs = () => {
     configureDevtools();
 
   const routerPathName = usePathname()!;
-
-  const { store, state: { showMenu, mediaQuery } } = useStore();
+  const { store, state: { showMenu, isMobileWidth } } = useStore();
   const component = useComponent();
-  const result = { store, isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth: mediaQuery === 'xs' || mediaQuery === 'sm' };
-  useMediaQueryListener(store.mediaQuery.$set);
+  const result = { store, isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth };
+
+  // Listen for changes to the window width and update the store
+  useEffect(() => {
+    const listener = () => store.isMobileWidth.$set(window.innerWidth < 768);
+    document.addEventListener('resize', listener);
+    listener();
+    return () => document.removeEventListener('resize', listener);
+  }, [store]);
 
   // Log user out if session expired
   const session = useSession();

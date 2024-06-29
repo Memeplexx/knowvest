@@ -5,8 +5,7 @@ import { useStore } from "@/utils/store-utils";
 import styled from "styled-components";
 
 export default function Page() {
-  const { state: { mediaQuery } } = useStore();
-  const isMobileWidth = mediaQuery === 'xs' || mediaQuery === 'sm';
+  const { state: { isMobileWidth } } = useStore();
   if (!isMobileWidth)
     return <Search />;
   return (

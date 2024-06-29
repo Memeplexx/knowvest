@@ -3,7 +3,6 @@ import { createStore } from 'olik';
 import { createUseDerivationHooks, createUseStoreHooks } from 'olik-react';
 import { configureSortModule } from 'olik/sort';
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, SynonymGroupDTO, SynonymId, TagDTO, TagId } from '../actions/types';
-import { MediaQueries } from './dom-utils';
 import { TagResult } from './tags-worker';
 
 configureSortModule();
@@ -15,7 +14,7 @@ const initialState = {
   synonymGroups: new Array<SynonymGroupDTO>(),
   flashCards: new Array<FlashCardDTO>(),
   configureTags: false as boolean | TagId,
-  mediaQuery: null as keyof typeof MediaQueries | null,
+  isMobileWidth: false,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
   noteTags: new Array<TagResult & { noteId: NoteId }>(),

@@ -1,6 +1,6 @@
 export { };
 import { tupleIncludes } from "olik";
-import { MouseEvent, useCallback, useEffect, useRef } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import { useIsomorphicLayoutEffect } from "./react-utils";
 
 
@@ -71,35 +71,6 @@ export const useResizeListener = (listener: () => void) => {
     window.addEventListener('resize', listenerRef.current);
     return () => window.removeEventListener('resize', listenerRef.current);
   }, [listener]);
-}
-
-export const useMediaQueryListener = (listener: (mediaQuery: keyof typeof MediaQueries) => void) => {
-  const initialized = useRef(false);
-  const listenerRef = useRef(listener);
-  listenerRef.current = listener;
-  const currentQuery = useRef<keyof typeof MediaQueries | null>(null);
-  const getMediaQuery = useCallback(() => {
-    const windowWidth = window.innerWidth;
-    return Object.keysTyped(MediaQueries).reverse().find(key => windowWidth > MediaQueries[key]) ?? 'xs';
-  }, []);
-  if (typeof window !== 'undefined' && !initialized.current) {
-    const previousMediaQuery = currentQuery.current;
-    currentQuery.current = getMediaQuery();
-    if (previousMediaQuery !== currentQuery.current)
-      listener(currentQuery.current);
-    initialized.current = true;
-  }
-  const resizeListener = useCallback(() => {
-    const previousMediaQuery = currentQuery.current;
-    currentQuery.current = getMediaQuery();
-    if (previousMediaQuery !== currentQuery.current) {
-      listenerRef.current(currentQuery.current);
-    }
-  }, [getMediaQuery]);
-  useEffect(() => {
-    window.addEventListener('resize', resizeListener);
-    return () => window.removeEventListener('resize', resizeListener);
-  }, [resizeListener]);
 }
 
 const ancestorMatches = (element: EventTarget | null, check: (element: HTMLElement) => boolean): boolean => {
