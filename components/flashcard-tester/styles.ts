@@ -1,6 +1,6 @@
 import { Button } from "@/components/button";
 import { div, element } from "@/components/html";
-import ReadonlyNote from "@/components/readonly-note";
+import { ReadonlyNote } from "@/components/readonly-note";
 import { mobileBreakPoint } from "@/utils/style-utils";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";

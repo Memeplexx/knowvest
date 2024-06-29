@@ -4,7 +4,7 @@ import { Props } from './constants';
 import { useInputs } from './inputs';
 import { ReadonlyNoteWrapper } from './styles';
 
-export default function ReadonlyNote(
+export function ReadonlyNote(
   props: Props
 ) {
   const inputs = useInputs(props);

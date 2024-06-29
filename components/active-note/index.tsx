@@ -1,19 +1,17 @@
 "use client";
-import { AddIcon, CreateIcon, DeleteIcon, DuplicateIcon, FilterIcon, PopupOption, SettingsIcon, SplitIcon } from '@/utils/style-utils';
+import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { AddIcon, DeleteIcon, FilterIcon, SettingsIcon, SplitIcon } from '@/utils/style-utils';
 import { type HTMLAttributes } from 'react';
-import { CiCreditCard2 } from 'react-icons/ci';
-import { ButtonIcon } from '../button-icon';
 import { Confirmation } from '../confirmation';
 import { Loader } from '../loader';
-import { Popup } from '../popup';
 import { FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActivePanelWrapper, ActiveSelectionListItem, CardWrapper, DeleteButton, FlashCard, SelectionOptions, SelectionText, TextArea, TextEditor, TextEditorWrapper } from './styles';
+import { ActivePanelWrapper, ActiveSelectionListItem, DeleteButton, FlashCard, SelectionOptions, SelectionText, TextArea, TextEditor, TextEditorWrapper } from './styles';
 
 
 
-export const ActivePanel = (
+export const ActiveNote = (
   props: HTMLAttributes<HTMLDivElement>
 ) => {
   const inputs = useInputs();
@@ -21,100 +19,19 @@ export const ActivePanel = (
   const fragmentProps = { inputs, outputs };
   return (
     <ActivePanelWrapper
-      {...props}
+      {...useUnknownPropsStripper(props)}
       children={
         <>
-          <CardWrapper
-            heading={
-              <>
-                Active
-                <SettingsMenu
-                  {...fragmentProps}
-                />
-              </>
-            }
-            body={
-              <>
-                <EditorFragment
-                  {...fragmentProps}
-                />
-                <FlashCardFragment
-                  {...fragmentProps}
-                />
-              </>
-            }
+          <EditorFragment
+            {...fragmentProps}
+          />
+          <FlashCardFragment
+            {...fragmentProps}
           />
         </>
       }
     />
   )
-}
-
-const SettingsMenu = ({ inputs, outputs }: FragmentProps) => {
-  return (
-    <>
-      <Popup
-        storeKey='settingsMenu'
-        ref={inputs.popupRef}
-        trigger={props => (
-          <ButtonIcon
-            {...props}
-            aria-label='Settings'
-            children={<SettingsIcon />}
-          />
-        )}
-        overlay={
-          <>
-            <PopupOption
-              onClick={outputs.onClickCreateNote}
-              children={
-                <>
-                  Create new note
-                  <CreateIcon />
-                </>
-              }
-            />
-            <PopupOption
-              onClick={outputs.onClickDuplicateNote}
-              children={
-                <>
-                  Duplicate this note
-                  <DuplicateIcon />
-                </>
-              }
-            />
-            <PopupOption
-              disabled={!inputs.mayDeleteNote}
-              onClick={outputs.onClickRequestDeleteNote}
-              children={
-                <>
-                  Delete this note
-                  <DeleteIcon />
-                </>
-              }
-            />
-            <PopupOption
-              onClick={outputs.onClickCreateFlashCard}
-              children={
-                <>
-                  Create Flash Card
-                  <CiCreditCard2 />
-                </>
-              }
-            />
-          </>
-        }
-      />
-      <Confirmation
-        if={inputs.showConfirmDeleteDialog}
-        storeKey='deleteNote'
-        onClose={outputs.onClickCancelRemoveNote}
-        onConfirm={outputs.onClickConfirmRemoveNote}
-        title='Delete note requested'
-        message='Are you sure you want to delete this note?'
-      />
-    </>
-  );
 }
 
 const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
@@ -200,7 +117,7 @@ const FlashCardFragment = ({ inputs, outputs }: FragmentProps) => {
                 children={<DeleteIcon />}
               />
               <Confirmation
-                if={inputs.showConfirmDeleteFlashCardDialog}
+                if={inputs.confirmDeleteFashCard}
                 storeKey='deleteFlashCard'
                 onClose={outputs.onClickCancelRemoveFlashCard}
                 onConfirm={outputs.onClickConfirmDeleteFlashCard(flashCard.id)}

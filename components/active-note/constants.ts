@@ -4,8 +4,8 @@ import { useOutputs } from "./outputs";
 
 export const initialState = {
   selection: '',
-  showConfirmDeleteDialog: false,
-  showConfirmDeleteFlashCardDialog: false,
+  confirmDeleteNote: false,
+  confirmDeleteFashCard: false,
   loadingSelection: false,
 };
 

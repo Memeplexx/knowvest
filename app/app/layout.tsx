@@ -1,5 +1,5 @@
 "use server"
-import { AppWrapper } from "@/components/app-wrapper";
+import { ContainerOnceLoggedIn } from "@/components/container-once-logged-in";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -15,7 +15,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <Wrapper
       children={
-        <AppWrapper
+        <ContainerOnceLoggedIn
           children={children}
         />
       }

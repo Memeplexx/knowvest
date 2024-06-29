@@ -13,20 +13,23 @@ export const useInputs = () => {
   useMemo(() => addToWhitelist([store.showLoader]), [store]);
   const routerPathName = usePathname()!;
   const pageTitle = useMemo(() => {
-    const narrow = isMobileWidth;
     switch (routerPathName) {
       case '/app/home':
         return 'Home';
+      case '/app/history':
+        return 'Historical Notes';
+      case '/app/related':
+        return 'Related Notes';
       case '/app/tags':
-        return narrow ? 'Tags' : 'Configure Tags';
+        return 'Configure Tags';
       case '/app/search':
-        return narrow ? 'Search' : 'Search for Notes';
+        return 'Search for Notes';
       case '/app/test':
-        return narrow ? 'Test' : 'Flash Card Tester';
+        return 'Flash Card Tester';
       default:
         return 'Unknown';
     }
-  }, [routerPathName, isMobileWidth]);
+  }, [routerPathName]);
 
   return {
     ...local.$state,

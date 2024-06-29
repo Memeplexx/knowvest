@@ -1,9 +1,9 @@
 import Link from "next/link";
 import styled, { css } from "styled-components";
+import { ContainerWithSideNav } from "../container-with-side-nav";
 import { div, element } from "../html";
 import { Loader } from "../loader";
 import { Navbar } from "../navbar";
-import { SideNav } from "../sidenav";
 
 
 export const TopBar = styled(element(Navbar))`
@@ -15,7 +15,7 @@ export const LoaderPlaceholder = styled(Loader)`
   background-image: linear-gradient(to right, #242020, #191919);
 `;
 
-export const AppWrapperWrapper = styled(div)`
+export const ContainerOnceLoggedInWrapper = styled(element(ContainerWithSideNav))`
   flex: 1;
   max-height: 100%;
   overflow: hidden;
@@ -76,5 +76,3 @@ export const MenuItemSeparator = styled(div)`
   height: 30px;
 `;
 
-export const SideNavWrapper = styled(element(SideNav))`
-`;

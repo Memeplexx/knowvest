@@ -6,41 +6,32 @@ import { GrConfigure } from "react-icons/gr";
 import { IoSearch } from "react-icons/io5";
 import { MdHistory } from "react-icons/md";
 import { PiPlugsConnectedFill, PiStudentFill } from "react-icons/pi";
-import { Frag } from "../html";
+import { ContainerWithStickyHeader } from "../container-with-sticky-header";
 import { Inputs } from "./constants";
 import { useInputs } from "./inputs";
-import { AppWrapperWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLink, MenuItemSeparator, SideNavWrapper, TopBar } from "./styles";
+import { ContainerOnceLoggedInWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLink, MenuItemSeparator, TopBar } from "./styles";
 
-export function AppWrapper({ children }: { children: React.ReactNode }) {
+export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode }) {
   const inputs = useInputs();
   return (
     <>
       <LoaderPlaceholder
         if={!inputs.isReady}
       />
-      <AppWrapperWrapper
+      <ContainerOnceLoggedInWrapper
         if={inputs.isReady}
-        children={
-          <>
-            <TopBar
-              if={!inputs.isMobileWidth}
-            />
-            <Frag
-              if={!inputs.isMobileWidth}
-              children={children}
-            />
-            <SideNavWrapper
-              if={inputs.isMobileWidth}
-              style={{ zIndex: 9 }}
-              onShow={inputs.store.showMenu.$set}
-              show={inputs.showMenu}
-              size={280}
-              edgeThreshold={25}
-              position="left"
-              menuContent={<MenuFragment inputs={inputs} />}
-              mainContent={children}
-            />
-          </>
+        style={{ zIndex: 9 }}
+        onShow={inputs.store.showMenu.$set}
+        show={inputs.showMenu}
+        size={280}
+        edgeThreshold={25}
+        position="left"
+        menuContent={<MenuFragment inputs={inputs} />}
+        mainContent={
+          <ContainerWithStickyHeader
+            heading={<TopBar />}
+            body={children}
+          />
         }
       />
     </>
@@ -107,8 +98,8 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
           />
           <MenuItemSeparator />
           <MenuItemLink
-            href="./tag-manager"
-            $active={inputs.routerPathName === '/app/tag-manager'}
+            href="./tags"
+            $active={inputs.routerPathName === '/app/tags'}
             children={
               <>
                 <GrConfigure />

@@ -1,7 +1,7 @@
-"use client";
+"use server";
 import { History } from "@/components/history";
 
-export default function Page() {
+export default async function Page() {
   return (
     <History />
   )

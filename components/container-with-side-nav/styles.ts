@@ -4,7 +4,14 @@ import { Position } from './constants';
 
 
 
-export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThreshold: number, $position: Position }>`
+
+export const ContainerWithSideNavWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  max-height: 100%;
+`;
+
+export const MenuWrapper = styled(animated.div) <{ $size: number, $edgeThreshold: number, $position: Position }>`
   position: absolute;
   background-color: transparent;
   z-index: 10;

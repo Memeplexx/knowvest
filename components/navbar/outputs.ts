@@ -10,5 +10,8 @@ export const useOutputs = (inputs: Inputs) => {
     onClickSignOut: async () => {
       await signOut();
     },
+    onClickHamburger: () => {
+      inputs.store.showMenu.$toggle();
+    },
   };
 }

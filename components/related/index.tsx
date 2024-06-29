@@ -1,13 +1,9 @@
 "use client";
-import { onSelectNote } from '@/utils/app-utils';
 import { useUnknownPropsStripper } from '@/utils/react-utils';
-import { FilterIcon } from '@/utils/style-utils';
-import { ButtonIcon } from '../button-icon';
-import { Popup } from '../popup';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { FilterPopup, Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, RelatedWrapper, Result } from './styles';
+import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, RelatedWrapper, Result } from './styles';
 
 
 export function Related(
@@ -18,34 +14,14 @@ export function Related(
   return (
     <RelatedWrapper
       {...useUnknownPropsStripper(props)}
-      ref={inputs.cardRef}
-      onScrolledToBottom={outputs.onScrolledToBottom}
-      heading={
-        <>
-          Related ({inputs.items.length})
-          <Popup
-            storeKey='relatedMenu'
-            trigger={props => (
-              <ButtonIcon
-                {...props}
-                aria-label='Filter'
-                children={<FilterIcon />}
-              />
-            )}
-            overlay={
-              <FilterPopup />
-            }
-          />
-        </>
-      }
-      body={
+      children={
         <>
           <ListItemsWrapper
             if={!!inputs.items.length}
             children={inputs.items.map(note => (
               <ListItem
                 key={note.note.id}
-                onClick={() => onSelectNote(inputs.store, note.note.id)}
+                onClick={outputs.onSelectNote(note.note.id)}
                 children={
                   <>
                     <Header

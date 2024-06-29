@@ -2,7 +2,7 @@
 import { Button } from '@/components/button';
 import { ButtonIcon } from '@/components/button-icon';
 import { div, element } from '@/components/html';
-import ReadonlyNote from '@/components/readonly-note';
+import { ReadonlyNote } from '@/components/readonly-note';
 import { mobileBreakPoint } from '@/utils/style-utils';
 import { GiLighthouse } from 'react-icons/gi';
 import { IoMdCloseCircle } from 'react-icons/io';
@@ -13,10 +13,15 @@ const gap = '4px';
 
 
 export const SearchWrapper = styled(div)`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const SearchPageBody = styled(div)`
   min-height: 0;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: ${gap};
   flex: 1;
   height: auto;
@@ -138,7 +143,6 @@ export const RemoveIcon = styled(element(IoMdCloseCircle))`
 
 export const Result = styled(ReadonlyNote)`
   cursor: pointer;
-  margin: 0 -16px;
   padding: 16px;
   &:hover {
     background-color: rgba(0,0,0,0.4);

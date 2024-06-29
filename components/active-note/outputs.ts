@@ -21,7 +21,7 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, 
     onClickConfirmRemoveNote: async () => {
       const apiResponse = await archiveNote(store.$state.activeNoteId);
       store.notes.$find.id.$eq(apiResponse.note.id).$delete();
-      local.showConfirmDeleteDialog.$set(false);
+      local.confirmDeleteNote.$set(false);
       const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
       store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === nextMostRecentlyViewedNoteId).map(nt => nt.id);
@@ -31,7 +31,7 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, 
       popupRef.current?.hide();
     },
     onClickCancelRemoveNote: () => {
-      local.showConfirmDeleteDialog.$set(false);
+      local.confirmDeleteNote.$set(false);
       popupRef.current?.hide();
     },
     onClickDuplicateNote: async () => {
@@ -40,14 +40,14 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, 
       popupRef.current?.hide();
     },
     onClickRequestDeleteNote: () => {
-      local.showConfirmDeleteDialog.$set(true);
+      local.confirmDeleteNote.$set(true);
     },
     selectionChanged: (selection: string) => {
       local.selection.$set(selection);
     },
     onClickConfigureSelectedTag: () => {
       store.configureTags.$set(store.$state.tags.findOrThrow(t => t.text === local.$state.selection).id);
-      router.push('./tag-manager');
+      router.push('./tags');
     },
     onClickCreateNewTagFromSelection: async () => {
       local.loadingSelection.$set(true);
@@ -124,16 +124,16 @@ export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, 
       store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$set(apiResponse.flashCard);
     },
     onClickRequestDeleteFlashCard: async () => {
-      local.showConfirmDeleteFlashCardDialog.$set(true);
+      local.confirmDeleteFashCard.$set(true);
     },
     onClickConfirmDeleteFlashCard: (flashCardId: FlashCardId) => async () => {
       const apiResponse = await archiveFlashCard(flashCardId);
       store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$delete();
       notify.success('Flash Card Deleted');
-      local.showConfirmDeleteFlashCardDialog.$set(false);
+      local.confirmDeleteFashCard.$set(false);
     },
     onClickCancelRemoveFlashCard: () => {
-      local.showConfirmDeleteFlashCardDialog.$set(false);
+      local.confirmDeleteFashCard.$set(false);
     }
   };
 }

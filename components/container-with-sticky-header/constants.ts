@@ -1,13 +1,13 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 import { useInputs } from "./inputs";
 
 export type Props = {
-  heading?: string | JSX.Element,
-  body: JSX.Element | null,
+  heading?: ReactNode,
+  body: ReactNode | null,
   onScrolledToBottom?: () => void,
 } & HTMLAttributes<HTMLElement>;
 
-export type CardHandle = {
+export type ContainerWithStickyHeaderHandle = {
   scrollToTop: () => void;
 };
 

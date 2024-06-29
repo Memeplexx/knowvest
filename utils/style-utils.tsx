@@ -4,8 +4,8 @@ import { Montserrat, Source_Code_Pro } from 'next/font/google';
 import { useServerInsertedHTML } from 'next/navigation';
 import React, { useState } from 'react';
 import { AiFillTag } from "react-icons/ai";
-import { CiBeaker1, CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
-import { MdClear, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardArrowUp } from "react-icons/md";
+import { CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
+import { MdClear, MdKeyboardArrowRight, MdKeyboardArrowUp } from "react-icons/md";
 import styled, { ServerStyleSheet, StyleSheetManager, css } from "styled-components";
 
 export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
@@ -100,12 +100,6 @@ export const CloseIcon = styled(MdClear)``;
 
 export const SearchIcon = styled(CiSearch)``;
 
-export const TestIcon = styled(CiBeaker1)``;
-
-export const LeftIcon = styled(MdKeyboardArrowLeft)`
-  ${resetIconDims}
-`;
-
 export const RightIcon = styled(MdKeyboardArrowRight)`
   ${resetIconDims}
 `;
@@ -116,3 +110,4 @@ export const UpIcon = styled(MdKeyboardArrowUp)`
 
 export const mobileBreakPoint = '1000px';
 
+export const panelGap = '4px';

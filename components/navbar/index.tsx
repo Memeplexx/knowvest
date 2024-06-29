@@ -8,7 +8,7 @@ import useImage from '../../public/images/user.svg';
 import { Popup } from '../popup';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { FlashCardButton, FlashCardCount, FlashCardIcon, HomeLink, ImageLogo, LeftContent, NavBarWrapper, PageTitle, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
+import { FlashCardButton, FlashCardCount, FlashCardIcon, HamburgerButton, HamburgerIcon, HomeLink, ImageLogo, LeftContent, NavBarWrapper, PageTitle, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
 
 
 export const Navbar = (props: HTMLAttributes<HTMLDivElement>) => {
@@ -35,6 +35,11 @@ export const Navbar = (props: HTMLAttributes<HTMLDivElement>) => {
                       blurDataURL={farmImage.src}
                     />
                   }
+                />
+                <HamburgerButton
+                  if={inputs.isMobileWidth}
+                  onClick={outputs.onClickHamburger}
+                  children={<HamburgerIcon />}
                 />
                 <PageTitle
                   children={inputs.pageTitle}
@@ -63,10 +68,10 @@ export const Navbar = (props: HTMLAttributes<HTMLDivElement>) => {
                   }
                 />
                 <Link
-                  href='./tag-manager'
+                  href='./tags'
                   children={
                     <SearchButton
-                      $active={inputs.routerPatchName.endsWith('/tag-manager')}
+                      $active={inputs.routerPatchName.endsWith('/tags')}
                       aria-label='Tags Config'
                       children={<SettingsIcon />}
                     />

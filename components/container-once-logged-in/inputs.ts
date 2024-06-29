@@ -23,10 +23,14 @@ export const useInputs = () => {
 
   // Listen for changes to the window width and update the store
   useEffect(() => {
-    const listener = () => store.isMobileWidth.$set(window.innerWidth < 768);
-    document.addEventListener('resize', listener);
+    const listener = () => {
+      const isMobileWidth = window.innerWidth < 768;
+      if (store.$state.isMobileWidth === isMobileWidth) return;
+      store.isMobileWidth.$set(isMobileWidth);
+    }
+    window.addEventListener('resize', listener);
     listener();
-    return () => document.removeEventListener('resize', listener);
+    return () => window.removeEventListener('resize', listener);
   }, [store]);
 
   // Log user out if session expired

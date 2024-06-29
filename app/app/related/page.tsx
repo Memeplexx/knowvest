@@ -1,13 +1,8 @@
-"use client";
+"use server";
 import { Related } from "@/components/related";
-import styled from "styled-components";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <RelatedContainer />
+    <Related />
   );
 }
-
-const RelatedContainer = styled(Related)`
-  height: 100%;
-`;

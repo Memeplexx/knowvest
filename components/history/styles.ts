@@ -1,12 +1,11 @@
 import { ClockIcon } from "@/utils/style-utils";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
-import { Card } from "../card";
 import { div } from "../html";
-import ReadonlyNote from "../readonly-note";
+import { ReadonlyNote } from "../readonly-note";
 
 
-export const HistoryWrapper = styled(Card)`
+export const HistoryWrapper = styled.div`
 `;
 
 export const Header = styled.div`
@@ -34,7 +33,6 @@ export const ListItem = styled.div`
   font-size: 12px;
   cursor: pointer;
   position: relative;
-  margin: 0 -16px;
   padding: 16px;
   transition: all 0.2s;
   transition: all 0.4s;

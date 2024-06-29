@@ -9,26 +9,18 @@ export function History(
   props: Props,
 ) {
   const inputs = useInputs();
-  const outputs = useOutputs(props, inputs);
+  const outputs = useOutputs(inputs);
   return (
     <HistoryWrapper
       {...useUnknownPropsStripper(props)}
-      ref={inputs.cardRef}
-      heading={
-        <>
-          History
-          <div />
-        </>
-      }
-      onScrolledToBottom={outputs.onScrolledToBottom}
-      body={
+      children={
         <>
           <ListItemsWrapper
             if={!!inputs.items.length}
             children={inputs.items.map(note => (
               <ListItem
                 key={note.id}
-                onClick={() => outputs.onSelectNote(note.id)}
+                onClick={outputs.onSelectNote(note.id)}
                 children={
                   <>
                     <Header

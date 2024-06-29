@@ -1,25 +1,11 @@
 "use client";
-import { useInputs } from './inputs';
-import { ActivePane, HistoryPanel, HomeWrapper, RelatedPanel } from './styles';
-
-
+import { ActiveNote } from "@/components/active-note";
+import { HomeDesktop } from "@/components/home-desktop";
+import { useStore } from "@/utils/store-utils";
 
 export default function Page() {
-  const inputs = useInputs();
-  return (
-    <HomeWrapper
-      children={
-        <>
-          <HistoryPanel
-            if={!inputs.isMobileWidth}
-          />
-          <ActivePane />
-          <RelatedPanel
-            if={!inputs.isMobileWidth}
-          />
-        </>
-      }
-    />
-  );
+  const { state: { isMobileWidth } } = useStore();
+  if (isMobileWidth)
+    return <ActiveNote />;
+  return <HomeDesktop />;
 }
-

@@ -1,10 +1,11 @@
 import { SearchIcon as BaseSearchIcon, mobileBreakPoint } from "@/utils/style-utils";
 import Image from "next/image";
 import Link from "next/link";
+import { CgMenuGridO } from "react-icons/cg";
 import { PiStudentFill } from 'react-icons/pi';
 import styled, { css } from "styled-components";
 import { ButtonIcon } from "../button-icon";
-import { div, element } from "../html";
+import { button, div, element } from "../html";
 
 export const NavBarWrapper = styled.div`
   z-index: 11;
@@ -91,3 +92,15 @@ export const FlashCardCount = styled.div`
   right: -5px;
   bottom: -5px;
 `;
+
+export const HamburgerButton = styled(button)`
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+`;
+
+export const HamburgerIcon = styled(element(CgMenuGridO))`
+  width: 100%;
+  height: 100%;
+`;
+

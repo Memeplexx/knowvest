@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, RemoveButton, RemoveIcon, Result, ResultsContent, SearchContent, SearchIcon, SearchWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, RemoveButton, RemoveIcon, Result, ResultsContent, SearchContent, SearchIcon, SearchPageBody, SearchWrapper, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
 export function Search() {
@@ -12,64 +12,68 @@ export function Search() {
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <>
-      <SearchWrapper
-        children={
-          <>
-            <SearchContent
-              if={inputs.showSearchPane}
-              children={
-                <>
-                  <SearchFragment
-                    {...fragmentProps}
-                  />
-                  <TagsOuterWrapper
-                    children={
-                      <>
-                        <SynonymsFragment
-                          {...fragmentProps}
-                        />
-                        <GroupsFragment
-                          {...fragmentProps}
-                        />
-                      </>
-                    }
-                  />
-                </>
-              }
-            />
-            <ResultsFragment
-              {...fragmentProps}
-            />
-          </>
-        }
-      />
-      <Footer
-        if={!!inputs.notesByTags.length}
-        children={
-          <>
-            <div
-              children={
-                <FooterButton
-                  if={inputs.isMobileWidth}
-                  onClick={outputs.onClickTabButton}
-                  highlighted={false}
-                  children={inputs.showResultsPane ? 'View search' : `View results (${inputs.notesByTags.length})`}
-                  aria-label={inputs.showResultsPane ? 'View search' : 'View results'}
+    <SearchWrapper
+      children={
+        <>
+          <SearchPageBody
+            children={
+              <>
+                <SearchContent
+                  if={inputs.showSearchPane}
+                  children={
+                    <>
+                      <SearchFragment
+                        {...fragmentProps}
+                      />
+                      <TagsOuterWrapper
+                        children={
+                          <>
+                            <SynonymsFragment
+                              {...fragmentProps}
+                            />
+                            <GroupsFragment
+                              {...fragmentProps}
+                            />
+                          </>
+                        }
+                      />
+                    </>
+                  }
                 />
-              }
-            />
-            <FooterButton
-              onClick={outputs.onClickStartOver}
-              children='Start over'
-              aria-label='Start over'
-              title='Start a new search'
-              highlighted={true}
-            />
-          </>
-        }
-      />
-    </>
+                <ResultsFragment
+                  {...fragmentProps}
+                />
+              </>
+            }
+          />
+          <Footer
+            if={!!inputs.notesByTags.length}
+            children={
+              <>
+                <div
+                  children={
+                    <FooterButton
+                      if={inputs.isMobileWidth}
+                      onClick={outputs.onClickTabButton}
+                      highlighted={false}
+                      children={inputs.showResultsPane ? 'View search' : `View results (${inputs.notesByTags.length})`}
+                      aria-label={inputs.showResultsPane ? 'View search' : 'View results'}
+                    />
+                  }
+                />
+                <FooterButton
+                  onClick={outputs.onClickStartOver}
+                  children='Start over'
+                  aria-label='Start over'
+                  title='Start a new search'
+                  highlighted={true}
+                />
+              </>
+            }
+          />
+        </>
+      }
+    />
   );
 }
 

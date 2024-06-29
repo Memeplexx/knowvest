@@ -1,7 +1,6 @@
 import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
 import { ButtonIcon } from "../button-icon";
-import { Card } from "../card";
 import { TextAreaDebounced } from "../debounced";
 import { div } from "../html";
 
@@ -9,11 +8,8 @@ import { div } from "../html";
 export const ActivePanelWrapper = styled.div`
   position: relative;
   display: flex;
+  flex-direction: column;
   background-image: linear-gradient(to right,#101010,#1d1d1d);
-`;
-
-export const CardWrapper = styled(Card)`
-  flex: 1;
 `;
 
 export const TextEditorWrapper = styled(div)`
