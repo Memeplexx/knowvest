@@ -1,8 +1,10 @@
 "use client";
 import { FilterIcon } from '@/utils/style-utils';
+import { useRef } from 'react';
 import { ActiveNote } from '../active-note';
 import { ActiveNoteSettings } from '../active-note-settings';
 import { ButtonIcon } from '../button-icon';
+import { ContainerWithStickyHeaderHandle } from '../container-with-sticky-header/constants';
 import { History } from '../history';
 import { Popup } from '../popup';
 import { Related } from '../related';
@@ -11,18 +13,23 @@ import { ActivePanel, FilterPopup, Header, HistoryPanel, HomeWrapper, RelatedPan
 
 
 export function HomeDesktop() {
+  const historyPanelRef = useRef<ContainerWithStickyHeaderHandle>(null);
+  const relatedPanelRef = useRef<ContainerWithStickyHeaderHandle>(null);
   return (
     <HomeWrapper
       children={
         <>
           <HistoryPanel
+            ref={historyPanelRef}
             heading={
               <Header
                 children="History"
               />
             }
             body={
-              <History />
+              <History
+                onSelectNote={() => historyPanelRef.current?.scrollToTop()}
+              />
             }
           />
           <ActivePanel
@@ -41,6 +48,7 @@ export function HomeDesktop() {
             }
           />
           <RelatedPanel
+            ref={relatedPanelRef}
             heading={
               <Header
                 children={
@@ -64,7 +72,9 @@ export function HomeDesktop() {
               />
             }
             body={
-              <Related />
+              <Related
+                onSelectNote={() => relatedPanelRef.current?.scrollToTop()}
+              />
             }
           />
         </>

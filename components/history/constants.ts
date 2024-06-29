@@ -1,7 +1,10 @@
+import { NoteId } from '@/actions/types';
 import { type HTMLAttributes } from 'react';
 import { useInputs } from "./inputs";
 
-export type Props = HTMLAttributes<HTMLDivElement>
+export type Props = {
+  onSelectNote?: (noteId: NoteId) => void,
+} & HTMLAttributes<HTMLDivElement>;
 
 export type Inputs = ReturnType<typeof useInputs>;
 

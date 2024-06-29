@@ -1,7 +1,6 @@
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef } from "react";
-import { ContainerWithStickyHeaderHandle } from "../container-with-sticky-header/constants";
+import { useMemo } from "react";
 import { initialState, pageSize } from "./constants";
 
 export const useInputs = () => {
@@ -9,7 +8,6 @@ export const useInputs = () => {
   const { store, state: { notes, synonymIds, activeNoteId, noteTags } } = useStore();
   const { local, state: { index } } = useLocalStore('relatedItems', initialState);
   const router = useRouter();
-  const cardRef = useRef<ContainerWithStickyHeaderHandle>(null);
 
   const items = useMemo(() => {
     return noteTags
@@ -34,7 +32,6 @@ export const useInputs = () => {
     store,
     local,
     items,
-    cardRef,
     router,
   }
 

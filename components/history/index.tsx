@@ -9,7 +9,7 @@ export function History(
   props: Props,
 ) {
   const inputs = useInputs();
-  const outputs = useOutputs(inputs);
+  const outputs = useOutputs(props, inputs);
   return (
     <HistoryWrapper
       {...useUnknownPropsStripper(props)}

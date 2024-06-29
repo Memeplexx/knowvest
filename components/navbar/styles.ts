@@ -27,8 +27,6 @@ export const NavBarWrapper = styled.div`
 export const HomeLink = styled(element(Link))`
 `;
 
-
-
 export const ImageLogo = styled(Image)`
 `;
 

@@ -6,6 +6,7 @@ import { ReadonlyNote } from "../readonly-note";
 
 
 export const HistoryWrapper = styled.div`
+  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const Header = styled.div`
@@ -34,9 +35,9 @@ export const ListItem = styled.div`
   cursor: pointer;
   position: relative;
   padding: 16px;
+  padding-left: 8px;
   transition: all 0.2s;
   transition: all 0.4s;
-  background-image: linear-gradient(to right, #242020, #191919);
   margin-bottom: -1px;
   &:hover {
     background-image: linear-gradient(to right,#252525,#2d2d2d);

@@ -19,6 +19,7 @@ export const TextEditorWrapper = styled(div)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 16px 8px;
 `;
 
 export const TextEditor = styled(div)`
@@ -78,6 +79,7 @@ export const FlashCard = styled.div`
   font-size: 12px;
   background-color: rgba(0,0,0,0.4);
   border-radius: 4px;
+  margin: 8px;
   margin-top: 4px;
   position: relative;
 `;

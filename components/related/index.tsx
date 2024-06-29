@@ -10,7 +10,7 @@ export function Related(
   props: Props
 ) {
   const inputs = useInputs();
-  const outputs = useOutputs(inputs);
+  const outputs = useOutputs(props, inputs);
   return (
     <RelatedWrapper
       {...useUnknownPropsStripper(props)}

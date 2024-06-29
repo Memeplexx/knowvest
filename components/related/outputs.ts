@@ -1,9 +1,9 @@
 import { NoteId } from "@/actions/types";
 import { onSelectNote } from "@/utils/app-utils";
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 
-export const useOutputs = (inputs: Inputs) => {
-  const { local, cardRef, store, router } = inputs;
+export const useOutputs = (props: Props, inputs: Inputs) => {
+  const { local, store, router } = inputs;
   return {
     onScrolledToBottom: () => {
       local.index.$add(1);
@@ -11,7 +11,7 @@ export const useOutputs = (inputs: Inputs) => {
     onSelectNote: (noteId: NoteId) => async () => {
       local.index.$set(0);
       await onSelectNote(store, router, noteId);
-      cardRef.current!.scrollToTop();
+      props.onSelectNote?.(noteId);
     },
   };
 }
