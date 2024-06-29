@@ -1,4 +1,5 @@
 "use client";
+import { store } from "@/utils/store-utils";
 import { FaSadCry, FaSmileBeam } from "react-icons/fa";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
@@ -22,7 +23,7 @@ export function FlashCardTester() {
                 <Answer
                   if={!inputs.showQuestions}
                   note={inputs.items[0]?.note ?? null}
-                  synonymIds={inputs.store.synonymIds}
+                  synonymIds={store.synonymIds}
                 />
               </>
             }

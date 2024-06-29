@@ -9,7 +9,7 @@ export const useInputs = (
   ref: ForwardedRef<ContainerWithStickyHeaderHandle>
 ) => {
 
-  const { store, state: { isMobileWidth } } = useStore();
+  const { isMobileWidth } = useStore();
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -26,7 +26,6 @@ export const useInputs = (
     setHeaderHeight(headerHeightMeasured);
 
   return {
-    store,
     headerRef,
     bodyRef,
     previousScrollOffset,

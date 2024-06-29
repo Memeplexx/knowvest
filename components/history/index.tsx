@@ -1,5 +1,6 @@
 "use client";
 import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { store } from '@/utils/store-utils';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -33,7 +34,7 @@ export function History(
                     />
                     <Result
                       note={note}
-                      synonymIds={inputs.store.synonymIds}
+                      synonymIds={store.synonymIds}
                     />
                     <RightBorder />
                   </>

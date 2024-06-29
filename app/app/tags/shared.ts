@@ -3,11 +3,12 @@ import { addTagToSynonym, createTagForSynonym } from '@/actions/synonym';
 import { createTag, updateTag } from '@/actions/tag';
 import { GroupId, TagId } from '@/actions/types';
 import { TypedKeyboardEvent } from '@/utils/dom-utils';
+import { store } from '@/utils/store-utils';
 import { Inputs } from './constants';
 
 
 export const useSharedFunctions = (inputs: Inputs) => {
-  const { store, local, notify } = inputs;
+  const { local, notify } = inputs;
   const completeCreateTagForSynonym = async () => {
     const apiResponse = await createTagForSynonym(inputs.autocompleteText, inputs.synonymId === null ? undefined : inputs.synonymId);
     if (apiResponse.status === 'BAD_REQUEST')

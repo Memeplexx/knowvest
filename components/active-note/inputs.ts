@@ -1,7 +1,7 @@
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useComponent } from '@/utils/react-utils';
-import { useLocalStore, useStore } from '@/utils/store-utils';
+import { store, useLocalStore, useStore } from '@/utils/store-utils';
 import {
   closeBrackets,
   closeBracketsKeymap,
@@ -37,7 +37,7 @@ import { autocompleteExtension, createNotePersisterExtension, pasteListener, tex
 
 export const useInputs = () => {
 
-  const { store, state: { notes, tags, activeNoteId, flashCards } } = useStore();
+  const { notes, tags, activeNoteId, flashCards } = useStore();
   const { local, state } = useLocalStore('activePanel', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
@@ -48,7 +48,6 @@ export const useInputs = () => {
   const selectionIsTag = useMemo(() => tags.some(t => t.text === state.selection), [state.selection, tags]);
   const noteFlashCards = useMemo(() => flashCards.filter(fc => fc.noteId === activeNoteId).sort((a, b) => b.dateUpdated.getTime() - a.dateUpdated.getTime()), [activeNoteId, flashCards]);
   const result = {
-    store,
     local,
     notify,
     ...local.$state,

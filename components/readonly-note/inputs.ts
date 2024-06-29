@@ -1,7 +1,7 @@
 import { oneDark } from '@/utils/codemirror-theme';
 import { bulletPointPlugin, inlineNotePlugin, noteBlockPlugin, reviseEditorTags, titleFormatPlugin } from '@/utils/codemirror-utils';
 import { useComponent } from '@/utils/react-utils';
-import { useStore } from '@/utils/store-utils';
+import { store } from '@/utils/store-utils';
 import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { languages as codeLanguages } from '@codemirror/language-data';
@@ -14,7 +14,6 @@ import { Props } from './constants';
 
 export const useInputs = (props: Props) => {
 
-  const { store } = useStore();
   const editorRef = useRef<HTMLDivElement>(null);
   const component = useComponent();
   const result = { editorRef, editor: null as EditorView | null };

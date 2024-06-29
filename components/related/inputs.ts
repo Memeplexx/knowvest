@@ -5,7 +5,7 @@ import { initialState, pageSize } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { notes, synonymIds, activeNoteId, noteTags } } = useStore();
+  const { notes, synonymIds, activeNoteId, noteTags } = useStore();
   const { local, state: { index } } = useLocalStore('relatedItems', initialState);
   const router = useRouter();
 
@@ -29,7 +29,6 @@ export const useInputs = () => {
   }, [activeNoteId, index, notes, synonymIds, noteTags]);
 
   return {
-    store,
     local,
     items,
     router,

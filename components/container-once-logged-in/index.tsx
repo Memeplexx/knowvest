@@ -1,4 +1,5 @@
 "use client"
+import { store } from "@/utils/store-utils";
 import { BiLogOutCircle } from "react-icons/bi";
 import { CiSettings } from "react-icons/ci";
 import { FiEdit } from "react-icons/fi";
@@ -21,7 +22,7 @@ export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode 
       <ContainerOnceLoggedInWrapper
         if={inputs.isReady}
         style={{ zIndex: 9 }}
-        onShow={inputs.store.showMenu.$set}
+        onShow={store.showMenu.$set}
         show={inputs.showMenu}
         size={280}
         edgeThreshold={25}
@@ -41,7 +42,7 @@ export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode 
 const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
   return (
     <MenuContent
-      onClick={() => inputs.store.showMenu.$set(false)}
+      onClick={() => store.showMenu.$set(false)}
       children={
         <>
           <MenuItemLink

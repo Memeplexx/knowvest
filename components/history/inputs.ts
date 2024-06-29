@@ -7,7 +7,7 @@ import { initialState, pageSize } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { activeNoteId } } = useStore();
+  const { activeNoteId } = useStore();
   const { notesSorted } = useDerivations();
   const { local, state: { index } } = useLocalStore('historyItems', initialState);
   const router = useRouter();
@@ -23,7 +23,6 @@ export const useInputs = () => {
   }, [activeNoteId, index, notesSorted]);
 
   return {
-    store,
     local,
     ...local.$state,
     items,

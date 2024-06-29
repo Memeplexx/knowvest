@@ -1,8 +1,13 @@
-"use server";
+"use client";
 import { Related } from "@/components/related";
+import styled from "styled-components";
 
-export default async function Page() {
+export default function Page() {
   return (
-    <Related />
+    <HistoryWrapper />
   );
 }
+
+const HistoryWrapper = styled(Related)`
+  background-image: linear-gradient(to right, #131313, #212121);
+`;

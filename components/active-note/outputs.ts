@@ -3,12 +3,12 @@ import { archiveNote, createNote, duplicateNote, splitNote } from "@/actions/not
 import { createTagFromActiveNote } from "@/actions/tag";
 import { FlashCardId } from "@/actions/types";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
-import { notesSorted } from "@/utils/store-utils";
+import { notesSorted, store } from "@/utils/store-utils";
 import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, editor, editorRef, notify, router }: Inputs) => {
+export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router }: Inputs) => {
   return {
     onClickCreateNote: async () => {
       const apiResponse = await createNote();

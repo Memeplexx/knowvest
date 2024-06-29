@@ -7,12 +7,11 @@ import { initialState } from './constants';
 
 export const useInputs = () => {
 
-  const { store, state: { notes } } = useStore();
+  const { notes } = useStore();
   const { local, state } = useLocalStore('activePanelSettings', initialState);
   const notify = useNotifier();
   const popupRef = useRef<PopupHandle>(null);
   return {
-    store,
     local,
     notify,
     ...state,

@@ -3,6 +3,7 @@ import { removeTagFromItsCurrentSynonym } from '@/actions/synonym';
 import { archiveTag } from '@/actions/tag';
 import { GroupId, SynonymId, TagId } from '@/actions/types';
 import { TypedKeyboardEvent, useEventHandlerForDocument } from '@/utils/dom-utils';
+import { store } from '@/utils/store-utils';
 import { type ChangeEvent, type MouseEvent } from 'react';
 import { Inputs } from './constants';
 import { useSharedFunctions } from './shared';
@@ -10,7 +11,7 @@ import { useSharedFunctions } from './shared';
 
 export const useOutputs = (inputs: Inputs) => {
   const shared = useSharedFunctions(inputs);
-  const { store, local, notify } = inputs;
+  const { local, notify } = inputs;
   return {
     onCustomGroupNameFocus: (groupId: GroupId) => {
       local.$patch({

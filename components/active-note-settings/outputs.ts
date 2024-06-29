@@ -1,10 +1,10 @@
 import { createFlashCard } from "@/actions/flashcard";
 import { archiveNote, createNote, duplicateNote } from "@/actions/note";
-import { notesSorted } from "@/utils/store-utils";
+import { notesSorted, store } from "@/utils/store-utils";
 import { Inputs } from "./constants";
 
 
-export const useOutputs = ({ store, local, popupRef, notify }: Inputs) => {
+export const useOutputs = ({ local, popupRef, notify }: Inputs) => {
   return {
     onClickCreateNote: async () => {
       const apiResponse = await createNote();

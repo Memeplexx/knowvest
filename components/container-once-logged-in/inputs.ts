@@ -3,7 +3,7 @@ import { NoteDTO, TagDTO, UserDTO } from "@/actions/types";
 import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
-import { useStore } from "@/utils/store-utils";
+import { store, useStore } from "@/utils/store-utils";
 import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
 import { redirect, usePathname } from "next/navigation";
@@ -17,9 +17,9 @@ export const useInputs = () => {
     configureDevtools();
 
   const routerPathName = usePathname()!;
-  const { store, state: { showMenu, isMobileWidth } } = useStore();
+  const { showMenu, isMobileWidth } = useStore();
   const component = useComponent();
-  const result = { store, isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth };
+  const result = { isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth };
 
   // Listen for changes to the window width and update the store
   useEffect(() => {

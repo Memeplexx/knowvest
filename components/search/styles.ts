@@ -3,13 +3,11 @@ import { Button } from '@/components/button';
 import { ButtonIcon } from '@/components/button-icon';
 import { div, element } from '@/components/html';
 import { ReadonlyNote } from '@/components/readonly-note';
-import { mobileBreakPoint } from '@/utils/style-utils';
+import { mobileBreakPoint, panelGap } from '@/utils/style-utils';
 import { GiLighthouse } from 'react-icons/gi';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { WiCloudyWindy } from 'react-icons/wi';
 import styled, { css } from "styled-components";
-
-const gap = '4px';
 
 
 export const SearchWrapper = styled(div)`
@@ -22,13 +20,10 @@ export const SearchPageBody = styled(div)`
   min-height: 0;
   display: flex;
   flex-direction: row;
-  gap: ${gap};
+  gap: ${panelGap};
   flex: 1;
   height: auto;
   position: relative;
-  @media (min-width: ${mobileBreakPoint}) {
-    margin: ${gap};
-  }
   > * {
     flex: 1;
   }

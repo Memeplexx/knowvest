@@ -1,7 +1,8 @@
+import { store } from "@/utils/store-utils";
 import { Inputs, Props } from "./constants";
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
-  const { previousScrollOffset, bodyRef, headerRef, headerOffset, store, headerHeight } = inputs;
+  const { previousScrollOffset, bodyRef, headerRef, headerOffset, headerHeight } = inputs;
   return {
     onBodyScroll: () => {
       const isScrollingDown = previousScrollOffset.current < bodyRef.current!.scrollTop;

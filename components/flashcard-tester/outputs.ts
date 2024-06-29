@@ -1,8 +1,9 @@
 import { answerFlashCardQuestionCorrectly, answerFlashCardQuestionIncorrectly } from "@/actions/flashcard";
+import { store } from "@/utils/store-utils";
 import { Inputs } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { local, notify, items, store } = inputs;
+  const { local, notify, items } = inputs;
   return {
     onToggleView: () => {
       local.showQuestions.$toggle();

@@ -1,3 +1,4 @@
+import { store } from "@/utils/store-utils";
 import { signOut } from "next-auth/react";
 import { Inputs } from "./constants";
 
@@ -11,7 +12,7 @@ export const useOutputs = (inputs: Inputs) => {
       await signOut();
     },
     onClickHamburger: () => {
-      inputs.store.showMenu.$toggle();
+      store.showMenu.$toggle();
     },
   };
 }

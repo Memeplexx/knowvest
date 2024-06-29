@@ -1,9 +1,10 @@
 import { GroupId, SynonymId } from "@/actions/types";
+import { store } from "@/utils/store-utils";
 import { Inputs } from "./constants";
 
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store, local, groupsWithSynonyms, tagsForActiveNote } = inputs;
+  const { local, groupsWithSynonyms, tagsForActiveNote } = inputs;
   return {
     onClickSynonym: (synonymId: SynonymId) => {
       if (store.$state.synonymIds.includes(synonymId))

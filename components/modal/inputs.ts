@@ -5,7 +5,7 @@ import { Props, animationDuration } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const { state: { isMobileWidth } } = useStore();
+  const { isMobileWidth } = useStore();
   const [showInternal, setShowInternal] = useState(props.if);
 
   const backdropRef = useRef<HTMLDivElement>(null);

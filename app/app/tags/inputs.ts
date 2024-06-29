@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react';
 
 import { AutocompleteHandle } from '@/components/autocomplete/constants';
 import { useNotifier } from '@/components/notifier';
-import { useLocalStore, useStore } from '@/utils/store-utils';
+import { store, useLocalStore, useStore } from '@/utils/store-utils';
 import { useFloating } from '@floating-ui/react';
 import { addToWhitelist } from 'olik/devtools';
 import { initialState } from './constants';
@@ -10,7 +10,7 @@ import { initialState } from './constants';
 
 export const useInputs = () => {
 
-  const { store, state: { notes, tags, groups, synonymGroups, activeNoteId } } = useStore();
+  const { notes, tags, groups, synonymGroups, activeNoteId } = useStore();
   const firstSelectedTag = useMemo(() => store.$state.tags.find(t => t.id === store.$state.configureTags), [store]);
   const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', {
     ...initialState,
@@ -131,7 +131,6 @@ export const useInputs = () => {
   }, [groupId, synonymId, tagId]);
 
   return {
-    store,
     local,
     ...local.$state,
     instruction,

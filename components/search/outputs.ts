@@ -1,10 +1,11 @@
 import { GroupId, NoteId, SynonymId } from "@/actions/types";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
+import { store } from "@/utils/store-utils";
 import { MouseEvent } from "react";
 import { Inputs } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { store, local } = inputs;
+  const { local } = inputs;
   return {
     onAutocompleteSelected: (value: string | null) => {
       inputs.autocompleteText && local.autocompleteText.$set('');

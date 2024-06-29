@@ -1,4 +1,4 @@
-import { useLocalStore, useStore } from "@/utils/store-utils";
+import { store, useLocalStore, useStore } from "@/utils/store-utils";
 import { isAfter } from "date-fns";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -8,7 +8,7 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { store, state: { flashCards, isMobileWidth } } = useStore();
+  const { flashCards, isMobileWidth } = useStore();
   const { local } = useLocalStore('navBar', initialState);
   useMemo(() => addToWhitelist([store.showLoader]), [store]);
   const routerPathName = usePathname()!;
@@ -34,7 +34,6 @@ export const useInputs = () => {
   return {
     ...local.$state,
     pageTitle,
-    store,
     local,
     routerPatchName: routerPathName,
     session: useSession().data,
