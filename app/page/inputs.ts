@@ -5,22 +5,18 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 export const useInputs = () => {
 
-  const { local } = useLocalStore('page', {
-    showLoader: false,
-  })
-
+  const { local, state } = useLocalStore('page', { showLoader: false })
   const router = useRouter();
   const searchParams = useSearchParams();
   const notifier = useNotifier();
   const component = useComponent();
-
   if (component.isMounted && searchParams?.has('session-expired')) {
     router.replace('/');
     notifier.info('Your session expired. Please sign in again');
   }
 
   return {
-    ...local.$state,
+    ...state,
     local,
   };
 }

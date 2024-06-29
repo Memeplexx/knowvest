@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { Props } from "./constants";
 
 export const useInputs = (props: Props) => {
-
   const { onChangeDebounced, debounceTime, ...otherProps } = props;
   const [state, setState] = useState(props.value);
   const valueRef = useRef(state);
