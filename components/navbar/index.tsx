@@ -11,7 +11,9 @@ import { useOutputs } from './outputs';
 import { FlashCardButton, FlashCardCount, FlashCardIcon, HamburgerButton, HamburgerIcon, HomeLink, ImageLogo, LeftContent, NavBarWrapper, PageTitle, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
 
 
-export const Navbar = (props: HTMLAttributes<HTMLDivElement>) => {
+export const Navbar = (
+  props: HTMLAttributes<HTMLDivElement>
+) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (

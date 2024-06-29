@@ -4,7 +4,7 @@ import { Inputs, Props } from "./constants";
 
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
-  const { local, cardRef, store, router } = inputs;
+  const { local, store, router } = inputs;
   return {
     onScrolledToBottom: () => {
       local.index.$add(1);

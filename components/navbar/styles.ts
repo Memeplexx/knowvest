@@ -21,6 +21,7 @@ export const NavBarWrapper = styled.div`
   height: 64px;
   @media screen and (max-width: ${mobileBreakPoint}) {
     border-bottom: 0.2px solid #5a5a5a; 
+    padding: 0 8px;
   }
 `;
 

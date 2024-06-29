@@ -9,7 +9,6 @@ export const ActivePanelWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  background-image: linear-gradient(to right,#101010,#1d1d1d);
 `;
 
 export const TextEditorWrapper = styled(div)`

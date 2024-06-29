@@ -8,7 +8,7 @@ import { ContainerWithStickyHeaderHandle } from '../container-with-sticky-header
 import { History } from '../history';
 import { Popup } from '../popup';
 import { Related } from '../related';
-import { ActivePanel, FilterPopup, Header, HistoryPanel, HomeWrapper, RelatedPanel } from './styles';
+import { ActiveHeader, ActivePanel, FilterPopup, HistoryHeader, HistoryPanel, HomeWrapper, RelatedHeader, RelatedPanel } from './styles';
 
 
 
@@ -22,7 +22,7 @@ export function HomeDesktop() {
           <HistoryPanel
             ref={historyPanelRef}
             heading={
-              <Header
+              <HistoryHeader
                 children="History"
               />
             }
@@ -34,7 +34,7 @@ export function HomeDesktop() {
           />
           <ActivePanel
             heading={
-              <Header
+              <ActiveHeader
                 children={
                   <>
                     Active Note
@@ -50,7 +50,7 @@ export function HomeDesktop() {
           <RelatedPanel
             ref={relatedPanelRef}
             heading={
-              <Header
+              <RelatedHeader
                 children={
                   <>
                     Related

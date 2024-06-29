@@ -3,16 +3,11 @@ import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 import { div } from "../html";
 import { ReadonlyNote } from "../readonly-note";
-import { Tags } from "../tags";
 
 
 export const RelatedWrapper = styled.div`
-  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
-export const FilterPopup = styled(Tags)`
-  padding: 8px;
-`;
 
 export const Header = styled(div)`
   display: flex;
@@ -72,8 +67,4 @@ export const ListItemsWrapper = styled(div)`
 export const NoResultsIcon = styled(WiCloudyWindy)`
   width: 64px;
   height: auto;
-`;
-
-export const NoteCount = styled(div)`
-  font-size: 12px;
 `;

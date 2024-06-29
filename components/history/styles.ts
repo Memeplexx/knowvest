@@ -6,7 +6,6 @@ import { ReadonlyNote } from "../readonly-note";
 
 
 export const HistoryWrapper = styled.div`
-  background-image: linear-gradient(to right, #242020, #191919);
 `;
 
 export const Header = styled.div`

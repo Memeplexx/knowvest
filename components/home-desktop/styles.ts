@@ -22,32 +22,39 @@ export const HomeWrapper = styled.div`
 `;
 
 export const ActivePanel = styled(ContainerWithStickyHeader)`
+  background-image: linear-gradient(to left, #2f2c2c, #343434);
 `;
 
 export const HistoryPanel = styled(ContainerWithStickyHeader)`
+  background-image: linear-gradient(to right, #131313, #212121);
 `;
 
 export const RelatedPanel = styled(ContainerWithStickyHeader)`
+  background-image: linear-gradient(to right, #131313, #212121);
 `;
 
-export const Header = styled(div)`
+const Header = styled(div)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-transform: uppercase;
   color: #ffffff;
-  transition: box-shadow 0.4s;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 67px;
-  z-index: 5;
   font-weight: 400;
   font-size: 19px;
   letter-spacing: 4px;
-  background-image: linear-gradient(to right, #242020, #191919);
   padding: 16px;
+`;
+
+export const HistoryHeader = styled(Header)`
+  background-image: linear-gradient(to right, #131313, #212121);
+`;
+
+export const RelatedHeader = styled(Header)`
+  background-image: linear-gradient(to right, #131313, #212121);
+`;
+
+export const ActiveHeader = styled(Header)`
+  background-image: linear-gradient(to left, #2f2c2c, #343434);
 `;
 
 export const FilterPopup = styled(Tags)`

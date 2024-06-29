@@ -1,8 +1,7 @@
 import { useDerivations, useLocalStore, useStore } from "@/utils/store-utils";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef } from "react";
-import { ContainerWithStickyHeaderHandle } from "../container-with-sticky-header/constants";
+import { useMemo } from "react";
 import { initialState, pageSize } from "./constants";
 
 
@@ -12,7 +11,6 @@ export const useInputs = () => {
   const { notesSorted } = useDerivations();
   const { local, state: { index } } = useLocalStore('historyItems', initialState);
   const router = useRouter();
-  const cardRef = useRef<ContainerWithStickyHeaderHandle>(null);
 
   const items = useMemo(() => {
     return notesSorted
@@ -29,7 +27,6 @@ export const useInputs = () => {
     local,
     ...local.$state,
     items,
-    cardRef,
     router,
   };
 }
