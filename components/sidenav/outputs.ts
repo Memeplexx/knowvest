@@ -1,8 +1,8 @@
-import { Inputs } from "./constants";
+import { Inputs, Props } from "./constants";
 
-export const useOutputs = (inputs: Inputs) => ({
+export const useOutputs = (props: Props, inputs: Inputs) => ({
   onClickMainOverlay: () => {
     inputs.api.start({ x: 0, y: 0 });
-    inputs.props.onShow(false);
+    props.onShow(false);
   }
 })

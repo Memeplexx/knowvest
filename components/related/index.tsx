@@ -1,4 +1,5 @@
 "use client";
+import { onSelectNote } from '@/utils/app-utils';
 import { useUnknownPropsStripper } from '@/utils/react-utils';
 import { FilterIcon } from '@/utils/style-utils';
 import { ButtonIcon } from '../button-icon';
@@ -13,7 +14,7 @@ export function Related(
   props: Props
 ) {
   const inputs = useInputs();
-  const outputs = useOutputs(props, inputs);
+  const outputs = useOutputs(inputs);
   return (
     <RelatedWrapper
       {...useUnknownPropsStripper(props)}
@@ -24,7 +25,6 @@ export function Related(
           Related ({inputs.items.length})
           <Popup
             storeKey='relatedMenu'
-            // ref={inputs.popupRef}
             trigger={props => (
               <ButtonIcon
                 {...props}
@@ -45,7 +45,7 @@ export function Related(
             children={inputs.items.map(note => (
               <ListItem
                 key={note.note.id}
-                onClick={() => props.onSelectNote(note.note.id)}
+                onClick={() => onSelectNote(inputs.store, note.note.id)}
                 children={
                   <>
                     <Header

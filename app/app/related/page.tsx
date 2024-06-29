@@ -4,9 +4,7 @@ import styled from "styled-components";
 
 export default function Page() {
   return (
-    <RelatedContainer
-      onSelectNote={() => null}
-    />
+    <RelatedContainer />
   );
 }
 

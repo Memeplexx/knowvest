@@ -1,5 +1,5 @@
 import { animated } from 'react-spring';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Position } from './constants';
 
 
@@ -13,7 +13,7 @@ export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThresh
   ${p => {
     switch (p.$position) {
       case 'left':
-        return `
+        return css`
           left: -${p.$size}px;
           width: ${p.$size + p.$edgeThreshold}px;
           padding-right: ${p.$edgeThreshold}px;
@@ -21,7 +21,7 @@ export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThresh
           bottom: 0;
         `;
       case 'right':
-        return `
+        return css`
           right: -${p.$size}px;
           width: ${p.$size + p.$edgeThreshold}px;
           padding-left: ${p.$edgeThreshold}px;
@@ -29,7 +29,7 @@ export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThresh
           bottom: 0;
         `;
       case 'top':
-        return `
+        return css`
           top: -${p.$size}px;
           height: ${p.$size + p.$edgeThreshold}px;
           padding-bottom: ${p.$edgeThreshold}px;
@@ -37,7 +37,7 @@ export const SideNavWrapper = styled(animated.div) <{ $size: number, $edgeThresh
           right: 0;
         `;
       case 'bottom':
-        return `
+        return css`
           bottom: -${p.$size}px;
           height: ${p.$size + p.$edgeThreshold}px;
           padding-top: ${p.$edgeThreshold}px;

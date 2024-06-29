@@ -77,7 +77,6 @@ export const useInputs = (props: PropsWithChildren<Props>) => {
     x,
     y,
     menuRef,
-    props,
     api,
   }
 }
