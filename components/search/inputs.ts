@@ -9,7 +9,8 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 export const useInputs = () => {
 
   const { tags, groups, synonymGroups, notes, noteTags, isMobileWidth } = useStore();
-  const { local, state: { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } } = useLocalStore('search', initialState);
+  const { local, state } = useLocalStore('search', initialState);
+  const { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } = state;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
 

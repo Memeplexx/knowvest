@@ -8,7 +8,8 @@ import { TagsWorker } from "@/utils/tags-worker";
 import { useSession } from "next-auth/react";
 import { redirect, usePathname } from "next/navigation";
 import { configureDevtools } from "olik/devtools";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { ContainerWithStickyHeaderHandle } from "../container-with-sticky-header/constants";
 
 
 export const useInputs = () => {
@@ -19,7 +20,8 @@ export const useInputs = () => {
   const routerPathName = usePathname()!;
   const { showMenu, isMobileWidth } = useStore();
   const component = useComponent();
-  const result = { isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth };
+  const containerWithStickyHeaderRef = useRef<ContainerWithStickyHeaderHandle>(null);
+  const result = { isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth, containerWithStickyHeaderRef };
 
   // Listen for changes to the window width and update the store
   useEffect(() => {

@@ -14,6 +14,7 @@ export const SearchWrapper = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: ${panelGap};
 `;
 
 export const SearchPageBody = styled(div)`

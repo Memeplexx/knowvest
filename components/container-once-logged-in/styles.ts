@@ -21,15 +21,17 @@ export const ContainerOnceLoggedInWrapper = styled(element(ContainerWithSideNav)
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  z-index: 9;
 `;
 
-export const MenuContent = styled(div)`
+export const MenuContent = styled(div) <{ $headerHeight: number }>`
   padding-top: 30px;
   background-image: linear-gradient(to right, #101010, #1d1d1d);
   color: #b4b4b4;
   height: 100%;
   border-right: 0.2px solid #5a5a5a;
   overflow-y: auto;
+  margin-top: ${p => p.$headerHeight}px;
 `;
 
 export const MenuItem = styled(div) <{ $active?: boolean }>`

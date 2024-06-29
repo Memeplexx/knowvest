@@ -1,29 +1,27 @@
 import { updateNote } from "@/actions/note";
 import { NoteId } from "@/actions/types";
-import { AppStore } from "@/utils/store-utils";
+import { store } from "@/utils/store-utils";
 import { CompletionContext, autocompletion } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { EditorState, Range, TransactionSpec } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { ActivePanelStore } from "./constants";
 
-export const autocompleteExtension = (store: AppStore) => {
-  return autocompletion({
-    override: [
-      (context: CompletionContext) => {
-        const before = context.matchBefore(/\w+/)
-        if (!context.explicit && !before) return null;
-        return {
-          from: before ? before.from : context.pos,
-          options: store.$state.tags.map(tag => ({ label: tag.text })),
-          validFor: /^\w*$/,
-        };
-      }
-    ]
-  })
-};
+export const autocompleteExtension = autocompletion({
+  override: [
+    (context: CompletionContext) => {
+      const before = context.matchBefore(/\w+/)
+      if (!context.explicit && !before) return null;
+      return {
+        from: before ? before.from : context.pos,
+        options: store.$state.tags.map(tag => ({ label: tag.text })),
+        validFor: /^\w*$/,
+      };
+    }
+  ]
+});
 
-export const createNotePersisterExtension = ({ debounce, store }: { debounce: number, store: AppStore }) => {
+export const createNotePersisterExtension = (debounce: number) => {
   let timestamp = Date.now();
   const doNoteUpdate = async (noteId: NoteId, docText: string) => {
     if (Date.now() - timestamp < debounce) return;

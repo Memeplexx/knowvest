@@ -2,14 +2,14 @@ import { useDerivations, useLocalStore, useStore } from "@/utils/store-utils";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { initialState, pageSize } from "./constants";
+import { pageSize } from "./constants";
 
 
 export const useInputs = () => {
 
   const { activeNoteId } = useStore();
   const { notesSorted } = useDerivations();
-  const { local, state: { index } } = useLocalStore('historyItems', initialState);
+  const { local, state: { index } } = useLocalStore('historyItems', { index: 0 });
   const router = useRouter();
 
   const items = useMemo(() => {

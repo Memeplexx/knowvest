@@ -19,7 +19,8 @@ export const useInputs = (
 
   useImperativeHandle<ContainerWithStickyHeaderHandle, ContainerWithStickyHeaderHandle>(ref, () => ({
     scrollToTop: function scrollToTop() { bodyRef.current!.scroll({ top: 0, behavior: 'smooth' }); },
-  }), []);
+    headerHeight,
+  }), [headerHeight]);
 
   const headerHeightMeasured = headerRef.current?.offsetHeight || 0;
   if (component.isMounted && headerHeight !== headerHeightMeasured)

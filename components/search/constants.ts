@@ -15,8 +15,6 @@ export type AutocompleteIdType = SynonymId | GroupId;
 
 export const dialogWidth = 900;
 
-export const tabsHeight = '64px';
-
 export type AutocompleteOptionType = {
   id: AutocompleteIdType,
   value: string | null,

@@ -8,8 +8,4 @@ export type Props = {
 
 export type Inputs = ReturnType<typeof useInputs>;
 
-export const initialState = {
-  index: 0,
-}
-
 export const pageSize = 10;

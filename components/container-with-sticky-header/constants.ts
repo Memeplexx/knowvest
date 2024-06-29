@@ -9,6 +9,7 @@ export type Props = {
 
 export type ContainerWithStickyHeaderHandle = {
   scrollToTop: () => void;
+  headerHeight: number;
 };
 
 export type Inputs = ReturnType<typeof useInputs>;

@@ -4,7 +4,7 @@ import { forwardRef, type ForwardedRef } from 'react';
 import { ContainerWithStickyHeaderHandle, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Body, ContainerWithStickyHeaderWrapper, Header } from './styles';
+import { Body, ContainerWithStickyHeaderWrapper, StickyHeader } from './styles';
 
 export const ContainerWithStickyHeader = forwardRef(function Wrapper(
   props: Props,
@@ -18,7 +18,7 @@ export const ContainerWithStickyHeader = forwardRef(function Wrapper(
       {...useUnknownPropsStripper(props)}
       children={
         <>
-          <Header
+          <StickyHeader
             ref={inputs.headerRef}
             children={props.heading}
           />

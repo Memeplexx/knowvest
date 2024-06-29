@@ -21,17 +21,21 @@ export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode 
       />
       <ContainerOnceLoggedInWrapper
         if={inputs.isReady}
-        style={{ zIndex: 9 }}
         onShow={store.showMenu.$set}
         show={inputs.showMenu}
         size={280}
         edgeThreshold={25}
         position="left"
-        menuContent={<MenuFragment inputs={inputs} />}
+        menuContent={
+          <MenuFragment
+            inputs={inputs}
+          />
+        }
         mainContent={
           <ContainerWithStickyHeader
             heading={<TopBar />}
             body={children}
+            ref={inputs.containerWithStickyHeaderRef}
           />
         }
       />
@@ -42,6 +46,7 @@ export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode 
 const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
   return (
     <MenuContent
+      $headerHeight={inputs.containerWithStickyHeaderRef.current?.headerHeight ?? 0}
       onClick={() => store.showMenu.$set(false)}
       children={
         <>

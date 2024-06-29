@@ -1,12 +1,12 @@
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { initialState, pageSize } from "./constants";
+import { pageSize } from "./constants";
 
 export const useInputs = () => {
 
   const { notes, synonymIds, activeNoteId, noteTags } = useStore();
-  const { local, state: { index } } = useLocalStore('relatedItems', initialState);
+  const { local, state: { index } } = useLocalStore('relatedItems', { index: 0 });
   const router = useRouter();
 
   const items = useMemo(() => {
