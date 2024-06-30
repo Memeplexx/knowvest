@@ -131,7 +131,10 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
 export const useHtmlPropsOnly = (props: object) => {
   const htmlElement = useMemo(() => document.createElement('div'), []);
   return Object.keys(props)
-    .filter(k => k in htmlElement)
+    .filter(k =>
+      k === 'className' // necessary because className is a react prop, while class is a html prop
+      || k.toLowerCase() in htmlElement // necessary because some props are camelCase (eg: onClick) is a react prop, while onclick is a html prop
+    )
     .reduce((acc, key) => Object.assign(acc, { [key]: props[key as keyof typeof props] }), {});
 }
 
