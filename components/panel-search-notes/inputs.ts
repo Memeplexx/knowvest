@@ -123,7 +123,7 @@ export const useInputs = () => {
 
   const result = {
     local,
-    ...local.$state,
+    ...state,
     autocompleteRef,
     autocompleteOptions,
     selectedSynonymTags,

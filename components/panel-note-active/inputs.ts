@@ -101,14 +101,13 @@ export const useInputs = () => {
   component.listen = derive(store.activeNoteId, store.noteTags)
     .$with((activeNoteId, noteTags) => noteTags.filter(nt => nt.noteId === activeNoteId))
     .$onChange(doRemoveEditorTags);
-  component.listen = store.activeNoteId
-    .$onChange(activeNoteId => editor.current!.dispatch({
-      changes: {
-        from: 0,
-        to: editor.current!.state.doc.length,
-        insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
-      }
-    }));
+  component.listen = store.activeNoteId.$onChange(activeNoteId => editor.current!.dispatch({
+    changes: {
+      from: 0,
+      to: editor.current!.state.doc.length,
+      insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
+    }
+  }));
   doRemoveEditorTags();
   component.completeAsyncProcess();
 
