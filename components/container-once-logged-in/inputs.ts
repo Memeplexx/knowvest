@@ -94,36 +94,9 @@ export const useInputs = () => {
       store.$patch({ activeNoteId, notes, tags, groups, synonymGroups, flashCards });
     }
 
-    // Configure object which will be passed to the consumer
-    // component.listen = () => worker.terminate();
-
     // Ensure that changes to note tags in worker are sent to the store
     // TODO: Consider sending this data to the IndexedDB also.
     let first = true;
-    // worker.onmessage = event => {
-    //   if (event.data.type !== 'noteTagsUpdated') return;
-    //   event.data.value
-    //     .filter(({ noteId, tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
-    //     .forEach(({ noteId, tags }) => {
-    //       const currentNoteTagsForNote = store.$state.noteTags.filter(nt => nt.noteId === noteId);
-    //       const toRemove = currentNoteTagsForNote.filter(nt => !tags.some(t => t.id === nt.id && nt.from === t.from && nt.to === t.to));
-    //       const toInsert = tags.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id && nt.from === t.from && nt.to === t.to));
-    //       if (toRemove.length)
-    //         store.noteTags
-    //           .$filter.noteId.$eq(noteId)
-    //           .$and.id.$in(toRemove.map(t => t.id).distinct())
-    //           .$and.from.$in(toRemove.map(t => t.from).distinct())
-    //           .$and.to.$in(toRemove.map(t => t.to).distinct())
-    //           .$delete();
-    //       if (toInsert.length)
-    //         store.noteTags.$pushMany(toInsert.map(t => ({ ...t, noteId })));
-    //     });
-    //   if (!first) return;
-    //   first = false;
-    //   const synonymIds = event.data.value.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!).distinct();
-    //   store.synonymIds.$set(synonymIds);
-    //   component.completeAsyncProcess();
-    // }
     worker.onNoteTagsUpdated(data => {
       data
         .filter(({ noteId, tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
@@ -151,29 +124,19 @@ export const useInputs = () => {
     // Send the tags worker the initial data
     const sanitizeNote = (note: NoteDTO) => ({ ...note, text: note.text.toLowerCase() });
     const sanitizeTag = (tag: TagDTO) => ({ id: tag.id, synonymId: tag.synonymId, text: tag.text.toLowerCase() });
-    // worker.postMessage({
-    //   type: 'initialize',
-    //   data: { notes: store.$state.notes.map(sanitizeNote), tags: store.$state.tags.map(sanitizeTag) }
-    // });
     worker.initialize({ notes: store.$state.notes.map(sanitizeNote), tags: store.$state.tags.map(sanitizeTag) });
 
     // Ensure that changes to tags in the store are sent to the worker
     component.listen = store.tags.$onChangeArray(({ deleted, inserted, updated }) => {
-      // worker.postMessage({ type: 'addTags', data: inserted.map(sanitizeTag) });
       worker.addTags(inserted.map(sanitizeTag));
-      // worker.postMessage({ type: 'removeTags', data: deleted.map(t => t.id) });
       worker.removeTags(deleted.map(t => t.id));
-      // worker.postMessage({ type: 'updateTags', data: updated.map(sanitizeTag) });
       worker.updateTags(updated.map(sanitizeTag));
     })
 
     // Ensure that changes to notes in the store are sent to the worker
     component.listen = store.notes.$onChangeArray(({ deleted, inserted, updated }) => {
-      // worker.postMessage({ type: 'addNotes', data: inserted.map(sanitizeNote) });
       worker.addNotes(inserted.map(sanitizeNote));
-      // deleted.forEach(n => worker.postMessage({ type: 'removeNote', data: n.id }));
       deleted.forEach(n => worker.removeNote(n.id));
-      // updated.map(sanitizeNote).forEach(data => worker.postMessage({ type: 'updateNote', data }));
       updated.map(sanitizeNote).forEach(data => worker.updateNote(data));
     });
 
@@ -202,3 +165,4 @@ export const useInputs = () => {
 
   return result;
 }
+
