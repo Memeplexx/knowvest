@@ -21,6 +21,10 @@ export const useOutputs = (inputs: Inputs) => {
         local.enabledSynonymIds.$merge(groupSynonymIds);
       }
     },
+    onAutocompleteInputEnterKeyUp: () => {
+      local.searchTerms.$push(local.$state.autocompleteText);
+      local.autocompleteText.$set('');
+    },
     onAutocompleteInputChange: (value: string) => {
       local.autocompleteText.$set(value);
     },

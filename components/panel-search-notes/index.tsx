@@ -28,6 +28,9 @@ export function PanelSearchNotes() {
                       <TagsOuterWrapper
                         children={
                           <>
+                            <SearchTermsFragment
+                              {...fragmentProps}
+                            />
                             <SynonymsFragment
                               {...fragmentProps}
                             />
@@ -95,6 +98,7 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
             inputPlaceholder='Start typing...'
             onValueChange={outputs.onAutocompleteSelected}
             onInputTextChange={outputs.onAutocompleteInputChange}
+            onInputEnterKeyUp={outputs.onAutocompleteInputEnterKeyUp}
             inputText={inputs.autocompleteText}
             onShowOptionsChange={outputs.onAutocompleteShowOptionsChange}
             showOptions={inputs.showAutocompleteOptions}
@@ -118,6 +122,35 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
       }
     />
 
+  )
+}
+
+const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
+  return (
+    <CategoryWrapper
+      if={!!inputs.searchTerms.length}
+      children={
+        <>
+          Search terms
+          <TagsWrapper
+            children={
+              inputs.searchTerms.map(term => (
+                <Tag
+                  key={term}
+                  children={term}
+                  // onClick={() => outputs.onClickRemoveSearchTerm(term)}
+                  $rightGap={true}
+                  $hovered={false}
+                  $disabled={false}
+                  $rightMost={true}
+                  $leftMost={true}
+                />
+              ))
+            }
+          />
+        </>
+      }
+    />
   )
 }
 

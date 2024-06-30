@@ -34,4 +34,5 @@ export const initialState = {
   screenIsNarrow: false,
   hoveredSynonymId: null as SynonymId | null,
   showAutocompleteOptions: false,
+  searchTerms: new Array<string>(),
 }

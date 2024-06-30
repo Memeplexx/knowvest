@@ -79,7 +79,8 @@ export const useInputs = () => {
             synonymId: sg.synonymId,
             tags: tags
               .filter(t => t.synonymId === sg.synonymId),
-          })).filter(s => s.tags.length > 0)
+          }))
+          .filter(s => s.tags.length > 0)
       }))
   }, [groups, selectedGroupIds, synonymGroups, tags]);
 
