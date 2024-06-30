@@ -1,11 +1,8 @@
-import { expect, test, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
-import { Autocomplete } from '@/components/autocomplete'
-import { ClearTextButton, ClearTextButtonWrapper, Input, Options } from '@/components/autocomplete/styles';
-import { Props } from '@/components/autocomplete/constants';
-import { HTMLAttributes, InputHTMLAttributes, JSXElementConstructor, ReactElement, RefAttributes } from 'react';
-import { IStyledComponent } from 'styled-components';
-import { Substitute } from 'styled-components/dist/types';
+import { ControlAutocomplete } from '@/components/control-autocomplete';
+import { Props } from '@/components/control-autocomplete/constants';
+import { ClearTextButton, Input, Options } from '@/components/control-autocomplete/styles';
+import { render, screen } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
 
 vi.mock('next/font/google', () => ({
   Montserrat: () => ({
@@ -38,7 +35,7 @@ test('Page', async () => {
       onShowOptionsChange: s => state.showOptions = s,
     } as Props<{ value: number, label: string }>;
     const compFn = (props: Partial<Props<{ value: number, label: string }>> = {}) => (
-      <Autocomplete
+      <ControlAutocomplete
         {...state}
         {...props}
       />

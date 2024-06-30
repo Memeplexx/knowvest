@@ -1,16 +1,14 @@
 "use client";
-import { ActiveNote } from "@/components/active-note";
-import { HomeDesktop } from "@/components/home-desktop";
+import { PanelHomeDesktop } from "@/components/panel-home-desktop";
+import { PanelNoteActive } from "@/components/panel-note-active";
 import { useStore } from "@/utils/store-utils";
 import styled from "styled-components";
 
 export default function Page() {
   const { isMobileWidth } = useStore();
-  if (isMobileWidth)
-    return <MobileDesktop />;
-  return <HomeDesktop />;
+  return isMobileWidth ? <MobileDesktop /> : <PanelHomeDesktop />;
 }
 
-const MobileDesktop = styled(ActiveNote)`
+const MobileDesktop = styled(PanelNoteActive)`
   background-image: linear-gradient(to right, #131313, #212121);
 `;

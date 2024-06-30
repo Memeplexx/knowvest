@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 
-import { AutocompleteHandle } from '@/components/autocomplete/constants';
-import { useNotifier } from '@/components/notifier';
+import { AutocompleteHandle } from '@/components/control-autocomplete/constants';
+import { useNotifier } from '@/components/overlay-notifier';
 import { store, useLocalStore, useStore } from '@/utils/store-utils';
 import { useFloating } from '@floating-ui/react';
 import { addToWhitelist } from 'olik/devtools';

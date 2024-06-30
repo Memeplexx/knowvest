@@ -1,6 +1,6 @@
 "use server";
-import { FlashCardTester } from "@/components/flashcard-tester/page";
+import { PanelFlashCardTester } from "@/components/panel-flashcard-tester/page";
 
 export default async function Page() {
-  return <FlashCardTester />;
+  return <PanelFlashCardTester />;
 }

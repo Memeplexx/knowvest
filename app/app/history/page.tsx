@@ -1,13 +1,11 @@
 "use client";
-import { History } from "@/components/history";
+import { PanelNotesPrevious } from "@/components/panel-notes-previous";
 import styled from "styled-components";
 
 export default function Page() {
-  return (
-    <HistoryWrapper />
-  )
+  return <PanelNotesPreviousWrapper />;
 }
 
-const HistoryWrapper = styled(History)`
+const PanelNotesPreviousWrapper = styled(PanelNotesPrevious)`
   background-image: linear-gradient(to right, #131313, #212121);
 `;

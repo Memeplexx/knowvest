@@ -1,7 +1,7 @@
 "use client";
 import { Fragment } from 'react';
 
-import { Button } from '../button';
+import { ControlButton } from '../control-button';
 import { FragmentProps, TagsProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -47,7 +47,7 @@ const PlaceholderFragment = ({ inputs, outputs }: FragmentProps) => {
       children={
         <>
           No tags associated with active note
-          <Button
+          <ControlButton
             children='Configure tags'
             onClick={outputs.onShowDialog}
             aria-label="Configure tags"

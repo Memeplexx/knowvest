@@ -4,7 +4,7 @@ import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@co
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import { DeepReadonlyArray } from "olik/*";
-import { AppStore } from "./store-utils";
+import { store } from "./store-utils";
 
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
@@ -200,7 +200,6 @@ const highlightedRanges = StateField.define({
 
 export type TagType = 'primary' | 'secondary';
 export const reviseEditorTags = (
-  store: AppStore,
   codeMirror: EditorView,
   noteId: NoteId,
   synonymIds: DeepReadonlyArray<SynonymId>,

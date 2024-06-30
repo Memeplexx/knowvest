@@ -15,7 +15,12 @@ export const Wrapper = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size: 18px;
+  font-size: 24px;
+`;
+
+export const SubTitle = styled.h2`
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.4);
 `;
 
 export const CenterContent = styled.div`

@@ -1,7 +1,7 @@
 "use client";
 
-import { Autocomplete } from '@/components/autocomplete';
-import { Confirmation } from '@/components/confirmation';
+import { ControlAutocomplete } from '@/components/control-autocomplete';
+import { OverlayConfirmation } from '@/components/overlay-confirmation';
 import { PopupOption, PopupOptions, SettingsIcon } from '@/utils/style-utils';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
@@ -101,7 +101,7 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => (
             />
           }
         />
-        <Autocomplete<AutocompleteOptionType>
+        <ControlAutocomplete<AutocompleteOptionType>
           inputPlaceholder='Start typing...'
           inputText={inputs.autocompleteText}
           showOptions={inputs.showAutocompleteOptions}
@@ -201,7 +201,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => (
             </>
           }
         />
-        <Confirmation
+        <OverlayConfirmation
           if={inputs.modal === 'confirmDeleteTag'}
           storeKey='deleteTag'
           onClose={outputs.onCancelConfirmation}
@@ -293,7 +293,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => (
                   </>
                 }
               />
-              <Confirmation
+              <OverlayConfirmation
                 if={inputs.modal === 'confirmDeleteGroup'}
                 storeKey='deleteGroup'
                 title='Delete Group Requested'

@@ -1,5 +1,5 @@
 "use client";
-import { Loader } from "@/components/loader";
+import { OverlayLoader } from "@/components/overlay-loader";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { LoginButton } from "./styles";
@@ -14,7 +14,7 @@ export default function PageInteractive() {
         onClick={outputs.onClickSignIn}
         children='Sign in'
       />
-      <Loader
+      <OverlayLoader
         if={inputs.showLoader}
       />
     </>

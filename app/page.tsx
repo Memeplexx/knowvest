@@ -3,7 +3,7 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import PageInteractive from './page/page-interactive';
-import { CenterContent, Divider, Title, Wrapper } from './page/styles';
+import { CenterContent, Divider, SubTitle, Title, Wrapper } from './page/styles';
 
 export default async function Index() {
   const session = await getServerSession(authOptions);
@@ -19,6 +19,9 @@ export default async function Index() {
                 children="know-vest"
               />
               <Divider />
+              <SubTitle
+                children="Read with Purpose"
+              />
               <PageInteractive
                 aria-label='Sign in'
               />

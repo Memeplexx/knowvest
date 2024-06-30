@@ -2,14 +2,14 @@ import Link from "next/link";
 import styled, { css } from "styled-components";
 import { ContainerWithSideNav } from "../container-with-side-nav";
 import { div, element } from "../html";
-import { Loader } from "../loader";
-import { Navbar } from "../navbar";
+import { OverlayLoader } from "../overlay-loader";
+import { PanelNavbar } from "../panel-navbar";
 
 
-export const TopBar = styled(element(Navbar))`
+export const TopBar = styled(element(PanelNavbar))`
 `;
 
-export const LoaderPlaceholder = styled(Loader)`
+export const LoaderPlaceholder = styled(OverlayLoader)`
   flex: 1;
   z-index: 9;
   background-image: linear-gradient(to right, #242020, #191919);

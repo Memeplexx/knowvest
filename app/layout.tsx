@@ -1,5 +1,5 @@
 "use server";
-import { NotifierProvider } from '@/components/notifier';
+import { OverlayNotifier } from '@/components/overlay-notifier';
 import '@/styles/application.css';
 import '@/styles/reset.css';
 import { NextAuthProvider } from '@/utils/auth-utils';
@@ -73,7 +73,7 @@ export default async function RootLayout({
               <>
                 <NextAuthProvider
                   children={
-                    <NotifierProvider
+                    <OverlayNotifier
                       storeKey='notifier'
                       children={
                         <StyledComponentsRegistry

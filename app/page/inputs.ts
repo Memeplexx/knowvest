@@ -1,4 +1,4 @@
-import { useNotifier } from "@/components/notifier";
+import { useNotifier } from "@/components/overlay-notifier";
 import { useComponent } from "@/utils/react-utils";
 import { useLocalStore } from "@/utils/store-utils";
 import { useRouter, useSearchParams } from 'next/navigation';

@@ -1,6 +1,6 @@
 "use server";
-import { Search } from "@/components/search";
+import { PanelSearchNotes } from "@/components/panel-search-notes";
 
 export default async function Page() {
-  return <Search />;
+  return <PanelSearchNotes />;
 }

@@ -1,8 +1,8 @@
 "use client"
-import { Button } from '@/components/button';
-import { ButtonIcon } from '@/components/button-icon';
+import { ControlButton } from '@/components/control-button';
+import { ControlButtonIcon } from '@/components/control-button-icon';
 import { div, element } from '@/components/html';
-import { mobileBreakPoint } from '@/utils/style-utils';
+import { mobileBreakPoint, panelGap } from '@/utils/style-utils';
 import { GiLighthouse } from 'react-icons/gi';
 import styled, { css } from 'styled-components';
 
@@ -12,12 +12,14 @@ export const TagsWrapper = styled(div)`
   display: flex;
   flex-direction: column;
   display: flex;
+  gap: ${panelGap};
 `;
 
 export const Body = styled(div)`
   flex: 1;
   display: flex;
   pointer-events: none;
+  gap: ${panelGap};
   @media (max-width: ${mobileBreakPoint}) {
     flex-direction: column;
   }
@@ -33,7 +35,7 @@ export const BodyHeader = styled(div)`
   min-height: 40px;
 `;
 
-export const SettingsButton = styled(ButtonIcon) <{ $show: boolean }>`
+export const SettingsButton = styled(ControlButtonIcon) <{ $show: boolean }>`
   opacity: ${p => p.$show ? 1 : 0};
 `;
 
@@ -73,7 +75,7 @@ export const BodyGroup = styled(div) <{ $active?: boolean }>`
 export const PageTitle = styled.div`
 `;
 
-export const FooterButton = styled(element(Button))`
+export const FooterButton = styled(element(ControlButton))`
 `;
 
 export const Footer = styled(div)`
