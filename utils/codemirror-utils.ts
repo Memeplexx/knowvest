@@ -14,7 +14,7 @@ export const bulletPointPlugin = ViewPlugin.fromClass(class {
     decoration: () => Decoration.replace({
       widget: new (class extends WidgetType {
         toDOM() {
-          const wrap = document.createElement("span");
+          const wrap = document.createElement('span');
           wrap.innerHTML = '• ';
           return wrap;
         }

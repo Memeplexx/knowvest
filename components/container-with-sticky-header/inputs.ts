@@ -32,6 +32,6 @@ export const useInputs = (
     previousScrollOffset,
     headerOffset,
     isMobileWidth,
-    headerHeight: 64,
+    headerHeight,
   };
 }

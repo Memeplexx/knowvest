@@ -38,7 +38,7 @@ export const SearchContent = styled(div)`
   padding: 60px;
   background-image: linear-gradient(to right, #242020, #191919);
   @media screen and (max-width: ${mobileBreakPoint}) {
-    padding: 8px;
+    padding: 8px 16px;
   }
 `;
 
