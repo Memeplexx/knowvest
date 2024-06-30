@@ -2,14 +2,14 @@
 import { useUnknownPropsStripper } from "@/utils/react-utils";
 import { ForwardedRef, forwardRef } from "react";
 import { Props } from "./constants";
-import { ControlButtonWrapper } from "./styles";
+import { ControlButtonFancyWrapper } from "./styles";
 
-export const ControlButton = forwardRef(function Button(
+export const ControlButtonFancy = forwardRef(function Button(
   props: Props,
   ref?: ForwardedRef<HTMLButtonElement>
 ) {
   return (
-    <ControlButtonWrapper
+    <ControlButtonFancyWrapper
       {...useUnknownPropsStripper(props)}
       $highlighted={props.highlighted ?? false}
       ref={ref}

@@ -1,5 +1,5 @@
 "use client"
-import { ControlButton } from '@/components/control-button';
+import { ControlButtonFancy } from '@/components/control-button-fancy';
 import { ControlButtonIcon } from '@/components/control-button-icon';
 import { div, element } from '@/components/html';
 import { PanelNoteReadonly } from '@/components/panel-note-readonly';
@@ -204,5 +204,5 @@ export const Footer = styled(div)`
   }
 `;
 
-export const FooterButton = styled(element(ControlButton))`
+export const FooterButton = styled(element(ControlButtonFancy))`
 `;

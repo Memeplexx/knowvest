@@ -1,5 +1,5 @@
 "use client"
-import { ControlButton } from '@/components/control-button';
+import { ControlButtonFancy } from '@/components/control-button-fancy';
 import { ControlButtonIcon } from '@/components/control-button-icon';
 import { div, element } from '@/components/html';
 import { mobileBreakPoint, panelGap } from '@/utils/style-utils';
@@ -75,7 +75,7 @@ export const BodyGroup = styled(div) <{ $active?: boolean }>`
 export const PageTitle = styled.div`
 `;
 
-export const FooterButton = styled(element(ControlButton))`
+export const FooterButton = styled(element(ControlButtonFancy))`
 `;
 
 export const Footer = styled(div)`

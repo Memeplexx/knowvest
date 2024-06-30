@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ControlButton } from "../control-button";
+import { ControlButtonFancy } from "../control-button-fancy";
 import { div } from "../html";
 import { OverlayModal } from "../overlay-modal";
 
@@ -27,8 +27,8 @@ export const ButtonWrapper = styled(div)`
   justify-content: right;
 `;
 
-export const ConfirmButton = styled(ControlButton)`
+export const ConfirmButton = styled(ControlButtonFancy)`
 `;
 
-export const CancelButton = styled(ControlButton)`
+export const CancelButton = styled(ControlButtonFancy)`
 `;

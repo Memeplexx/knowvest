@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { button } from "../html";
 
 
-export const ControlButtonWrapper = styled(button) <{ selected?: boolean, $highlighted?: boolean }>`
+export const ControlButtonFancyWrapper = styled(button) <{ selected?: boolean, $highlighted?: boolean }>`
   cursor: pointer;
   padding: 8px 16px;
   background-color: transparent;

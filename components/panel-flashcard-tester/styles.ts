@@ -1,4 +1,4 @@
-import { ControlButton } from "@/components/control-button";
+import { ControlButtonFancy } from "@/components/control-button-fancy";
 import { div, element } from "@/components/html";
 import { PanelNoteReadonly } from "@/components/panel-note-readonly";
 import { mobileBreakPoint } from "@/utils/style-utils";
@@ -39,10 +39,10 @@ export const Footer = styled(div)`
   }
 `;
 
-export const ToggleViewButton = styled(ControlButton)`
+export const ToggleViewButton = styled(ControlButtonFancy)`
 `;
 
-export const NextButton = styled(element(ControlButton))`
+export const NextButton = styled(element(ControlButtonFancy))`
   gap: 8px;
   border: 1px solid grey;
 `;
