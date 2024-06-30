@@ -1,4 +1,4 @@
-import { ClockIcon } from "@/utils/style-utils";
+import { CiClock2 } from "react-icons/ci";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
 import { div } from "../control-conditional";
@@ -19,7 +19,7 @@ export const Header = styled.div`
   color: #6f6f6f;
 `;
 
-export const Icon = styled(ClockIcon)`
+export const Icon = styled(CiClock2)`
   color: #6f6f6f;
   width: 18px;
   height: 18px;

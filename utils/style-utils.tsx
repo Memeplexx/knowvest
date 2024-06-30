@@ -3,9 +3,7 @@ import { button, div } from '@/components/control-conditional';
 import { Montserrat, Source_Code_Pro } from 'next/font/google';
 import { useServerInsertedHTML } from 'next/navigation';
 import React, { useState } from 'react';
-import { AiFillTag } from "react-icons/ai";
-import { CiCirclePlus, CiClock2, CiFilter, CiGrid2V, CiMaximize1, CiSearch, CiSettings, CiTrash } from "react-icons/ci";
-import { MdClear, MdKeyboardArrowRight, MdKeyboardArrowUp } from "react-icons/md";
+import { MdKeyboardArrowUp } from "react-icons/md";
 import styled, { ServerStyleSheet, StyleSheetManager, css } from "styled-components";
 
 export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
@@ -76,32 +74,6 @@ export const PopupOption = styled(button)`
 const resetIconDims = css`
   width: 100%;
   height: 100%;
-`;
-
-export const CreateIcon = styled(CiCirclePlus)``;
-
-export const DuplicateIcon = styled(CiGrid2V)``;
-
-export const DeleteIcon = styled(CiTrash)``;
-
-export const SettingsIcon = styled(CiSettings)``;
-
-export const TagIcon = styled(AiFillTag)``;
-
-export const ClockIcon = styled(CiClock2)``;
-
-export const AddIcon = styled(CiCirclePlus)``;
-
-export const SplitIcon = styled(CiMaximize1)``;
-
-export const FilterIcon = styled(CiFilter)``;
-
-export const CloseIcon = styled(MdClear)``;
-
-export const SearchIcon = styled(CiSearch)``;
-
-export const RightIcon = styled(MdKeyboardArrowRight)`
-  ${resetIconDims}
 `;
 
 export const UpIcon = styled(MdKeyboardArrowUp)`

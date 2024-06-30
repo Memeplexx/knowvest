@@ -1,7 +1,8 @@
-import { SearchIcon as BaseSearchIcon, mobileBreakPoint } from "@/utils/style-utils";
+import { mobileBreakPoint } from "@/utils/style-utils";
 import Image from "next/image";
 import Link from "next/link";
 import { CgMenuGridO } from "react-icons/cg";
+import { CiSearch } from "react-icons/ci";
 import { PiStudentFill } from 'react-icons/pi';
 import styled, { css } from "styled-components";
 import { ControlButtonIcon } from "../control-button-icon";
@@ -48,7 +49,7 @@ export const RightContent = styled(div)`
   gap: 16px;
 `;
 
-export const SearchIcon = styled(BaseSearchIcon)`
+export const SearchIcon = styled(CiSearch)`
 `;
 
 export const UserButton = styled.button`

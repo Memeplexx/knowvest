@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { CloseIcon } from '@/utils/style-utils';
+import { MdClear } from 'react-icons/md';
 import { ControlButtonIcon } from '../control-button-icon';
 import { button, div, element, input } from '../control-conditional';
 
@@ -26,7 +26,7 @@ export const ClearTextButton = styled(element(ControlButtonIcon))`
 export const CloseOptionsButton = styled(element(ControlButtonIcon))`
 `;
 
-export const ClearIcon = styled(CloseIcon)`
+export const ClearIcon = styled(MdClear)`
   pointer-events: none;
   width: auto;
   height: auto;

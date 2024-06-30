@@ -1,5 +1,5 @@
 "use client";
-import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { useHtmlPropsOnly } from '@/utils/react-utils';
 import { store } from '@/utils/store-utils';
 import { Props } from './constants';
 import { useInputs } from './inputs';
@@ -13,7 +13,7 @@ export function PanelNotesPrevious(
   const outputs = useOutputs(props, inputs);
   return (
     <PanelNotesPreviousWrapper
-      {...useUnknownPropsStripper(props)}
+      {...useHtmlPropsOnly(props)}
       children={
         <>
           <ListItemsWrapper

@@ -2,7 +2,8 @@
 
 import { ControlAutocomplete } from '@/components/control-autocomplete';
 import { OverlayConfirmation } from '@/components/overlay-confirmation';
-import { PopupOption, PopupOptions, SettingsIcon } from '@/utils/style-utils';
+import { PopupOption, PopupOptions } from '@/utils/style-utils';
+import { CiSettings } from 'react-icons/ci';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -145,7 +146,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => (
             <>
               Synonyms
               <SettingsButton
-                children={<SettingsIcon />}
+                children={<CiSettings />}
                 selected={inputs.modal === 'synonymOptions'}
                 aria-label='Settings'
                 $show={!inputs.groupId}
@@ -238,7 +239,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => (
                       onChange={outputs.onCustomGroupNameChange}
                     />
                     <SettingsButton
-                      children={<SettingsIcon />}
+                      children={<CiSettings />}
                       onClick={() => outputs.onClickShowOptionsForGroup(group.id)}
                       selected={inputs.modal === 'groupOptions'}
                       $show={active}

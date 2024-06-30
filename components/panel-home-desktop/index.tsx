@@ -1,6 +1,6 @@
 "use client";
-import { FilterIcon } from '@/utils/style-utils';
 import { useRef } from 'react';
+import { CiFilter } from 'react-icons/ci';
 import { ContainerWithStickyHeaderHandle } from '../container-with-sticky-header/constants';
 import { ControlButtonIcon } from '../control-button-icon';
 import { OverlayNoteActive } from '../overlay-note-active';
@@ -60,7 +60,7 @@ export function PanelHomeDesktop() {
                         <ControlButtonIcon
                           {...props}
                           aria-label='Filter'
-                          children={<FilterIcon />}
+                          children={<CiFilter />}
                         />
                       )}
                       overlay={

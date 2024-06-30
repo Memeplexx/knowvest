@@ -1,8 +1,9 @@
 "use client";
 import '@/utils/polyfills';
-import { PopupOption, SettingsIcon } from '@/utils/style-utils';
+import { PopupOption } from '@/utils/style-utils';
 import Link from 'next/link';
 import { HTMLAttributes } from 'react';
+import { CiSettings } from 'react-icons/ci';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
 import { OverlayPopup } from '../overlay-popup';
@@ -75,7 +76,7 @@ export const PanelNavbar = (
                     <SearchButton
                       $active={inputs.routerPatchName.endsWith('/tags')}
                       aria-label='Tags Config'
-                      children={<SettingsIcon />}
+                      children={<CiSettings />}
                     />
                   }
                 />

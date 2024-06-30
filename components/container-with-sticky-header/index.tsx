@@ -1,5 +1,5 @@
 "use client";
-import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { useHtmlPropsOnly } from '@/utils/react-utils';
 import { forwardRef, type ForwardedRef } from 'react';
 import { ContainerWithStickyHeaderHandle, Props } from './constants';
 import { useInputs } from './inputs';
@@ -15,7 +15,7 @@ export const ContainerWithStickyHeader = forwardRef(function Wrapper(
   return (
     <ContainerWithStickyHeaderWrapper
       id={props.id}
-      {...useUnknownPropsStripper(props)}
+      {...useHtmlPropsOnly(props)}
       children={
         <>
           <StickyHeader

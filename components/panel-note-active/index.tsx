@@ -1,7 +1,7 @@
 "use client";
-import { useUnknownPropsStripper } from '@/utils/react-utils';
-import { AddIcon, DeleteIcon, FilterIcon, SettingsIcon, SplitIcon } from '@/utils/style-utils';
+import { useHtmlPropsOnly } from '@/utils/react-utils';
 import { type HTMLAttributes } from 'react';
+import { CiCirclePlus, CiFilter, CiMaximize1, CiSettings, CiTrash } from 'react-icons/ci';
 import { OverlayConfirmation } from '../overlay-confirmation';
 import { OverlayLoader } from '../overlay-loader';
 import { FragmentProps } from './constants';
@@ -19,7 +19,7 @@ export const PanelNoteActive = (
   const fragmentProps = { inputs, outputs };
   return (
     <PanelNoteActiveWrapper
-      {...useUnknownPropsStripper(props)}
+      {...useHtmlPropsOnly(props)}
       children={
         <>
           <EditorFragment
@@ -55,7 +55,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   onClick={outputs.onClickCreateNewTagFromSelection}
                   children={
                     <>
-                      <AddIcon />
+                      <CiCirclePlus />
                       Create a new tag out of selection
                     </>
                   }
@@ -65,7 +65,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   onClick={outputs.onClickConfigureSelectedTag}
                   children={
                     <>
-                      <SettingsIcon />
+                      <CiSettings />
                       Configure selected tag
                     </>
                   }
@@ -74,7 +74,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   onClick={outputs.onClickSplitNoteFromSelection}
                   children={
                     <>
-                      <SplitIcon />
+                      <CiMaximize1 />
                       Move selection out into a new note
                     </>
                   }
@@ -83,7 +83,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   onClick={outputs.onClickFilterNotesFromSelection}
                   children={
                     <>
-                      <FilterIcon />
+                      <CiFilter />
                       Filter notes similar to selection
                     </>
                   }
@@ -114,7 +114,7 @@ const FlashCardFragment = ({ inputs, outputs }: FragmentProps) => {
               />
               <DeleteButton
                 onClick={outputs.onClickRequestDeleteFlashCard}
-                children={<DeleteIcon />}
+                children={<CiTrash />}
               />
               <OverlayConfirmation
                 if={inputs.confirmDeleteFashCard}

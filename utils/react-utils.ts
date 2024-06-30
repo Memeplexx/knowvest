@@ -128,10 +128,10 @@ export const useRecord = <R extends Record<string, unknown>>(record: R) => {
   return stateRef;
 }
 
-const whitelist = ['className', 'style', 'onClick'];
-export const useUnknownPropsStripper = (props: object) => {
+export const useHtmlPropsOnly = (props: object) => {
+  const htmlElement = useMemo(() => document.createElement('div'), []);
   return Object.keys(props)
-    .filter(k => whitelist.includes(k))
+    .filter(k => k in htmlElement)
     .reduce((acc, key) => Object.assign(acc, { [key]: props[key as keyof typeof props] }), {});
 }
 

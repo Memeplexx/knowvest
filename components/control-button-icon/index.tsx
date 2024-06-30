@@ -1,5 +1,5 @@
 "use client";
-import { useUnknownPropsStripper } from "@/utils/react-utils";
+import { useHtmlPropsOnly } from "@/utils/react-utils";
 import { ForwardedRef, forwardRef } from "react";
 import { Props } from "./constants";
 import { ControlButtonIconWrapper } from "./styles";
@@ -10,7 +10,7 @@ export const ControlButtonIcon = forwardRef(function ButtonIcon(
 ) {
   return (
     <ControlButtonIconWrapper
-      {...useUnknownPropsStripper(props)}
+      {...useHtmlPropsOnly(props)}
       ref={ref}
       children={props.children}
     />

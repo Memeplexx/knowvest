@@ -1,5 +1,5 @@
 "use client";
-import { useUnknownPropsStripper } from '@/utils/react-utils';
+import { useHtmlPropsOnly } from '@/utils/react-utils';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { PanelNoteReadonlyWrapper } from './styles';
@@ -10,7 +10,7 @@ export function PanelNoteReadonly(
   const inputs = useInputs(props);
   return (
     <PanelNoteReadonlyWrapper
-      {...useUnknownPropsStripper(props)}
+      {...useHtmlPropsOnly(props)}
       ref={inputs.editorRef}
     />
   );

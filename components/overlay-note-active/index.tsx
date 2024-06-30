@@ -1,6 +1,6 @@
 "use client";
-import { CreateIcon, DeleteIcon, DuplicateIcon, PopupOption, SettingsIcon } from '@/utils/style-utils';
-import { CiCreditCard2 } from 'react-icons/ci';
+import { PopupOption } from '@/utils/style-utils';
+import { CiCirclePlus, CiCreditCard2, CiGrid2V, CiSettings, CiTrash } from 'react-icons/ci';
 import { ControlButtonIcon } from '../control-button-icon';
 import { OverlayConfirmation } from '../overlay-confirmation';
 import { useInputs } from './inputs';
@@ -21,7 +21,7 @@ export const OverlayNoteActive = () => {
           <ControlButtonIcon
             {...props}
             aria-label='Settings'
-            children={<SettingsIcon />}
+            children={<CiSettings />}
           />
         )}
         overlay={
@@ -31,7 +31,7 @@ export const OverlayNoteActive = () => {
               children={
                 <>
                   Create new note
-                  <CreateIcon />
+                  <CiCirclePlus />
                 </>
               }
             />
@@ -40,7 +40,7 @@ export const OverlayNoteActive = () => {
               children={
                 <>
                   Duplicate this note
-                  <DuplicateIcon />
+                  <CiGrid2V />
                 </>
               }
             />
@@ -50,7 +50,7 @@ export const OverlayNoteActive = () => {
               children={
                 <>
                   Delete this note
-                  <DeleteIcon />
+                  <CiTrash />
                 </>
               }
             />
