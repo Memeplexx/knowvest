@@ -8,7 +8,6 @@ import { useOutputs } from './outputs';
 import { OverlayNoteActiveWrapper } from './styles';
 
 
-
 export const OverlayNoteActive = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
