@@ -1,4 +1,5 @@
 import { GroupId, SynonymId } from "@/actions/types";
+import { NoteTags } from "@/utils/tags-worker";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 
@@ -35,4 +36,5 @@ export const initialState = {
   hoveredSynonymId: null as SynonymId | null,
   showAutocompleteOptions: false,
   searchTerms: new Array<string>(),
+  searchResults: new Array<NoteTags>(),
 }

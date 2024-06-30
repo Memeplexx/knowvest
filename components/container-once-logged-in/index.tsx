@@ -12,6 +12,7 @@ import { Inputs } from "./constants";
 import { useInputs } from "./inputs";
 import { ContainerOnceLoggedInWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLink, MenuItemSeparator, TopBar } from "./styles";
 
+
 export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode }) {
   const inputs = useInputs();
   return (

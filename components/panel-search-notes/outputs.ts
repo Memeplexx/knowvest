@@ -74,10 +74,12 @@ export const useOutputs = (inputs: Inputs) => {
         local.enabledSynonymIds.$set([...toggledSynonymIds, synonymId]);
     },
     onClickStartOver: () => {
-      local.selectedSynonymIds.$set([]);
-      local.selectedGroupIds.$set([]);
-      local.enabledSynonymIds.$set([]);
+      local.selectedSynonymIds.$clear();
+      local.selectedGroupIds.$clear();
+      local.enabledSynonymIds.$clear();
       local.autocompleteText.$set('');
     }
   };
 }
+
+// const bindEventHandlerWithArg = <A>(arg: A) => <E>(handler: (arg0: A, arg: E) => void) => handler(arg);

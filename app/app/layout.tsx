@@ -1,6 +1,7 @@
 "use server"
 import { ContainerOnceLoggedIn } from "@/components/container-once-logged-in";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { TagsWorkerProvider } from "@/utils/worker-context";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Wrapper } from "./styles";
@@ -15,8 +16,12 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <Wrapper
       children={
-        <ContainerOnceLoggedIn
-          children={children}
+        <TagsWorkerProvider
+          children={
+            <ContainerOnceLoggedIn
+              children={children}
+            />
+          }
         />
       }
     />

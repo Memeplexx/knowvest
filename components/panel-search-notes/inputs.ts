@@ -1,7 +1,9 @@
 import { GroupId, SynonymId } from "@/actions/types";
 import { AutocompleteHandle } from "@/components/control-autocomplete/constants";
 import { useResizeListener } from "@/utils/dom-utils";
+import { useComponent } from "@/utils/react-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
+import { useTagsWorker } from "@/utils/worker-context";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef } from "react";
 import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
@@ -13,6 +15,8 @@ export const useInputs = () => {
   const { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } = state;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
+  const worker = useTagsWorker();
+  const component = useComponent();
 
   const autocompleteSynonymOptions = useMemo(() => {
     return tags
@@ -94,6 +98,17 @@ export const useInputs = () => {
       .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
   }, [tags, noteTags, selectedSynonymIds, enabledSynonymIds, notes]);
 
+  const notesBySearchTerms = useMemo(() => {
+    return state.searchResults
+      .map(noteTags => notes.findOrThrow(n => n.id === noteTags.noteId))
+      .distinct(n => n.id);
+  }, [notes, state.searchResults]);
+
+  const notesFound = useMemo(() => {
+    return [...notesByTags, ...notesBySearchTerms]
+      .distinct(n => n.id);
+  }, [notesBySearchTerms, notesByTags]);
+
   useResizeListener(useCallback(() => {
     const state = local.$state;
     const screenIsNarrow = window.innerWidth < dialogWidth;
@@ -106,18 +121,29 @@ export const useInputs = () => {
       local.$patch(payload);
   }, [local, showSearchPane, showingPane]));
 
-  return {
+  const result = {
     local,
     ...local.$state,
     autocompleteRef,
     autocompleteOptions,
     selectedSynonymTags,
     selectedGroupTags,
-    notesByTags,
-    notes,
+    notesFound,
     showSearchPane: showingPane === 'search',
     showResultsPane: !isMobileWidth || showingPane === 'results',
     router,
     isMobileWidth,
-  }
+  };
+
+  if (!component.isMounted)
+    return result;
+  if (component.hasStartedAsyncProcess)
+    return result;
+
+  component.startAsyncProcess();
+  component.listen = local.searchTerms.$onChange(searchTerms => worker.setSearchTerms(searchTerms));
+  component.listen = worker.onNotesSearched(searchResults => local.searchResults.$set(searchResults));
+  component.completeAsyncProcess();
+
+  return result;
 }

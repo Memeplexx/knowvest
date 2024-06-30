@@ -50,7 +50,7 @@ export function PanelSearchNotes() {
             }
           />
           <Footer
-            if={!!inputs.notesByTags.length}
+            if={!!inputs.notesFound.length}
             children={
               <>
                 <div
@@ -59,7 +59,7 @@ export function PanelSearchNotes() {
                       if={inputs.isMobileWidth}
                       onClick={outputs.onClickTabButton}
                       highlighted={false}
-                      children={inputs.showResultsPane ? 'View search' : `View results (${inputs.notesByTags.length})`}
+                      children={inputs.showResultsPane ? 'View search' : `View results (${inputs.notesFound.length})`}
                       aria-label={inputs.showResultsPane ? 'View search' : 'View results'}
                     />
                   }
@@ -125,7 +125,7 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
   )
 }
 
-const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
+const SearchTermsFragment = ({ inputs }: FragmentProps) => {
   return (
     <CategoryWrapper
       if={!!inputs.searchTerms.length}
@@ -265,7 +265,7 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
       if={inputs.showResultsPane}
       children={
         <>
-          {inputs.notesByTags.map(note => (
+          {inputs.notesFound.map(note => (
             <Result
               key={note.id}
               note={note}
@@ -274,7 +274,7 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
             />
           ))}
           <NoResultsWrapper
-            if={!inputs.notesByTags.length}
+            if={!inputs.notesFound.length}
             children={
               <>
                 <NoResultsIcon

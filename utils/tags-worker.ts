@@ -103,6 +103,10 @@ export type Incoming
     data: DeepReadonlyArray<TagSummary>
   }
   | {
+    type: 'setSearchTerms',
+    data: DeepReadonlyArray<string>
+  }
+  | {
     type: 'updateNote',
     data: NoteDTO
   }
@@ -111,10 +115,16 @@ export type Incoming
     data: NoteId
   };
 
-export type Outgoing = {
+
+export type NoteTags = {
   noteId: NoteId,
   tags: TagResult[]
-}[]
+};
+
+export type Outgoing = {
+  type: 'noteTagsUpdated' | 'notesSearched',
+  value: NoteTags[]
+}
 
 export type TagsWorker = Omit<Worker, 'postMessage' | 'onmessage'> & {
   postMessage: (message: Incoming) => void,
@@ -137,6 +147,8 @@ onmessage = (event: MessageEvent<Incoming>) => {
       return removeTags(data);
     case 'updateTags':
       return updateTags(data);
+    case 'setSearchTerms':
+      return setSearchTerms(data);
     case 'addNotes':
       return addNotes(data);
     case 'updateNote':
@@ -146,7 +158,7 @@ onmessage = (event: MessageEvent<Incoming>) => {
   }
 };
 
-const sendToProvider = (data: Outgoing) => postMessage(data);
+const noteTagsUpdated = (value: NoteTags[]) => postMessage({ type: 'noteTagsUpdated', value });
 
 const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => {
   allTags.push(...incomingTags);
@@ -160,7 +172,7 @@ const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepRe
     return { noteId: incomingNote.id, tags: results };
   });
   if (toPost.length)
-    sendToProvider(toPost);
+    noteTagsUpdated(toPost);
 }
 
 const addTags = (incomingTags: TagSummary[]) => {
@@ -174,7 +186,7 @@ const addTags = (incomingTags: TagSummary[]) => {
     trieLocal.insert(tagText, incomingTag.id, incomingTag.synonymId!);
     trie.insert(tagText, incomingTag.id, incomingTag.synonymId!);
   });
-  const toPost = [] as Outgoing;
+  const toPost = [] as NoteTags[];
   allNotes.forEach(note => {
     const results = trieLocal.search(note.text);
     if (!results.length) return;
@@ -183,8 +195,7 @@ const addTags = (incomingTags: TagSummary[]) => {
     toPost.push({ noteId: note.id, tags: cacheItem });
   });
   if (toPost.length)
-    sendToProvider(toPost);
-
+    noteTagsUpdated(toPost);
 }
 
 const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
@@ -195,7 +206,7 @@ const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
     if (index !== -1)
       allTags.splice(index, 1);
   });
-  const toPost = [] as Outgoing;
+  const toPost = [] as NoteTags[];
   Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
     const filtered = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.id));
     if (filtered.length === tagSummaries.length) return; // if note does not contain any of the removed tags, do not update resultsCache
@@ -203,7 +214,7 @@ const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
     toPost.push({ noteId, tags: filtered });
   });
   if (toPost.length)
-    sendToProvider(toPost);
+    noteTagsUpdated(toPost);
 };
 
 const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
@@ -212,7 +223,7 @@ const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
   // Create some local variables for later
   const trieLocal = new Trie();
   const incomingTagIds = incomingTags.map(t => t.id);
-  const toPost = [] as Outgoing;
+  const toPost = [] as NoteTags[];
 
   // Start by removing old tags from the trie, re-inserting them into the trie, and updating the tag text in the allTags array
   incomingTags.forEach(incomingTag => {
@@ -246,11 +257,11 @@ const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
   });
 
   if (toPost.length)
-    sendToProvider(toPost);
+    noteTagsUpdated(toPost);
 }
 
 const addNotes = (incomingNotes: DeepReadonlyArray<NoteDTO>) => {
-  const toPost = [] as Outgoing;
+  const toPost = [] as NoteTags[];
   incomingNotes.forEach(incomingNote => {
     const found = allNotes.find(n => n.id === incomingNote.id);
     if (found) throw new Error(`Note already exists: ${JSON.stringify(found)}`);
@@ -260,7 +271,7 @@ const addNotes = (incomingNotes: DeepReadonlyArray<NoteDTO>) => {
     toPost.push({ noteId: incomingNote.id, tags: results });
   })
   if (toPost.length)
-    sendToProvider(toPost);
+    noteTagsUpdated(toPost);
 }
 
 const updateNote = (incomingNote: NoteDTO) => {
@@ -271,7 +282,7 @@ const updateNote = (incomingNote: NoteDTO) => {
   if (JSON.stringify(results) === JSON.stringify(resultsCache.get(incomingNote.id)!))
     return;
   resultsCache.set(incomingNote.id, results);
-  sendToProvider([{ noteId: incomingNote.id, tags: results }]);
+  noteTagsUpdated([{ noteId: incomingNote.id, tags: results }]);
 }
 
 const removeNote = (incomingNoteId: NoteId) => {
@@ -279,4 +290,15 @@ const removeNote = (incomingNoteId: NoteId) => {
   if (index === -1) throw new Error(`Note not found: ${incomingNoteId}`);
   allNotes.splice(index, 1);
   resultsCache.delete(incomingNoteId);
+}
+
+const setSearchTerms = (incomingSearchTerms: DeepReadonlyArray<string>) => {
+  const trieLocal = new Trie();
+  incomingSearchTerms.forEach(incomingSearchTerm => {
+    trieLocal.insert(incomingSearchTerm, 0 as TagId, 0 as SynonymId);
+  });
+  const toPost = allNotes
+    .map(note => ({ noteId: note.id, tags: trieLocal.search(note.text) }));
+  if (toPost.length)
+    postMessage({ type: 'notesSearched', value: toPost });
 }
