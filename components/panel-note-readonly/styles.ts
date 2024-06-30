@@ -1,6 +1,6 @@
 import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
-import { div } from "../html";
+import { div } from "../control-conditional";
 
 
 export const PanelNoteReadonlyWrapper = styled(div)`

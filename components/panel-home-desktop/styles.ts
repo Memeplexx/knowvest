@@ -1,5 +1,5 @@
 "use client";
-import { div } from "@/components/html";
+import { div } from "@/components/control-conditional";
 import { mobileBreakPoint, panelGap } from "@/utils/style-utils";
 import styled from "styled-components";
 import { ContainerWithStickyHeader } from "../container-with-sticky-header";

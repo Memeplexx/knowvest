@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styled, { css } from "styled-components";
 import { ContainerWithSideNav } from "../container-with-side-nav";
-import { div, element } from "../html";
+import { div, element } from "../control-conditional";
 import { OverlayLoader } from "../overlay-loader";
 import { PanelNavbar } from "../panel-navbar";
 

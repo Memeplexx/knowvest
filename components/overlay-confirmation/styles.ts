@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { ControlButtonFancy } from "../control-button-fancy";
-import { div } from "../html";
+import { div } from "../control-conditional";
 import { OverlayModal } from "../overlay-modal";
 
 

@@ -1,6 +1,6 @@
 import { mobileBreakPoint } from "@/utils/style-utils";
 import styled, { css } from "styled-components";
-import { button } from "../html";
+import { button } from "../control-conditional";
 
 
 export const ControlButtonFancyWrapper = styled(button) <{ selected?: boolean, $highlighted?: boolean }>`

@@ -1,7 +1,7 @@
 import { AiOutlineLink } from "react-icons/ai";
 import { WiCloudyWindy } from "react-icons/wi";
 import styled from "styled-components";
-import { div } from "../html";
+import { div } from "../control-conditional";
 import { PanelNoteReadonly } from "../panel-note-readonly";
 
 

@@ -1,7 +1,7 @@
 "use client"
 import { ControlButtonFancy } from '@/components/control-button-fancy';
 import { ControlButtonIcon } from '@/components/control-button-icon';
-import { div, element } from '@/components/html';
+import { div, element } from '@/components/control-conditional';
 import { PanelNoteReadonly } from '@/components/panel-note-readonly';
 import { mobileBreakPoint, panelGap } from '@/utils/style-utils';
 import { GiLighthouse } from 'react-icons/gi';

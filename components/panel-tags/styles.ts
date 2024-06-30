@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { div } from '../html';
+import { div } from '../control-conditional';
 
 
 

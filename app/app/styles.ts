@@ -1,5 +1,5 @@
 "use client"
-import { div } from "@/components/html";
+import { div } from "@/components/control-conditional";
 import { OverlayLoader } from "@/components/overlay-loader";
 import { defaultFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";

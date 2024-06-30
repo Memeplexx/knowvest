@@ -1,7 +1,7 @@
 import { panelGap } from "@/utils/style-utils";
 import { CgMenuGridO } from "react-icons/cg";
 import styled from "styled-components";
-import { button, div, element } from "../html";
+import { button, div, element } from "../control-conditional";
 
 
 export const ContainerWithStickyHeaderWrapper = styled(div)`

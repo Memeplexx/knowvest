@@ -1,8 +1,8 @@
 import { monoFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
 import { ControlButtonIcon } from "../control-button-icon";
+import { div } from "../control-conditional";
 import { TextAreaDebounced } from "../control-debounced";
-import { div } from "../html";
 
 
 export const PanelNoteActiveWrapper = styled.div`

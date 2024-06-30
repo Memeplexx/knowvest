@@ -5,7 +5,7 @@ import { CgMenuGridO } from "react-icons/cg";
 import { PiStudentFill } from 'react-icons/pi';
 import styled, { css } from "styled-components";
 import { ControlButtonIcon } from "../control-button-icon";
-import { button, div, element } from "../html";
+import { button, div, element } from "../control-conditional";
 
 export const PanelNavbarWrapper = styled.div`
   z-index: 11;
