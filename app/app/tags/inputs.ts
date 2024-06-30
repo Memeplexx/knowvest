@@ -11,7 +11,7 @@ import { initialState } from './constants';
 export const useInputs = () => {
 
   const { notes, tags, groups, synonymGroups, activeNoteId } = useStore();
-  const firstSelectedTag = useMemo(() => store.$state.tags.find(t => t.id === store.$state.configureTags), [store]);
+  const firstSelectedTag = useMemo(() => store.$state.tags.find(t => t.id === store.$state.configureTags), []);
   const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', {
     ...initialState,
     tagId: firstSelectedTag?.id ?? null,

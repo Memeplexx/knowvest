@@ -33,7 +33,7 @@ export const useInputs = () => {
     window.addEventListener('resize', listener);
     listener();
     return () => window.removeEventListener('resize', listener);
-  }, [store]);
+  }, []);
 
   // Log user out if session expired
   const session = useSession();

@@ -1,4 +1,5 @@
 "use client";
+import { useUnknownPropsStripper } from "@/utils/react-utils";
 import { ForwardedRef, forwardRef } from "react";
 import { Props } from "./constants";
 import { ControlButtonIconWrapper } from "./styles";
@@ -9,7 +10,7 @@ export const ControlButtonIcon = forwardRef(function ButtonIcon(
 ) {
   return (
     <ControlButtonIconWrapper
-      {...props}
+      {...useUnknownPropsStripper(props)}
       ref={ref}
       children={props.children}
     />

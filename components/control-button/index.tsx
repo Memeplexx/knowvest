@@ -8,10 +8,9 @@ export const ControlButton = forwardRef(function Button(
   props: Props,
   ref?: ForwardedRef<HTMLButtonElement>
 ) {
-  const htmlProps = useUnknownPropsStripper(props);
   return (
     <ControlButtonWrapper
-      {...htmlProps}
+      {...useUnknownPropsStripper(props)}
       $highlighted={props.highlighted ?? false}
       ref={ref}
       children={props.children}

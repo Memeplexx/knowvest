@@ -10,7 +10,7 @@ export const useInputs = () => {
 
   const { flashCards, isMobileWidth } = useStore();
   const { local } = useLocalStore('navBar', initialState);
-  useMemo(() => addToWhitelist([store.showLoader]), [store]);
+  useMemo(() => addToWhitelist([store.showLoader]), []);
   const routerPathName = usePathname()!;
   const pageTitle = useMemo(() => {
     switch (routerPathName) {

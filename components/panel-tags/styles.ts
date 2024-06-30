@@ -3,7 +3,7 @@ import { div } from '../html';
 
 
 
-export const TagsWrapper = styled(div)`
+export const PanelTagsWrapper = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;

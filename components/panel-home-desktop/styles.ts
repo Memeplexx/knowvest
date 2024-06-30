@@ -3,7 +3,7 @@ import { div } from "@/components/html";
 import { mobileBreakPoint, panelGap } from "@/utils/style-utils";
 import styled from "styled-components";
 import { ContainerWithStickyHeader } from "../container-with-sticky-header";
-import { Tags } from "../tags";
+import { PanelTags } from "../panel-tags";
 
 
 export const PanelHomeDesktopWrapper = styled.div`
@@ -57,6 +57,6 @@ export const ActiveHeader = styled(Header)`
   background-image: linear-gradient(to left, #202020, #2f2e2e);
 `;
 
-export const FilterPopup = styled(Tags)`
+export const FilterPopup = styled(PanelTags)`
   padding: 8px;
 `;

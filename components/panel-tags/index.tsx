@@ -9,19 +9,19 @@ import {
   ActiveHeaderTag,
   GroupHeaderTag,
   NoTagsPlaceholder,
+  PanelTagsWrapper,
   SynonymsWrapper,
   Tag,
   TagsSection,
-  TagsWrapper,
 } from './styles';
 
 
-export const Tags = (props: TagsProps) => {
+export const PanelTags = (props: TagsProps) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <TagsWrapper
+    <PanelTagsWrapper
       {...props}
       children={
         <>
