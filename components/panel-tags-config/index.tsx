@@ -19,12 +19,12 @@ import {
   LeftContent,
   NoResultsWrapper,
   PageTitle,
+  PanelTagsConfigWrapper,
   RightContent,
   SearchIcon,
   SettingsButton,
   Tag,
   TagGroup,
-  TagsWrapper,
 } from './styles';
 
 
@@ -33,7 +33,7 @@ export function PanelTagsConfig() {
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <TagsWrapper
+    <PanelTagsConfigWrapper
       children={
         <>
           <Body

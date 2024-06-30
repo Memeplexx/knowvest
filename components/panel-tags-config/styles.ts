@@ -7,7 +7,7 @@ import { GiLighthouse } from 'react-icons/gi';
 import styled, { css } from 'styled-components';
 
 
-export const TagsWrapper = styled(div)`
+export const PanelTagsConfigWrapper = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
