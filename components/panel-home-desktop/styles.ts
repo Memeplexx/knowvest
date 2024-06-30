@@ -6,7 +6,7 @@ import { ContainerWithStickyHeader } from "../container-with-sticky-header";
 import { PanelTagsFilter } from "../panel-tags-filter";
 
 
-export const PanelHomeDesktopWrapper = styled.div`
+export const PanelHomeDesktopWrapper = styled(div)`
   min-height: 0;
   display: flex;
   gap: ${panelGap};
