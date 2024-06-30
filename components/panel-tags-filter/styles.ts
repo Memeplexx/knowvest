@@ -3,7 +3,7 @@ import { div } from '../control-conditional';
 
 
 
-export const PanelTagsWrapper = styled(div)`
+export const PanelTagsFilterWrapper = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
