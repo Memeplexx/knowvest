@@ -6,7 +6,7 @@ export const useOutputs = (inputs: Inputs) => {
   const { local } = inputs;
   return {
     onClickUserButton: () => {
-      local.showOptions.$toggle()
+      local.showOptions.$toggle();
     },
     onClickSignOut: async () => {
       await signOut();

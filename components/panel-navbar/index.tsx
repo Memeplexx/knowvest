@@ -58,7 +58,7 @@ export const PanelNavbar = (
                   href='./test'
                   children={
                     <FlashCardButton
-                      $active={inputs.routerPatchName.endsWith('/test')}
+                      $active={inputs.routerPathName.endsWith('/test')}
                       children={
                         <>
                           <FlashCardIcon />
@@ -74,7 +74,7 @@ export const PanelNavbar = (
                   href='./tags'
                   children={
                     <SearchButton
-                      $active={inputs.routerPatchName.endsWith('/tags')}
+                      $active={inputs.routerPathName.endsWith('/tags')}
                       aria-label='Tags Config'
                       children={<CiSettings />}
                     />
@@ -84,7 +84,7 @@ export const PanelNavbar = (
                   href='./search'
                   children={
                     <SearchButton
-                      $active={inputs.routerPatchName.endsWith('/search')}
+                      $active={inputs.routerPathName.endsWith('/search')}
                       aria-label='Search'
                       children={<SearchIcon />}
                     />

@@ -9,9 +9,13 @@ import { initialState } from "./constants";
 export const useInputs = () => {
 
   const { flashCards, isMobileWidth } = useStore();
-  const { local } = useLocalStore('navBar', initialState);
+  const { local, state } = useLocalStore('navBar', initialState);
   useMemo(() => addToWhitelist([store.showLoader]), []);
   const routerPathName = usePathname()!;
+  const session = useSession().data;
+  const flashCardCount = useMemo(() => {
+    return flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length;
+  }, [flashCards])
   const pageTitle = useMemo(() => {
     switch (routerPathName) {
       case '/app/home':
@@ -32,12 +36,12 @@ export const useInputs = () => {
   }, [routerPathName]);
 
   return {
-    ...local.$state,
+    ...state,
     pageTitle,
     local,
-    routerPatchName: routerPathName,
-    session: useSession().data,
-    flashCardCount: useMemo(() => flashCards.filter(f => isAfter(new Date(), f.nextQuestionDate)).length, [flashCards]),
+    routerPathName,
+    session,
+    flashCardCount,
     isMobileWidth,
   }
 }
