@@ -62,7 +62,6 @@ export const inlineNotePlugin = ViewPlugin.fromClass(class {
   decorations: v => v.decorations
 });
 
-
 export const noteBlockPlugin = ViewPlugin.fromClass(class {
   decorations: DecorationSet;
   codeBlockDeco(view: EditorView) {
@@ -169,7 +168,7 @@ const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
     add: leftover
   })
 }
-const addRange = (ranges: DecorationSet, r: { from: number, to: number }, type: TagType) => {
+const addRange = (ranges: DecorationSet, r: { from: number, to: number }, decoration: Decoration) => {
   ranges.between(r.from, r.to, (from, to) => {
     if (from < r.from) r = { from, to: r.to }
     if (to > r.to) r = { from: r.from, to }
@@ -178,7 +177,7 @@ const addRange = (ranges: DecorationSet, r: { from: number, to: number }, type: 
     filterFrom: r.from,
     filterTo: r.to,
     filter: () => false,
-    add: [(type === 'primary' ? highlight : highlight2).range(r.from, r.to)]
+    add: [decoration.range(r.from, r.to)]
   })
 }
 
@@ -188,7 +187,7 @@ const highlightedRanges = StateField.define({
     ranges = ranges.map(tr.changes)
     for (const e of tr.effects) {
       if (e.is(addHighlight)) {
-        ranges = addRange(ranges, e.value, (e.value as unknown as { type: TagType }).type);
+        ranges = addRange(ranges, e.value, (e.value as unknown as { decoration: Decoration }).decoration);
       } else if (e.is(removeHighlight)) {
         ranges = cutRange(ranges, e.value);
       }
@@ -198,7 +197,6 @@ const highlightedRanges = StateField.define({
   provide: field => EditorView.decorations.from(field)
 });
 
-export type TagType = 'primary' | 'secondary';
 export const reviseEditorTags = (
   codeMirror: EditorView,
   noteId: NoteId,
@@ -206,7 +204,7 @@ export const reviseEditorTags = (
 ) => {
   const { synonymGroups, noteTags } = store.$state;
   const tags = noteTags.filter(nt => nt.noteId === noteId);
-  type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { type?: TagType }> }
+  type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { decoration?: Decoration }> }
   const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];
   const groupSynonymIds = synonymGroups
     .filter(sg => synonymIds.includes(sg.synonymId))
@@ -216,12 +214,12 @@ export const reviseEditorTags = (
   const newTagPositions = tags
     .flatMap(tag => ({
       ...tag,
-      type: primarySynonymIds.includes(tag.synonymId!) ? 'primary' : 'secondary' as TagType
+      decoration: primarySynonymIds.includes(tag.synonymId!) ? highlight : highlight2
     }));
   const removeTagPositions = previousPositions
-    .filter(p => !newTagPositions.some(np => np.from === p.from && np.to === p.to && np.type === p.type));
+    .filter(p => !newTagPositions.some(np => np.from === p.from && np.to === p.to && np.decoration === p.decoration));
   const addTagPositions = newTagPositions
-    .filter(p => !previousPositions.some(np => np.from === p.from && np.to === p.to && np.type === p.type));
+    .filter(p => !previousPositions.some(np => np.from === p.from && np.to === p.to && np.decoration === p.decoration));
   const effects = [
     ...removeTagPositions.map(t => removeHighlight.of(t)),
     ...addTagPositions.map(t => addHighlight.of(t))

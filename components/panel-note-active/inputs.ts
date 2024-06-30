@@ -45,12 +45,18 @@ export const useInputs = () => {
   const component = useComponent();
   const editor = useRef<EditorView | null>(null);
   const router = useRouter();
-  const selectionIsTag = useMemo(() => tags.some(t => t.text === state.selection), [state.selection, tags]);
-  const noteFlashCards = useMemo(() => flashCards.filter(fc => fc.noteId === activeNoteId).sort((a, b) => b.dateUpdated.getTime() - a.dateUpdated.getTime()), [activeNoteId, flashCards]);
+  const selectionIsTag = useMemo(() => {
+    return tags.some(t => t.text === state.selection);
+  }, [state.selection, tags]);
+  const noteFlashCards = useMemo(() => {
+    return flashCards
+      .filter(fc => fc.noteId === activeNoteId)
+      .sort((a, b) => b.dateUpdated.getTime() - a.dateUpdated.getTime());
+  }, [activeNoteId, flashCards]);
   const result = {
     local,
     notify,
-    ...local.$state,
+    ...state,
     mayDeleteNote: !!notes.length,
     popupRef,
     editorRef,
