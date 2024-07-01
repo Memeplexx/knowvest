@@ -270,6 +270,7 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
               key={note.id}
               note={note}
               synonymIds={inputs.local.enabledSynonymIds}
+              searchTerms={inputs.local.searchResults}
               onClick={() => outputs.onClickResult(note.id)}
             />
           ))}

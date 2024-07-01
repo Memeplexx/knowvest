@@ -1,5 +1,5 @@
 import { NoteId, SynonymId } from "@/actions/types";
-import { TagResult } from "@/utils/tags-worker";
+import { NoteTags, TagResult } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
@@ -155,6 +155,8 @@ const highlight = Decoration.mark({ attributes: { class: 'cm-highlight' } });
 
 const highlight2 = Decoration.mark({ attributes: { class: 'cm-highlight-2' } });
 
+const highlight3 = Decoration.mark({ attributes: { class: 'cm-highlight-3' } });
+
 const cutRange = (ranges: DecorationSet, r: { from: number, to: number }) => {
   const leftover: Range<Decoration>[] = []
   ranges.between(r.from, r.to, (from, to, deco) => {
@@ -201,6 +203,7 @@ export const reviseEditorTags = (
   codeMirror: EditorView,
   noteId: NoteId,
   synonymIds: DeepReadonlyArray<SynonymId>,
+  searchTerms: DeepReadonlyArray<NoteTags> = []
 ) => {
   const { synonymGroups, noteTags } = store.$state;
   const tags = noteTags.filter(nt => nt.noteId === noteId);
@@ -208,14 +211,21 @@ export const reviseEditorTags = (
   const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];
   const groupSynonymIds = synonymGroups
     .filter(sg => synonymIds.includes(sg.synonymId))
-    .distinct()
-    .map(sg => sg.synonymId);
+    .map(sg => sg.synonymId)
+    .distinct();
   const primarySynonymIds = [...synonymIds, ...groupSynonymIds];
-  const newTagPositions = tags
-    .flatMap(tag => ({
-      ...tag,
-      decoration: primarySynonymIds.includes(tag.synonymId!) ? highlight : highlight2
-    }));
+  const newTagPositions = [
+    ...tags
+      .flatMap(tag => ({
+        ...tag,
+        decoration: primarySynonymIds.includes(tag.synonymId!) ? highlight : highlight2
+      })),
+    ...!searchTerms ? [] : (searchTerms.find(nt => nt.noteId === noteId) ?? { tags: [] }).tags
+      .map(tag => ({
+        ...tag,
+        decoration: highlight3,
+      }))
+  ];
   const removeTagPositions = previousPositions
     .filter(p => !newTagPositions.some(np => np.from === p.from && np.to === p.to && np.decoration === p.decoration));
   const addTagPositions = newTagPositions

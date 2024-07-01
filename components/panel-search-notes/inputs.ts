@@ -5,6 +5,7 @@ import { useComponent } from "@/utils/react-utils";
 import { useLocalStore, useStore } from "@/utils/store-utils";
 import { useTagsWorker } from "@/utils/worker-context";
 import { useRouter } from "next/navigation";
+import { addToWhitelist } from "olik/devtools";
 import { useCallback, useMemo, useRef } from "react";
 import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
@@ -12,6 +13,7 @@ export const useInputs = () => {
 
   const { tags, groups, synonymGroups, notes, noteTags, isMobileWidth } = useStore();
   const { local, state } = useLocalStore('search', initialState);
+  useMemo(() => addToWhitelist([local.hoveredSynonymId]), [local]);
   const { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } = state;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();

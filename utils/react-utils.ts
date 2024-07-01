@@ -78,7 +78,7 @@ export const useComponent = () => {
   firstPass.current = true
   return useMemo(() => new Proxy({} as {
     isMounted: boolean,
-    listen: () => void,
+    listen: (() => void) | undefined,
     hasStartedAsyncProcess: boolean,
     hasCompletedAsyncProcess: boolean,
     startAsyncProcess: () => boolean,
@@ -104,7 +104,8 @@ export const useComponent = () => {
           subscriptions.current.length = 0;
           firstPass.current = false;
         }
-        subscriptions.current.push(newValue);
+        if (newValue)
+          subscriptions.current.push(newValue);
       }
       return true;
     },

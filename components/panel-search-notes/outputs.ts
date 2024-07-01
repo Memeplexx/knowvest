@@ -30,9 +30,11 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickRemoveSynonym: (synonymId: SynonymId) => {
       local.selectedSynonymIds.$find.$eq(synonymId).$delete();
+      local.enabledSynonymIds.$filter.$in([synonymId]).$delete();
     },
     onClickRemoveGroup: (groupId: GroupId) => {
       local.selectedGroupIds.$find.$eq(groupId).$delete();
+      local.enabledSynonymIds.$filter.$in(store.$state.synonymGroups.filter(sg => sg.groupId === groupId).map(sg => sg.synonymId)).$delete();
     },
     onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => {
       local.hoveredSynonymId.$set(hoveredSynonymId);

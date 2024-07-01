@@ -50,7 +50,7 @@ export const oneDarkTheme = EditorView.theme({
   },
 
   '.cm-content': {
-    caretColor: cursor
+    caretColor: cursor,
   },
 
   '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
@@ -110,20 +110,23 @@ export const oneDarkTheme = EditorView.theme({
     }
   },
   '.cm-highlight': {
-    color: '#FFF',
-    display: 'inline-block',
-    borderBottom: '2px solid #b100b1',
-  },
-  '.cm-highlight >*': {
-    color: '#FFF!important',
+    backgroundColor: '#e500e569',
   },
   '.cm-highlight-2': {
-    color: '#FFF',
-    display: 'inline-block',
-    borderBottom: '2px solid #18b100',
+    backgroundColor: '#23ff0036',
   },
-  '.cm-highlight-2 >*': {
-    color: '#FFF!important',
+  '.cm-highlight-3': {
+    backgroundColor: '#eaff0096',
+  },
+  '[class^="cm-highlight"]': {
+    display: 'inline-block',
+    color: '#FFF',
+    borderRadius: '8px',
+    margin: '0 -4px',
+    padding: '0 4px',
+    position: 'relative',
+    zIndex: '-1',
+    fontWeight: '500',
   },
   '.cm-note-inline': {
     backgroundColor: 'rgba(0,0,0,0.3)',
