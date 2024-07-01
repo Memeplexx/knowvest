@@ -16,7 +16,7 @@ export const defaultFontFamily = Montserrat({
   display: 'swap',
 })
 
-export const GlobalStylesProvider = ({ children }: { children?: React.ReactNode; }) => (
+export const GlobalStylesProvider = ({ children }: { children?: React.ReactNode }) => (
   <GlobalStylesWrapper
     id={id}
     children={children}

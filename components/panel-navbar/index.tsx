@@ -1,16 +1,20 @@
 "use client";
 import '@/utils/polyfills';
+import { useComponent } from '@/utils/react-utils';
 import { PopupOption } from '@/utils/style-utils';
 import Link from 'next/link';
 import { HTMLAttributes } from 'react';
+import { createPortal } from 'react-dom';
 import { CiSettings } from 'react-icons/ci';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
 import { OverlayPopup } from '../overlay-popup';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { FlashCardButton, FlashCardCount, FlashCardIcon, HamburgerButton, HamburgerIcon, HomeLink, ImageLogo, LeftContent, PageTitle, PanelNavbarWrapper, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
+import { FlashCardButton, FlashCardCount, FlashCardIcon, HamburgerButton, HamburgerIcon, HeaderActions, HomeLink, ImageLogo, LeftContent, PageTitle, PanelNavbarWrapper, RightContent, SearchButton, SearchIcon, UserButton, UserImage } from './styles';
 
+
+const headerActionsId = 'headerActions';
 
 export const PanelNavbar = (
   props: HTMLAttributes<HTMLDivElement>
@@ -48,6 +52,14 @@ export const PanelNavbar = (
                   children={inputs.pageTitle}
                 />
               </>
+            }
+          />
+          <RightContent
+            if={inputs.isMobileWidth}
+            children={
+              <HeaderActions
+                id={headerActionsId}
+              />
             }
           />
           <RightContent
@@ -125,5 +137,10 @@ export const PanelNavbar = (
       }
     />
   );
+}
+
+export const HeaderAction = (props: { children: React.ReactNode }) => {
+  const component = useComponent();
+  return !component.isMounted ? <></> : createPortal(props.children, document.getElementById(headerActionsId)!);
 }
 

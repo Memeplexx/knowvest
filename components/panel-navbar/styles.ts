@@ -42,6 +42,9 @@ export const PageTitle = styled.div`
   font-size: 24px;
 `;
 
+export const HeaderActions = styled(div)`
+`;
+
 export const RightContent = styled(div)`
   display: flex;
   gap: 8px;
