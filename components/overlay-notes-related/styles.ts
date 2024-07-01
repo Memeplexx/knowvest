@@ -3,11 +3,12 @@ import { div } from '../control-conditional';
 
 
 
-export const PanelTagsFilterWrapper = styled(div)`
+export const OverlayNotesRelatedWrapper = styled(div)`
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding: 8px;
 `;
 
 export const Tag = styled(div) <{ $selected: boolean, $first: boolean, $last: boolean }>`

@@ -1,7 +1,10 @@
 "use client";
 import { Fragment } from 'react';
 
+import { CiFilter } from 'react-icons/ci';
 import { ControlButtonFancy } from '../control-button-fancy';
+import { ControlButtonIcon } from '../control-button-icon';
+import { OverlayPopup } from '../overlay-popup';
 import { FragmentProps, TagsProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -9,35 +12,47 @@ import {
   ActiveHeaderTag,
   GroupHeaderTag,
   NoTagsPlaceholder,
-  PanelTagsFilterWrapper,
+  OverlayNotesRelatedWrapper,
   SynonymsWrapper,
   Tag,
   TagsSection,
 } from './styles';
 
 
-export const PanelTagsFilter = (props: TagsProps) => {
+export const OverlayNotesRelated = (props: TagsProps) => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
   return (
-    <PanelTagsFilterWrapper
-      {...props}
-      children={
-        <>
-          <SynonymsFragment
-            {...fragmentProps}
-          />
-          <GroupSynonymsFragment
-            {...fragmentProps}
-          />
-          <PlaceholderFragment
-            {...fragmentProps}
-          />
-        </>
+    <OverlayPopup
+      storeKey='relatedMenu'
+      trigger={props => (
+        <ControlButtonIcon
+          {...props}
+          aria-label='Filter'
+          children={<CiFilter />}
+        />
+      )}
+      overlay={
+        <OverlayNotesRelatedWrapper
+          {...props}
+          children={
+            <>
+              <SynonymsFragment
+                {...fragmentProps}
+              />
+              <GroupSynonymsFragment
+                {...fragmentProps}
+              />
+              <PlaceholderFragment
+                {...fragmentProps}
+              />
+            </>
+          }
+        />
       }
     />
-  )
+  );
 }
 
 const PlaceholderFragment = ({ inputs, outputs }: FragmentProps) => {

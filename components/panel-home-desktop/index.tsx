@@ -1,14 +1,12 @@
 "use client";
 import { useRef } from 'react';
-import { CiFilter } from 'react-icons/ci';
 import { ContainerWithStickyHeaderHandle } from '../container-with-sticky-header/constants';
-import { ControlButtonIcon } from '../control-button-icon';
 import { OverlayNoteActive } from '../overlay-note-active';
-import { OverlayPopup } from '../overlay-popup';
+import { OverlayNotesRelated } from '../overlay-notes-related';
 import { PanelNoteActive } from '../panel-note-active';
 import { PanelNotesPrevious } from '../panel-notes-previous';
 import { PanelNotesRelated } from '../panel-notes-related';
-import { ActiveHeader, ActivePanel, FilterPopup, HistoryHeader, HistoryPanel, PanelHomeDesktopWrapper, RelatedHeader, RelatedPanel } from './styles';
+import { ActiveHeader, ActivePanel, HistoryHeader, HistoryPanel, PanelHomeDesktopWrapper, RelatedHeader, RelatedPanel } from './styles';
 
 
 
@@ -54,7 +52,7 @@ export function PanelHomeDesktop() {
                 children={
                   <>
                     Related
-                    <OverlayPopup
+                    {/* <OverlayPopup
                       storeKey='relatedMenu'
                       trigger={props => (
                         <ControlButtonIcon
@@ -66,7 +64,8 @@ export function PanelHomeDesktop() {
                       overlay={
                         <FilterPopup />
                       }
-                    />
+                    /> */}
+                    <OverlayNotesRelated />
                   </>
                 }
               />
