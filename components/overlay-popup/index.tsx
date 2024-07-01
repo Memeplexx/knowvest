@@ -1,10 +1,10 @@
 "use client";
+import { Overlay } from '@/utils/style-provider';
 import { ForwardedRef, forwardRef } from 'react';
-import { createPortal } from 'react-dom';
 import { PopupHandle, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Background, Floating, Foreground } from './styles';
+import { Floating, Foreground } from './styles';
 
 
 export const OverlayPopup = forwardRef(function Popup(
@@ -19,30 +19,24 @@ export const OverlayPopup = forwardRef(function Popup(
         ref: inputs.floatingRef.refs.setReference,
         onClick: () => setTimeout(() => outputs.onClickTrigger(), 50),
       })}
-      {
-        !inputs.showInternal
-          ? <></>
-          : createPortal(
-            <Background
-              data-id='backdrop'
-              style={inputs.backgroundAnimations}
-              onClick={outputs.onClickBackdrop}
-              children={
-                <Floating
-                  ref={inputs.floatingRef.refs.setFloating}
-                  style={inputs.floatingRef.floatingStyles}
-                  onClick={e => e.stopPropagation()}
-                  children={
-                    <Foreground
-                      style={inputs.foregroundAnimations}
-                      children={props.overlay}
-                    />
-                  }
-                />
-              }
-            />
-            , document.body)
-      }
+      <Overlay
+        if={inputs.showInternal}
+        onClickBackdrop={outputs.onClickBackdrop}
+        blurBackdrop={true}
+        overlay={
+          <Floating
+            ref={inputs.floatingRef.refs.setFloating}
+            style={inputs.floatingRef.floatingStyles}
+            onClick={e => e.stopPropagation()}
+            children={
+              <Foreground
+                style={inputs.foregroundAnimations}
+                children={props.overlay}
+              />
+            }
+          />
+        }
+      />
     </>
   )
 });

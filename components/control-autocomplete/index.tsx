@@ -1,10 +1,10 @@
 "use client";
-import { UpIcon } from '@/utils/style-utils';
+import { Overlay } from '@/utils/style-provider';
 import { forwardRef, type ForwardedRef } from 'react';
 import { AutocompleteHandle, OptionBase, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ButtonsWrapper, ClearIcon, ClearTextButton, CloseOptionsButton, ControlAutocompleteWrapper, ErrorMsg, Input, OptionItem, Options } from './styles';
+import { ButtonsWrapper, ClearIcon, ClearTextButton, ControlAutocompleteWrapper, ErrorMsg, Input, OptionItem, Options } from './styles';
 
 
 export const ControlAutocomplete = forwardRef(function Autocomplete<Option extends OptionBase>(
@@ -26,50 +26,48 @@ export const ControlAutocomplete = forwardRef(function Autocomplete<Option exten
             onChange={outputs.onChangeInput}
             onKeyDown={outputs.onKeyDownInput}
             onKeyUp={outputs.onKeyUpInput}
-            onFocus={outputs.onFocusInput}
+            onClick={outputs.onClickInput}
             placeholder={props.inputPlaceholder}
             $hasError={!!props.error}
             disabled={props.disabled}
           />
           <ButtonsWrapper
             children={
-              <>
-                <CloseOptionsButton
-                  if={props.showOptions && !!inputs.options.length}
-                  onClick={outputs.onClickHideOptions}
-                  title="Hide options"
-                  aria-label='Hide options'
-                  children={<UpIcon />}
-                />
-                <ClearTextButton
-                  if={!!props.inputText.trim() && !props.disabled}
-                  onClick={outputs.onClickClearText}
-                  title="Clear text"
-                  aria-label='Clear text'
-                  children={<ClearIcon />}
-                />
-              </>
+              <ClearTextButton
+                if={!!props.inputText.trim() && !props.disabled}
+                onClick={outputs.onClickClearText}
+                title='Clear text'
+                aria-label='Clear text'
+                children={<ClearIcon />}
+              />
             }
           />
           <ErrorMsg
             if={!!props.error}
             children={props.error}
           />
-          <Options
+          <Overlay
             if={props.showOptions}
-            ref={inputs.floatingRef.refs.setFloating}
-            style={inputs.floatingRef.floatingStyles}
-            children={inputs.options.map(option => (
-              <OptionItem
-                type='button'
-                key={option.value}
-                tabIndex={0}
-                onKeyDown={outputs.onKeyDownOption}
-                onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
-                onClick={e => outputs.onClickOption(option.value, e)}
-                children={props.renderOption?.(option) || option.label}
+            onClickBackdrop={outputs.onHideOptions}
+            onEscapeKeyPressed={outputs.onHideOptions}
+            blurBackdrop={false}
+            overlay={
+              <Options
+                ref={inputs.floatingRef.refs.setFloating}
+                style={inputs.floatingRef.floatingStyles}
+                children={inputs.options.map(option => (
+                  <OptionItem
+                    type='button'
+                    key={option.value}
+                    tabIndex={0}
+                    onKeyDown={outputs.onKeyDownOption}
+                    onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
+                    onClick={e => outputs.onClickOption(option.value, e)}
+                    children={props.renderOption?.(option) || option.label}
+                  />
+                ))}
               />
-            ))}
+            }
           />
         </>
       }

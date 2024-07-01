@@ -35,7 +35,7 @@ export const SearchContent = styled(div)`
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 60px 30px 60px 120px;
+  padding: 60px 120px;
   background-image: linear-gradient(to right, #242020, #191919);
   @media screen and (max-width: ${mobileBreakPoint}) {
     padding: 8px 16px;
@@ -49,7 +49,7 @@ export const ResultsContent = styled(div)`
   overflow-y: auto;
   overflow-x: hidden;
   background-color: rgba(0,0,0,0.2);
-  padding: 60px 120px 60px 30px;
+  padding: 60px 120px;
   background-image: linear-gradient(to right, #242020, #191919);
   @media screen and (max-width: ${mobileBreakPoint}) {
     padding: 16px;
@@ -89,21 +89,14 @@ export const OptionLabel = styled(div)`
 export const OptionLabelSuffix = styled(div)`
 `;
 
-export const Tag = styled(div) <{ $hovered: boolean, $disabled: boolean, $leftMost?: boolean, $rightMost?: boolean, $rightGap?: boolean }>`
+export const Tag = styled(div) <{ $hovered: boolean, $disabled: boolean, $leftMost?: boolean, $rightMost?: boolean, $rightGap?: boolean, $type: 'synonym' | 'group' | 'searchTerm' }>`
   font-size: 12px;
   height: 24px;
   display: flex;
   align-items: center;
   padding: 4px;
   transition: all 0.2s;
-  background-color: #FFF;
   color: #000;
-  border-color: rgba(255,255,255,0.2);
-  border-top-width: 1px;
-  border-bottom-width: 1px;
-  border-left-width: 0;
-  border-right-width: 0;
-  border-style: solid;
   cursor: pointer;
   ${p => p.$rightGap && css`
     margin-right: 4px;
@@ -112,21 +105,34 @@ export const Tag = styled(div) <{ $hovered: boolean, $disabled: boolean, $leftMo
     box-shadow: 0 0 8px 0 rgba(0,0,0,0.6);
     border-color: rgba(255,255,255,0.4);
   `}
-  ${p => p.$disabled && css`
-    background-color: #000;
-    color: #FFF;
-  `}
   ${p => p.$leftMost && css`
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
     padding-left: 8px;
-    border-left-width: 1px;
   `}
   ${p => p.$rightMost && css`
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
-    border-right-width: 1px;
     padding: 0;
+  `}
+  ${p => p.$type === 'synonym' && css`
+    background-color: #e500e52e;
+    outline: 1px solid #e500e569;
+    color: #ff93ff;
+  `}
+  ${p => p.$type === 'group' && css`
+    background-color: #23ff0017;
+    outline: 1px solid #23ff004a;
+    color: #00ff00;
+  `}
+  ${p => p.$type === 'searchTerm' && css`
+    background-color: #eaff002b;
+    outline: 0.5px solid #eaff005e;
+    color: yellow;
+  `}
+  ${p => p.$disabled && css`
+    background-color: #000;
+    color: #FFF;
   `}
 `;
 

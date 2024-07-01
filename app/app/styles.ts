@@ -1,7 +1,6 @@
 "use client"
 import { div } from "@/components/control-conditional";
 import { OverlayLoader } from "@/components/overlay-loader";
-import { defaultFontFamily } from "@/utils/style-utils";
 import styled from "styled-components";
 
 export const Wrapper = styled(div)`
@@ -10,7 +9,6 @@ export const Wrapper = styled(div)`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  ${defaultFontFamily.style};
   background-color: black;
 `;
 

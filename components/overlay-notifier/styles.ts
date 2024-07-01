@@ -1,4 +1,3 @@
-import { defaultFontFamily } from '@/utils/style-utils';
 import { CiCircleAlert, CiCircleCheck, CiCircleInfo } from 'react-icons/ci';
 import styled from "styled-components";
 import { snackbarStatus, snackbarStatuses } from './constants';
@@ -15,7 +14,6 @@ export const OverlayNotifierWrapper = styled.div`
 
 export const Popup = styled.div`
   pointer-events: all;
-  ${defaultFontFamily.style};
 `;
 
 export const Message = styled.div<{ $index: number, $animation: number, $gap: number, $status: snackbarStatus, $if: boolean }>`

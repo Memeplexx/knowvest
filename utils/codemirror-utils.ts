@@ -200,27 +200,32 @@ const highlightedRanges = StateField.define({
 });
 
 export const reviseEditorTags = (
-  codeMirror: EditorView,
-  noteId: NoteId,
-  synonymIds: DeepReadonlyArray<SynonymId>,
-  searchTerms: DeepReadonlyArray<NoteTags> = []
+  args: {
+    codeMirror: EditorView,
+    noteId: NoteId,
+    synonymIds: DeepReadonlyArray<SynonymId>,
+    groupSynonymIds?: DeepReadonlyArray<SynonymId> | undefined,
+    searchTerms?: DeepReadonlyArray<NoteTags> | undefined,
+    flag?: boolean | undefined
+  }
 ) => {
-  const { synonymGroups, noteTags } = store.$state;
-  const tags = noteTags.filter(nt => nt.noteId === noteId);
+  const noteTags = store.$state.noteTags.filter(nt => nt.noteId === args.noteId);
   type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { decoration?: Decoration }> }
-  const previousPositions = (codeMirror as PreviousPositions).previousPositions || [];
-  const groupSynonymIds = synonymGroups
-    .filter(sg => synonymIds.includes(sg.synonymId))
-    .map(sg => sg.synonymId)
-    .distinct();
-  const primarySynonymIds = [...synonymIds, ...groupSynonymIds];
+  const previousPositions = (args.codeMirror as PreviousPositions).previousPositions || [];
   const newTagPositions = [
-    ...tags
+    ...noteTags
+      .filter(tag => args.synonymIds.includes(tag.synonymId!))
       .flatMap(tag => ({
         ...tag,
-        decoration: primarySynonymIds.includes(tag.synonymId!) ? highlight : highlight2
+        decoration: highlight
       })),
-    ...!searchTerms ? [] : (searchTerms.find(nt => nt.noteId === noteId) ?? { tags: [] }).tags
+    ...noteTags
+      .filter(tag => (args.groupSynonymIds ?? []).includes(tag.synonymId!))
+      .flatMap(tag => ({
+        ...tag,
+        decoration: highlight2
+      })),
+    ...!args.searchTerms ? [] : (args.searchTerms.find(nt => nt.noteId === args.noteId) ?? { tags: [] }).tags
       .map(tag => ({
         ...tag,
         decoration: highlight3,
@@ -234,8 +239,8 @@ export const reviseEditorTags = (
     ...removeTagPositions.map(t => removeHighlight.of(t)),
     ...addTagPositions.map(t => addHighlight.of(t))
   ] as StateEffect<unknown>[];
-  if (!codeMirror.state.field(highlightedRanges, false))
+  if (!args.codeMirror.state.field(highlightedRanges, false))
     effects.push(StateEffect.appendConfig.of([highlightedRanges]));
-  codeMirror.dispatch({ effects });
-  (codeMirror as PreviousPositions).previousPositions = newTagPositions;
+  args.codeMirror.dispatch({ effects });
+  (args.codeMirror as PreviousPositions).previousPositions = newTagPositions;
 };

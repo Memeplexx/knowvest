@@ -1,5 +1,5 @@
 "use client";
-import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
+import { mobileBreakPoint } from "@/utils/style-utils";
 import styled from "styled-components";
 
 export const LoginWrapper = styled.div`
@@ -11,7 +11,6 @@ export const LoginWrapper = styled.div`
   justify-content: center;
   align-items: center;
   letter-spacing: 4px;
-  ${defaultFontFamily.style};
 `;
 
 export const Title = styled.h1`

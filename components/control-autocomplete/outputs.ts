@@ -5,8 +5,8 @@ import { Inputs, OptionBase, Props } from "./constants";
 export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inputs: Inputs<Option>) => {
   const { options, inputRef } = inputs;
   return {
-    onFocusInput: () => {
-      props.onInputFocused();
+    onClickInput: () => {
+      props.onInputClicked();
     },
     onClickOption: (value: Option['value'], event: MouseEvent) => {
       if (event.detail === 0) /* handled by onKeyUpInput */
@@ -61,8 +61,8 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
     onClickClearText: () => {
       props.onInputTextChange('');
     },
-    onClickHideOptions: () => {
+    onHideOptions: () => {
       props.onShowOptionsChange(false);
-    }
+    },
   };
 }

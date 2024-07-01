@@ -9,7 +9,8 @@ export const useInputs = () => {
 
   const { activeNoteId } = useStore();
   const { notesSorted } = useDerivations();
-  const { local, state: { index } } = useLocalStore('historyItems', { index: 0 });
+  const { local, state } = useLocalStore('historyItems', { index: 0 });
+  const { index } = state;
   const router = useRouter();
 
   const items = useMemo(() => {
@@ -24,8 +25,8 @@ export const useInputs = () => {
 
   return {
     local,
-    ...local.$state,
     items,
     router,
+    ...state,
   };
 }

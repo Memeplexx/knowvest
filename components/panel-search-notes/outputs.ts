@@ -16,13 +16,12 @@ export const useOutputs = (inputs: Inputs) => {
       }
       if (selection.type === 'group') {
         local.selectedGroupIds.$push(selection.id as GroupId);
-        const groupSynonymIds = store.$state.synonymGroups.filter(sg => sg.groupId === selection.id).map(sg => sg.synonymId).distinct();
-        local.selectedSynonymIds.$merge(groupSynonymIds);
-        local.enabledSynonymIds.$merge(groupSynonymIds);
+        local.enabledGroupIds.$merge(selection.id as GroupId);
       }
     },
     onAutocompleteInputEnterKeyUp: () => {
-      local.searchTerms.$push(local.$state.autocompleteText);
+      local.enabledSearchTerms.$push(local.$state.autocompleteText);
+      local.selectedSearchTerms.$push(local.$state.autocompleteText);
       local.autocompleteText.$set('');
     },
     onAutocompleteInputChange: (value: string) => {
@@ -34,7 +33,7 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickRemoveGroup: (groupId: GroupId) => {
       local.selectedGroupIds.$find.$eq(groupId).$delete();
-      local.enabledSynonymIds.$filter.$in(store.$state.synonymGroups.filter(sg => sg.groupId === groupId).map(sg => sg.synonymId)).$delete();
+      local.enabledGroupIds.$find.$eq(groupId).$delete();
     },
     onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => {
       local.hoveredSynonymId.$set(hoveredSynonymId);
@@ -75,11 +74,30 @@ export const useOutputs = (inputs: Inputs) => {
       else
         local.enabledSynonymIds.$set([...toggledSynonymIds, synonymId]);
     },
+    onClickToggleGroup: (groupId: GroupId) => (event: MouseEvent) => {
+      event.stopPropagation();
+      const toggledGroupIds = local.$state.enabledGroupIds;
+      if (toggledGroupIds.includes(groupId))
+        local.enabledGroupIds.$set(toggledGroupIds.filter(id => id !== groupId));
+      else
+        local.enabledGroupIds.$set([...toggledGroupIds, groupId]);
+    },
     onClickStartOver: () => {
       local.selectedSynonymIds.$clear();
       local.selectedGroupIds.$clear();
       local.enabledSynonymIds.$clear();
       local.autocompleteText.$set('');
+    },
+    onClickToggleSearchTerm: (term: string) => () => {
+      const toggledSearchTerms = local.$state.enabledSearchTerms;
+      if (toggledSearchTerms.includes(term))
+        local.enabledSearchTerms.$set(toggledSearchTerms.filter(t => t !== term));
+      else
+        local.enabledSearchTerms.$set([...toggledSearchTerms, term]);
+    },
+    onClickRemoveSearchTerm: (term: string) => () => {
+      local.selectedSearchTerms.$filter.$eq(term).$delete();
+      local.enabledSearchTerms.$filter.$eq(term).$delete();
     }
   };
 }

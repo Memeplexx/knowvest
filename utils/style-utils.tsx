@@ -1,10 +1,9 @@
 'use client';
 import { button, div } from '@/components/control-conditional';
-import { Montserrat, Source_Code_Pro } from 'next/font/google';
+import { Source_Code_Pro } from 'next/font/google';
 import { useServerInsertedHTML } from 'next/navigation';
 import React, { useState } from 'react';
-import { MdKeyboardArrowUp } from "react-icons/md";
-import styled, { ServerStyleSheet, StyleSheetManager, css } from "styled-components";
+import styled, { ServerStyleSheet, StyleSheetManager } from "styled-components";
 
 export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
   // Only create stylesheet once with lazy initial state
@@ -25,11 +24,6 @@ export default function StyledComponentsRegistry({ children }: { children: React
     </StyleSheetManager>
   );
 }
-
-export const defaultFontFamily = Montserrat({
-  subsets: ['latin'],
-  display: 'swap',
-})
 
 export const monoFontFamily = Source_Code_Pro({
   subsets: ['latin'],
@@ -69,15 +63,6 @@ export const PopupOption = styled(button)`
     width: 16px;
     height: auto;
   }
-`;
-
-const resetIconDims = css`
-  width: 100%;
-  height: 100%;
-`;
-
-export const UpIcon = styled(MdKeyboardArrowUp)`
-  ${resetIconDims}
 `;
 
 export const mobileBreakPoint = '1000px';

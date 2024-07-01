@@ -9,7 +9,7 @@ type ReplaceKeyboardEvents<E extends HTMLElement, A extends HTMLAttributes<E>> =
   : A[key]
 };
 
-export type IfProps = { if?: boolean };
+export type IfProps = { if?: boolean | undefined };
 
 export type ButtonProps = ReplaceKeyboardEvents<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>;
 

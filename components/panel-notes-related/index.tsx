@@ -1,6 +1,6 @@
 "use client";
 import { useHtmlPropsOnly } from '@/utils/react-utils';
-import { store } from '@/utils/store-utils';
+import { groupSynonymIds, store } from '@/utils/store-utils';
 import { Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -36,6 +36,7 @@ export function PanelNotesRelated(
                     <Result
                       note={note.note}
                       synonymIds={store.synonymIds}
+                      groupSynonymIds={groupSynonymIds}
                     />
                   </>
                 }

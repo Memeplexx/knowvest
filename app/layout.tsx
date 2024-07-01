@@ -3,6 +3,7 @@ import { OverlayNotifier } from '@/components/overlay-notifier';
 import '@/styles/application.css';
 import '@/styles/reset.css';
 import { NextAuthProvider } from '@/utils/auth-utils';
+import { GlobalStylesProvider } from '@/utils/style-provider';
 import StyledComponentsRegistry from '@/utils/style-utils';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -73,14 +74,19 @@ export default async function RootLayout({
               <>
                 <NextAuthProvider
                   children={
-                    <OverlayNotifier
-                      storeKey='notifier'
+                    <GlobalStylesProvider
                       children={
-                        <StyledComponentsRegistry
-                          children={children}
+                        <OverlayNotifier
+                          storeKey='notifier'
+                          children={
+                            <StyledComponentsRegistry
+                              children={children}
+                            />
+                          }
                         />
                       }
                     />
+
                   }
                 />
                 <SpeedInsights debug={false} />

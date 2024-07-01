@@ -14,7 +14,7 @@ export type Props<Option extends OptionBase> = {
   onInputEscapeKeyUp?: () => void,
   value?: Option['value'],
   onValueChange: (value: Option['value']) => void,
-  onInputFocused: () => void,
+  onInputClicked: () => void,
   inputText: string,
   onInputTextChange: (text: string) => void,
   showOptions: boolean,

@@ -65,8 +65,12 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
     },
     onClickFilterNotesFromSelection: () => {
       const { from, to } = editor!.state.selection.ranges[0]!;
-      const selection = editor!.state.doc.sliceString(from, to);
-      store.synonymIds.$set(store.$state.tags.filter(t => selection.includes(t.text)).map(t => t.synonymId).distinct());
+      const selection = editor!.state.doc.sliceString(from, to).toLowerCase();
+      const synonymIds = store.$state.noteTags
+        .filter(nt => nt.noteId === store.$state.activeNoteId && selection.includes(nt.text.toLowerCase()))
+        .map(nt => nt.synonymId!)
+        .distinct();
+      store.synonymIds.$set(synonymIds);
       local.selection.$set('');
       notify.success(`Filtered related notes`);
     },

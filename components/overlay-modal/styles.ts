@@ -1,20 +1,14 @@
-import { defaultFontFamily, mobileBreakPoint } from "@/utils/style-utils";
+import { Overlay } from "@/utils/style-provider";
+import { mobileBreakPoint } from "@/utils/style-utils";
 import { animated } from "react-spring";
 import styled from "styled-components";
 
 
-export const Background = styled(animated.div)`
-  background-color: transparent;
-  padding: 0;
-  border: none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 5;
-  background-color: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+
+export const OverlayModalWrapper = styled(Overlay)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ForegroundWrapper = styled.div`
@@ -35,7 +29,6 @@ export const Foreground = styled(animated.div)`
   pointer-events: all;
   display: flex;
   flex-direction: column;
-  ${defaultFontFamily.style};
   background-image: linear-gradient(to right,#212121,#312c2c);
   max-width: calc(100% - 16px);
   max-height: calc(100% - 16px);

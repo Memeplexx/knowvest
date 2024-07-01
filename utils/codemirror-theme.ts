@@ -110,23 +110,31 @@ export const oneDarkTheme = EditorView.theme({
     }
   },
   '.cm-highlight': {
-    backgroundColor: '#e500e569',
+    backgroundColor: '#e500e52e',
+    outline: '1px solid #e500e569',
+    color: '#ff93ff',
   },
   '.cm-highlight-2': {
-    backgroundColor: '#23ff0036',
+    backgroundColor: '#23ff0017',
+    outline: '1px solid #23ff004a',
+    color: '#00ff00',
   },
   '.cm-highlight-3': {
-    backgroundColor: '#eaff0096',
+    backgroundColor: '#eaff002b',
+    outline: '0.5px solid #eaff005e',
+    color: 'yellow',
   },
   '[class^="cm-highlight"]': {
     display: 'inline-block',
-    color: '#FFF',
     borderRadius: '8px',
     margin: '0 -4px',
     padding: '0 4px',
     position: 'relative',
     zIndex: '-1',
     fontWeight: '500',
+  },
+  '[class^="cm-highlight"] > *': {
+    color: 'inherit'
   },
   '.cm-note-inline': {
     backgroundColor: 'rgba(0,0,0,0.3)',

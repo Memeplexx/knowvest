@@ -111,7 +111,7 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => (
           onInputEnterKeyUp={outputs.onAutocompleteInputEnter}
           onInputEscapeKeyUp={outputs.onAutocompleteInputCancel}
           onInputTextChange={outputs.onAutocompleteInputChange}
-          onInputFocused={outputs.onAutocompleteInputFocused}
+          onInputClicked={outputs.onAutocompleteInputFocused}
           onShowOptionsChange={outputs.onShowAutocompleteOptionsChange}
           disabled={!!inputs.groupSynonymId}
           renderOption={o => (

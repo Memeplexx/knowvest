@@ -23,9 +23,6 @@ export const ButtonsWrapper = styled(div)`
 export const ClearTextButton = styled(element(ControlButtonIcon))`
 `;
 
-export const CloseOptionsButton = styled(element(ControlButtonIcon))`
-`;
-
 export const ClearIcon = styled(MdClear)`
   pointer-events: none;
   width: auto;
@@ -68,7 +65,7 @@ export const ErrorMsg = styled(div)`
 export const Options = styled(div)`
   flex: 1;
   overflow-y: auto;
-  z-index: 4;
+  z-index: 11;
   filter: drop-shadow(0px 38px 38px #000);
   background-image: linear-gradient(to right,#212121,#312c2c);
   display: flex;
@@ -90,4 +87,13 @@ export const OptionItem = styled(button)`
     outline: none;
     background-color: #323232;
   }
+`;
+
+export const PopupBackDrop = styled(div)`
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.2);
 `;

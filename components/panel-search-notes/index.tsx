@@ -102,7 +102,7 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
             inputText={inputs.autocompleteText}
             onShowOptionsChange={outputs.onAutocompleteShowOptionsChange}
             showOptions={inputs.showAutocompleteOptions}
-            onInputFocused={outputs.onAutocompleteInputFocused}
+            onInputClicked={outputs.onAutocompleteInputFocused}
             renderOption={option => (
               <AutocompleteOption
                 children={
@@ -125,25 +125,47 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
   )
 }
 
-const SearchTermsFragment = ({ inputs }: FragmentProps) => {
+const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
     <CategoryWrapper
-      if={!!inputs.searchTerms.length}
+      if={!!inputs.selectedSearchTerms.length}
       children={
         <>
           Search terms
           <TagsWrapper
             children={
-              inputs.searchTerms.map(term => (
-                <Tag
+              inputs.selectedSearchTerms.distinct().map(term => (
+                <Fragment
                   key={term}
-                  children={term}
-                  // onClick={() => outputs.onClickRemoveSearchTerm(term)}
-                  $rightGap={true}
-                  $hovered={false}
-                  $disabled={false}
-                  $rightMost={true}
-                  $leftMost={true}
+                  children={
+                    <>
+                      <Tag
+                        children={term}
+                        onClick={outputs.onClickToggleSearchTerm(term)}
+                        $rightGap={false}
+                        $hovered={false}
+                        $disabled={!inputs.enabledSearchTerms.includes(term)}
+                        $rightMost={false}
+                        $leftMost={true}
+                        $type='searchTerm'
+                      />
+                      <Tag
+                        $type='searchTerm'
+                        $hovered={false}
+                        $rightMost={true}
+                        $disabled={false}
+                        $rightGap={true}
+                        // onMouseOver={() => outputs.onMouseOverSelectedSynonym(tags[0]!.synonymId)}
+                        // onMouseOut={outputs.onMouseOutSelectedSynonym}
+                        children={
+                          <RemoveButton
+                            onClick={outputs.onClickRemoveSearchTerm(term)}
+                            children={<RemoveIcon />}
+                          />
+                        }
+                      />
+                    </>
+                  }
                 />
               ))
             }
@@ -177,6 +199,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                           onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
                           onMouseOut={outputs.onMouseOutSelectedSynonym}
                           onClick={outputs.onClickToggleSynonym(tag.synonymId)}
+                          $type='synonym'
                           children={tag.text}
                         />
                       )}
@@ -186,6 +209,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                         $rightMost={true}
                         $disabled={false}
                         $rightGap={true}
+                        $type='synonym'
                         onMouseOver={() => outputs.onMouseOverSelectedSynonym(tags[0]!.synonymId)}
                         onMouseOut={outputs.onMouseOutSelectedSynonym}
                         children={
@@ -226,9 +250,10 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
                           $hovered={tag.synonymId === inputs.hoveredSynonymId}
                           $leftMost={index === 0 && i === 0}
                           $rightGap={i === synonym.tags.length - 1}
-                          $disabled={!inputs.enabledSynonymIds.includes(synonym.synonymId)}
+                          $disabled={!inputs.enabledGroupSynonymIds.$state.includes(synonym.synonymId)}
                           children={tag.text}
-                          onClick={outputs.onClickToggleSynonym(synonym.synonymId)}
+                          $type='group'
+                          onClick={outputs.onClickToggleGroup(group.groupId)}
                           onMouseOver={() => outputs.onMouseOverSelectedSynonym(synonym.synonymId)}
                           onMouseOut={outputs.onMouseOutSelectedSynonym}
                         />
@@ -239,6 +264,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
                       $hovered={group.synonyms[0]!.synonymId === inputs.hoveredSynonymId}
                       $rightMost={true}
                       $disabled={false}
+                      $type='group'
                       onMouseOver={() => outputs.onMouseOverSelectedSynonym(group.synonyms[0]!.synonymId)}
                       onMouseOut={outputs.onMouseOutSelectedSynonym}
                       children={
@@ -270,6 +296,7 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
               key={note.id}
               note={note}
               synonymIds={inputs.local.enabledSynonymIds}
+              groupSynonymIds={inputs.enabledGroupSynonymIds}
               searchTerms={inputs.local.searchResults}
               onClick={() => outputs.onClickResult(note.id)}
             />

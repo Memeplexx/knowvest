@@ -2,9 +2,10 @@ import { GroupId, SynonymId } from "@/actions/types";
 import { AutocompleteHandle } from "@/components/control-autocomplete/constants";
 import { useResizeListener } from "@/utils/dom-utils";
 import { useComponent } from "@/utils/react-utils";
-import { useLocalStore, useStore } from "@/utils/store-utils";
+import { store, useLocalStore, useStore } from "@/utils/store-utils";
 import { useTagsWorker } from "@/utils/worker-context";
 import { useRouter } from "next/navigation";
+import { derive } from "olik/derive";
 import { addToWhitelist } from "olik/devtools";
 import { useCallback, useMemo, useRef } from "react";
 import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
@@ -14,7 +15,7 @@ export const useInputs = () => {
   const { tags, groups, synonymGroups, notes, noteTags, isMobileWidth } = useStore();
   const { local, state } = useLocalStore('search', initialState);
   useMemo(() => addToWhitelist([local.hoveredSynonymId]), [local]);
-  const { selectedGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane } = state;
+  const { selectedGroupIds, enabledGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane, enabledSearchTerms } = state;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
   const worker = useTagsWorker();
@@ -90,26 +91,38 @@ export const useInputs = () => {
       }))
   }, [groups, selectedGroupIds, synonymGroups, tags]);
 
-  const notesByTags = useMemo(() => {
+  const notesBySynonymIds = useMemo(() => {
     const tagIds = tags
-      .filter(t => selectedSynonymIds.includes(t.synonymId) && enabledSynonymIds.includes(t.synonymId))
+      .filter(t => enabledSynonymIds.includes(t.synonymId))
       .map(t => t.id);
     return noteTags
       .filter(noteTag => tagIds.includes(noteTag.id))
       .distinct(nt => nt.noteId)
       .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
-  }, [tags, noteTags, selectedSynonymIds, enabledSynonymIds, notes]);
+  }, [tags, noteTags, enabledSynonymIds, notes]);
+
+  const notesByGroupSynonymIds = useMemo(() => {
+    const enabledGroupSynonymIds = synonymGroups.filter(sg => enabledGroupIds.includes(sg.groupId)).flatMap(sg => sg.synonymId).distinct();
+    const tagIds = tags
+      .filter(t => enabledGroupSynonymIds.includes(t.synonymId))
+      .map(t => t.id);
+    return noteTags
+      .filter(noteTag => tagIds.includes(noteTag.id))
+      .distinct(nt => nt.noteId)
+      .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
+  }, [synonymGroups, tags, noteTags, enabledGroupIds, notes]);
 
   const notesBySearchTerms = useMemo(() => {
     return state.searchResults
+      .filter(searchResult => searchResult.tags.some(t => enabledSearchTerms.includes(t.text)))
       .map(noteTags => notes.findOrThrow(n => n.id === noteTags.noteId))
       .distinct(n => n.id);
-  }, [notes, state.searchResults]);
+  }, [enabledSearchTerms, notes, state.searchResults]);
 
   const notesFound = useMemo(() => {
-    return [...notesByTags, ...notesBySearchTerms]
+    return [...notesBySynonymIds, ...notesByGroupSynonymIds, ...notesBySearchTerms]
       .distinct(n => n.id);
-  }, [notesBySearchTerms, notesByTags]);
+  }, [notesByGroupSynonymIds, notesBySearchTerms, notesBySynonymIds]);
 
   useResizeListener(useCallback(() => {
     const state = local.$state;
@@ -123,6 +136,16 @@ export const useInputs = () => {
       local.$patch(payload);
   }, [local, showSearchPane, showingPane]));
 
+  const enabledGroupSynonymIds = useMemo(() => {
+    return derive(
+      local.enabledGroupIds,
+      store.synonymGroups
+    ).$with((groupSynonymIds, synonymGroups) => synonymGroups
+      .filter(synonymGroup => groupSynonymIds.includes(synonymGroup.groupId))
+      .flatMap(synonymGroup => synonymGroup.synonymId)
+      .distinct());
+  }, [local]);
+
   const result = {
     local,
     ...state,
@@ -135,6 +158,7 @@ export const useInputs = () => {
     showResultsPane: !isMobileWidth || showingPane === 'results',
     router,
     isMobileWidth,
+    enabledGroupSynonymIds,
   };
 
   if (!component.isMounted)
@@ -143,7 +167,7 @@ export const useInputs = () => {
     return result;
 
   component.startAsyncProcess();
-  component.listen = local.searchTerms.$onChange(searchTerms => worker.setSearchTerms(searchTerms));
+  component.listen = local.enabledSearchTerms.$onChange(searchTerms => worker.setSearchTerms(searchTerms));
   component.listen = worker.onNotesSearched(searchResults => local.searchResults.$set(searchResults));
   component.completeAsyncProcess();
 

@@ -29,7 +29,7 @@ test('Page', async () => {
       value: 0,
       showOptions: false,
       options: [{ label: 'one', value: 1 }],
-      onInputFocused: () => state.showOptions = true,
+      onInputClicked: () => state.showOptions = true,
       onValueChange: v => state.value = v,
       onInputTextChange: v => state.inputText = v,
       onShowOptionsChange: s => state.showOptions = s,

@@ -190,23 +190,9 @@ export const useOutputs = (inputs: Inputs) => {
     onClickRenameTag: () => {
       shared.focusAutocompleteInput();
     },
-    onClickDocument: useEventHandlerForDocument('click', event => {
-      if (event.detail === 0)
-        return; // Events with a detail of 0 come from enter presses of autocomplete option. (https://github.com/facebook/react/issues/3907#issuecomment-363948471)
-      if (event.target?.hasAncestorWithTagNames('BUTTON', 'INPUT'))
-        return;
-      if (inputs.showAutocompleteOptions)
-        local.showAutocompleteOptions.$set(false);
-    }),
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
       if (event.key !== 'Escape')
         return;
-      if (event.target.tagName === 'INPUT') {
-        inputs.autocompleteRef.current?.blurInput();
-        if (inputs.showAutocompleteOptions)
-          local.showAutocompleteOptions.$set(false)
-        return;
-      }
       shared.doCancel(event.target);
     }),
     onClickDialogBody: (event: MouseEvent) => {
