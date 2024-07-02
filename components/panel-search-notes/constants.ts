@@ -37,6 +37,8 @@ export const initialState = {
   showResultsPane: true,
   screenIsNarrow: false,
   hoveredSynonymId: null as SynonymId | null,
+  hoveredGroupId: null as GroupId | null,
+  hoveredSearchTerm: null as string | null,
   showAutocompleteOptions: false,
   searchResults: new Array<NoteTags>(),
 }

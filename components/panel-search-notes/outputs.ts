@@ -35,11 +35,23 @@ export const useOutputs = (inputs: Inputs) => {
       local.selectedGroupIds.$find.$eq(groupId).$delete();
       local.enabledGroupIds.$find.$eq(groupId).$delete();
     },
-    onMouseOverSelectedSynonym: (hoveredSynonymId: SynonymId) => {
-      local.hoveredSynonymId.$set(hoveredSynonymId);
+    onMouseOverSynonym: (synonymId: SynonymId) => () => {
+      local.hoveredSynonymId.$set(synonymId);
     },
-    onMouseOutSelectedSynonym: () => {
+    onMouseOutSynonym: () => {
       local.hoveredSynonymId.$set(null);
+    },
+    onMouseOverGroup: (groupId: GroupId) => () => {
+      local.hoveredGroupId.$set(groupId);
+    },
+    onMouseOutGroup: () => {
+      local.hoveredGroupId.$set(null);
+    },
+    onMouseOverSearchTerm: (term: string) => () => {
+      local.hoveredSearchTerm.$set(term);
+    },
+    onMouseOutSearchTerm: () => {
+      local.hoveredSearchTerm.$set(null);
     },
     onClickResult: (noteId: NoteId) => {
       const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.id);

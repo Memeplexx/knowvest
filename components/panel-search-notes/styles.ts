@@ -4,6 +4,7 @@ import { ControlButtonIcon } from '@/components/control-button-icon';
 import { div, element } from '@/components/control-conditional';
 import { PanelNoteReadonly } from '@/components/panel-note-readonly';
 import { mobileBreakPoint, panelGap } from '@/utils/style-utils';
+import { AiOutlineLink } from 'react-icons/ai';
 import { GiLighthouse } from 'react-icons/gi';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { WiCloudyWindy } from 'react-icons/wi';
@@ -103,10 +104,7 @@ export const Tag = styled(div) <{ $hovered: boolean, $disabled: boolean, $leftMo
   ${p => p.$rightGap && css`
     margin-right: 4px;
   `}
-  ${p => p.$hovered && css`
-    box-shadow: 0 0 8px 0 rgba(0,0,0,0.6);
-    border-color: rgba(255,255,255,0.4);
-  `}
+  
   ${p => p.$leftMost && css`
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
@@ -119,17 +117,17 @@ export const Tag = styled(div) <{ $hovered: boolean, $disabled: boolean, $leftMo
   `}
   ${p => p.$type === 'synonym' && css`
     background-color: #e500e52e;
-    outline: 1px solid #e500e569;
+    outline: 1px solid ${p.$hovered ? '#e500e5' : '#e500e569'};
     color: #ff93ff;
   `}
   ${p => p.$type === 'group' && css`
     background-color: #23ff0017;
-    outline: 1px solid #23ff004a;
+    outline: 1px solid ${p.$hovered ? '#23ff00' : '#23ff004a'};
     color: #00ff00;
   `}
   ${p => p.$type === 'searchTerm' && css`
     background-color: #eaff002b;
-    outline: 0.5px solid #eaff005e;
+    outline: 0.5px solid ${p.$hovered ? '#eaff00' : '#eaff005e'};
     color: yellow;
   `}
   ${p => p.$disabled && css`
@@ -144,6 +142,8 @@ export const RemoveButton = styled(ControlButtonIcon)`
 export const RemoveIcon = styled(element(IoMdCloseCircle))`
 `;
 
+export const ResultWrapper = styled(div)``;
+
 export const Result = styled(PanelNoteReadonly)`
   cursor: pointer;
   padding: 16px 0;
@@ -153,6 +153,23 @@ export const Result = styled(PanelNoteReadonly)`
   &:hover {
     background-color: rgba(0,0,0,0.4);
   }
+`;
+
+export const Header = styled(div)`
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 4px;
+  padding: 0 4px;
+  color: #6f6f6f;
+  font-size: 10px;
+  margin: 0 -16px;
+`;
+
+export const Icon = styled(AiOutlineLink)`
+  color: #6f6f6f;
+  width: 16px;
+  height: 16px;
 `;
 
 export const BodyGroup = styled(div) <{ $active?: boolean }>`

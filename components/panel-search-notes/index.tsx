@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { AutocompleteOptionType, FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, PanelSearchNotesWrapper, RemoveButton, RemoveIcon, Result, ResultsContent, SearchContent, SearchIcon, SearchPageBody, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
+import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, Header, Icon, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, PanelSearchNotesWrapper, RemoveButton, RemoveIcon, Result, ResultWrapper, ResultsContent, SearchContent, SearchIcon, SearchPageBody, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
 export function PanelSearchNotes() {
@@ -143,20 +143,22 @@ const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
                         children={term}
                         onClick={outputs.onClickToggleSearchTerm(term)}
                         $rightGap={false}
-                        $hovered={false}
+                        $hovered={term === inputs.hoveredSearchTerm}
                         $disabled={!inputs.enabledSearchTerms.includes(term)}
                         $rightMost={false}
                         $leftMost={true}
+                        onMouseOver={outputs.onMouseOverSearchTerm(term)}
+                        onMouseOut={outputs.onMouseOutSearchTerm}
                         $type='searchTerm'
                       />
                       <Tag
                         $type='searchTerm'
-                        $hovered={false}
+                        $hovered={term === inputs.hoveredSearchTerm}
                         $rightMost={true}
                         $disabled={false}
                         $rightGap={true}
-                        // onMouseOver={() => outputs.onMouseOverSelectedSynonym(tags[0]!.synonymId)}
-                        // onMouseOut={outputs.onMouseOutSelectedSynonym}
+                        onMouseOver={outputs.onMouseOverSearchTerm(term)}
+                        onMouseOut={outputs.onMouseOutSearchTerm}
                         children={
                           <RemoveButton
                             onClick={outputs.onClickRemoveSearchTerm(term)}
@@ -196,8 +198,8 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                           $hovered={tag.synonymId === inputs.hoveredSynonymId}
                           $leftMost={index === 0}
                           $disabled={!inputs.enabledSynonymIds.includes(tag.synonymId)}
-                          onMouseOver={() => outputs.onMouseOverSelectedSynonym(tag.synonymId)}
-                          onMouseOut={outputs.onMouseOutSelectedSynonym}
+                          onMouseOver={outputs.onMouseOverSynonym(tag.synonymId)}
+                          onMouseOut={outputs.onMouseOutSynonym}
                           onClick={outputs.onClickToggleSynonym(tag.synonymId)}
                           $type='synonym'
                           children={tag.text}
@@ -210,8 +212,8 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                         $disabled={false}
                         $rightGap={true}
                         $type='synonym'
-                        onMouseOver={() => outputs.onMouseOverSelectedSynonym(tags[0]!.synonymId)}
-                        onMouseOut={outputs.onMouseOutSelectedSynonym}
+                        onMouseOver={outputs.onMouseOverSynonym(tags[0]!.synonymId)}
+                        onMouseOut={outputs.onMouseOutSynonym}
                         children={
                           <RemoveButton
                             onClick={() => outputs.onClickRemoveSynonym(tags[0]!.synonymId)}
@@ -247,26 +249,26 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
                       synonym.tags.map((tag, i) => (
                         <Tag
                           key={tag.id}
-                          $hovered={tag.synonymId === inputs.hoveredSynonymId}
+                          $hovered={group.groupId === inputs.hoveredGroupId}
                           $leftMost={index === 0 && i === 0}
                           $rightGap={i === synonym.tags.length - 1}
-                          $disabled={!inputs.enabledGroupSynonymIds.$state.includes(synonym.synonymId)}
+                          $disabled={!inputs.enabledGroupIds.includes(group.groupId)}
                           children={tag.text}
                           $type='group'
                           onClick={outputs.onClickToggleGroup(group.groupId)}
-                          onMouseOver={() => outputs.onMouseOverSelectedSynonym(synonym.synonymId)}
-                          onMouseOut={outputs.onMouseOutSelectedSynonym}
+                          onMouseOver={outputs.onMouseOverGroup(group.groupId)}
+                          onMouseOut={outputs.onMouseOutGroup}
                         />
                       ))
                     )}
                     <Tag
                       key={group.groupId}
-                      $hovered={group.synonyms[0]!.synonymId === inputs.hoveredSynonymId}
+                      $hovered={group.groupId === inputs.hoveredGroupId}
                       $rightMost={true}
                       $disabled={false}
                       $type='group'
-                      onMouseOver={() => outputs.onMouseOverSelectedSynonym(group.synonyms[0]!.synonymId)}
-                      onMouseOut={outputs.onMouseOutSelectedSynonym}
+                      onMouseOver={outputs.onMouseOverGroup(group.groupId)}
+                      onMouseOut={outputs.onMouseOutGroup}
                       children={
                         <RemoveButton
                           onClick={() => outputs.onClickRemoveGroup(group.groupId)}
@@ -292,13 +294,27 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
       children={
         <>
           {inputs.notesFound.map(note => (
-            <Result
-              key={note.id}
-              note={note}
-              synonymIds={inputs.local.enabledSynonymIds}
-              groupSynonymIds={inputs.enabledGroupSynonymIds}
-              searchTerms={inputs.local.searchResults}
-              onClick={() => outputs.onClickResult(note.id)}
+            <ResultWrapper
+              key={note.note.id}
+              children={
+                <>
+                  <Header
+                    children={
+                      <>
+                        {note.matches}
+                        <Icon />
+                      </>
+                    }
+                  />
+                  <Result
+                    note={note.note}
+                    synonymIds={inputs.local.enabledSynonymIds}
+                    groupSynonymIds={inputs.enabledGroupSynonymIds}
+                    searchTerms={inputs.local.searchResults}
+                    onClick={() => outputs.onClickResult(note.note.id)}
+                  />
+                </>
+              }
             />
           ))}
           <NoResultsWrapper

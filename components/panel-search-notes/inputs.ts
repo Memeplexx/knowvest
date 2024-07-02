@@ -97,9 +97,9 @@ export const useInputs = () => {
       .map(t => t.id);
     return noteTags
       .filter(noteTag => tagIds.includes(noteTag.id))
-      .distinct(nt => nt.noteId)
-      .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
-  }, [tags, noteTags, enabledSynonymIds, notes]);
+    // .distinct(nt => nt.noteId)
+    // .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
+  }, [tags, noteTags, enabledSynonymIds]);
 
   const notesByGroupSynonymIds = useMemo(() => {
     const enabledGroupSynonymIds = synonymGroups.filter(sg => enabledGroupIds.includes(sg.groupId)).flatMap(sg => sg.synonymId).distinct();
@@ -108,21 +108,27 @@ export const useInputs = () => {
       .map(t => t.id);
     return noteTags
       .filter(noteTag => tagIds.includes(noteTag.id))
-      .distinct(nt => nt.noteId)
-      .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
-  }, [synonymGroups, tags, noteTags, enabledGroupIds, notes]);
+    // .distinct(nt => nt.noteId)
+    // .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
+  }, [synonymGroups, tags, noteTags, enabledGroupIds]);
 
   const notesBySearchTerms = useMemo(() => {
     return state.searchResults
       .filter(searchResult => searchResult.tags.some(t => enabledSearchTerms.includes(t.text)))
-      .map(noteTags => notes.findOrThrow(n => n.id === noteTags.noteId))
-      .distinct(n => n.id);
-  }, [enabledSearchTerms, notes, state.searchResults]);
+    // .map(noteTags => notes.findOrThrow(n => n.id === noteTags.noteId))
+    // .distinct(n => n.id);
+  }, [enabledSearchTerms, state.searchResults]);
 
   const notesFound = useMemo(() => {
     return [...notesBySynonymIds, ...notesByGroupSynonymIds, ...notesBySearchTerms]
-      .distinct(n => n.id);
-  }, [notesByGroupSynonymIds, notesBySearchTerms, notesBySynonymIds]);
+      .groupBy(n => n.noteId)
+      .sort((a, b) => b.length - a.length)
+      .map(noteTags => ({
+        note: notes.findOrThrow(n => n.id === noteTags[0]!.noteId),
+        count: noteTags.length,
+        matches: `${noteTags.length} match${noteTags.length === 1 ? '' : 'es'}`
+      }));
+  }, [notes, notesByGroupSynonymIds, notesBySearchTerms, notesBySynonymIds]);
 
   useResizeListener(useCallback(() => {
     const state = local.$state;
