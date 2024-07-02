@@ -82,7 +82,7 @@ export const useOutputs = (inputs: Inputs) => {
       event.stopPropagation();
       const toggledSynonymIds = local.$state.enabledSynonymIds;
       if (toggledSynonymIds.includes(synonymId))
-        local.enabledSynonymIds.$set(toggledSynonymIds.filter(id => id !== synonymId));
+        local.enabledSynonymIds.$find.$eq(synonymId).$delete();
       else
         local.enabledSynonymIds.$push(synonymId);
     },
@@ -90,7 +90,7 @@ export const useOutputs = (inputs: Inputs) => {
       event.stopPropagation();
       const toggledGroupIds = local.$state.enabledGroupIds;
       if (toggledGroupIds.includes(groupId))
-        local.enabledGroupIds.$set(toggledGroupIds.filter(id => id !== groupId));
+        local.enabledGroupIds.$find.$eq(groupId).$delete();
       else
         local.enabledGroupIds.$push(groupId);
     },
@@ -100,7 +100,7 @@ export const useOutputs = (inputs: Inputs) => {
     onClickToggleSearchTerm: (term: string) => () => {
       const toggledSearchTerms = local.$state.enabledSearchTerms;
       if (toggledSearchTerms.includes(term))
-        local.enabledSearchTerms.$set(toggledSearchTerms.filter(t => t !== term));
+        local.enabledSearchTerms.$find.$eq(term).$delete();
       else
         local.enabledSearchTerms.$push(term);
     },

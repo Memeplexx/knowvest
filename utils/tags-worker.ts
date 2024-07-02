@@ -300,6 +300,5 @@ const setSearchTerms = (incomingSearchTerms: DeepReadonlyArray<string>) => {
   const toPost = allNotes
     .map(note => ({ noteId: note.id, tags: trieLocal.search(note.text) }))
     .filter(noteTags => noteTags.tags.length);
-  if (toPost.length)
-    postMessage({ type: 'notesSearched', value: toPost });
+  postMessage({ type: 'notesSearched', value: toPost });
 }

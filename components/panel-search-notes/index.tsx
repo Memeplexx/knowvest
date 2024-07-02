@@ -155,8 +155,8 @@ const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
                         $type='searchTerm'
                         $hovered={term === inputs.hoveredSearchTerm}
                         $rightMost={true}
-                        $disabled={false}
                         $rightGap={true}
+                        $disabled={!inputs.enabledSearchTerms.includes(term)}
                         onMouseOver={outputs.onMouseOverSearchTerm(term)}
                         onMouseOut={outputs.onMouseOutSearchTerm}
                         children={
