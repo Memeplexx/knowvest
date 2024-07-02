@@ -298,7 +298,8 @@ const setSearchTerms = (incomingSearchTerms: DeepReadonlyArray<string>) => {
     trieLocal.insert(incomingSearchTerm, 0 as TagId, 0 as SynonymId);
   });
   const toPost = allNotes
-    .map(note => ({ noteId: note.id, tags: trieLocal.search(note.text) }));
+    .map(note => ({ noteId: note.id, tags: trieLocal.search(note.text) }))
+    .filter(noteTags => noteTags.tags.length);
   if (toPost.length)
     postMessage({ type: 'notesSearched', value: toPost });
 }

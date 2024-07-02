@@ -2,7 +2,7 @@ import { GroupId, NoteId, SynonymId } from "@/actions/types";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { store } from "@/utils/store-utils";
 import { MouseEvent } from "react";
-import { Inputs } from "./constants";
+import { Inputs, initialState } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
   const { local } = inputs;
@@ -16,7 +16,7 @@ export const useOutputs = (inputs: Inputs) => {
       }
       if (selection.type === 'group') {
         local.selectedGroupIds.$push(selection.id as GroupId);
-        local.enabledGroupIds.$merge(selection.id as GroupId);
+        local.enabledGroupIds.$push(selection.id as GroupId);
       }
     },
     onAutocompleteInputEnterKeyUp: () => {
@@ -29,7 +29,7 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickRemoveSynonym: (synonymId: SynonymId) => {
       local.selectedSynonymIds.$find.$eq(synonymId).$delete();
-      local.enabledSynonymIds.$filter.$in([synonymId]).$delete();
+      local.enabledSynonymIds.$filter.$eq(synonymId).$delete();
     },
     onClickRemoveGroup: (groupId: GroupId) => {
       local.selectedGroupIds.$find.$eq(groupId).$delete();
@@ -72,7 +72,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (toggledSynonymIds.includes(synonymId))
         local.enabledSynonymIds.$set(toggledSynonymIds.filter(id => id !== synonymId));
       else
-        local.enabledSynonymIds.$set([...toggledSynonymIds, synonymId]);
+        local.enabledSynonymIds.$push(synonymId);
     },
     onClickToggleGroup: (groupId: GroupId) => (event: MouseEvent) => {
       event.stopPropagation();
@@ -80,20 +80,17 @@ export const useOutputs = (inputs: Inputs) => {
       if (toggledGroupIds.includes(groupId))
         local.enabledGroupIds.$set(toggledGroupIds.filter(id => id !== groupId));
       else
-        local.enabledGroupIds.$set([...toggledGroupIds, groupId]);
+        local.enabledGroupIds.$push(groupId);
     },
     onClickStartOver: () => {
-      local.selectedSynonymIds.$clear();
-      local.selectedGroupIds.$clear();
-      local.enabledSynonymIds.$clear();
-      local.autocompleteText.$set('');
+      local.$set(initialState);
     },
     onClickToggleSearchTerm: (term: string) => () => {
       const toggledSearchTerms = local.$state.enabledSearchTerms;
       if (toggledSearchTerms.includes(term))
         local.enabledSearchTerms.$set(toggledSearchTerms.filter(t => t !== term));
       else
-        local.enabledSearchTerms.$set([...toggledSearchTerms, term]);
+        local.enabledSearchTerms.$push(term);
     },
     onClickRemoveSearchTerm: (term: string) => () => {
       local.selectedSearchTerms.$filter.$eq(term).$delete();

@@ -36,6 +36,7 @@ export const SearchContent = styled(div)`
   flex-direction: column;
   gap: 32px;
   padding: 60px 120px;
+  padding-right: 24px;
   background-image: linear-gradient(to right, #242020, #191919);
   @media screen and (max-width: ${mobileBreakPoint}) {
     padding: 8px 16px;
@@ -50,6 +51,7 @@ export const ResultsContent = styled(div)`
   overflow-x: hidden;
   background-color: rgba(0,0,0,0.2);
   padding: 60px 120px;
+  padding-left: 24px;
   background-image: linear-gradient(to right, #242020, #191919);
   @media screen and (max-width: ${mobileBreakPoint}) {
     padding: 16px;
@@ -141,6 +143,7 @@ export const RemoveButton = styled(ControlButtonIcon)`
 
 export const RemoveIcon = styled(element(IoMdCloseCircle))`
 `;
+
 export const Result = styled(PanelNoteReadonly)`
   cursor: pointer;
   padding: 16px 0;
