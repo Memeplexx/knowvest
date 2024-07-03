@@ -99,8 +99,8 @@ export const useInputs = () => {
     let first = true;
     textSearcher.onNoteTagsUpdated(data => {
       data
-        .filter(({ noteId, tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
-        .forEach(({ noteId, tags }) => {
+        .filter(({ noteId, matches: tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
+        .forEach(({ noteId, matches: tags }) => {
           const currentNoteTagsForNote = store.$state.noteTags.filter(nt => nt.noteId === noteId);
           const toRemove = currentNoteTagsForNote.filter(nt => !tags.some(t => t.id === nt.id && nt.from === t.from && nt.to === t.to));
           const toInsert = tags.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id && nt.from === t.from && nt.to === t.to));
@@ -116,7 +116,7 @@ export const useInputs = () => {
         });
       if (!first) return;
       first = false;
-      const synonymIds = data.find(e => e.noteId === store.$state.activeNoteId)!.tags.map(t => t.synonymId!).distinct();
+      const synonymIds = data.find(e => e.noteId === store.$state.activeNoteId)!.matches.map(t => t.synonymId!).distinct();
       store.synonymIds.$set(synonymIds);
       component.completeAsyncProcess();
     });

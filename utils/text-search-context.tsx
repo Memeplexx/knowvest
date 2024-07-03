@@ -1,6 +1,6 @@
 "use client"
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { NoteTags, TagsWorker, TextSearchContextActions } from './text-search-utils';
+import { NoteSearchResults, TagsWorker, TextSearchContextActions } from './text-search-utils';
 
 
 const TextSearchContext = createContext<TextSearchContextActions | undefined>(undefined);
@@ -9,8 +9,8 @@ export const TextSearchProvider = ({ children }: { children: ReactNode }) => {
   const [worker, setWorker] = useState<TextSearchContextActions | null>(null);
   useEffect(() => {
     const worker = new Worker(new URL('./text-search-worker.ts', import.meta.url)) as TagsWorker;
-    const onNoteTagsUpdatedListeners = new Set<(value: NoteTags[]) => void>();
-    const onNotesSearchedListeners = new Set<(value: NoteTags[]) => void>();
+    const onNoteTagsUpdatedListeners = new Set<(value: NoteSearchResults[]) => void>();
+    const onNotesSearchedListeners = new Set<(value: NoteSearchResults[]) => void>();
     worker.onmessage = ({ data }) => {
       if (data.type === 'noteTagsUpdated')
         onNoteTagsUpdatedListeners.forEach(listener => listener(data.value));

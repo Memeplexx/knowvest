@@ -30,22 +30,22 @@ export type TextSearchContextActions = {
   updateTags: (tags: DeepReadonlyArray<SearchArg>) => void;
   updateNote: (note: NoteDTO) => void;
   removeNote: (noteId: NoteId) => void;
-  onNoteTagsUpdated: (listener: (arg: DeepReadonlyArray<NoteTags>) => void) => () => void;
+  onNoteTagsUpdated: (listener: (arg: DeepReadonlyArray<NoteSearchResults>) => void) => () => void;
   setSearchTerms: (terms: DeepReadonlyArray<string>) => void;
-  onNotesSearched: (listener: (arg: DeepReadonlyArray<NoteTags>) => void) => () => void;
+  onNotesSearched: (listener: (arg: DeepReadonlyArray<NoteSearchResults>) => void) => () => void;
 };
 
 export type Incoming = { [key in keyof TextSearchContextActions]: { type: key, data: Parameters<TextSearchContextActions[key]>[0] } }[keyof TextSearchContextActions];
 
 
-export type NoteTags = {
+export type NoteSearchResults = {
   noteId: NoteId,
-  tags: SearchResult[]
+  matches: SearchResult[]
 };
 
 export type Outgoing = {
   type: 'noteTagsUpdated' | 'notesSearched',
-  value: NoteTags[]
+  value: NoteSearchResults[]
 }
 
 export type TagsWorker = Omit<Worker, 'postMessage' | 'onmessage'> & {

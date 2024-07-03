@@ -4,7 +4,7 @@ import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, Widg
 import { EditorView } from "codemirror";
 import { DeepReadonlyArray } from "olik/*";
 import { store } from "./store-utils";
-import { NoteTags, SearchResult } from "./text-search-utils";
+import { NoteSearchResults, SearchResult } from "./text-search-utils";
 
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
@@ -205,7 +205,7 @@ export const reviseEditorTags = (
     noteId: NoteId,
     synonymIds: DeepReadonlyArray<SynonymId>,
     groupSynonymIds?: DeepReadonlyArray<SynonymId> | undefined,
-    searchTerms?: DeepReadonlyArray<NoteTags> | undefined,
+    searchTerms?: DeepReadonlyArray<NoteSearchResults> | undefined,
     flag?: boolean | undefined
   }
 ) => {
@@ -225,7 +225,7 @@ export const reviseEditorTags = (
         ...tag,
         decoration: highlight2
       })),
-    ...!args.searchTerms ? [] : (args.searchTerms.find(nt => nt.noteId === args.noteId) ?? { tags: [] }).tags
+    ...!args.searchTerms ? [] : (args.searchTerms.find(nt => nt.noteId === args.noteId) ?? { matches: [] }).matches
       .map(tag => ({
         ...tag,
         decoration: highlight3,

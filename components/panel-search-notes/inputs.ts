@@ -110,7 +110,7 @@ export const useInputs = () => {
 
   const notesBySearchTerms = useMemo(() => {
     return state.searchResults
-      .filter(searchResult => searchResult.tags.some(t => enabledSearchTerms.includes(t.text)))
+      .filter(searchResult => searchResult.matches.some(t => enabledSearchTerms.includes(t.text)))
   }, [enabledSearchTerms, state.searchResults]);
 
   const notesFound = useMemo(() => {

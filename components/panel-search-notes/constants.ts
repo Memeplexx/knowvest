@@ -1,5 +1,5 @@
 import { GroupId, SynonymId } from "@/actions/types";
-import { NoteTags } from "@/utils/text-search-utils";
+import { NoteSearchResults } from "@/utils/text-search-utils";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 
@@ -40,5 +40,5 @@ export const initialState = {
   hoveredGroupId: null as GroupId | null,
   hoveredSearchTerm: null as string | null,
   showAutocompleteOptions: false,
-  searchResults: new Array<NoteTags>(),
+  searchResults: new Array<NoteSearchResults>(),
 }
