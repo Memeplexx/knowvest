@@ -52,19 +52,6 @@ export function PanelHomeDesktop() {
                 children={
                   <>
                     Related
-                    {/* <OverlayPopup
-                      storeKey='relatedMenu'
-                      trigger={props => (
-                        <ControlButtonIcon
-                          {...props}
-                          aria-label='Filter'
-                          children={<CiFilter />}
-                        />
-                      )}
-                      overlay={
-                        <FilterPopup />
-                      }
-                    /> */}
                     <OverlayNotesRelated />
                   </>
                 }
