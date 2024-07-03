@@ -3,7 +3,7 @@ import { AutocompleteHandle } from "@/components/control-autocomplete/constants"
 import { useResizeListener } from "@/utils/dom-utils";
 import { useComponent } from "@/utils/react-utils";
 import { store, useLocalStore, useStore } from "@/utils/store-utils";
-import { useTagsWorker } from "@/utils/worker-context";
+import { useTextSearcher } from "@/utils/text-search-context";
 import { useRouter } from "next/navigation";
 import { derive } from "olik/derive";
 import { addToWhitelist } from "olik/devtools";
@@ -18,7 +18,7 @@ export const useInputs = () => {
   const { selectedGroupIds, enabledGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane, enabledSearchTerms } = state;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
-  const worker = useTagsWorker();
+  const textSearcher = useTextSearcher();
   const component = useComponent();
 
   const autocompleteSynonymOptions = useMemo(() => {
@@ -97,8 +97,6 @@ export const useInputs = () => {
       .map(t => t.id);
     return noteTags
       .filter(noteTag => tagIds.includes(noteTag.id))
-    // .distinct(nt => nt.noteId)
-    // .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
   }, [tags, noteTags, enabledSynonymIds]);
 
   const notesByGroupSynonymIds = useMemo(() => {
@@ -108,15 +106,11 @@ export const useInputs = () => {
       .map(t => t.id);
     return noteTags
       .filter(noteTag => tagIds.includes(noteTag.id))
-    // .distinct(nt => nt.noteId)
-    // .map(noteTag => notes.findOrThrow(n => n.id === noteTag.noteId));
   }, [synonymGroups, tags, noteTags, enabledGroupIds]);
 
   const notesBySearchTerms = useMemo(() => {
     return state.searchResults
       .filter(searchResult => searchResult.tags.some(t => enabledSearchTerms.includes(t.text)))
-    // .map(noteTags => notes.findOrThrow(n => n.id === noteTags.noteId))
-    // .distinct(n => n.id);
   }, [enabledSearchTerms, state.searchResults]);
 
   const notesFound = useMemo(() => {
@@ -173,8 +167,8 @@ export const useInputs = () => {
     return result;
 
   component.startAsyncProcess();
-  component.listen = local.enabledSearchTerms.$onChange(searchTerms => worker.setSearchTerms(searchTerms));
-  component.listen = worker.onNotesSearched(searchResults => local.searchResults.$set(searchResults));
+  component.listen = local.enabledSearchTerms.$onChange(searchTerms => textSearcher.setSearchTerms(searchTerms));
+  component.listen = textSearcher.onNotesSearched(searchResults => local.searchResults.$set(searchResults));
   component.completeAsyncProcess();
 
   return result;

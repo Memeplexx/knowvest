@@ -1,140 +1,12 @@
 import { NoteDTO, NoteId, SynonymId, TagId } from "@/actions/types";
 import { DeepReadonlyArray } from "olik";
+import { Incoming, NoteTags, SearchArg, SearchResult, Trie } from "./text-search-utils";
 
-class TrieNode {
-  children: { [key: string]: TrieNode } = {};
-  isEndOfTag: boolean = false;
-  id: TagId | null = null;
-  synonymId: SynonymId | null = null;
-}
-
-class Trie {
-  root: TrieNode = new TrieNode();
-  insert(word: string, tagId: TagId, synonymId: SynonymId): void {
-    let node: TrieNode = this.root;
-    for (const char of word) {
-      if (!node.children[char])
-        node.children[char] = new TrieNode();
-      node = node.children[char]!;
-    }
-    node.isEndOfTag = true;
-    node.id = tagId;
-    node.synonymId = synonymId;
-  }
-
-  search(text: string) {
-    const detectedTags = new Array<TagResult>();
-    for (let i = 0; i < text.length; i++) {
-      let node: TrieNode = this.root;
-      for (let j = i; j < text.length; j++) {
-        const char: string = text[j]!;
-        if (!node.children[char]) {
-          break;
-        }
-        node = node.children[char]!;
-        if (node.isEndOfTag) {
-          detectedTags.push({
-            text: text.slice(i, j + 1),
-            id: node.id!,
-            synonymId: node.synonymId,
-            from: i,
-            to: j + 1,
-          });
-        }
-      }
-    }
-    return detectedTags.sort((a, b) => a.id - b.id);
-  }
-
-  remove(word: string) {
-    this.removeHelper(this.root, word, 0);
-  }
-
-  removeHelper(node: TrieNode, word: string, depth: number) {
-    if (!node)
-      return false;
-    if (depth === word.length) {
-      if (node.isEndOfTag) {
-        node.isEndOfTag = false;
-        node.id = null;
-      }
-      return Object.keys(node.children).length === 0;
-    }
-    const char = word[depth]!;
-    const shouldDeleteCurrentNode = this.removeHelper(node.children[char]!, word, depth + 1);
-    if (shouldDeleteCurrentNode) {
-      delete node.children[char];
-      return Object.keys(node.children).length === 0 && !node.isEndOfTag;
-    }
-    return false;
-  }
-}
-
-export type TagSummary = {
-  id: TagId,
-  text: string;
-  synonymId: SynonymId | null;
-};
-
-export type TagResult = {
-  from: number;
-  to: number;
-} & TagSummary;
-
-export type Incoming
-  = {
-    type: 'initialize',
-    data: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }
-  }
-  | {
-    type: 'addTags',
-    data: TagSummary[]
-  }
-  | {
-    type: 'addNotes',
-    data: DeepReadonlyArray<NoteDTO>
-  }
-  | {
-    type: 'removeTags',
-    data: DeepReadonlyArray<TagId>
-  }
-  | {
-    type: 'updateTags',
-    data: DeepReadonlyArray<TagSummary>
-  }
-  | {
-    type: 'setSearchTerms',
-    data: DeepReadonlyArray<string>
-  }
-  | {
-    type: 'updateNote',
-    data: NoteDTO
-  }
-  | {
-    type: 'removeNote',
-    data: NoteId
-  };
-
-
-export type NoteTags = {
-  noteId: NoteId,
-  tags: TagResult[]
-};
-
-export type Outgoing = {
-  type: 'noteTagsUpdated' | 'notesSearched',
-  value: NoteTags[]
-}
-
-export type TagsWorker = Omit<Worker, 'postMessage' | 'onmessage'> & {
-  postMessage: (message: Incoming) => void,
-  onmessage: (event: MessageEvent<Outgoing>) => void
-};
 
 const trie = new Trie();
-const allTags = [] as Array<TagSummary>;
+const allTags = [] as Array<SearchArg>;
 const allNotes = [] as Array<NoteDTO>;
-const resultsCache = new Map<NoteId, Array<TagResult>>();
+const resultsCache = new Map<NoteId, Array<SearchResult>>();
 
 onmessage = (event: MessageEvent<Incoming>) => {
   const { type, data } = event.data;
@@ -158,9 +30,9 @@ onmessage = (event: MessageEvent<Incoming>) => {
   }
 };
 
-const noteTagsUpdated = (value: NoteTags[]) => postMessage({ type: 'noteTagsUpdated', value });
+const noteTagsUpdated = (value: DeepReadonlyArray<NoteTags>) => postMessage({ type: 'noteTagsUpdated', value });
 
-const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => {
+const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepReadonlyArray<SearchArg>, notes: DeepReadonlyArray<NoteDTO> }) => {
   allTags.push(...incomingTags);
   incomingTags.forEach(incomingTag => {
     trie.insert(incomingTag.text, incomingTag.id, incomingTag.synonymId!);
@@ -175,7 +47,7 @@ const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepRe
     noteTagsUpdated(toPost);
 }
 
-const addTags = (incomingTags: TagSummary[]) => {
+const addTags = (incomingTags: DeepReadonlyArray<SearchArg>) => {
   if (!incomingTags.length) return;
   const trieLocal = new Trie();
   incomingTags.forEach(incomingTag => {
@@ -217,7 +89,7 @@ const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
     noteTagsUpdated(toPost);
 };
 
-const updateTags = (incomingTags: DeepReadonlyArray<TagSummary>) => {
+const updateTags = (incomingTags: DeepReadonlyArray<SearchArg>) => {
   if (!incomingTags.length) return;
 
   // Create some local variables for later

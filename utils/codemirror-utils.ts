@@ -1,10 +1,10 @@
 import { NoteId, SynonymId } from "@/actions/types";
-import { NoteTags, TagResult } from "@/utils/tags-worker";
 import { ChangeDesc, Range, RangeSetBuilder, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, MatchDecorator, ViewPlugin, ViewUpdate, WidgetType } from "@codemirror/view";
 import { EditorView } from "codemirror";
 import { DeepReadonlyArray } from "olik/*";
 import { store } from "./store-utils";
+import { NoteTags, SearchResult } from "./text-search-utils";
 
 
 export const bulletPointPlugin = ViewPlugin.fromClass(class {
@@ -210,7 +210,7 @@ export const reviseEditorTags = (
   }
 ) => {
   const noteTags = store.$state.noteTags.filter(nt => nt.noteId === args.noteId);
-  type PreviousPositions = EditorView & { previousPositions: Array<TagResult & { decoration?: Decoration }> }
+  type PreviousPositions = EditorView & { previousPositions: Array<SearchResult & { decoration?: Decoration }> }
   const previousPositions = (args.codeMirror as PreviousPositions).previousPositions || [];
   const newTagPositions = [
     ...noteTags

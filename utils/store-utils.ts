@@ -4,7 +4,7 @@ import { createDerivationHooks, createStoreHooks } from 'olik-react';
 import { derive } from 'olik/derive';
 import { configureSortModule } from 'olik/sort';
 import { FlashCardDTO, GroupDTO, NoteDTO, NoteId, SynonymGroupDTO, SynonymId, TagDTO, TagId } from '../actions/types';
-import { TagResult } from './tags-worker';
+import { SearchResult } from './text-search-utils';
 
 configureSortModule();
 
@@ -18,7 +18,7 @@ export const store = createStore({
   isMobileWidth: false,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
-  noteTags: new Array<TagResult & { noteId: NoteId }>(),
+  noteTags: new Array<SearchResult & { noteId: NoteId }>(),
   showLoader: false,
   showMenu: false,
 });

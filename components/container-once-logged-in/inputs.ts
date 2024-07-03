@@ -4,7 +4,7 @@ import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
 import { store, useStore } from "@/utils/store-utils";
-import { useTagsWorker } from "@/utils/worker-context";
+import { useTextSearcher } from "@/utils/text-search-context";
 import { useSession } from "next-auth/react";
 import { redirect, usePathname } from "next/navigation";
 import { configureDevtools } from "olik/devtools";
@@ -21,7 +21,7 @@ export const useInputs = () => {
   const { showMenu, isMobileWidth } = useStore();
   const component = useComponent();
   const containerWithStickyHeaderRef = useRef<ContainerWithStickyHeaderHandle>(null);
-  const worker = useTagsWorker();
+  const textSearcher = useTextSearcher();
   const result = { isReady: component.hasCompletedAsyncProcess, showMenu, routerPathName, isMobileWidth, containerWithStickyHeaderRef };
 
   // Listen for changes to the window width and update the store
@@ -97,7 +97,7 @@ export const useInputs = () => {
     // Ensure that changes to note tags in worker are sent to the store
     // TODO: Consider sending this data to the IndexedDB also.
     let first = true;
-    worker.onNoteTagsUpdated(data => {
+    textSearcher.onNoteTagsUpdated(data => {
       data
         .filter(({ noteId, tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
         .forEach(({ noteId, tags }) => {
@@ -124,20 +124,20 @@ export const useInputs = () => {
     // Send the tags worker the initial data
     const sanitizeNote = (note: NoteDTO) => ({ ...note, text: note.text.toLowerCase() });
     const sanitizeTag = (tag: TagDTO) => ({ id: tag.id, synonymId: tag.synonymId, text: tag.text.toLowerCase() });
-    worker.initialize({ notes: store.$state.notes.map(sanitizeNote), tags: store.$state.tags.map(sanitizeTag) });
+    textSearcher.initialize({ notes: store.$state.notes.map(sanitizeNote), tags: store.$state.tags.map(sanitizeTag) });
 
     // Ensure that changes to tags in the store are sent to the worker
     component.listen = store.tags.$onChangeArray(({ deleted, inserted, updated }) => {
-      worker.addTags(inserted.map(sanitizeTag));
-      worker.removeTags(deleted.map(t => t.id));
-      worker.updateTags(updated.map(sanitizeTag));
+      textSearcher.addTags(inserted.map(sanitizeTag));
+      textSearcher.removeTags(deleted.map(t => t.id));
+      textSearcher.updateTags(updated.map(sanitizeTag));
     })
 
     // Ensure that changes to notes in the store are sent to the worker
     component.listen = store.notes.$onChangeArray(({ deleted, inserted, updated }) => {
-      worker.addNotes(inserted.map(sanitizeNote));
-      deleted.forEach(n => worker.removeNote(n.id));
-      updated.map(sanitizeNote).forEach(data => worker.updateNote(data));
+      textSearcher.addNotes(inserted.map(sanitizeNote));
+      deleted.forEach(n => textSearcher.removeNote(n.id));
+      updated.map(sanitizeNote).forEach(data => textSearcher.updateNote(data));
     });
 
     // Ensure that the indexedDB is updated when the store changes

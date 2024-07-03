@@ -1,29 +1,14 @@
 "use client"
-import { NoteDTO, NoteId, TagId } from '@/actions/types';
-import { DeepReadonlyArray } from 'olik/*';
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { NoteTags, TagSummary, TagsWorker } from './tags-worker';
+import { NoteTags, TagsWorker, TextSearchContextActions } from './text-search-utils';
 
 
-type WorkerContext = {
-  initialize: (payload: { tags: DeepReadonlyArray<TagSummary>, notes: DeepReadonlyArray<NoteDTO> }) => void;
-  addTags: (tags: TagSummary[]) => void;
-  addNotes: (notes: DeepReadonlyArray<NoteDTO>) => void;
-  removeTags: (tags: DeepReadonlyArray<TagId>) => void;
-  updateTags: (tags: DeepReadonlyArray<TagSummary>) => void;
-  updateNote: (note: NoteDTO) => void;
-  removeNote: (noteId: NoteId) => void;
-  setSearchTerms: (terms: DeepReadonlyArray<string>) => void;
-  onNoteTagsUpdated: (listener: (arg: DeepReadonlyArray<NoteTags>) => void) => () => void;
-  onNotesSearched: (listener: (arg: DeepReadonlyArray<NoteTags>) => void) => () => void;
-};
+const TextSearchContext = createContext<TextSearchContextActions | undefined>(undefined);
 
-const MyContext = createContext<WorkerContext | undefined>(undefined);
-
-export const TagsWorkerProvider = ({ children }: { children: ReactNode }) => {
-  const [worker, setWorker] = useState<WorkerContext | null>(null);
+export const TextSearchProvider = ({ children }: { children: ReactNode }) => {
+  const [worker, setWorker] = useState<TextSearchContextActions | null>(null);
   useEffect(() => {
-    const worker = new Worker(new URL('./tags-worker.ts', import.meta.url)) as TagsWorker;
+    const worker = new Worker(new URL('./text-search-worker.ts', import.meta.url)) as TagsWorker;
     const onNoteTagsUpdatedListeners = new Set<(value: NoteTags[]) => void>();
     const onNotesSearchedListeners = new Set<(value: NoteTags[]) => void>();
     worker.onmessage = ({ data }) => {
@@ -53,11 +38,11 @@ export const TagsWorkerProvider = ({ children }: { children: ReactNode }) => {
     return () => worker?.terminate();
   }, []);
   return (
-    <MyContext.Provider
+    <TextSearchContext.Provider
       value={worker!}
       children={children}
     />
   );
 };
 
-export const useTagsWorker = () => useContext(MyContext)!;
+export const useTextSearcher = () => useContext(TextSearchContext)!;

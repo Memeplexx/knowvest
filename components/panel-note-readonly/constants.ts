@@ -1,5 +1,5 @@
 import { NoteDTO, SynonymId } from "@/actions/types";
-import { NoteTags } from "@/utils/tags-worker";
+import { NoteTags } from "@/utils/text-search-utils";
 import { Readable } from "olik";
 import { HTMLProps } from "react";
 
