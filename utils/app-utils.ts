@@ -6,7 +6,7 @@ import { store } from "./store-utils";
 
 export const onSelectNote = async (router: AppRouterInstance, noteId: NoteId) => {
   const { searchResults, tags } = store.$state;
-  const tagIds = searchResults.filter(r => r.noteId === noteId).map(r => r.id);
+  const tagIds = searchResults.filter(r => r.noteId === noteId).map(r => r.tagId);
   const synonymIds = tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId);
   store.activeNoteId.$set(noteId);
   store.synonymIds.$set(synonymIds);

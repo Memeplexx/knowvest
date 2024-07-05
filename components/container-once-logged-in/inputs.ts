@@ -103,12 +103,12 @@ export const useInputs = () => {
         .filter(({ noteId, matches }) => JSON.stringify(matches) !== JSON.stringify(searchResults[noteId]))
         .forEach(function receiveSearchResults({ noteId, matches }) {
           const currentNoteTagsForNote = searchResults.filter(nt => nt.noteId === noteId);
-          const toRemove = currentNoteTagsForNote.filter(nt => !matches.some(t => t.id === nt.id && nt.from === t.from && nt.to === t.to));
-          const toInsert = matches.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id && nt.from === t.from && nt.to === t.to));
+          const toRemove = currentNoteTagsForNote.filter(nt => !matches.some(t => t.tagId === nt.tagId && nt.from === t.from && nt.to === t.to));
+          const toInsert = matches.filter(t => !currentNoteTagsForNote.some(nt => nt.tagId === t.tagId && nt.from === t.from && nt.to === t.to));
           if (toRemove.length)
             store.searchResults
               .$filter.noteId.$eq(noteId)
-              .$and.id.$in(toRemove.map(t => t.id).distinct())
+              .$and.tagId.$in(toRemove.map(t => t.tagId).distinct())
               .$and.from.$in(toRemove.map(t => t.from).distinct())
               .$and.to.$in(toRemove.map(t => t.to).distinct())
               .$delete();

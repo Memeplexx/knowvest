@@ -24,7 +24,7 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       local.confirmDeleteNote.$set(false);
       const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
       store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
-      const tagIds = store.$state.searchResults.filter(r => r.noteId === nextMostRecentlyViewedNoteId).map(nt => nt.id);
+      const tagIds = store.$state.searchResults.filter(r => r.noteId === nextMostRecentlyViewedNoteId).map(nt => nt.tagId);
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.synonymIds.$set(synonymIds);
       notify.success('Note deleted');

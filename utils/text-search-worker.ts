@@ -80,7 +80,7 @@ const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
   });
   const toPost = [] as NoteSearchResults[];
   Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
-    const filtered = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.id));
+    const filtered = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.tagId));
     if (filtered.length === tagSummaries.length) return; // if note does not contain any of the removed tags, do not update resultsCache
     resultsCache.set(noteId, filtered);
     toPost.push({ noteId, matches: filtered });
@@ -109,7 +109,7 @@ const updateTags = (incomingTags: DeepReadonlyArray<SearchArg>) => {
 
   // Remove old from resultsCache
   Array.from(resultsCache).forEach(([noteId, tagSummaries]) => {
-    const tagSummariesWithIncomingTagsRemoved = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.id)).sort((a, b) => a.id - b.id);
+    const tagSummariesWithIncomingTagsRemoved = tagSummaries.filter(tagSummary => !incomingTagIds.includes(tagSummary.tagId)).sort((a, b) => a.tagId - b.tagId);
     if (tagSummariesWithIncomingTagsRemoved.length === tagSummaries.length) return; // if note does not contain any of the updated tags, do not update resultsCache
     resultsCache.set(noteId, tagSummariesWithIncomingTagsRemoved);
     toPost.push({ noteId, matches: tagSummariesWithIncomingTagsRemoved });

@@ -4,7 +4,7 @@ import { DeepReadonlyArray } from "olik";
 export class TrieNode {
   children: { [key: string]: TrieNode } = {};
   isEndOfTag: boolean = false;
-  id: TagId | null = null;
+  tagId: TagId | null = null;
   synonymId: SynonymId | null = null;
 }
 
@@ -17,7 +17,7 @@ export type SearchArg = {
 export type SearchResult = {
   from: number;
   to: number;
-  id: TagId,
+  tagId: TagId,
   text: string;
   synonymId: SynonymId | null;
 };
@@ -63,7 +63,7 @@ export class Trie {
       node = node.children[char]!;
     }
     node.isEndOfTag = true;
-    node.id = tagId;
+    node.tagId = tagId;
     node.synonymId = synonymId;
   }
 
@@ -80,7 +80,7 @@ export class Trie {
         if (node.isEndOfTag) {
           detectedResults.push({
             text: text.slice(i, j + 1),
-            id: node.id!,
+            tagId: node.tagId!,
             synonymId: node.synonymId,
             from: i,
             to: j + 1,
@@ -104,7 +104,7 @@ export class Trie {
     if (depth === word.length) {
       if (node.isEndOfTag) {
         node.isEndOfTag = false;
-        node.id = null;
+        node.tagId = null;
       }
       return Object.keys(node.children).length === 0;
     }

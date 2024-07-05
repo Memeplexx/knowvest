@@ -20,7 +20,7 @@ export const useOutputs = ({ local, popupRef, notify }: Inputs) => {
       local.showConfirmDeleteDialog.$set(false);
       const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
       store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
-      const tagIds = store.$state.searchResults.filter(r => r.noteId === nextMostRecentlyViewedNoteId).map(r => r.id);
+      const tagIds = store.$state.searchResults.filter(r => r.noteId === nextMostRecentlyViewedNoteId).map(r => r.tagId);
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.synonymIds.$set(synonymIds);
       notify.success('Note deleted');

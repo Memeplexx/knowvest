@@ -96,7 +96,7 @@ export const useInputs = () => {
       .filter(t => enabledSynonymIds.includes(t.synonymId))
       .map(t => t.id);
     return searchResults
-      .filter(noteTag => tagIds.includes(noteTag.id))
+      .filter(noteTag => tagIds.includes(noteTag.tagId))
   }, [tags, searchResults, enabledSynonymIds]);
 
   const notesByGroupSynonymIds = useMemo(() => {
@@ -105,7 +105,7 @@ export const useInputs = () => {
       .filter(t => enabledGroupSynonymIds.includes(t.synonymId))
       .map(t => t.id);
     return searchResults
-      .filter(noteTag => tagIds.includes(noteTag.id))
+      .filter(noteTag => tagIds.includes(noteTag.tagId))
   }, [synonymGroups, tags, searchResults, enabledGroupIds]);
 
   const notesBySearchTerms = useMemo(() => {
