@@ -1,7 +1,7 @@
 "use client";
 import { IfProps, div } from "@/components/control-conditional";
 import { Montserrat } from "next/font/google";
-import { HTMLProps, ReactNode } from "react";
+import { HTMLProps, MouseEvent, ReactNode, useRef } from "react";
 import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
 import { useEventHandlerForDocument } from "./dom-utils";
@@ -32,7 +32,7 @@ export const globalStylesContainer = () => document.getElementById(id)!;
 type OverlayProps
   = {
     overlay: ReactNode,
-    onClickBackdrop?: () => void,
+    onClickBackdrop?: (event: MouseEvent) => void,
     onEscapeKeyPressed?: () => void,
     blurBackdrop: boolean,
   }
@@ -40,6 +40,8 @@ type OverlayProps
   & HTMLProps<HTMLDivElement>;
 
 export const Overlay = (props: OverlayProps) => {
+
+  const backdropRef = useRef<HTMLDivElement>(null);
 
   useEventHandlerForDocument('keyup', event => {
     if (!props.onEscapeKeyPressed)
@@ -49,13 +51,19 @@ export const Overlay = (props: OverlayProps) => {
     props.onEscapeKeyPressed();
   })
 
+  const onClickBackDrop = (event: MouseEvent) => {
+    if (event.target !== backdropRef.current) return;
+    props.onClickBackdrop?.(event);
+  }
+
   const htmlProps = useHtmlPropsOnly(props);
 
   return props.if ? createPortal((
     <PopupBackDrop
       {...htmlProps}
+      ref={backdropRef}
       $blurBackdrop={props.blurBackdrop}
-      onClick={() => props.onClickBackdrop?.()}
+      onClick={onClickBackDrop}
       children={props.overlay}
     />
   ), document.getElementById(id)!) : <></>;

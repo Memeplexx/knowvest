@@ -57,10 +57,10 @@ export const PanelSearchNotes = () => {
                   children={
                     <FooterButton
                       if={inputs.isMobileWidth}
-                      onClick={outputs.onClickTabButton.bind(this)}
                       highlighted={false}
                       children={inputs.showResultsPane ? 'View search' : `View results (${inputs.notesFound.length})`}
                       aria-label={inputs.showResultsPane ? 'View search' : 'View results'}
+                      onClick={outputs.onClickTabButton.bind(this)}
                     />
                   }
                 />
@@ -88,20 +88,20 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
           <BodyHeader
             children={
               <PageTitle
-                children='Search Tags and Groups'
+                children='Search for Tags, Groups, or any text'
               />
             }
           />
           <ControlAutocomplete<AutocompleteOptionType>
             ref={inputs.autocompleteRef}
             options={inputs.autocompleteOptions}
+            inputText={inputs.autocompleteText}
+            showOptions={inputs.showAutocompleteOptions}
             inputPlaceholder='Start typing...'
             onValueChange={outputs.onAutocompleteSelected.bind(this)}
             onInputTextChange={outputs.onAutocompleteInputChange.bind(this)}
             onInputEnterKeyUp={outputs.onAutocompleteInputEnterKeyUp.bind(this)}
-            inputText={inputs.autocompleteText}
             onShowOptionsChange={outputs.onAutocompleteShowOptionsChange.bind(this)}
-            showOptions={inputs.showAutocompleteOptions}
             onInputClicked={outputs.onAutocompleteInputFocused.bind(this)}
             renderOption={option => (
               <AutocompleteOption
@@ -141,15 +141,15 @@ const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
                     <>
                       <Tag
                         children={term}
-                        onClick={outputs.onClickToggleSearchTerm.bind(this, term)}
+                        $type='searchTerm'
                         $rightGap={false}
                         $hovered={term === inputs.hoveredSearchTerm}
                         $disabled={!inputs.enabledSearchTerms.includes(term)}
                         $rightMost={false}
                         $leftMost={true}
-                        onMouseOver={outputs.onMouseOverSearchTerm.bind(this, term)}
                         onMouseOut={outputs.onMouseOutSearchTerm.bind(this)}
-                        $type='searchTerm'
+                        onMouseOver={outputs.onMouseOverSearchTerm.bind(this, term)}
+                        onClick={outputs.onClickToggleSearchTerm.bind(this, term)}
                       />
                       <Tag
                         $type='searchTerm'
@@ -268,7 +268,7 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
                       $disabled={false}
                       $type='group'
                       onMouseOver={outputs.onMouseOverGroup.bind(this, group.groupId)}
-                      onMouseOut={outputs.onMouseOutGroup}
+                      onMouseOut={outputs.onMouseOutGroup.bind(this)}
                       children={
                         <RemoveButton
                           onClick={outputs.onClickRemoveGroup.bind(this, group.groupId)}

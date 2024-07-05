@@ -14,7 +14,7 @@ export const useInputs = () => {
 
   const { tags, groups, synonymGroups, notes, noteTags, isMobileWidth } = useStore();
   const { local, state } = useLocalStore('search', initialState);
-  useMemo(() => addToWhitelist([local.hoveredSynonymId]), [local]);
+  useMemo(() => addToWhitelist([local.hoveredSynonymId, local.hoveredGroupId, local.hoveredSearchTerm]), [local]);
   const { selectedGroupIds, enabledGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane, enabledSearchTerms } = state;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
