@@ -124,7 +124,7 @@ export const useInputs = () => {
 
     // Send the tags worker the initial data
     const sanitizeNote = (note: NoteDTO) => ({ ...note, text: note.text.toLowerCase() });
-    const sanitizeTag = (tag: TagDTO) => ({ id: tag.id, synonymId: tag.synonymId, text: tag.text.toLowerCase() });
+    const sanitizeTag = (tag: TagDTO) => ({ tagId: tag.id, synonymId: tag.synonymId, text: tag.text.toLowerCase() });
     textSearcher.initialize({ notes: store.$state.notes.map(sanitizeNote), tags: store.$state.tags.map(sanitizeTag) });
 
     // Ensure that changes to tags in the store are sent to the worker

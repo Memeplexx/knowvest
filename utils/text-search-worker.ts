@@ -35,7 +35,7 @@ const noteTagsUpdated = (value: DeepReadonlyArray<NoteSearchResults>) => postMes
 const initialize = ({ tags: incomingTags, notes: incomingNotes }: { tags: DeepReadonlyArray<SearchArg>, notes: DeepReadonlyArray<NoteDTO> }) => {
   allTags.push(...incomingTags);
   incomingTags.forEach(incomingTag => {
-    trie.insert(incomingTag.text, incomingTag.id, incomingTag.synonymId!);
+    trie.insert(incomingTag.text, incomingTag.tagId, incomingTag.synonymId!);
   });
   allNotes.push(...incomingNotes);
   const toPost = incomingNotes.map(incomingNote => {
@@ -51,12 +51,12 @@ const addTags = (incomingTags: DeepReadonlyArray<SearchArg>) => {
   if (!incomingTags.length) return;
   const trieLocal = new Trie();
   incomingTags.forEach(incomingTag => {
-    const found = allTags.find(t => t.id === incomingTag.id);
+    const found = allTags.find(t => t.tagId === incomingTag.tagId);
     if (found) throw new Error(`Tag already exists: ${JSON.stringify(found)}`);
     allTags.push(incomingTag);
     const tagText = incomingTag.text;
-    trieLocal.insert(tagText, incomingTag.id, incomingTag.synonymId!);
-    trie.insert(tagText, incomingTag.id, incomingTag.synonymId!);
+    trieLocal.insert(tagText, incomingTag.tagId, incomingTag.synonymId!);
+    trie.insert(tagText, incomingTag.tagId, incomingTag.synonymId!);
   });
   const toPost = [] as NoteSearchResults[];
   allNotes.forEach(note => {
@@ -73,8 +73,8 @@ const addTags = (incomingTags: DeepReadonlyArray<SearchArg>) => {
 const removeTags = (incomingTagIds: DeepReadonlyArray<TagId>) => {
   if (!incomingTagIds.length) return;
   incomingTagIds.forEach(incomingTagId => {
-    trie.remove(allTags.find(t => t.id === incomingTagId)!.text);
-    const index = allTags.findIndex(tag => tag.id === incomingTagId);
+    trie.remove(allTags.find(t => t.tagId === incomingTagId)!.text);
+    const index = allTags.findIndex(tag => tag.tagId === incomingTagId);
     if (index !== -1)
       allTags.splice(index, 1);
   });
@@ -94,16 +94,16 @@ const updateTags = (incomingTags: DeepReadonlyArray<SearchArg>) => {
 
   // Create some local variables for later
   const trieLocal = new Trie();
-  const incomingTagIds = incomingTags.map(t => t.id);
+  const incomingTagIds = incomingTags.map(t => t.tagId);
   const toPost = [] as NoteSearchResults[];
 
   // Start by removing old tags from the trie, re-inserting them into the trie, and updating the tag text in the allTags array
   incomingTags.forEach(incomingTag => {
-    const tag = allTags.find(t => t.id === incomingTag.id);
+    const tag = allTags.find(t => t.tagId === incomingTag.tagId);
     if (!tag) throw new Error(`Tag to update not found: ${JSON.stringify(incomingTag)}`);
     trie.remove(tag.text);
-    trie.insert(incomingTag.text, tag.id, tag.synonymId!);
-    trieLocal.insert(incomingTag.text, tag.id, tag.synonymId!);
+    trie.insert(incomingTag.text, tag.tagId, tag.synonymId!);
+    trieLocal.insert(incomingTag.text, tag.tagId, tag.synonymId!);
     tag.text = incomingTag.text;
   });
 

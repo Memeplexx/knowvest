@@ -9,7 +9,7 @@ export class TrieNode {
 }
 
 export type SearchArg = {
-  id: TagId,
+  tagId: TagId,
   text: string;
   synonymId: SynonymId | null;
 };
