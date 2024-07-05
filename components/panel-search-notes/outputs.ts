@@ -54,7 +54,7 @@ export const useOutputs = (inputs: Inputs) => {
       local.hoveredSearchTerm.$set(null);
     },
     onClickResult: (noteId: NoteId) => {
-      const tagIds = store.$state.noteTags.filter(nt => nt.noteId === noteId).map(nt => nt.id);
+      const tagIds = store.$state.searchResults.filter(nt => nt.noteId === noteId).map(nt => nt.id);
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.activeNoteId.$set(noteId);
       store.synonymIds.$set(synonymIds);

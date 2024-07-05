@@ -42,7 +42,7 @@ export const useInputs = (props: Props) => {
   });
   component.listen = () => editor.destroy();
   const doRemoveEditorTags = () => reviseEditorTags({ codeMirror: editor, noteId: props.note!.id, synonymIds: props.synonymIds.$state, groupSynonymIds: props.groupSynonymIds?.$state, searchTerms: props.searchTerms?.$state });
-  component.listen = store.noteTags.$find.noteId.$eq(props.note!.id).$onChange(doRemoveEditorTags);
+  component.listen = store.searchResults.$find.noteId.$eq(props.note!.id).$onChange(doRemoveEditorTags);
   component.listen = props.synonymIds.$onChange(doRemoveEditorTags);
   component.listen = props.groupSynonymIds?.$onChange(doRemoveEditorTags);
   component.listen = store.synonymGroups.$onChange(doRemoveEditorTags);

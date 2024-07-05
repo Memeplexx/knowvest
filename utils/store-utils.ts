@@ -18,7 +18,7 @@ export const store = createStore({
   isMobileWidth: false,
   activeNoteId: 0 as NoteId,
   synonymIds: new Array<SynonymId>(),
-  noteTags: new Array<SearchResult & { noteId: NoteId }>(),
+  searchResults: new Array<SearchResult & { noteId: NoteId }>(),
   showLoader: false,
   showMenu: false,
 });

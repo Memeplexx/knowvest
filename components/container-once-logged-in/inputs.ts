@@ -98,25 +98,26 @@ export const useInputs = () => {
     // TODO: Consider sending this data to the IndexedDB also.
     let first = true;
     textSearcher.onNoteTagsUpdated(data => {
+      const { searchResults, activeNoteId } = store.$state;
       data
-        .filter(({ noteId, matches: tags }) => JSON.stringify(tags) !== JSON.stringify(store.$state.noteTags[noteId]))
-        .forEach(({ noteId, matches: tags }) => {
-          const currentNoteTagsForNote = store.$state.noteTags.filter(nt => nt.noteId === noteId);
-          const toRemove = currentNoteTagsForNote.filter(nt => !tags.some(t => t.id === nt.id && nt.from === t.from && nt.to === t.to));
-          const toInsert = tags.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id && nt.from === t.from && nt.to === t.to));
+        .filter(({ noteId, matches }) => JSON.stringify(matches) !== JSON.stringify(searchResults[noteId]))
+        .forEach(({ noteId, matches }) => {
+          const currentNoteTagsForNote = searchResults.filter(nt => nt.noteId === noteId);
+          const toRemove = currentNoteTagsForNote.filter(nt => !matches.some(t => t.id === nt.id && nt.from === t.from && nt.to === t.to));
+          const toInsert = matches.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id && nt.from === t.from && nt.to === t.to));
           if (toRemove.length)
-            store.noteTags
+            store.searchResults
               .$filter.noteId.$eq(noteId)
               .$and.id.$in(toRemove.map(t => t.id).distinct())
               .$and.from.$in(toRemove.map(t => t.from).distinct())
               .$and.to.$in(toRemove.map(t => t.to).distinct())
               .$delete();
           if (toInsert.length)
-            store.noteTags.$pushMany(toInsert.map(t => ({ ...t, noteId })));
+            store.searchResults.$pushMany(toInsert.map(t => ({ ...t, noteId })));
         });
       if (!first) return;
       first = false;
-      const synonymIds = data.find(e => e.noteId === store.$state.activeNoteId)!.matches.map(t => t.synonymId!).distinct();
+      const synonymIds = data.find(e => e.noteId === activeNoteId)!.matches.map(t => t.synonymId!).distinct();
       store.synonymIds.$set(synonymIds);
       component.completeAsyncProcess();
     });

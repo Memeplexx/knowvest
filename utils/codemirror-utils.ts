@@ -209,7 +209,7 @@ export const reviseEditorTags = (
     flag?: boolean | undefined
   }
 ) => {
-  const noteTags = store.$state.noteTags.filter(nt => nt.noteId === args.noteId);
+  const noteTags = store.$state.searchResults.filter(nt => nt.noteId === args.noteId);
   type PreviousPositions = EditorView & { previousPositions: Array<SearchResult & { decoration?: Decoration }> }
   const previousPositions = (args.codeMirror as PreviousPositions).previousPositions || [];
   const newTagPositions = [

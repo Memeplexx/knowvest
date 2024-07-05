@@ -12,7 +12,7 @@ import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { tags, groups, synonymGroups, notes, noteTags, isMobileWidth } = useStore();
+  const { tags, groups, synonymGroups, notes, searchResults, isMobileWidth } = useStore();
   const { local, state } = useLocalStore('search', initialState);
   useMemo(() => addToWhitelist([local.hoveredSynonymId, local.hoveredGroupId, local.hoveredSearchTerm]), [local]);
   const { selectedGroupIds, enabledGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane, enabledSearchTerms } = state;
@@ -28,10 +28,10 @@ export const useInputs = () => {
         value: `${tags[0]!.synonymId}-synonym`,
         type: 'synonym',
         label: `${tags.map(t => t.text).join(', ')}`,
-        count: noteTags.filter(nt => tags.some(t => t.synonymId === nt.synonymId)).map(nt => nt.noteId).distinct().length,
+        count: searchResults.filter(nt => tags.some(t => t.synonymId === nt.synonymId)).map(nt => nt.noteId).distinct().length,
         id: tags[0]!.synonymId,
       } as AutocompleteOptionType))
-  }, [noteTags, tags]);
+  }, [searchResults, tags]);
 
   const autocompleteSynonymOptionsFilteredBySelection = useMemo(() => {
     return autocompleteSynonymOptions
@@ -46,9 +46,9 @@ export const useInputs = () => {
         type: 'group',
         label: group.name,
         id: group.id,
-        count: noteTags.filter(nt => groupSynonymIds.includes(nt.synonymId!)).map(nt => nt.noteId).distinct().length,
+        count: searchResults.filter(nt => groupSynonymIds.includes(nt.synonymId!)).map(nt => nt.noteId).distinct().length,
       } as AutocompleteOptionType));
-  }, [groups, noteTags, synonymGroups]);
+  }, [groups, searchResults, synonymGroups]);
 
   const autocompleteGroupOptionsFilteredBySelection = useMemo(() => {
     return autocompleteGroupOptions
@@ -95,18 +95,18 @@ export const useInputs = () => {
     const tagIds = tags
       .filter(t => enabledSynonymIds.includes(t.synonymId))
       .map(t => t.id);
-    return noteTags
+    return searchResults
       .filter(noteTag => tagIds.includes(noteTag.id))
-  }, [tags, noteTags, enabledSynonymIds]);
+  }, [tags, searchResults, enabledSynonymIds]);
 
   const notesByGroupSynonymIds = useMemo(() => {
     const enabledGroupSynonymIds = synonymGroups.filter(sg => enabledGroupIds.includes(sg.groupId)).flatMap(sg => sg.synonymId).distinct();
     const tagIds = tags
       .filter(t => enabledGroupSynonymIds.includes(t.synonymId))
       .map(t => t.id);
-    return noteTags
+    return searchResults
       .filter(noteTag => tagIds.includes(noteTag.id))
-  }, [synonymGroups, tags, noteTags, enabledGroupIds]);
+  }, [synonymGroups, tags, searchResults, enabledGroupIds]);
 
   const notesBySearchTerms = useMemo(() => {
     return state.searchResults

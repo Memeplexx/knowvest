@@ -24,7 +24,7 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       local.confirmDeleteNote.$set(false);
       const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
       store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
-      const tagIds = store.$state.noteTags.filter(nt => nt.noteId === nextMostRecentlyViewedNoteId).map(nt => nt.id);
+      const tagIds = store.$state.searchResults.filter(nt => nt.noteId === nextMostRecentlyViewedNoteId).map(nt => nt.id);
       const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.synonymIds.$set(synonymIds);
       notify.success('Note deleted');
@@ -66,7 +66,7 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
     onClickFilterNotesFromSelection: () => {
       const { from, to } = editor!.state.selection.ranges[0]!;
       const selection = editor!.state.doc.sliceString(from, to).toLowerCase();
-      const synonymIds = store.$state.noteTags
+      const synonymIds = store.$state.searchResults
         .filter(nt => nt.noteId === store.$state.activeNoteId && selection.includes(nt.text.toLowerCase()))
         .map(nt => nt.synonymId!)
         .distinct();

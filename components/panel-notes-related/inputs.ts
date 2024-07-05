@@ -5,12 +5,12 @@ import { pageSize } from "./constants";
 
 export const useInputs = () => {
 
-  const { notes, synonymIds, activeNoteId, noteTags } = useStore();
+  const { notes, synonymIds, activeNoteId, searchResults } = useStore();
   const { local, state: { index } } = useLocalStore('relatedItems', { index: 0 });
   const router = useRouter();
 
   const items = useMemo(() => {
-    return noteTags
+    return searchResults
       .filter(nt => nt.noteId !== activeNoteId)
       .groupBy(nt => nt.noteId)
       .map(group => ({
@@ -26,7 +26,7 @@ export const useInputs = () => {
         matches: `${e.count} match${e.count === 1 ? '' : 'es'}`,
       }))
       .filter(e => !!e.note); // note may not be found when note is deleted
-  }, [activeNoteId, index, notes, synonymIds, noteTags]);
+  }, [activeNoteId, index, notes, synonymIds, searchResults]);
 
   return {
     local,

@@ -5,12 +5,12 @@ import { initialState } from "./constants";
 
 export const useInputs = () => {
 
-  const { activeNoteId, tags, synonymIds, synonymGroups, groups, noteTags, configureTags } = useStore();
+  const { activeNoteId, tags, synonymIds, synonymGroups, groups, searchResults, configureTags } = useStore();
   const { local, state } = useLocalStore('tagsComponent', initialState);
   useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
   const tagsForActiveNote = useMemo(() => {
-    return noteTags
+    return searchResults
       .filter(nt => nt.noteId === activeNoteId)
       .map(tn => tn.synonymId)
       .distinct()
@@ -26,10 +26,10 @@ export const useInputs = () => {
           last: index === array.length - 1,
         })),
       }));
-  }, [noteTags, activeNoteId, tags, synonymIds]);
+  }, [searchResults, activeNoteId, tags, synonymIds]);
 
   const groupsWithSynonyms = useMemo(() => {
-    return noteTags
+    return searchResults
       .filter(nt => nt.noteId === activeNoteId)
       .map(tn => tn.synonymId)
       .distinct()
@@ -54,7 +54,7 @@ export const useInputs = () => {
               })),
           })),
       }));
-  }, [activeNoteId, groups, synonymGroups, synonymIds, noteTags, tags]);
+  }, [activeNoteId, groups, synonymGroups, synonymIds, searchResults, tags]);
 
   const allActiveTagsSelected = useMemo(() => {
     return tagsForActiveNote
