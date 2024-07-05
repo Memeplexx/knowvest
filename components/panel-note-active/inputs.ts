@@ -105,7 +105,7 @@ export const useInputs = () => {
   component.listen = store.synonymIds.$onChange(doRemoveEditorTags);
   component.listen = store.synonymGroups.$onChange(doRemoveEditorTags);
   component.listen = derive(store.activeNoteId, store.searchResults)
-    .$with((activeNoteId, noteTags) => noteTags.filter(nt => nt.noteId === activeNoteId))
+    .$with((activeNoteId, searchResults) => searchResults.filter(nt => nt.noteId === activeNoteId))
     .$onChange(doRemoveEditorTags);
   component.listen = store.activeNoteId.$onChange(activeNoteId => editor.current!.dispatch({
     changes: {

@@ -11,8 +11,8 @@ export const useInputs = () => {
 
   const items = useMemo(() => {
     return searchResults
-      .filter(nt => nt.noteId !== activeNoteId)
-      .groupBy(nt => nt.noteId)
+      .filter(r => r.noteId !== activeNoteId)
+      .groupBy(r => r.noteId)
       .map(group => ({
         noteId: group[0]!.noteId,
         count: group.filter(nt => synonymIds.includes(nt.synonymId!)).length,

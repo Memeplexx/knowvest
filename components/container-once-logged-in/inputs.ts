@@ -101,7 +101,7 @@ export const useInputs = () => {
       const { searchResults, activeNoteId } = store.$state;
       data
         .filter(({ noteId, matches }) => JSON.stringify(matches) !== JSON.stringify(searchResults[noteId]))
-        .forEach(({ noteId, matches }) => {
+        .forEach(function receiveSearchResults({ noteId, matches }) {
           const currentNoteTagsForNote = searchResults.filter(nt => nt.noteId === noteId);
           const toRemove = currentNoteTagsForNote.filter(nt => !matches.some(t => t.id === nt.id && nt.from === t.from && nt.to === t.to));
           const toInsert = matches.filter(t => !currentNoteTagsForNote.some(nt => nt.id === t.id && nt.from === t.from && nt.to === t.to));

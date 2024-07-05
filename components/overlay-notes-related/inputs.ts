@@ -11,7 +11,7 @@ export const useInputs = () => {
 
   const tagsForActiveNote = useMemo(() => {
     return searchResults
-      .filter(nt => nt.noteId === activeNoteId)
+      .filter(r => r.noteId === activeNoteId)
       .map(tn => tn.synonymId)
       .distinct()
       .map(synonymId => tags.filter(t => t.synonymId === synonymId))
@@ -30,7 +30,7 @@ export const useInputs = () => {
 
   const groupsWithSynonyms = useMemo(() => {
     return searchResults
-      .filter(nt => nt.noteId === activeNoteId)
+      .filter(r => r.noteId === activeNoteId)
       .map(tn => tn.synonymId)
       .distinct()
       .flatMap(synonymId => synonymGroups.filter(sg => sg.synonymId === synonymId))

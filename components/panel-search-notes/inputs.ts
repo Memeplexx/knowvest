@@ -28,7 +28,7 @@ export const useInputs = () => {
         value: `${tags[0]!.synonymId}-synonym`,
         type: 'synonym',
         label: `${tags.map(t => t.text).join(', ')}`,
-        count: searchResults.filter(nt => tags.some(t => t.synonymId === nt.synonymId)).map(nt => nt.noteId).distinct().length,
+        count: searchResults.filter(r => tags.some(t => t.synonymId === r.synonymId)).map(r => r.noteId).distinct().length,
         id: tags[0]!.synonymId,
       } as AutocompleteOptionType))
   }, [searchResults, tags]);

@@ -209,17 +209,17 @@ export const reviseEditorTags = (
     flag?: boolean | undefined
   }
 ) => {
-  const noteTags = store.$state.searchResults.filter(nt => nt.noteId === args.noteId);
+  const searchResults = store.$state.searchResults.filter(r => r.noteId === args.noteId);
   type PreviousPositions = EditorView & { previousPositions: Array<SearchResult & { decoration?: Decoration }> }
   const previousPositions = (args.codeMirror as PreviousPositions).previousPositions || [];
   const newTagPositions = [
-    ...noteTags
+    ...searchResults
       .filter(tag => args.synonymIds.includes(tag.synonymId!))
       .flatMap(tag => ({
         ...tag,
         decoration: highlight
       })),
-    ...noteTags
+    ...searchResults
       .filter(tag => (args.groupSynonymIds ?? []).includes(tag.synonymId!))
       .flatMap(tag => ({
         ...tag,
