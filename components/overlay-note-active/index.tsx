@@ -26,7 +26,7 @@ export const OverlayNoteActive = () => {
         overlay={
           <>
             <PopupOption
-              onClick={outputs.onClickCreateNote}
+              onClick={outputs.onClickCreateNote.bind(this)}
               children={
                 <>
                   Create new note
@@ -35,7 +35,7 @@ export const OverlayNoteActive = () => {
               }
             />
             <PopupOption
-              onClick={outputs.onClickDuplicateNote}
+              onClick={outputs.onClickDuplicateNote.bind(this)}
               children={
                 <>
                   Duplicate this note
@@ -45,7 +45,7 @@ export const OverlayNoteActive = () => {
             />
             <PopupOption
               disabled={!inputs.mayDeleteNote}
-              onClick={outputs.onClickRequestDeleteNote}
+              onClick={outputs.onClickRequestDeleteNote.bind(this)}
               children={
                 <>
                   Delete this note
@@ -54,7 +54,7 @@ export const OverlayNoteActive = () => {
               }
             />
             <PopupOption
-              onClick={outputs.onClickCreateFlashCard}
+              onClick={outputs.onClickCreateFlashCard.bind(this)}
               children={
                 <>
                   Create Flash Card
@@ -68,8 +68,8 @@ export const OverlayNoteActive = () => {
       <OverlayConfirmation
         if={inputs.showConfirmDeleteDialog}
         storeKey='deleteNote'
-        onClose={outputs.onClickCancelRemoveNote}
-        onConfirm={outputs.onClickConfirmRemoveNote}
+        onClose={outputs.onClickCancelRemoveNote.bind(this)}
+        onConfirm={outputs.onClickConfirmRemoveNote.bind(this)}
         title='Delete note requested'
         message='Are you sure you want to delete this note?'
       />

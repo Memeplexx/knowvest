@@ -7,10 +7,10 @@ import { useOutputs } from './outputs';
 import { Floating, Foreground } from './styles';
 
 
-export const OverlayPopup = forwardRef(function Popup(
+const Popup = (
   props: Props,
   forwardedRef: ForwardedRef<PopupHandle>
-) {
+) => {
   const inputs = useInputs(props, forwardedRef);
   const outputs = useOutputs(inputs);
   return (
@@ -21,7 +21,7 @@ export const OverlayPopup = forwardRef(function Popup(
       })}
       <Overlay
         if={inputs.showInternal}
-        onClickBackdrop={outputs.onClickBackdrop}
+        onClickBackdrop={outputs.onClickBackdrop.bind(this)}
         blurBackdrop={true}
         overlay={
           <Floating
@@ -39,4 +39,6 @@ export const OverlayPopup = forwardRef(function Popup(
       />
     </>
   )
-});
+}
+
+export const OverlayPopup = forwardRef(Popup);

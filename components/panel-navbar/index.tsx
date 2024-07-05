@@ -45,7 +45,7 @@ export const PanelNavbar = (
                 />
                 <HamburgerButton
                   if={inputs.isMobileWidth}
-                  onClick={outputs.onClickHamburger}
+                  onClick={outputs.onClickHamburger.bind(this)}
                   children={<HamburgerIcon />}
                 />
                 <PageTitle
@@ -122,7 +122,7 @@ export const PanelNavbar = (
                     <>
                       <PopupOption
                         children='Sign Out'
-                        onClick={outputs.onClickSignOut}
+                        onClick={outputs.onClickSignOut.bind(this)}
                       />
                       <PopupOption
                         children='Settings'

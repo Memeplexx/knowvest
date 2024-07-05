@@ -64,7 +64,7 @@ const PlaceholderFragment = ({ inputs, outputs }: FragmentProps) => {
           No tags associated with active note
           <ControlButtonFancy
             children='Configure tags'
-            onClick={outputs.onShowDialog}
+            onClick={outputs.onShowDialog.bind(this)}
             aria-label="Configure tags"
             highlighted={true}
           />
@@ -82,7 +82,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
           <ActiveHeaderTag
             if={!!inputs.tagsForActiveNote.length}
             $selected={inputs.allActiveTagsSelected}
-            onClick={outputs.onChangeAllActiveTagsSelected}
+            onClick={outputs.onChangeAllActiveTagsSelected.bind(this)}
             children='Active'
             $first={true}
             $last={true}
@@ -98,7 +98,7 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                     $first={tag.first}
                     $last={tag.last}
                     children={tag.text}
-                    onClick={() => outputs.onClickSynonym(tag.synonymId)}
+                    onClick={outputs.onClickSynonym.bind(this, tag.synonymId)}
                   />
                 ))}
               />
@@ -120,7 +120,7 @@ const GroupSynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
             <>
               <GroupHeaderTag
                 $selected={!!inputs.allGroupTagsSelected.get(group.groupId)}
-                onClick={() => outputs.onChangeAllGroupTagsSelected(group.groupId)}
+                onClick={outputs.onChangeAllGroupTagsSelected.bind(this, group.groupId)}
                 children={`Group: ${group.groupName}`}
                 $first={true}
                 $last={true}
@@ -133,9 +133,9 @@ const GroupSynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                     $first={tag.first}
                     $last={tag.last}
                     $selected={(inputs.hoveringGroupId === group.groupId && inputs.hoveringSynonymId === synonym.id) || synonym.selected}
-                    onMouseOver={() => outputs.onMouseOverGroupTag(group.groupId, synonym.id)}
-                    onMouseOut={outputs.onMouseOutGroupTag}
-                    onClick={() => outputs.onClickSynonym(synonym.id)}
+                    onMouseOver={outputs.onMouseOverGroupTag.bind(this, group.groupId, synonym.id)}
+                    onMouseOut={outputs.onMouseOutGroupTag.bind(this)}
+                    onClick={outputs.onClickSynonym.bind(this, synonym.id)}
                   />
                 )))}
               />

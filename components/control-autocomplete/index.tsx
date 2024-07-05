@@ -7,10 +7,10 @@ import { useOutputs } from './outputs';
 import { ButtonsWrapper, ClearIcon, ClearTextButton, ControlAutocompleteWrapper, ErrorMsg, Input, OptionItem, Options } from './styles';
 
 
-export const ControlAutocomplete = forwardRef(function Autocomplete<Option extends OptionBase>(
+const Autocomplete = <Option extends OptionBase>(
   props: Props<Option>,
   forwardedRef: ForwardedRef<AutocompleteHandle>
-) {
+) => {
   const inputs = useInputs(props, forwardedRef);
   const outputs = useOutputs(props, inputs);
   return (
@@ -23,10 +23,10 @@ export const ControlAutocomplete = forwardRef(function Autocomplete<Option exten
             type='text'
             ref={inputs.floatingRef.refs.setReference}
             value={props.inputText}
-            onChange={outputs.onChangeInput}
-            onKeyDown={outputs.onKeyDownInput}
-            onKeyUp={outputs.onKeyUpInput}
-            onClick={outputs.onClickInput}
+            onChange={outputs.onChangeInput.bind(this)}
+            onKeyDown={outputs.onKeyDownInput.bind(this)}
+            onKeyUp={outputs.onKeyUpInput.bind(this)}
+            onClick={outputs.onClickInput.bind(this)}
             placeholder={props.inputPlaceholder}
             $hasError={!!props.error}
             disabled={props.disabled}
@@ -35,7 +35,7 @@ export const ControlAutocomplete = forwardRef(function Autocomplete<Option exten
             children={
               <ClearTextButton
                 if={!!props.inputText.trim() && !props.disabled}
-                onClick={outputs.onClickClearText}
+                onClick={outputs.onClickClearText.bind(this)}
                 title='Clear text'
                 aria-label='Clear text'
                 children={<ClearIcon />}
@@ -48,8 +48,8 @@ export const ControlAutocomplete = forwardRef(function Autocomplete<Option exten
           />
           <Overlay
             if={props.showOptions}
-            onClickBackdrop={outputs.onHideOptions}
-            onEscapeKeyPressed={outputs.onHideOptions}
+            onClickBackdrop={outputs.onHideOptions.bind(this)}
+            onEscapeKeyPressed={outputs.onHideOptions.bind(this)}
             blurBackdrop={false}
             overlay={
               <Options
@@ -60,9 +60,9 @@ export const ControlAutocomplete = forwardRef(function Autocomplete<Option exten
                     type='button'
                     key={option.value}
                     tabIndex={0}
-                    onKeyDown={outputs.onKeyDownOption}
-                    onKeyUp={e => outputs.onKeyUpOption(option.value, e)}
-                    onClick={e => outputs.onClickOption(option.value, e)}
+                    onKeyDown={outputs.onKeyDownOption.bind(this)}
+                    onKeyUp={outputs.onKeyUpOption.bind(this, option.value)}
+                    onClick={outputs.onClickOption.bind(this, option.value)}
                     children={props.renderOption?.(option) || option.label}
                   />
                 ))}
@@ -73,4 +73,6 @@ export const ControlAutocomplete = forwardRef(function Autocomplete<Option exten
       }
     />
   );
-});
+}
+
+export const ControlAutocomplete = forwardRef(Autocomplete);

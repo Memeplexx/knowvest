@@ -27,7 +27,7 @@ export const ContainerWithSideNav = (props: PropsWithChildren<Props>) => {
           />
           {props.mainContent}
           <SideNavOverlay
-            onClick={outputs.onClickMainOverlay}
+            onClick={outputs.onClickMainOverlay.bind(this)}
             $show={props.show}
           />
         </>

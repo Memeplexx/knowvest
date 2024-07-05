@@ -35,19 +35,19 @@ export const useOutputs = (inputs: Inputs) => {
       local.selectedGroupIds.$find.$eq(groupId).$delete();
       local.enabledGroupIds.$find.$eq(groupId).$delete();
     },
-    onMouseOverSynonym: (synonymId: SynonymId) => () => {
+    onMouseOverSynonym: (synonymId: SynonymId) => {
       local.hoveredSynonymId.$set(synonymId);
     },
     onMouseOutSynonym: () => {
       local.hoveredSynonymId.$set(null);
     },
-    onMouseOverGroup: (groupId: GroupId) => () => {
+    onMouseOverGroup: (groupId: GroupId) => {
       local.hoveredGroupId.$set(groupId);
     },
     onMouseOutGroup: () => {
       local.hoveredGroupId.$set(null);
     },
-    onMouseOverSearchTerm: (term: string) => () => {
+    onMouseOverSearchTerm: (term: string) => {
       local.hoveredSearchTerm.$set(term);
     },
     onMouseOutSearchTerm: () => {
@@ -78,7 +78,7 @@ export const useOutputs = (inputs: Inputs) => {
       if (inputs.showingPane === 'results')
         return local.$patch({ showingPane: 'search', showSearchPane: true, showResultsPane: false })
     },
-    onClickToggleSynonym: (synonymId: SynonymId) => (event: MouseEvent) => {
+    onClickToggleSynonym: (synonymId: SynonymId, event: MouseEvent) => {
       event.stopPropagation();
       const toggledSynonymIds = local.$state.enabledSynonymIds;
       if (toggledSynonymIds.includes(synonymId))
@@ -86,7 +86,7 @@ export const useOutputs = (inputs: Inputs) => {
       else
         local.enabledSynonymIds.$push(synonymId);
     },
-    onClickToggleGroup: (groupId: GroupId) => (event: MouseEvent) => {
+    onClickToggleGroup: (groupId: GroupId, event: MouseEvent) => {
       event.stopPropagation();
       const toggledGroupIds = local.$state.enabledGroupIds;
       if (toggledGroupIds.includes(groupId))
@@ -97,18 +97,16 @@ export const useOutputs = (inputs: Inputs) => {
     onClickStartOver: () => {
       local.$set(initialState);
     },
-    onClickToggleSearchTerm: (term: string) => () => {
+    onClickToggleSearchTerm: (term: string) => {
       const toggledSearchTerms = local.$state.enabledSearchTerms;
       if (toggledSearchTerms.includes(term))
         local.enabledSearchTerms.$find.$eq(term).$delete();
       else
         local.enabledSearchTerms.$push(term);
     },
-    onClickRemoveSearchTerm: (term: string) => () => {
+    onClickRemoveSearchTerm: (term: string) => {
       local.selectedSearchTerms.$filter.$eq(term).$delete();
       local.enabledSearchTerms.$filter.$eq(term).$delete();
     }
   };
 }
-
-// const bindEventHandlerWithArg = <A>(arg: A) => <E>(handler: (arg0: A, arg: E) => void) => handler(arg);

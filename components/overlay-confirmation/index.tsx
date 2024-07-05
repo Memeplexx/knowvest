@@ -13,8 +13,8 @@ export const OverlayConfirmation = (
   const outputs = useOutputs(props, inputs);
   return (
     <OverlayConfirmationWrapper
-      onBackdropClick={outputs.onClickCancel}
-      onClose={outputs.onClickCancel}
+      onBackdropClick={outputs.onClickCancel.bind(this)}
+      onClose={outputs.onClickCancel.bind(this)}
       if={props.if}
       children={
         <DialogBody
@@ -32,18 +32,18 @@ export const OverlayConfirmation = (
                     <CancelButton
                       selected={inputs.selection === 'cancel'}
                       highlighted={false}
-                      onMouseDown={outputs.onMouseDownCancel}
-                      onMouseLeave={outputs.onMouseLeaveButton}
-                      onClick={outputs.onClickCancel}
+                      onMouseDown={outputs.onMouseDownCancel.bind(this)}
+                      onMouseLeave={outputs.onMouseLeaveButton.bind(this)}
+                      onClick={outputs.onClickCancel.bind(this)}
                       children={props.cancelText || 'Cancel'}
                       aria-label='Cancel'
                     />
                     <ConfirmButton
                       selected={inputs.selection === 'confirm'}
                       highlighted={false}
-                      onMouseDown={outputs.onMouseDownConfirm}
-                      onMouseLeave={outputs.onMouseLeaveButton}
-                      onClick={outputs.onClickConfirm}
+                      onMouseDown={outputs.onMouseDownConfirm.bind(this)}
+                      onMouseLeave={outputs.onMouseLeaveButton.bind(this)}
+                      onClick={outputs.onClickConfirm.bind(this)}
                       children={props.confirmText || 'Confirm'}
                       aria-label='Confirm'
                     />

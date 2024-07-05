@@ -7,7 +7,7 @@ import { useOutputs } from './outputs';
 import { AutocompleteOption, BodyGroup, BodyHeader, CategoryWrapper, Footer, FooterButton, Header, Icon, NoResultsIcon, NoResultsWrapper, OptionLabel, OptionLabelSuffix, PageTitle, PanelSearchNotesWrapper, RemoveButton, RemoveIcon, Result, ResultWrapper, ResultsContent, SearchContent, SearchIcon, SearchPageBody, Tag, TagsOuterWrapper, TagsWrapper } from './styles';
 
 
-export function PanelSearchNotes() {
+export const PanelSearchNotes = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   const fragmentProps = { inputs, outputs };
@@ -57,7 +57,7 @@ export function PanelSearchNotes() {
                   children={
                     <FooterButton
                       if={inputs.isMobileWidth}
-                      onClick={outputs.onClickTabButton}
+                      onClick={outputs.onClickTabButton.bind(this)}
                       highlighted={false}
                       children={inputs.showResultsPane ? 'View search' : `View results (${inputs.notesFound.length})`}
                       aria-label={inputs.showResultsPane ? 'View search' : 'View results'}
@@ -65,7 +65,7 @@ export function PanelSearchNotes() {
                   }
                 />
                 <FooterButton
-                  onClick={outputs.onClickStartOver}
+                  onClick={outputs.onClickStartOver.bind(this)}
                   children='Start over'
                   aria-label='Start over'
                   title='Start a new search'
@@ -96,13 +96,13 @@ const SearchFragment = ({ inputs, outputs }: FragmentProps) => {
             ref={inputs.autocompleteRef}
             options={inputs.autocompleteOptions}
             inputPlaceholder='Start typing...'
-            onValueChange={outputs.onAutocompleteSelected}
-            onInputTextChange={outputs.onAutocompleteInputChange}
-            onInputEnterKeyUp={outputs.onAutocompleteInputEnterKeyUp}
+            onValueChange={outputs.onAutocompleteSelected.bind(this)}
+            onInputTextChange={outputs.onAutocompleteInputChange.bind(this)}
+            onInputEnterKeyUp={outputs.onAutocompleteInputEnterKeyUp.bind(this)}
             inputText={inputs.autocompleteText}
-            onShowOptionsChange={outputs.onAutocompleteShowOptionsChange}
+            onShowOptionsChange={outputs.onAutocompleteShowOptionsChange.bind(this)}
             showOptions={inputs.showAutocompleteOptions}
-            onInputClicked={outputs.onAutocompleteInputFocused}
+            onInputClicked={outputs.onAutocompleteInputFocused.bind(this)}
             renderOption={option => (
               <AutocompleteOption
                 children={
@@ -141,14 +141,14 @@ const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
                     <>
                       <Tag
                         children={term}
-                        onClick={outputs.onClickToggleSearchTerm(term)}
+                        onClick={outputs.onClickToggleSearchTerm.bind(this, term)}
                         $rightGap={false}
                         $hovered={term === inputs.hoveredSearchTerm}
                         $disabled={!inputs.enabledSearchTerms.includes(term)}
                         $rightMost={false}
                         $leftMost={true}
-                        onMouseOver={outputs.onMouseOverSearchTerm(term)}
-                        onMouseOut={outputs.onMouseOutSearchTerm}
+                        onMouseOver={outputs.onMouseOverSearchTerm.bind(this, term)}
+                        onMouseOut={outputs.onMouseOutSearchTerm.bind(this)}
                         $type='searchTerm'
                       />
                       <Tag
@@ -157,11 +157,11 @@ const SearchTermsFragment = ({ inputs, outputs }: FragmentProps) => {
                         $rightMost={true}
                         $rightGap={true}
                         $disabled={!inputs.enabledSearchTerms.includes(term)}
-                        onMouseOver={outputs.onMouseOverSearchTerm(term)}
-                        onMouseOut={outputs.onMouseOutSearchTerm}
+                        onMouseOver={outputs.onMouseOverSearchTerm.bind(this, term)}
+                        onMouseOut={outputs.onMouseOutSearchTerm.bind(this)}
                         children={
                           <RemoveButton
-                            onClick={outputs.onClickRemoveSearchTerm(term)}
+                            onClick={outputs.onClickRemoveSearchTerm.bind(this, term)}
                             children={<RemoveIcon />}
                           />
                         }
@@ -198,9 +198,9 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                           $hovered={tag.synonymId === inputs.hoveredSynonymId}
                           $leftMost={index === 0}
                           $disabled={!inputs.enabledSynonymIds.includes(tag.synonymId)}
-                          onMouseOver={outputs.onMouseOverSynonym(tag.synonymId)}
-                          onMouseOut={outputs.onMouseOutSynonym}
-                          onClick={outputs.onClickToggleSynonym(tag.synonymId)}
+                          onMouseOver={outputs.onMouseOverSynonym.bind(this, tag.synonymId)}
+                          onMouseOut={outputs.onMouseOutSynonym.bind(this)}
+                          onClick={outputs.onClickToggleSynonym.bind(this, tag.synonymId)}
                           $type='synonym'
                           children={tag.text}
                         />
@@ -212,11 +212,11 @@ const SynonymsFragment = ({ inputs, outputs }: FragmentProps) => {
                         $disabled={false}
                         $rightGap={true}
                         $type='synonym'
-                        onMouseOver={outputs.onMouseOverSynonym(tags[0]!.synonymId)}
-                        onMouseOut={outputs.onMouseOutSynonym}
+                        onMouseOver={outputs.onMouseOverSynonym.bind(this, tags[0]!.synonymId)}
+                        onMouseOut={outputs.onMouseOutSynonym.bind(this)}
                         children={
                           <RemoveButton
-                            onClick={() => outputs.onClickRemoveSynonym(tags[0]!.synonymId)}
+                            onClick={outputs.onClickRemoveSynonym.bind(this, tags[0]!.synonymId)}
                             children={<RemoveIcon />}
                           />
                         }
@@ -255,9 +255,9 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
                           $disabled={!inputs.enabledGroupIds.includes(group.groupId)}
                           children={tag.text}
                           $type='group'
-                          onClick={outputs.onClickToggleGroup(group.groupId)}
-                          onMouseOver={outputs.onMouseOverGroup(group.groupId)}
-                          onMouseOut={outputs.onMouseOutGroup}
+                          onClick={outputs.onClickToggleGroup.bind(this, group.groupId)}
+                          onMouseOver={outputs.onMouseOverGroup.bind(this, group.groupId)}
+                          onMouseOut={outputs.onMouseOutGroup.bind(this)}
                         />
                       ))
                     )}
@@ -267,11 +267,11 @@ const GroupsFragment = ({ inputs, outputs }: FragmentProps) => {
                       $rightMost={true}
                       $disabled={false}
                       $type='group'
-                      onMouseOver={outputs.onMouseOverGroup(group.groupId)}
+                      onMouseOver={outputs.onMouseOverGroup.bind(this, group.groupId)}
                       onMouseOut={outputs.onMouseOutGroup}
                       children={
                         <RemoveButton
-                          onClick={() => outputs.onClickRemoveGroup(group.groupId)}
+                          onClick={outputs.onClickRemoveGroup.bind(this, group.groupId)}
                           children={<RemoveIcon />}
                         />
                       }
@@ -311,7 +311,7 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
                     synonymIds={inputs.local.enabledSynonymIds}
                     groupSynonymIds={inputs.enabledGroupSynonymIds}
                     searchTerms={inputs.local.searchResults}
-                    onClick={() => outputs.onClickResult(note.note.id)}
+                    onClick={outputs.onClickResult.bind(this, note.note.id)}
                   />
                 </>
               }

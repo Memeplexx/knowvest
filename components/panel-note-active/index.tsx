@@ -52,7 +52,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                 />
                 <ActiveSelectionListItem
                   if={!inputs.selectionIsTag}
-                  onClick={outputs.onClickCreateNewTagFromSelection}
+                  onClick={outputs.onClickCreateNewTagFromSelection.bind(this)}
                   children={
                     <>
                       <CiCirclePlus />
@@ -62,7 +62,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                 />
                 <ActiveSelectionListItem
                   if={inputs.selectionIsTag}
-                  onClick={outputs.onClickConfigureSelectedTag}
+                  onClick={outputs.onClickConfigureSelectedTag.bind(this)}
                   children={
                     <>
                       <CiSettings />
@@ -71,7 +71,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   }
                 />
                 <ActiveSelectionListItem
-                  onClick={outputs.onClickSplitNoteFromSelection}
+                  onClick={outputs.onClickSplitNoteFromSelection.bind(this)}
                   children={
                     <>
                       <CiMaximize1 />
@@ -80,7 +80,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   }
                 />
                 <ActiveSelectionListItem
-                  onClick={outputs.onClickFilterNotesFromSelection}
+                  onClick={outputs.onClickFilterNotesFromSelection.bind(this)}
                   children={
                     <>
                       <CiFilter />
@@ -110,17 +110,17 @@ const FlashCardFragment = ({ inputs, outputs }: FragmentProps) => {
             <>
               <TextArea
                 value={flashCard.text}
-                onChangeDebounced={outputs.onChangeFlashCardText(flashCard.id)}
+                onChangeDebounced={outputs.onChangeFlashCardText.bind(this, flashCard.id)}
               />
               <DeleteButton
-                onClick={outputs.onClickRequestDeleteFlashCard}
+                onClick={outputs.onClickRequestDeleteFlashCard.bind(this)}
                 children={<CiTrash />}
               />
               <OverlayConfirmation
                 if={inputs.confirmDeleteFashCard}
                 storeKey='deleteFlashCard'
-                onClose={outputs.onClickCancelRemoveFlashCard}
-                onConfirm={outputs.onClickConfirmDeleteFlashCard(flashCard.id)}
+                onClose={outputs.onClickCancelRemoveFlashCard.bind(this)}
+                onConfirm={outputs.onClickConfirmDeleteFlashCard.bind(this, flashCard.id)}
                 title='Delete Flash Card requested'
                 message='Are you sure you want to delete this flash card?'
               />

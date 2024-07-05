@@ -7,9 +7,9 @@ import { useOutputs } from './outputs';
 import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, PanelNotesRelatedWrapper, Result } from './styles';
 
 
-export function PanelNotesRelated(
+export const PanelNotesRelated = (
   props: Props
-) {
+) => {
   const inputs = useInputs();
   const outputs = useOutputs(props, inputs);
   return (
@@ -22,7 +22,7 @@ export function PanelNotesRelated(
             children={inputs.items.map(note => (
               <ListItem
                 key={note.note.id}
-                onClick={outputs.onSelectNote(note.note.id)}
+                onClick={outputs.onSelectNote.bind(this, note.note.id)}
                 children={
                   <>
                     <Header

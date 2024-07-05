@@ -6,9 +6,9 @@ import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { Header, Icon, ListItem, ListItemsWrapper, NoResultsIcon, NoResultsWrapper, PanelNotesPreviousWrapper, Result, RightBorder } from './styles';
 
-export function PanelNotesPrevious(
+export const PanelNotesPrevious = (
   props: Props,
-) {
+) => {
   const inputs = useInputs();
   const outputs = useOutputs(props, inputs);
   return (
@@ -21,7 +21,7 @@ export function PanelNotesPrevious(
             children={inputs.items.map(note => (
               <ListItem
                 key={note.id}
-                onClick={outputs.onSelectNote(note.id)}
+                onClick={outputs.onSelectNote.bind(this, note.id)}
                 children={
                   <>
                     <Header

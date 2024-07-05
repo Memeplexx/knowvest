@@ -6,10 +6,11 @@ import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
 import { Body, ContainerWithStickyHeaderWrapper, StickyHeader } from './styles';
 
-export const ContainerWithStickyHeader = forwardRef(function Wrapper(
+
+const Container = (
   props: Props,
   ref: ForwardedRef<ContainerWithStickyHeaderHandle>
-) {
+) => {
   const inputs = useInputs(ref);
   const outputs = useOutputs(props, inputs);
   return (
@@ -25,11 +26,13 @@ export const ContainerWithStickyHeader = forwardRef(function Wrapper(
           <Body
             ref={inputs.bodyRef}
             children={props.body}
-            onScroll={outputs.onBodyScroll}
+            onScroll={outputs.onBodyScroll.bind(this)}
             $headerHeight={inputs.headerHeight}
           />
         </>
       }
     />
   );
-})
+}
+
+export const ContainerWithStickyHeader = forwardRef(Container)

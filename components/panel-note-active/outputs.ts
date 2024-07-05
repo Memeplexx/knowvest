@@ -123,14 +123,14 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       store.flashCards.$push(apiResponse.flashCard);
       popupRef.current?.hide();
     },
-    onChangeFlashCardText: (flashCardId: FlashCardId) => async (text: string) => {
+    onChangeFlashCardText: async (flashCardId: FlashCardId, text: string) => {
       const apiResponse = await updateFlashCardText(flashCardId, text);
       store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$set(apiResponse.flashCard);
     },
     onClickRequestDeleteFlashCard: async () => {
       local.confirmDeleteFashCard.$set(true);
     },
-    onClickConfirmDeleteFlashCard: (flashCardId: FlashCardId) => async () => {
+    onClickConfirmDeleteFlashCard: async (flashCardId: FlashCardId) => {
       const apiResponse = await archiveFlashCard(flashCardId);
       store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$delete();
       notify.success('Flash Card Deleted');

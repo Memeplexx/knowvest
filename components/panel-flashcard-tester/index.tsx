@@ -5,7 +5,7 @@ import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
 import { Answer, Body, Footer, FooterRightContent, NextButton, NoResults, NoResultsIcon, PanelFlashCardTesterWrapper, Question, ToggleViewButton } from "./styles";
 
-export function PanelFlashCardTester() {
+export const PanelFlashCardTester = () => {
   const inputs = useInputs();
   const outputs = useOutputs(inputs);
   return (
@@ -34,14 +34,14 @@ export function PanelFlashCardTester() {
               <>
                 <ToggleViewButton
                   children={inputs.showQuestions ? 'Peek' : 'Back to Question'}
-                  onClick={outputs.onToggleView}
+                  onClick={outputs.onToggleView.bind(this)}
                 />
                 <FooterRightContent
                   children={
                     <>
                       <NextButton
                         if={inputs.showQuestions}
-                        onClick={outputs.onClickWrongAnswer}
+                        onClick={outputs.onClickWrongAnswer.bind(this)}
                         children={
                           <>
                             <FaSadCry />
@@ -51,7 +51,7 @@ export function PanelFlashCardTester() {
                       />
                       <NextButton
                         if={inputs.showQuestions}
-                        onClick={outputs.onClickRightAnswer}
+                        onClick={outputs.onClickRightAnswer.bind(this)}
                         children={
                           <>
                             <FaSmileBeam />
