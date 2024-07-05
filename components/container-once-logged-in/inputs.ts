@@ -132,7 +132,7 @@ export const useInputs = () => {
       textSearcher.addTags(inserted.map(sanitizeTag));
       textSearcher.removeTags(deleted.map(t => t.id));
       textSearcher.updateTags(updated.map(sanitizeTag));
-    })
+    });
 
     // Ensure that changes to notes in the store are sent to the worker
     component.listen = store.notes.$onChangeArray(({ deleted, inserted, updated }) => {
@@ -145,7 +145,7 @@ export const useInputs = () => {
     component.listen = store.notes.$onChangeArray(async ({ deleted, inserted, updated }) => {
       await writeToDb('notes', [...inserted, ...updated]);
       await deleteFromDb('notes', deleted.map(n => n.id));
-    })
+    });
     component.listen = store.tags.$onChangeArray(async ({ deleted, inserted, updated }) => {
       await writeToDb('tags', [...inserted, ...updated]);
       await deleteFromDb('tags', deleted.map(t => t.id));

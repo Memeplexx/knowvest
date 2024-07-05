@@ -9,7 +9,7 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onScrolledToBottom: () => {
       local.index.$add(1);
     },
-    onSelectNote: (noteId: NoteId) => async () => {
+    onSelectNote: async (noteId: NoteId) => {
       local.index.$set(0);
       await onSelectNote(router, noteId);
       props.onSelectNote?.(noteId);

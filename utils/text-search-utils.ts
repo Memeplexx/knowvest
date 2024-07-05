@@ -88,7 +88,10 @@ export class Trie {
         }
       }
     }
-    return detectedResults.sort((a, b) => a.id - b.id);
+    return detectedResults
+      .map(e => ({ e, s: JSON.stringify(e) }))
+      .sort((a, b) => a.s.localeCompare(b.s))
+      .map(e => e.e);
   }
 
   remove(word: string) {
