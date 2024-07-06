@@ -1,4 +1,5 @@
 "use client";
+import { store } from '@/utils/store-utils';
 import { useRef } from 'react';
 import { ContainerWithStickyHeaderHandle } from '../container-with-sticky-header/constants';
 import { OverlayNoteActive } from '../overlay-note-active';
@@ -19,6 +20,7 @@ export function PanelHomeDesktop() {
         <>
           <HistoryPanel
             ref={historyPanelRef}
+            onScrolledToBottom={() => store.previousNotesScrollIndex.$add(1)}
             heading={
               <HistoryHeader
                 children="History"
@@ -47,6 +49,7 @@ export function PanelHomeDesktop() {
           />
           <RelatedPanel
             ref={relatedPanelRef}
+            onScrolledToBottom={() => store.relatedNotesScrollIndex.$add(1)}
             heading={
               <RelatedHeader
                 children={

@@ -10,11 +10,13 @@ import { PiPlugsConnectedFill, PiStudentFill } from "react-icons/pi";
 import { ContainerWithStickyHeader } from "../container-with-sticky-header";
 import { Inputs } from "./constants";
 import { useInputs } from "./inputs";
+import { useOutputs } from "./outputs";
 import { ContainerOnceLoggedInWrapper, LoaderPlaceholder, MenuContent, MenuItem, MenuItemLink, MenuItemSeparator, TopBar } from "./styles";
 
 
 export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode }) {
   const inputs = useInputs();
+  const outputs = useOutputs(inputs);
   return (
     <>
       <LoaderPlaceholder
@@ -37,6 +39,7 @@ export function ContainerOnceLoggedIn({ children }: { children: React.ReactNode 
             heading={<TopBar />}
             body={children}
             ref={inputs.containerWithStickyHeaderRef}
+            onScrolledToBottom={outputs.onScrolledToBottom}
           />
         }
       />

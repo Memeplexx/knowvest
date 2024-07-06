@@ -21,6 +21,8 @@ export const store = createStore({
   searchResults: new Array<SearchResult & { noteId: NoteId }>(),
   showLoader: false,
   showMenu: false,
+  previousNotesScrollIndex: 0,
+  relatedNotesScrollIndex: 0,
 });
 
 export const notesSorted = store.notes

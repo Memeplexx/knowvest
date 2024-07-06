@@ -1,16 +1,15 @@
 import { NoteId } from "@/actions/types";
 import { onSelectNote } from "@/utils/app-utils";
+import { store } from "@/utils/store-utils";
 import { Inputs, Props } from "./constants";
 
 
 export const useOutputs = (props: Props, inputs: Inputs) => {
-  const { local, router } = inputs;
+  const { router } = inputs;
   return {
-    onScrolledToBottom: () => {
-      local.index.$add(1);
-    },
     onSelectNote: async (noteId: NoteId) => {
-      local.index.$set(0);
+      if (store.$state.previousNotesScrollIndex)
+        store.previousNotesScrollIndex.$set(0);
       await onSelectNote(router, noteId);
       props.onSelectNote?.(noteId);
     }

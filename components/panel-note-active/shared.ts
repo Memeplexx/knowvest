@@ -34,7 +34,6 @@ export const createNotePersisterExtension = (debounce: number) => {
     timestamp = Date.now();
     const docText = update.state.doc.toString();
     const currentActiveNoteId = store.$state.activeNoteId;
-
     setTimeout(() => {
       const activeNoteIdHasChanged = currentActiveNoteId !== store.$state.activeNoteId;
       if (activeNoteIdHasChanged)
