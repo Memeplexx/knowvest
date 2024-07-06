@@ -74,7 +74,6 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
               </>
             }
           />
-          <MenuItemSeparator />
           <MenuItemLink
             href="./history"
             $active={inputs.routerPathName === '/app/history'}
@@ -85,6 +84,7 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
               </>
             }
           />
+          <MenuItemSeparator />
           <MenuItemLink
             href="./search"
             $active={inputs.routerPathName === '/app/search'}
@@ -97,23 +97,22 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
           />
           <MenuItemSeparator />
           <MenuItemLink
-            href="./test"
-            $active={inputs.routerPathName === '/app/test'}
-            children={
-              <>
-                <PiStudentFill />
-                Test Me
-              </>
-            }
-          />
-          <MenuItemSeparator />
-          <MenuItemLink
             href="./tags"
             $active={inputs.routerPathName === '/app/tags'}
             children={
               <>
                 <GrConfigure />
                 Tag Manager
+              </>
+            }
+          />
+          <MenuItemLink
+            href="./test"
+            $active={inputs.routerPathName === '/app/test'}
+            children={
+              <>
+                <PiStudentFill />
+                Test Me
               </>
             }
           />
