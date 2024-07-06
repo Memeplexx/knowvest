@@ -25,8 +25,7 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
       store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
       const tagIds = store.$state.searchResults.filter(r => r.noteId === nextMostRecentlyViewedNoteId).map(nt => nt.tagId);
-      const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
-      store.synonymIds.$set(synonymIds);
+      store.synonymIds.$set(store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct().sort((a, b) => a - b));
       notify.success('Note deleted');
       popupRef.current?.hide();
     },
@@ -69,7 +68,8 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       const synonymIds = store.$state.searchResults
         .filter(r => r.noteId === store.$state.activeNoteId && selection.includes(r.text.toLowerCase()))
         .map(r => r.synonymId!)
-        .distinct();
+        .distinct()
+        .sort((a, b) => a - b);
       store.synonymIds.$set(synonymIds);
       local.selection.$set('');
       notify.success(`Filtered related notes`);

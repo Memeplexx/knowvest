@@ -117,8 +117,7 @@ export const useInputs = () => {
         });
       if (!first) return;
       first = false;
-      const synonymIds = data.find(e => e.noteId === activeNoteId)!.matches.map(t => t.synonymId!).distinct();
-      store.synonymIds.$set(synonymIds);
+      store.synonymIds.$set(data.find(e => e.noteId === activeNoteId)!.matches.map(t => t.synonymId!).distinct().sort((a, b) => a - b));
       component.completeAsyncProcess();
     });
 

@@ -55,9 +55,8 @@ export const useOutputs = (inputs: Inputs) => {
     },
     onClickResult: (noteId: NoteId) => {
       const tagIds = store.$state.searchResults.filter(r => r.noteId === noteId).map(r => r.tagId);
-      const synonymIds = store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct();
       store.activeNoteId.$set(noteId);
-      store.synonymIds.$set(synonymIds);
+      store.synonymIds.$set(store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct().sort((a, b) => a - b));
       inputs.router.push('./home');
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {
