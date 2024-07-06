@@ -7,7 +7,7 @@ export type Props = {
   note: NoteDTO | null,
   synonymIds: Readable<SynonymId[]>,
   groupSynonymIds?: Readable<SynonymId[]>,
-  searchTerms?: Readable<NoteSearchResults[]>,
+  searchResults?: Readable<NoteSearchResults[]>,
   className?: string | undefined;
   onClick?: () => void;
 } & HTMLProps<HTMLDivElement>;

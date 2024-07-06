@@ -171,6 +171,6 @@ const setSearchTerms = (incomingSearchTerms: DeepReadonlyArray<string>) => {
   });
   const toPost = allNotes
     .map(note => ({ noteId: note.id, matches: trieLocal.search(note.text) }))
-    .filter(noteTags => noteTags.matches.length);
+    .filter(searchResults => searchResults.matches.length);
   postMessage({ type: 'notesSearched', value: toPost });
 }

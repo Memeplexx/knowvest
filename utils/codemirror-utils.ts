@@ -179,7 +179,7 @@ const addRange = (ranges: DecorationSet, r: { from: number, to: number }, decora
     filterFrom: r.from,
     filterTo: r.to,
     filter: () => false,
-    add: [decoration.range(r.from, r.to)]
+    add: [decoration.range(r.from, r.to)],
   })
 }
 
@@ -205,36 +205,44 @@ export const reviseEditorTags = (
     noteId: NoteId,
     synonymIds: DeepReadonlyArray<SynonymId>,
     groupSynonymIds?: DeepReadonlyArray<SynonymId> | undefined,
-    searchTerms?: DeepReadonlyArray<NoteSearchResults> | undefined,
-    flag?: boolean | undefined
+    searchResults?: DeepReadonlyArray<NoteSearchResults> | undefined,
   }
 ) => {
   const searchResults = store.$state.searchResults.filter(r => r.noteId === args.noteId);
-  type PreviousPositions = EditorView & { previousPositions: Array<SearchResult & { decoration?: Decoration }> }
-  const previousPositions = (args.codeMirror as PreviousPositions).previousPositions || [];
-  const newTagPositions = [
-    ...searchResults
-      .filter(tag => args.synonymIds.includes(tag.synonymId!))
-      .flatMap(tag => ({
-        ...tag,
-        decoration: highlight
-      })),
-    ...searchResults
-      .filter(tag => (args.groupSynonymIds ?? []).includes(tag.synonymId!))
-      .flatMap(tag => ({
-        ...tag,
-        decoration: highlight2
-      })),
-    ...!args.searchTerms ? [] : (args.searchTerms.find(nt => nt.noteId === args.noteId) ?? { matches: [] }).matches
-      .map(tag => ({
-        ...tag,
-        decoration: highlight3,
-      }))
+  type Positions = Array<SearchResult & { decoration?: Decoration }>;
+  const codeMirror = args.codeMirror as EditorView & { previousPositions1: Positions, previousPositions2: Positions, previousPositions3: Positions };
+  const previousPositions1 = codeMirror.previousPositions1 || [];
+  const previousPositions2 = codeMirror.previousPositions2 || [];
+  const previousPositions3 = codeMirror.previousPositions3 || [];
+  const newPositions1 = searchResults
+    .filter(tag => args.synonymIds.includes(tag.synonymId!))
+    .flatMap(tag => ({
+      ...tag,
+      decoration: highlight
+    }));
+  const newPositions2ThatMightOverlapWithPositions1 = searchResults
+    .filter(tag => (args.groupSynonymIds ?? []).includes(tag.synonymId!))
+    .flatMap(tag => ({
+      ...tag,
+      decoration: highlight2
+    }));
+  const newPositions2 = newPositions2ThatMightOverlapWithPositions1
+    .filter(p => !newPositions1.some(np => np.from === p.from && np.to === p.to));
+  const newPositions3 = !args.searchResults ? [] : (args.searchResults.find(nt => nt.noteId === args.noteId) ?? { matches: [] }).matches
+    .map(tag => ({
+      ...tag,
+      decoration: highlight3,
+    }));
+  const removeTagPositions = [
+    ...previousPositions1.filter(p => !newPositions1.some(np => np.from === p.from && np.to === p.to)),
+    ...previousPositions2.filter(p => !newPositions2.some(np => np.from === p.from && np.to === p.to)),
+    ...previousPositions3.filter(p => !newPositions3.some(np => np.from === p.from && np.to === p.to))
+  ]
+  const addTagPositions = [
+    ...newPositions1.filter(p => !previousPositions1.some(np => np.from === p.from && np.to === p.to)),
+    ...newPositions2.filter(p => !previousPositions2.some(np => np.from === p.from && np.to === p.to)),
+    ...newPositions3.filter(p => !previousPositions3.some(np => np.from === p.from && np.to === p.to))
   ];
-  const removeTagPositions = previousPositions
-    .filter(p => !newTagPositions.some(np => np.from === p.from && np.to === p.to && np.decoration === p.decoration));
-  const addTagPositions = newTagPositions
-    .filter(p => !previousPositions.some(np => np.from === p.from && np.to === p.to && np.decoration === p.decoration));
   const effects = [
     ...removeTagPositions.map(t => removeHighlight.of(t)),
     ...addTagPositions.map(t => addHighlight.of(t))
@@ -242,5 +250,7 @@ export const reviseEditorTags = (
   if (!args.codeMirror.state.field(highlightedRanges, false))
     effects.push(StateEffect.appendConfig.of([highlightedRanges]));
   args.codeMirror.dispatch({ effects });
-  (args.codeMirror as PreviousPositions).previousPositions = newTagPositions;
+  codeMirror.previousPositions1 = newPositions1;
+  codeMirror.previousPositions2 = newPositions2;
+  codeMirror.previousPositions3 = newPositions3;
 };

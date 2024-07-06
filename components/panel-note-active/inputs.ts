@@ -101,7 +101,7 @@ export const useInputs = () => {
   });
 
   component.listen = () => editor.current!.destroy();
-  const doRemoveEditorTags = () => reviseEditorTags({ codeMirror: editor.current!, noteId: store.$state.activeNoteId, synonymIds: store.synonymIds.$state, flag: true });
+  const doRemoveEditorTags = () => reviseEditorTags({ codeMirror: editor.current!, noteId: store.$state.activeNoteId, synonymIds: store.synonymIds.$state });
   component.listen = store.synonymIds.$onChange(doRemoveEditorTags);
   component.listen = store.synonymGroups.$onChange(doRemoveEditorTags);
   component.listen = derive(store.activeNoteId, store.searchResults)

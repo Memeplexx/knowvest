@@ -9,8 +9,8 @@ export const useOutputs = (props: Props, inputs: Inputs) => {
     onSelectNote: async (noteId: NoteId) => {
       if (store.$state.relatedNotesScrollIndex)
         store.relatedNotesScrollIndex.$set(0);
-      await onSelectNote(router, noteId);
       props.onSelectNote?.(noteId);
+      await onSelectNote(router, noteId);
     },
   };
 }

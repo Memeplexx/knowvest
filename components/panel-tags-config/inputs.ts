@@ -12,13 +12,14 @@ export const useInputs = () => {
 
   const { notes, tags, groups, synonymGroups, activeNoteId } = useStore();
   const firstSelectedTag = useMemo(() => store.$state.tags.find(t => t.id === store.$state.configureTags), []);
-  const { local, state: { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } } = useLocalStore('tagsConfig', {
+  const { local, state } = useLocalStore('tagsConfig', {
     ...initialState,
     tagId: firstSelectedTag?.id ?? null,
     synonymId: firstSelectedTag?.synonymId ?? null,
     autocompleteText: firstSelectedTag?.text ?? '',
     autocompleteAction: firstSelectedTag ? 'addSynonymsToActiveSynonyms' : null
   });
+  const { synonymId, tagId, autocompleteText, groupId, autocompleteAction, modal } = state;
   useMemo(() => addToWhitelist([local.hoveringGroupId, local.hoveringSynonymId]), [local]);
 
   const floatingRef = useFloating<HTMLButtonElement>({ placement: 'left-start' });
@@ -132,7 +133,7 @@ export const useInputs = () => {
 
   return {
     local,
-    ...local.$state,
+    ...state,
     instruction,
     activeNoteId,
     autocompleteOptions,

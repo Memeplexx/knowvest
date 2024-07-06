@@ -310,7 +310,7 @@ const ResultsFragment = ({ inputs, outputs }: FragmentProps) => {
                     note={note.note}
                     synonymIds={inputs.local.enabledSynonymIds}
                     groupSynonymIds={inputs.enabledGroupSynonymIds}
-                    searchTerms={inputs.local.searchResults}
+                    searchResults={inputs.local.searchResults}
                     onClick={outputs.onClickResult.bind(this, note.note.id)}
                   />
                 </>
