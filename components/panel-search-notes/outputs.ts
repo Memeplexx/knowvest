@@ -5,10 +5,11 @@ import { MouseEvent } from "react";
 import { Inputs, initialState } from "./constants";
 
 export const useOutputs = (inputs: Inputs) => {
-  const { local } = inputs;
+  const { local, router } = inputs;
   return {
     onAutocompleteSelected: (value: string | null) => {
-      inputs.autocompleteText && local.autocompleteText.$set('');
+      if (local.$state.autocompleteText)
+        local.autocompleteText.$set('');
       const selection = inputs.autocompleteOptions.findOrThrow(o => o.value === value);
       if (selection.type === 'synonym') {
         local.selectedSynonymIds.$push(selection.id as SynonymId);
@@ -57,7 +58,7 @@ export const useOutputs = (inputs: Inputs) => {
       const tagIds = store.$state.searchResults.filter(r => r.noteId === noteId).map(r => r.tagId);
       store.activeNoteId.$set(noteId);
       store.synonymIds.$set(store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct().sort((a, b) => a - b));
-      inputs.router.push('./home');
+      router.push('./home');
     },
     onAutocompleteShowOptionsChange: (showAutocompleteOptions: boolean) => {
       local.showAutocompleteOptions.$set(showAutocompleteOptions);
@@ -68,14 +69,11 @@ export const useOutputs = (inputs: Inputs) => {
     onDocumentKeyup: useEventHandlerForDocument('keyup', event => {
       if (event.key !== 'Escape')
         return;
-      if (inputs.showAutocompleteOptions)
+      if (local.$state.showAutocompleteOptions)
         return local.showAutocompleteOptions.$set(false);
     }),
     onClickTabButton: () => {
-      if (inputs.showingPane === 'search')
-        return local.$patch({ showingPane: 'results', showSearchPane: false, showResultsPane: true })
-      if (inputs.showingPane === 'results')
-        return local.$patch({ showingPane: 'search', showSearchPane: true, showResultsPane: false })
+      local.showingPane.$set(local.$state.showingPane === 'search' ? 'results' : 'search');
     },
     onClickToggleSynonym: (synonymId: SynonymId, event: MouseEvent) => {
       event.stopPropagation();

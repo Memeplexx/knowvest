@@ -1,21 +1,20 @@
 import { GroupId, SynonymId } from "@/actions/types";
 import { AutocompleteHandle } from "@/components/control-autocomplete/constants";
-import { useResizeListener } from "@/utils/dom-utils";
 import { useComponent } from "@/utils/react-utils";
 import { store, useLocalStore, useStore } from "@/utils/store-utils";
 import { useTextSearcher } from "@/utils/text-search-context";
 import { useRouter } from "next/navigation";
 import { derive } from "olik/derive";
 import { addToWhitelist } from "olik/devtools";
-import { useCallback, useMemo, useRef } from "react";
-import { AutocompleteOptionType, dialogWidth, initialState } from "./constants";
+import { useMemo, useRef } from "react";
+import { AutocompleteOptionType, initialState } from "./constants";
 
 export const useInputs = () => {
 
   const { tags, groups, synonymGroups, notes, searchResults, isMobileWidth } = useStore();
   const { local, state } = useLocalStore('search', initialState);
   useMemo(() => addToWhitelist([local.hoveredSynonymId, local.hoveredGroupId, local.hoveredSearchTerm]), [local]);
-  const { selectedGroupIds, enabledGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, showSearchPane, enabledSearchTerms } = state;
+  const { selectedGroupIds, enabledGroupIds, selectedSynonymIds, enabledSynonymIds, autocompleteText, showingPane, enabledSearchTerms } = state;
   const autocompleteRef = useRef<AutocompleteHandle>(null);
   const router = useRouter();
   const textSearcher = useTextSearcher();
@@ -124,18 +123,6 @@ export const useInputs = () => {
       }));
   }, [notes, notesByGroupSynonymIds, notesBySearchTerms, notesBySynonymIds]);
 
-  useResizeListener(useCallback(() => {
-    const state = local.$state;
-    const screenIsNarrow = window.innerWidth < dialogWidth;
-    const payload = {
-      showSearchPane: !screenIsNarrow || showingPane === 'search',
-      showResultsPane: !screenIsNarrow || showingPane === 'results',
-      screenIsNarrow,
-    };
-    if (payload.showSearchPane !== showSearchPane || payload.showResultsPane !== state.showResultsPane || state.screenIsNarrow !== screenIsNarrow)
-      local.$patch(payload);
-  }, [local, showSearchPane, showingPane]));
-
   const enabledGroupSynonymIds = useMemo(() => {
     return derive(
       local.enabledGroupIds,
@@ -154,7 +141,7 @@ export const useInputs = () => {
     selectedSynonymTags,
     selectedGroupTags,
     notesFound,
-    showSearchPane: showingPane === 'search',
+    showSearchPane: !isMobileWidth || showingPane === 'search',
     showResultsPane: !isMobileWidth || showingPane === 'results',
     router,
     isMobileWidth,
