@@ -83,8 +83,9 @@ export const element = function Element<P>(ComponentType: ComponentType<P>) {
   });
 };
 
-export const Portal = (props: { children: React.ReactNode, if: boolean }) => {
-  return !props.if ? <></> : createPortal(props.children, document.getElementById(globalStylesWrapperId)!);
+export const Portal = (props: { children: React.ReactNode, if: boolean, domId?: string }) => {
+  if (props.if === false) return null;
+  return createPortal(props.children, document.getElementById(props.domId ?? globalStylesWrapperId)!);
 };
 
 export const Frag = (props: { if?: boolean, children?: ReactNode }) => {

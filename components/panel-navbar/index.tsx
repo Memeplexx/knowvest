@@ -4,10 +4,10 @@ import { useComponent } from '@/utils/react-utils';
 import { PopupOption } from '@/utils/style-utils';
 import Link from 'next/link';
 import { HTMLAttributes } from 'react';
-import { createPortal } from 'react-dom';
 import { CiSettings } from 'react-icons/ci';
 import farmImage from '../../public/images/farm.svg';
 import useImage from '../../public/images/user.svg';
+import { Portal } from '../control-conditional';
 import { OverlayPopup } from '../overlay-popup';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
@@ -141,6 +141,12 @@ export const PanelNavbar = (
 
 export const HeaderAction = (props: { children: React.ReactNode }) => {
   const component = useComponent();
-  return !component.isMounted ? <></> : createPortal(props.children, document.getElementById(headerActionsId)!);
+  return (
+    <Portal
+      if={component.isMounted}
+      children={props.children}
+      domId={headerActionsId}
+    />
+  )
 }
 
