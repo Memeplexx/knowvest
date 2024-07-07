@@ -46,7 +46,7 @@ export const ActiveHeaderTag = styled(Tag)`
 export const GroupHeaderTag = styled(Tag)`
 `;
 
-export const SynonymsWrapper = styled.div`
+export const SynonymsWrapper = styled(div)`
   display: flex;
   flex-wrap: wrap;
   column-gap: 2px;
