@@ -4,9 +4,10 @@ import { PromiseObject } from "@/utils/logic-utils";
 import { useComponent } from "@/utils/react-utils";
 import { deleteFromDb, initializeDb, readFromDb, writeToDb } from "@/utils/storage-utils";
 import { store, useStore } from "@/utils/store-utils";
+import { mobileBreakPoint } from "@/utils/style-utils";
 import { useTextSearcher } from "@/utils/text-search-context";
 import { useSession } from "next-auth/react";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { configureDevtools } from "olik/devtools";
 import { useEffect, useRef } from "react";
 import { ContainerWithStickyHeaderHandle } from "../container-with-sticky-header/constants";
@@ -27,7 +28,7 @@ export const useInputs = () => {
   // Listen for changes to the window width and update the store
   useEffect(() => {
     const listener = () => {
-      const isMobileWidth = window.innerWidth < 768;
+      const isMobileWidth = window.innerWidth < parseFloat(mobileBreakPoint);
       if (store.$state.isMobileWidth === isMobileWidth) return;
       store.isMobileWidth.$set(isMobileWidth);
     }
@@ -38,8 +39,6 @@ export const useInputs = () => {
 
   // Log user out if session expired
   const session = useSession();
-  if (session.status === 'unauthenticated')
-    redirect('/?session-expired=true');
 
   // Do not continue under certain conditions
   if (!component.isMounted)

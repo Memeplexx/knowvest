@@ -10,7 +10,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   // Log user out if session expired
   const session = await getServerSession(authOptions);
-  if (!session || new Date(session.expires).getTime() < Date.now())
+  if (!session)
     redirect('/?session-expired=true');
 
   return (

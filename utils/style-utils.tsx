@@ -65,6 +65,6 @@ export const PopupOption = styled(button)`
   }
 `;
 
-export const mobileBreakPoint = '1000px';
+export const mobileBreakPoint = '768px';
 
 export const panelGap = '4px';
