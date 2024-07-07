@@ -41,6 +41,7 @@ export const useOutputs = ({ local, popupRef, notify }: Inputs) => {
       const apiResponse = await createFlashCard(store.$state.activeNoteId);
       store.flashCards.$push(apiResponse.flashCard);
       popupRef.current?.hide();
+      notify.success('Flash card created');
     },
   };
 }

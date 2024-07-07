@@ -1,10 +1,10 @@
 "use client";
-import { Overlay } from '@/utils/style-provider';
 import { ForwardedRef, forwardRef } from 'react';
+import { Portal } from '../control-conditional';
 import { PopupHandle, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Floating, Foreground } from './styles';
+import { Floating, Foreground, OverlapPopupBackdrop } from './styles';
 
 
 const Popup = (
@@ -17,21 +17,23 @@ const Popup = (
     <>
       {props.trigger({
         ref: inputs.floatingRef.refs.setReference,
-        onClick: () => setTimeout(() => outputs.onClickTrigger(), 50),
+        onClick: outputs.onClickTrigger,
       })}
-      <Overlay
-        if={inputs.showInternal}
-        onClickBackdrop={outputs.onClickBackdrop.bind(this)}
-        blurBackdrop={true}
-        overlay={
-          <Floating
-            ref={inputs.floatingRef.refs.setFloating}
-            style={inputs.floatingRef.floatingStyles}
-            onClick={e => e.stopPropagation()}
+      <Portal
+        if={inputs.show}
+        children={
+          <OverlapPopupBackdrop
+            onClick={outputs.onClickBackdrop.bind(this)}
             children={
-              <Foreground
-                style={inputs.foregroundAnimations}
-                children={props.overlay}
+              <Floating
+                ref={inputs.floatingRef.refs.setFloating}
+                style={inputs.floatingRef.floatingStyles}
+                onClick={e => e.stopPropagation()}
+                children={
+                  <Foreground
+                    children={props.overlay}
+                  />
+                }
               />
             }
           />

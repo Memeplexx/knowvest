@@ -1,4 +1,4 @@
-import { TypedKeyboardEvent } from "@/utils/dom-utils";
+import { TypedKeyboardEvent, useEventHandlerForDocument } from "@/utils/dom-utils";
 import { ChangeEvent, MouseEvent } from "react";
 import { Inputs, OptionBase, Props } from "./constants";
 
@@ -64,5 +64,9 @@ export const useOutputs = <Option extends OptionBase>(props: Props<Option>, inpu
     onHideOptions: () => {
       props.onShowOptionsChange(false);
     },
+    onEscapeKeyPressed: useEventHandlerForDocument('keyup', event => {
+      if (event.key !== 'Escape') return;
+      props.onShowOptionsChange(false);
+    }),
   };
 }

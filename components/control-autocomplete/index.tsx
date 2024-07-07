@@ -1,10 +1,10 @@
 "use client";
-import { Overlay } from '@/utils/style-provider';
 import { forwardRef, type ForwardedRef } from 'react';
+import { Portal } from '../control-conditional';
 import { AutocompleteHandle, OptionBase, Props } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ButtonsWrapper, ClearIcon, ClearTextButton, ControlAutocompleteWrapper, ErrorMsg, Input, OptionItem, Options } from './styles';
+import { ButtonsWrapper, ClearIcon, ClearTextButton, ControlAutocompleteWrapper, ErrorMsg, Input, OptionItem, Options, OptionsBackdrop } from './styles';
 
 
 const Autocomplete = <Option extends OptionBase>(
@@ -46,26 +46,28 @@ const Autocomplete = <Option extends OptionBase>(
             if={!!props.error}
             children={props.error}
           />
-          <Overlay
+          <Portal
             if={props.showOptions}
-            onClickBackdrop={outputs.onHideOptions.bind(this)}
-            onEscapeKeyPressed={outputs.onHideOptions.bind(this)}
-            blurBackdrop={false}
-            overlay={
-              <Options
-                ref={inputs.floatingRef.refs.setFloating}
-                style={inputs.floatingRef.floatingStyles}
-                children={inputs.options.map(option => (
-                  <OptionItem
-                    type='button'
-                    key={option.value}
-                    tabIndex={0}
-                    onKeyDown={outputs.onKeyDownOption.bind(this)}
-                    onKeyUp={outputs.onKeyUpOption.bind(this, option.value)}
-                    onClick={outputs.onClickOption.bind(this, option.value)}
-                    children={props.renderOption?.(option) || option.label}
+            children={
+              <OptionsBackdrop
+                onClick={outputs.onHideOptions.bind(this)}
+                children={
+                  <Options
+                    ref={inputs.floatingRef.refs.setFloating}
+                    style={inputs.floatingRef.floatingStyles}
+                    children={inputs.options.map(option => (
+                      <OptionItem
+                        type='button'
+                        key={option.value}
+                        tabIndex={0}
+                        onKeyDown={outputs.onKeyDownOption.bind(this)}
+                        onKeyUp={outputs.onKeyUpOption.bind(this, option.value)}
+                        onClick={outputs.onClickOption.bind(this, option.value)}
+                        children={props.renderOption?.(option) || option.label}
+                      />
+                    ))}
                   />
-                ))}
+                }
               />
             }
           />

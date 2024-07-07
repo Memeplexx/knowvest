@@ -1,27 +1,27 @@
 "use client";
+import { Portal } from '../control-conditional';
 import { Props } from './constants';
-import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { Foreground, OverlayModalWrapper } from './styles';
+import { OverlayModalBackDrop, OverlayModalForeground } from './styles';
 
 
 export const OverlayModal = (
   props: Props
 ) => {
-  const inputs = useInputs(props);
   const outputs = useOutputs(props);
   return (
-    <OverlayModalWrapper
-      if={!!inputs.showInternal}
-      onClickBackdrop={outputs.onClickBackdrop.bind(this)}
-      blurBackdrop={true}
-      overlay={
-        <Foreground
-          style={inputs.foregroundAnimations}
-          children={props.children}
+    <Portal
+      if={props.if}
+      children={
+        <OverlayModalBackDrop
+          onClick={outputs.onClickBackdrop.bind(this)}
+          children={
+            <OverlayModalForeground
+              children={props.children}
+            />
+          }
         />
       }
     />
   )
 }
-

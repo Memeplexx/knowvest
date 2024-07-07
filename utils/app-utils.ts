@@ -4,6 +4,9 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { } from "next/navigation";
 import { store } from "./store-utils";
 
+
+export const globalStylesWrapperId = 'global-styles-wrapper';
+
 export const onSelectNote = async (router: AppRouterInstance, noteId: NoteId) => {
   const complete = async () => {
     const { searchResults, tags } = store.$state;

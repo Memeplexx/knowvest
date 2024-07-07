@@ -1,3 +1,4 @@
+import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { Props } from "./constants";
 
 export const useOutputs = (props: Props) => {
@@ -5,5 +6,9 @@ export const useOutputs = (props: Props) => {
     onClickBackdrop: () => {
       props.onBackdropClick?.();
     },
+    onEscapeKeyPressed: useEventHandlerForDocument('keyup', event => {
+      if (event.key !== 'Escape') return;
+      props.onClose?.();
+    }),
   };
 };

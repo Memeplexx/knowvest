@@ -1,10 +1,10 @@
 "use client";
 import { useContext } from "react";
-import { createPortal } from "react-dom";
+import { Portal } from "../control-conditional";
 import { NotificationContext, Props, defaultProps, snackbarStatuses } from "./constants";
 import { useInputs } from "./inputs";
 import { useOutputs } from "./outputs";
-import { Message, OverlayNotifierWrapper, Popup } from "./styles";
+import { Message, OverlayNotifierBackdrop, OverlayNotifierForeground } from "./styles";
 
 export const useNotifier = () => useContext(NotificationContext)!
 
@@ -17,33 +17,33 @@ export function OverlayNotifier(props: Props) {
         value={outputs}
         children={props.children}
       />
-      {!inputs.initialized ? <></> : createPortal(
-        <OverlayNotifierWrapper
-          ref={inputs.floatingRef.refs.setReference}
-          children={
-            <Popup
-              ref={inputs.floatingRef.refs.setFloating}
-              style={inputs.floatingRef.floatingStyles}
-              children={inputs.messages.map((message, index) => (
-                <Message
-                  key={message.ts}
-                  $if={message.show}
-                  $index={index}
-                  $animation={props.animationDuration ?? defaultProps.animationDuration}
-                  $gap={props.stackGap ?? defaultProps.stackGap}
-                  $status={inputs.status}
-                  children={
-                    <>
-                      {snackbarStatuses[inputs.status].icon()}
-                      {props.renderMessage ? props.renderMessage(message.text) : message.text}
-                    </>
-                  }
-                />
-              ))}
-            />
-          }
-        />
-        , document.body)}
+      <Portal
+        if={inputs.initialized}
+        children={
+          <OverlayNotifierBackdrop
+            children={
+              <OverlayNotifierForeground
+                children={inputs.messages.map((message, index) => (
+                  <Message
+                    key={message.ts}
+                    $if={message.show}
+                    $index={index}
+                    $animation={props.animationDuration ?? defaultProps.animationDuration}
+                    $gap={props.stackGap ?? defaultProps.stackGap}
+                    $status={inputs.status}
+                    children={
+                      <>
+                        {snackbarStatuses[inputs.status].icon()}
+                        {props.renderMessage ? props.renderMessage(message.text) : message.text}
+                      </>
+                    }
+                  />
+                ))}
+              />
+            }
+          />
+        }
+      />
     </>
   );
 }

@@ -1,31 +1,25 @@
-import { Overlay } from "@/utils/style-provider";
 import { mobileBreakPoint } from "@/utils/style-utils";
 import { animated } from "react-spring";
 import styled from "styled-components";
+import { div } from "../control-conditional";
 
 
 
-export const OverlayModalWrapper = styled(Overlay)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ForegroundWrapper = styled.div`
+export const OverlayModalBackDrop = styled(div)`
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
-  align-items: center;
-  justify-content: center;
+  z-index: 11;
+  background-color: rgba(0,0,0,0.2);
   display: flex;
-  z-index: 5;
-  pointer-events: none;
-  filter: drop-shadow(0px 0px 15px rgba(0,0,0,1));
+  place-content: center;
 `;
 
-export const Foreground = styled(animated.div)`
+export const OverlayModalForeground = styled(animated.div)`
+  align-self: center;
+  justify-self: center;
   pointer-events: all;
   display: flex;
   flex-direction: column;

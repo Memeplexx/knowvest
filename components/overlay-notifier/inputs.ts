@@ -1,11 +1,11 @@
 import { useComponent } from "@/utils/react-utils";
 import { useLocalStore } from "@/utils/store-utils";
-import { ReferenceType, useFloating } from "@floating-ui/react";
 import { Props, defaultProps, initialState } from "./constants";
 
 export const useInputs = (props: Props) => {
 
-  const { local, state: { message } } = useLocalStore(props.storeKey, initialState);
+  const { local, state } = useLocalStore(props.storeKey, initialState);
+  const { message } = state;
 
   const maxCount = props.maxCount ?? defaultProps.maxCount;
   const animationDuration = props.animationDuration ?? defaultProps.animationDuration;
@@ -40,8 +40,7 @@ export const useInputs = (props: Props) => {
 
   return {
     local,
-    ...local.$state,
+    ...state,
     initialized: component.isMounted,
-    floatingRef: useFloating<ReferenceType>({ placement: 'bottom' }),
   };
 }

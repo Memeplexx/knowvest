@@ -38,9 +38,9 @@ export type Props = {
 };
 
 export const defaultProps = {
-  displayDuration: 3000,
+  displayDuration: 3000 + 1000,
   animationDuration: 200,
-  stackGap: 80,
+  stackGap: 50,
   maxCount: 5,
 } satisfies Partial<Props>;
 

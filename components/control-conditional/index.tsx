@@ -1,6 +1,8 @@
 "use client";
+import { globalStylesWrapperId } from "@/utils/app-utils";
 import { TypedKeyboardEvent } from "@/utils/dom-utils";
 import { ButtonHTMLAttributes, ComponentType, ForwardedRef, Fragment, HTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, forwardRef } from "react";
+import { createPortal } from "react-dom";
 
 
 type ReplaceKeyboardEvents<E extends HTMLElement, A extends HTMLAttributes<E>> = {
@@ -79,6 +81,10 @@ export const element = function Element<P>(ComponentType: ComponentType<P>) {
     if (props.if === false) return null;
     return <ComponentType ref={ref} {...stripUnKnownProps(props)}>{props.children}</ComponentType>;
   });
+};
+
+export const Portal = (props: { children: React.ReactNode, if: boolean }) => {
+  return !props.if ? <></> : createPortal(props.children, document.getElementById(globalStylesWrapperId)!);
 };
 
 export const Frag = (props: { if?: boolean, children?: ReactNode }) => {

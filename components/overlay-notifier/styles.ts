@@ -2,17 +2,14 @@ import { CiCircleAlert, CiCircleCheck, CiCircleInfo } from 'react-icons/ci';
 import styled from "styled-components";
 import { snackbarStatus, snackbarStatuses } from './constants';
 
-export const OverlayNotifierWrapper = styled.div`
+export const OverlayNotifierBackdrop = styled.div`
   position: fixed;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  top: 0;
+  left: 50%;
   pointer-events: none;
   z-index: 1000;
 `;
 
-export const Popup = styled.div`
+export const OverlayNotifierForeground = styled.div`
   pointer-events: all;
 `;
 

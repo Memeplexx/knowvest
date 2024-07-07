@@ -5,7 +5,7 @@ import { ControlButtonIcon } from '../control-button-icon';
 import { button, div, element, input } from '../control-conditional';
 
 
-export const ControlAutocompleteWrapper = styled.div`
+export const ControlAutocompleteWrapper = styled(div)`
   position: relative;
   display: flex;
 `;
@@ -60,6 +60,14 @@ export const ErrorMsg = styled(div)`
   ${p => p.if && css`
     bottom: -22px;
   `}
+`;
+
+export const OptionsBackdrop = styled(div)`
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
 `;
 
 export const Options = styled(div)`
