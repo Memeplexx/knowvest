@@ -12,7 +12,7 @@ export const OverlayModal = (
   const outputs = useOutputs(props);
   return (
     <OverlayModalWrapper
-      if={inputs.showInternal}
+      if={!!inputs.showInternal}
       onClickBackdrop={outputs.onClickBackdrop.bind(this)}
       blurBackdrop={true}
       overlay={

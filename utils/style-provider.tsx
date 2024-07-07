@@ -1,5 +1,5 @@
 "use client";
-import { IfProps, div } from "@/components/control-conditional";
+import { div } from "@/components/control-conditional";
 import { Montserrat } from "next/font/google";
 import { HTMLProps, MouseEvent, ReactNode, useRef } from "react";
 import { createPortal } from "react-dom";
@@ -35,8 +35,8 @@ type OverlayProps
     onClickBackdrop?: (event: MouseEvent) => void,
     onEscapeKeyPressed?: () => void,
     blurBackdrop: boolean,
+    if: boolean,
   }
-  & IfProps
   & HTMLProps<HTMLDivElement>;
 
 export const Overlay = (props: OverlayProps) => {
