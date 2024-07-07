@@ -3,11 +3,10 @@ import { OverlayNotifier } from '@/components/overlay-notifier';
 import '@/styles/application.css';
 import '@/styles/reset.css';
 import { NextAuthProvider } from '@/utils/auth-utils';
-import { GlobalStylesProvider } from '@/utils/style-provider';
 import StyledComponentsRegistry from '@/utils/style-utils';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from "@vercel/speed-insights/next";
-
+import { defaultFontFamily } from './fonts';
 
 export default async function RootLayout({
   children,
@@ -70,23 +69,19 @@ export default async function RootLayout({
           />
           <body
             suppressHydrationWarning={true}
+            className={defaultFontFamily.className}
             children={
               <>
                 <NextAuthProvider
                   children={
-                    <GlobalStylesProvider
+                    <OverlayNotifier
+                      storeKey='notifier'
                       children={
-                        <OverlayNotifier
-                          storeKey='notifier'
-                          children={
-                            <StyledComponentsRegistry
-                              children={children}
-                            />
-                          }
+                        <StyledComponentsRegistry
+                          children={children}
                         />
                       }
                     />
-
                   }
                 />
                 <SpeedInsights debug={false} />

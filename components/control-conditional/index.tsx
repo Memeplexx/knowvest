@@ -1,5 +1,4 @@
 "use client";
-import { globalStylesWrapperId } from "@/utils/app-utils";
 import { TypedKeyboardEvent } from "@/utils/dom-utils";
 import { ButtonHTMLAttributes, ComponentType, ForwardedRef, Fragment, HTMLAttributes, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, forwardRef } from "react";
 import { createPortal } from "react-dom";
@@ -85,7 +84,7 @@ export const element = function Element<P>(ComponentType: ComponentType<P>) {
 
 export const Portal = (props: { children: React.ReactNode, if: boolean, domId?: string }) => {
   if (props.if === false) return null;
-  return createPortal(props.children, document.getElementById(props.domId ?? globalStylesWrapperId)!);
+  return createPortal(props.children, props.domId ? document.getElementById(props.domId)! : document.getElementsByTagName('body')[0]!);
 };
 
 export const Frag = (props: { if?: boolean, children?: ReactNode }) => {
