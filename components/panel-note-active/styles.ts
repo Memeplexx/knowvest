@@ -1,5 +1,5 @@
 import { monoFontFamily } from "@/utils/style-utils";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ControlButtonIcon } from "../control-button-icon";
 import { div } from "../control-conditional";
 import { TextAreaDebounced } from "../control-debounced";
@@ -19,13 +19,14 @@ export const TextEditorWrapper = styled(div)`
   flex-direction: column;
   justify-content: space-between;
   padding: 16px 8px;
+  position: relative;
 `;
 
-export const TextEditor = styled(div)`
+export const TextEditor = styled(div) <{ $textIsSelected: boolean }>`
   ${monoFontFamily.style};
   font-size: 12px;
   color: lightgray;
-  margin-bottom: 110px;
+  ${p => p.$textIsSelected && css`margin-bottom: 110px`};
 `;
 
 export const ActiveSelectionListItem = styled(div)`
@@ -76,17 +77,16 @@ export const FlashCard = styled.div`
   flex-direction: column;
   gap: 8px;
   font-size: 12px;
-  background-color: rgba(0,0,0,0.4);
   border-radius: 4px;
-  margin: 8px;
-  margin-top: 4px;
+  padding: 8px;
+  padding-top: 4px;
   position: relative;
 `;
 
 export const DeleteButton = styled(ControlButtonIcon)`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 8px;
+  right: 8px;
   color: grey;
 `;
 
@@ -95,6 +95,7 @@ export const TextArea = styled(TextAreaDebounced)`
   padding-right: 24px;
   border: 1px solid transparent;
   border-radius: 4px;
+  background-color: rgba(0,0,0,0.4);
   &:focus {
     border-color: #949494;
   }

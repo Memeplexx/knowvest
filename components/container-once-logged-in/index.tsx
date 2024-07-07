@@ -80,7 +80,7 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             children={
               <>
                 <MdHistory />
-                Note History
+                Previous Notes
               </>
             }
           />
@@ -91,7 +91,7 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             children={
               <>
                 <IoSearch />
-                Search Notes
+                Search
               </>
             }
           />
@@ -102,7 +102,7 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             children={
               <>
                 <GrConfigure />
-                Tag Manager
+                Tags
               </>
             }
           />
@@ -112,7 +112,7 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             children={
               <>
                 <PiStudentFill />
-                Test Me
+                Test
               </>
             }
           />
@@ -120,7 +120,7 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             children={
               <>
                 <CiSettings />
-                App Settings
+                Settings
               </>
             }
           />

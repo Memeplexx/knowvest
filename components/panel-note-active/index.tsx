@@ -42,6 +42,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
         <>
           <TextEditor
             ref={inputs.editorRef}
+            $textIsSelected={!!inputs.selection.trim()}
           />
           <SelectionOptions
             if={!!inputs.selection}
