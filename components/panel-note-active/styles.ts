@@ -1,8 +1,7 @@
 import { monoFontFamily } from "@/utils/style-utils";
 import styled, { css } from "styled-components";
 import { ControlButtonIcon } from "../control-button-icon";
-import { div } from "../control-conditional";
-import { TextAreaDebounced } from "../control-debounced";
+import { div, textarea } from "../control-conditional";
 
 
 export const PanelNoteActiveWrapper = styled.div`
@@ -100,7 +99,7 @@ export const CreateFlashCardInstruction = styled(div)`
   gap: 8px;
 `;
 
-export const TextArea = styled(TextAreaDebounced)`
+export const TextArea = styled(textarea)`
   padding: 8px;
   padding-right: 24px;
   border: 1px solid transparent;

@@ -3,6 +3,7 @@ import { useHtmlPropsOnly } from '@/utils/react-utils';
 import { type HTMLAttributes } from 'react';
 import { BiCut } from 'react-icons/bi';
 import { CiCirclePlus, CiFilter, CiSettings, CiTrash } from 'react-icons/ci';
+import { Debounced } from '../control-debounced';
 import { OverlayConfirmation } from '../overlay-confirmation';
 import { OverlayLoader } from '../overlay-loader';
 import { FragmentProps } from './constants';
@@ -46,7 +47,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
             $textIsSelected={!!inputs.selection.trim()}
           />
           <SelectionOptions
-            if={!!inputs.selection}
+            if={!!inputs.selection.trim()}
             children={
               <>
                 <SelectionText
@@ -131,10 +132,10 @@ const FlashCardFragment = ({ inputs, outputs }: FragmentProps) => {
                       onClick={outputs.onClickRequestDeleteFlashCard.bind(this)}
                       children={<CiTrash />}
                     />
-                    <TextArea
+                    <Debounced
                       value={flashCard.text}
-                      placeholder='Enter a question...'
-                      onChangeDebounced={outputs.onChangeFlashCardText.bind(this, flashCard.id)}
+                      onChange={outputs.onChangeFlashCardText.bind(this, flashCard.id)}
+                      render={<TextArea placeholder='Enter a question...' />}
                     />
                     <OverlayConfirmation
                       if={inputs.confirmDeleteFashCard}
