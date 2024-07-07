@@ -64,6 +64,7 @@ export const RightBorder = styled(div)`
 export const ListItemsWrapper = styled(div)`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const NoResultsWrapper = styled(div)`

@@ -62,6 +62,7 @@ export const NoResultsWrapper = styled(div)`
 export const ListItemsWrapper = styled(div)`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const NoResultsIcon = styled(WiCloudyWindy)`

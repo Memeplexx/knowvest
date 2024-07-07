@@ -50,7 +50,7 @@ export const useInputs = () => {
 
   void async function initializeData() {
     component.startAsyncProcess();
-    await initializeDb();
+    await initializeDb(session.data.user!.email!);
     if (store.$state.activeNoteId)
       return component.completeAsyncProcess();
     const databaseData = await PromiseObject({
@@ -71,6 +71,7 @@ export const useInputs = () => {
       }
     });
     if (apiResponse.status === 'USER_CREATED') {
+      await writeToDb('notes', [apiResponse.firstNote]);
       store.$patch({
         notes: [apiResponse.firstNote],
         activeNoteId: apiResponse.firstNote.id

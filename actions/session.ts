@@ -32,7 +32,9 @@ export const initialize = ({ user: { name, email, image }, after }: {
     const firstNote = await prisma.note.create({
       data: {
         userId: user.id,
-        text: '# Welcome to Knowledge Harvest! ## This is your first note. Remove this text to get started ❤️',
+        text: `## Welcome to Knowledge Harvest! 
+
+### This is your first note. Remove this text to get started ❤️`,
         dateUpdated: now,
         dateCreated: now,
       }

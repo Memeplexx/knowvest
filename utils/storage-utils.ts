@@ -2,7 +2,8 @@ import { FlashCardDTO, GroupDTO, NoteDTO, SynonymGroupDTO, TagDTO } from "@/acti
 import { DeepReadonly } from "olik";
 
 
-const openDatabase = () => indexedDB.open('knowvest', 1);
+let userEmailValue: string;
+const openDatabase = () => indexedDB.open(`knowvest-${userEmailValue}`, 1);
 const eventTarget = <T = IDBOpenDBRequest>(event: Event) => event.target as T;
 
 const dbInitialState = {
@@ -99,7 +100,10 @@ export const readFromDb = <
   }
 });
 
-export const initializeDb = () => new Promise<void>(resolve => {
+export const initializeDb = (
+  userEmail: string,
+) => new Promise<void>(resolve => {
+  userEmailValue = userEmail;
   const request = openDatabase();
   request.onupgradeneeded = (event) => {
     console.log('indexedDB: onupgradeneeded', event);

@@ -28,7 +28,7 @@ import {
 import { Highlighter } from '@lezer/highlight';
 import { useRouter } from 'next/navigation';
 import { derive } from 'olik/derive';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNotifier } from '../overlay-notifier';
 import { PopupHandle } from '../overlay-popup/constants';
 import { initialState } from './constants';
@@ -66,6 +66,15 @@ export const useInputs = () => {
       insert: note.text
     }
   }));
+  useEffect(() => store.searchResults.$onChangeArray(function activeNoteSearchResultsUpdated({ inserted, deleted }) {
+    const currentNoteSynonymIds = store.$state.synonymIds;
+    const insertedForCurrentNote = inserted.filter(i => i.noteId === activeNoteId && !currentNoteSynonymIds.includes(i.synonymId!)).map(d => d.synonymId!).distinct();
+    if (insertedForCurrentNote.length)
+      store.synonymIds.$merge(insertedForCurrentNote);
+    const deletedForCurrentNote = deleted.filter(i => currentNoteSynonymIds.includes(i.synonymId!)).map(d => d.synonymId!).distinct();
+    if (deletedForCurrentNote.length)
+      store.synonymIds.$filter.$in(deletedForCurrentNote).$delete();
+  }), [activeNoteId]);
   const result = {
     local,
     notify,
