@@ -16,7 +16,7 @@ export const useOutputs = ({ local, popupRef, notify }: Inputs) => {
     onClickConfirmRemoveNote: async () => {
       const apiResponse = await archiveNote(store.$state.activeNoteId);
       store.notes.$find.id.$eq(apiResponse.note.id).$delete();
-      local.showConfirmDeleteDialog.$set(false);
+      local.confirmDelete.$set(false);
       const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
       store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
       const tagIds = store.$state.searchResults.filter(r => r.noteId === nextMostRecentlyViewedNoteId).map(r => r.tagId);
@@ -25,7 +25,7 @@ export const useOutputs = ({ local, popupRef, notify }: Inputs) => {
       popupRef.current?.hide();
     },
     onClickCancelRemoveNote: () => {
-      local.showConfirmDeleteDialog.$set(false);
+      local.confirmDelete.$set(false);
       popupRef.current?.hide();
     },
     onClickDuplicateNote: async () => {
@@ -34,7 +34,7 @@ export const useOutputs = ({ local, popupRef, notify }: Inputs) => {
       popupRef.current?.hide();
     },
     onClickRequestDeleteNote: () => {
-      local.showConfirmDeleteDialog.$set(true);
+      local.confirmDelete.$set(true);
     },
   };
 }

@@ -57,12 +57,12 @@ export const OverlayNoteActive = () => {
         }
       />
       <OverlayConfirmation
-        if={inputs.showConfirmDeleteDialog}
+        if={inputs.confirmDelete}
         storeKey='deleteNote'
-        onClose={outputs.onClickCancelRemoveNote.bind(this)}
-        onConfirm={outputs.onClickConfirmRemoveNote.bind(this)}
         title='Delete note requested'
         message='Are you sure you want to delete this note?'
+        onClose={outputs.onClickCancelRemoveNote.bind(this)}
+        onConfirm={outputs.onClickConfirmRemoveNote.bind(this)}
       />
     </>
   )

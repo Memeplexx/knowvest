@@ -87,7 +87,7 @@ export const Portal = (props: { children: React.ReactNode, if: boolean, domId?: 
   return createPortal(props.children, props.domId ? document.getElementById(props.domId)! : document.getElementsByTagName('body')[0]!);
 };
 
-export const Frag = (props: { if?: boolean, children?: ReactNode }) => {
+export const Frag = (props: { children?: ReactNode } & IfProps) => {
   if (props.if === false) return null;
   return <Fragment children={props.children} />
 }
