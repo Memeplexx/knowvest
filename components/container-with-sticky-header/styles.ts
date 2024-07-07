@@ -1,4 +1,4 @@
-import { panelGap } from "@/utils/style-utils";
+import { mobileBreakPoint, panelGap } from "@/utils/style-utils";
 import { CgMenuGridO } from "react-icons/cg";
 import styled from "styled-components";
 import { button, div, element } from "../control-conditional";
@@ -38,7 +38,10 @@ export const Body = styled(div) <{ $headerHeight: number }>`
   overflow-y: auto;
   overflow-x: hidden;
   > :first-child {
-    margin-top: calc(${p => p.$headerHeight}px + ${panelGap});
     flex: 1;
+    margin-top: ${p => p.$headerHeight}px;
+    @media screen and (min-width: ${mobileBreakPoint}) {
+      margin-top: calc(${p => p.$headerHeight}px + ${panelGap});   
+    }
   } 
 `;

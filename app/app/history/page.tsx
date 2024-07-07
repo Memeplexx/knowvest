@@ -8,4 +8,6 @@ export default function Page() {
 
 const PanelNotesPreviousWrapper = styled(PanelNotesPrevious)`
   background-image: linear-gradient(to right, #131313, #212121);
+  height: fit-content;
+  min-height: calc(100% - 64px);
 `;
