@@ -40,19 +40,19 @@ export const useOutputs = (inputs: Inputs) => {
       local.hoveredSynonymId.$set(synonymId);
     },
     onMouseOutSynonym: () => {
-      local.hoveredSynonymId.$set(null);
+      local.hoveredSynonymId.$nullify();
     },
     onMouseOverGroup: (groupId: GroupId) => {
       local.hoveredGroupId.$set(groupId);
     },
     onMouseOutGroup: () => {
-      local.hoveredGroupId.$set(null);
+      local.hoveredGroupId.$nullify();
     },
     onMouseOverSearchTerm: (term: string) => {
       local.hoveredSearchTerm.$set(term);
     },
     onMouseOutSearchTerm: () => {
-      local.hoveredSearchTerm.$set(null);
+      local.hoveredSearchTerm.$nullify();
     },
     onClickResult: (noteId: NoteId) => {
       const tagIds = store.$state.searchResults.filter(r => r.noteId === noteId).map(r => r.tagId);

@@ -11,11 +11,9 @@ export const TextSearchProvider = ({ children }: { children: ReactNode }) => {
     const worker = new Worker(new URL('./text-search-worker.ts', import.meta.url)) as TagsWorker;
     const onNoteTagsUpdatedListeners = new Set<(value: NoteSearchResults[]) => void>();
     const onNotesSearchedListeners = new Set<(value: NoteSearchResults[]) => void>();
-    worker.onmessage = ({ data }) => {
-      if (data.type === 'noteTagsUpdated')
-        onNoteTagsUpdatedListeners.forEach(listener => listener(data.value));
-      if (data.type === 'notesSearched')
-        onNotesSearchedListeners.forEach(listener => listener(data.value));
+    worker.onmessage = ({ data: { type, value } }) => {
+      if (type === 'noteTagsUpdated') onNoteTagsUpdatedListeners.forEach(listener => listener(value));
+      if (type === 'notesSearched') onNotesSearchedListeners.forEach(listener => listener(value));
     };
     setWorker({
       initialize: data => worker.postMessage({ type: 'initialize', data }),
