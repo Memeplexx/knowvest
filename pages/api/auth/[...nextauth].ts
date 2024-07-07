@@ -1,3 +1,4 @@
+import { routes } from "@/utils/app-utils"
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -21,7 +22,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    redirect: () => '/app/home',
+    redirect: () => routes.home,
   }
 }
 export default NextAuth(authOptions)

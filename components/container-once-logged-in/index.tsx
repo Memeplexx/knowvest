@@ -1,4 +1,5 @@
 "use client"
+import { routes } from "@/utils/app-utils";
 import { store } from "@/utils/store-utils";
 import { BiLogOutCircle } from "react-icons/bi";
 import { CiSettings } from "react-icons/ci";
@@ -55,8 +56,8 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
       children={
         <>
           <MenuItemLink
-            href="./home"
-            $active={inputs.routerPathName === '/app/home'}
+            href={routes.home}
+            $active={inputs.routerPathName === routes.home}
             children={
               <>
                 <FiEdit />
@@ -65,8 +66,8 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             }
           />
           <MenuItemLink
-            href="./related"
-            $active={inputs.routerPathName === '/app/related'}
+            href={routes.related}
+            $active={inputs.routerPathName === routes.related}
             children={
               <>
                 <PiPlugsConnectedFill />
@@ -75,8 +76,8 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             }
           />
           <MenuItemLink
-            href="./history"
-            $active={inputs.routerPathName === '/app/history'}
+            href={routes.previous}
+            $active={inputs.routerPathName === routes.previous}
             children={
               <>
                 <MdHistory />
@@ -86,8 +87,8 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
           />
           <MenuItemSeparator />
           <MenuItemLink
-            href="./search"
-            $active={inputs.routerPathName === '/app/search'}
+            href={routes.search}
+            $active={inputs.routerPathName === routes.search}
             children={
               <>
                 <IoSearch />
@@ -97,8 +98,8 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
           />
           <MenuItemSeparator />
           <MenuItemLink
-            href="./tags"
-            $active={inputs.routerPathName === '/app/tags'}
+            href={routes.tags}
+            $active={inputs.routerPathName === routes.tags}
             children={
               <>
                 <GrConfigure />
@@ -107,8 +108,8 @@ const MenuFragment = ({ inputs }: { inputs: Inputs }) => {
             }
           />
           <MenuItemLink
-            href="./test"
-            $active={inputs.routerPathName === '/app/test'}
+            href={routes.test}
+            $active={inputs.routerPathName === routes.test}
             children={
               <>
                 <PiStudentFill />

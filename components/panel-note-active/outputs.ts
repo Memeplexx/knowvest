@@ -2,6 +2,7 @@ import { archiveFlashCard, createFlashCard, updateFlashCardText } from "@/action
 import { splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { FlashCardId } from "@/actions/types";
+import { routes } from "@/utils/app-utils";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
 import { store } from "@/utils/store-utils";
 import { tupleIncludes } from "olik";
@@ -40,7 +41,7 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       local.selection.$set('');
       notify.success(`Filtered related notes`);
       if (store.$state.isMobileWidth)
-        router.push('/app/related');
+        router.push(routes.related);
     },
     onClickSplitNoteFromSelection: async () => {
       const range = editor!.state.selection.ranges[0]!;

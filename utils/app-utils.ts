@@ -7,18 +7,27 @@ import { store } from "./store-utils";
 
 export const globalStylesWrapperId = 'global-styles-wrapper';
 
+export const routes = {
+  home: '/app/home',
+  related: '/app/related',
+  previous: '/app/previous',
+  search: '/app/search',
+  tags: '/app/tags',
+  test: '/app/test',
+}
+
 export const onSelectNote = async (router: AppRouterInstance, noteId: NoteId) => {
   const complete = async () => {
     const { searchResults, tags } = store.$state;
     const tagIds = searchResults.filter(r => r.noteId === noteId).map(r => r.tagId);
-    store.activeNoteId.$set(noteId);
     store.synonymIds.$set(tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct().sort((a, b) => a - b));
+    store.activeNoteId.$set(noteId);
     const apiResponse = await viewNote(noteId);
     store.notes.$find.id.$eq(noteId).dateUpdated.$set(apiResponse.note.dateUpdated);
   };
   if (store.$state.isMobileWidth) {
-    router.push('/app/home');
-    onRouteToChange('/app/home', complete);
+    router.push(routes.home);
+    onRouteToChange(routes.home, complete);
   } else {
     await complete();
   }

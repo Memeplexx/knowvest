@@ -1,3 +1,4 @@
+import { routes } from "@/utils/app-utils";
 import { store, useLocalStore, useStore } from "@/utils/store-utils";
 import { isAfter } from "date-fns";
 import { useSession } from "next-auth/react";
@@ -18,17 +19,17 @@ export const useInputs = () => {
   }, [flashCards])
   const pageTitle = useMemo(() => {
     switch (routerPathName) {
-      case '/app/home':
+      case routes.home:
         return 'Home';
-      case '/app/history':
+      case routes.previous:
         return 'Previous Notes';
-      case '/app/related':
+      case routes.related:
         return 'Related Notes';
-      case '/app/tags':
+      case routes.tags:
         return 'Configure Tags';
-      case '/app/search':
+      case routes.search:
         return 'Search for Notes';
-      case '/app/test':
+      case routes.test:
         return 'Flash Card Tester';
       default:
         return 'Unknown';
