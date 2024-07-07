@@ -24,4 +24,6 @@ export default function Page() {
 
 const PanelNoteActiveWrapper = styled(PanelNoteActive)`
   background-image: linear-gradient(to right, #131313, #212121);
+  height: fit-content;
+  min-height: calc(100% - 64px);
 `;
