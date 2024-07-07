@@ -21,7 +21,7 @@ export const useInputs = () => {
       case '/app/home':
         return 'Home';
       case '/app/history':
-        return 'Historical Notes';
+        return 'Previous Notes';
       case '/app/related':
         return 'Related Notes';
       case '/app/tags':

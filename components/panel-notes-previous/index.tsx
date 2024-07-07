@@ -48,7 +48,7 @@ export const PanelNotesPrevious = (
             children={
               <>
                 <NoResultsIcon />
-                no historical notes
+                no previous notes
               </>
             }
           />
