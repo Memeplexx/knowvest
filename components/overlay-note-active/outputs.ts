@@ -1,4 +1,3 @@
-import { createFlashCard } from "@/actions/flashcard";
 import { archiveNote, createNote, duplicateNote } from "@/actions/note";
 import { notesSorted, store } from "@/utils/store-utils";
 import { Inputs } from "./constants";
@@ -36,12 +35,6 @@ export const useOutputs = ({ local, popupRef, notify }: Inputs) => {
     },
     onClickRequestDeleteNote: () => {
       local.showConfirmDeleteDialog.$set(true);
-    },
-    onClickCreateFlashCard: async () => {
-      const apiResponse = await createFlashCard(store.$state.activeNoteId);
-      store.flashCards.$push(apiResponse.flashCard);
-      popupRef.current?.hide();
-      notify.success('Flash card created');
     },
   };
 }

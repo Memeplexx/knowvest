@@ -83,11 +83,21 @@ export const FlashCard = styled.div`
   position: relative;
 `;
 
-export const DeleteButton = styled(ControlButtonIcon)`
+export const DeleteFlashCardButton = styled(ControlButtonIcon)`
   position: absolute;
   top: 8px;
   right: 8px;
   color: grey;
+`;
+
+export const CreateFlashCardButton = styled(ControlButtonIcon)`
+`;
+
+export const CreateFlashCardInstruction = styled(div)`
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 export const TextArea = styled(TextAreaDebounced)`
@@ -99,4 +109,19 @@ export const TextArea = styled(TextAreaDebounced)`
   &:focus {
     border-color: #949494;
   }
+`;
+
+export const FlashCardWrapper = styled(div)`
+`;
+
+export const FlashCardActions = styled(div) <{ $if: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding: 0 8px;
+  color: grey;
+  visibility: ${p => p.$if ? 'visible' : 'hidden'};
+`;
+
+export const FlashCardItemsWrapper = styled(div)`
 `;

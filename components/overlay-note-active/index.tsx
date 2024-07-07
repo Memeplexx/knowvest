@@ -1,6 +1,6 @@
 "use client";
 import { PopupOption } from '@/utils/style-utils';
-import { CiCirclePlus, CiCreditCard2, CiGrid2V, CiSettings, CiTrash } from 'react-icons/ci';
+import { CiCirclePlus, CiGrid2V, CiSettings, CiTrash } from 'react-icons/ci';
 import { ControlButtonIcon } from '../control-button-icon';
 import { OverlayConfirmation } from '../overlay-confirmation';
 import { useInputs } from './inputs';
@@ -50,15 +50,6 @@ export const OverlayNoteActive = () => {
                 <>
                   Delete this note
                   <CiTrash />
-                </>
-              }
-            />
-            <PopupOption
-              onClick={outputs.onClickCreateFlashCard.bind(this)}
-              children={
-                <>
-                  Create Flash Card
-                  <CiCreditCard2 />
                 </>
               }
             />

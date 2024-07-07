@@ -53,9 +53,13 @@ export const useInputs = () => {
       .filter(fc => fc.noteId === activeNoteId)
       .sort((a, b) => b.dateUpdated.getTime() - a.dateUpdated.getTime());
   }, [activeNoteId, flashCards]);
+  const canCreateFlashCard = useMemo(() => {
+    return noteFlashCards.every(fc => !!fc.text.trim().length);
+  }, [noteFlashCards]);
   const result = {
     local,
     notify,
+    canCreateFlashCard,
     ...state,
     mayDeleteNote: !!notes.length,
     popupRef,

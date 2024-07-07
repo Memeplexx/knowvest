@@ -7,7 +7,7 @@ import { OverlayLoader } from '../overlay-loader';
 import { FragmentProps } from './constants';
 import { useInputs } from './inputs';
 import { useOutputs } from './outputs';
-import { ActiveSelectionListItem, DeleteButton, FlashCard, PanelNoteActiveWrapper, SelectionOptions, SelectionText, TextArea, TextEditor, TextEditorWrapper } from './styles';
+import { ActiveSelectionListItem, CreateFlashCardButton, CreateFlashCardInstruction, DeleteFlashCardButton, FlashCard, FlashCardActions, FlashCardItemsWrapper, FlashCardWrapper, PanelNoteActiveWrapper, SelectionOptions, SelectionText, TextArea, TextEditor, TextEditorWrapper } from './styles';
 
 
 
@@ -103,32 +103,53 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
 
 const FlashCardFragment = ({ inputs, outputs }: FragmentProps) => {
   return (
-    <>
-      {inputs.noteFlashCards.map(flashCard => (
-        <FlashCard
-          key={flashCard.id}
-          children={
-            <>
-              <TextArea
-                value={flashCard.text}
-                onChangeDebounced={outputs.onChangeFlashCardText.bind(this, flashCard.id)}
+    <FlashCardWrapper
+      children={
+        <>
+          <FlashCardActions
+            $if={inputs.canCreateFlashCard}
+            children={
+              <>
+                <CreateFlashCardInstruction
+                  children='Add Flash Card to test yourself with'
+                />
+                <CreateFlashCardButton
+                  onClick={outputs.onClickCreateFlashCard.bind(this)}
+                  children={<CiCirclePlus />}
+                />
+              </>
+            }
+          />
+          <FlashCardItemsWrapper
+            children={inputs.noteFlashCards.map(flashCard => (
+              <FlashCard
+                key={flashCard.id}
+                children={
+                  <>
+                    <DeleteFlashCardButton
+                      onClick={outputs.onClickRequestDeleteFlashCard.bind(this)}
+                      children={<CiTrash />}
+                    />
+                    <TextArea
+                      value={flashCard.text}
+                      placeholder='Enter a question...'
+                      onChangeDebounced={outputs.onChangeFlashCardText.bind(this, flashCard.id)}
+                    />
+                    <OverlayConfirmation
+                      if={inputs.confirmDeleteFashCard}
+                      storeKey='deleteFlashCard'
+                      onClose={outputs.onClickCancelRemoveFlashCard.bind(this)}
+                      onConfirm={outputs.onClickConfirmDeleteFlashCard.bind(this, flashCard.id)}
+                      title='Delete Flash Card requested'
+                      message='Are you sure you want to delete this flash card?'
+                    />
+                  </>
+                }
               />
-              <DeleteButton
-                onClick={outputs.onClickRequestDeleteFlashCard.bind(this)}
-                children={<CiTrash />}
-              />
-              <OverlayConfirmation
-                if={inputs.confirmDeleteFashCard}
-                storeKey='deleteFlashCard'
-                onClose={outputs.onClickCancelRemoveFlashCard.bind(this)}
-                onConfirm={outputs.onClickConfirmDeleteFlashCard.bind(this, flashCard.id)}
-                title='Delete Flash Card requested'
-                message='Are you sure you want to delete this flash card?'
-              />
-            </>
-          }
-        />
-      ))}
-    </>
+            ))}
+          />
+        </>
+      }
+    />
   );
 }

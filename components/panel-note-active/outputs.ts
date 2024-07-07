@@ -124,8 +124,13 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       popupRef.current?.hide();
     },
     onChangeFlashCardText: async (flashCardId: FlashCardId, text: string) => {
-      const apiResponse = await updateFlashCardText(flashCardId, text);
-      store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$set(apiResponse.flashCard);
+      if (!flashCardId) {
+        const apiResponse = await createFlashCard(store.$state.activeNoteId);
+        store.flashCards.$push(apiResponse.flashCard);
+      } else {
+        const apiResponse = await updateFlashCardText(flashCardId, text);
+        store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$set(apiResponse.flashCard);
+      }
     },
     onClickRequestDeleteFlashCard: async () => {
       local.confirmDeleteFashCard.$set(true);
@@ -133,7 +138,6 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
     onClickConfirmDeleteFlashCard: async (flashCardId: FlashCardId) => {
       const apiResponse = await archiveFlashCard(flashCardId);
       store.flashCards.$find.id.$eq(apiResponse.flashCard.id).$delete();
-      notify.success('Flash Card Deleted');
       local.confirmDeleteFashCard.$set(false);
     },
     onClickCancelRemoveFlashCard: () => {

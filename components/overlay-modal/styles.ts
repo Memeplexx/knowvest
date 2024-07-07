@@ -13,6 +13,7 @@ export const OverlayModalBackDrop = styled(div)`
   bottom: 0;
   z-index: 11;
   background-color: rgba(0,0,0,0.2);
+  backdrop-filter: blur(2px);
   display: flex;
   place-content: center;
 `;
