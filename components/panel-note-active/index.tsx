@@ -1,7 +1,8 @@
 "use client";
 import { useHtmlPropsOnly } from '@/utils/react-utils';
 import { type HTMLAttributes } from 'react';
-import { CiCirclePlus, CiFilter, CiMaximize1, CiSettings, CiTrash } from 'react-icons/ci';
+import { BiCut } from 'react-icons/bi';
+import { CiCirclePlus, CiFilter, CiSettings, CiTrash } from 'react-icons/ci';
 import { OverlayConfirmation } from '../overlay-confirmation';
 import { OverlayLoader } from '../overlay-loader';
 import { FragmentProps } from './constants';
@@ -75,7 +76,7 @@ const EditorFragment = ({ inputs, outputs }: FragmentProps) => {
                   onClick={outputs.onClickSplitNoteFromSelection.bind(this)}
                   children={
                     <>
-                      <CiMaximize1 />
+                      <BiCut />
                       Move selection out into a new note
                     </>
                   }

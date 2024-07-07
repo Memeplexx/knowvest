@@ -6,8 +6,8 @@ import { PanelNoteReadonly } from "../panel-note-readonly";
 
 
 export const PanelNotesRelatedWrapper = styled.div`
+  display: flex;
 `;
-
 
 export const Header = styled(div)`
   display: flex;

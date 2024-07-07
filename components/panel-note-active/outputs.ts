@@ -73,6 +73,8 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       store.synonymIds.$set(synonymIds);
       local.selection.$set('');
       notify.success(`Filtered related notes`);
+      if (store.$state.isMobileWidth)
+        router.push('/app/related');
     },
     onClickSplitNoteFromSelection: async () => {
       const range = editor!.state.selection.ranges[0]!;
