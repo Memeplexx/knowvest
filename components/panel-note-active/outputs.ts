@@ -1,49 +1,15 @@
 import { archiveFlashCard, createFlashCard, updateFlashCardText } from "@/actions/flashcard";
-import { archiveNote, createNote, duplicateNote, splitNote } from "@/actions/note";
+import { splitNote } from "@/actions/note";
 import { createTagFromActiveNote } from "@/actions/tag";
 import { FlashCardId } from "@/actions/types";
 import { useEventHandlerForDocument } from "@/utils/dom-utils";
-import { notesSorted, store } from "@/utils/store-utils";
+import { store } from "@/utils/store-utils";
 import { tupleIncludes } from "olik";
 import { Inputs } from "./constants";
 
 
 export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router }: Inputs) => {
   return {
-    onClickCreateNote: async () => {
-      const apiResponse = await createNote();
-      store.notes.$push(apiResponse.note);
-      store.activeNoteId.$set(apiResponse.note.id);
-      store.synonymIds.$clear();
-      notify.success('New note created');
-      popupRef.current?.hide();
-    },
-    onClickConfirmRemoveNote: async () => {
-      const apiResponse = await archiveNote(store.$state.activeNoteId);
-      store.notes.$find.id.$eq(apiResponse.note.id).$delete();
-      local.confirmDeleteNote.$set(false);
-      const nextMostRecentlyViewedNoteId = notesSorted.$state[0]!.id;
-      store.activeNoteId.$set(nextMostRecentlyViewedNoteId);
-      const tagIds = store.$state.searchResults.filter(r => r.noteId === nextMostRecentlyViewedNoteId).map(nt => nt.tagId);
-      store.synonymIds.$set(store.$state.tags.filter(tag => tagIds.includes(tag.id)).map(t => t.synonymId).distinct().sort((a, b) => a - b));
-      notify.success('Note deleted');
-      popupRef.current?.hide();
-    },
-    onClickCancelRemoveNote: () => {
-      local.confirmDeleteNote.$set(false);
-      popupRef.current?.hide();
-    },
-    onClickDuplicateNote: async () => {
-      const apiResponse = await duplicateNote(store.$state.activeNoteId);
-      store.notes.$push(apiResponse.note);
-      popupRef.current?.hide();
-    },
-    onClickRequestDeleteNote: () => {
-      local.confirmDeleteNote.$set(true);
-    },
-    selectionChanged: (selection: string) => {
-      local.selection.$set(selection);
-    },
     onClickConfigureSelectedTag: () => {
       store.configureTags.$set(store.$state.tags.findOrThrow(t => t.text === local.$state.selection).id);
       router.push('./tags');
@@ -81,16 +47,10 @@ export const useOutputs = ({ local, popupRef, editor, editorRef, notify, router 
       local.loadingSelection.$set(true);
       const apiResponse = await splitNote(range.from, range.to, store.$state.activeNoteId);
       store.notes.$mergeMatching.id.$with(apiResponse.notes);
+      store.activeNoteId.$set(apiResponse.notes[0]!.id);
       local.$patch({
         loadingSelection: false,
         selection: '',
-      })
-      editor!.dispatch({
-        changes: {
-          from: 0,
-          to: editor!.state.doc.length,
-          insert: store.$state.notes.findOrThrow(n => n.id === store.$state.activeNoteId).text,
-        },
       })
       notify.success(`Note split`);
     },

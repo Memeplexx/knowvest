@@ -28,7 +28,7 @@ import {
 import { Highlighter } from '@lezer/highlight';
 import { useRouter } from 'next/navigation';
 import { derive } from 'olik/derive';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNotifier } from '../overlay-notifier';
 import { PopupHandle } from '../overlay-popup/constants';
 import { initialState } from './constants';
@@ -56,6 +56,13 @@ export const useInputs = () => {
   const canCreateFlashCard = useMemo(() => {
     return noteFlashCards.every(fc => !!fc.text.trim().length);
   }, [noteFlashCards]);
+  useEffect(() => store.activeNoteId.$onChange(activeNoteId => editor.current!.dispatch({
+    changes: {
+      from: 0,
+      to: editor.current!.state.doc.length,
+      insert: store.$state.notes.findOrThrow(n => n.id === activeNoteId).text
+    }
+  })), []);
   const result = {
     local,
     notify,
