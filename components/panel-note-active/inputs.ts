@@ -66,12 +66,13 @@ export const useInputs = () => {
       insert: note.text
     }
   }));
-  useEffect(() => store.searchResults.$onChangeArray(function activeNoteSearchResultsUpdated({ inserted, deleted }) {
-    const currentNoteSynonymIds = store.$state.synonymIds;
-    const insertedForCurrentNote = inserted.filter(i => i.noteId === activeNoteId && !currentNoteSynonymIds.includes(i.synonymId!)).map(d => d.synonymId!).distinct();
+  useEffect(() => store.searchResults.$onArray.$inserted(function activeNoteSearchResultsInserted(inserted) {
+    const insertedForCurrentNote = inserted.filter(i => i.noteId === activeNoteId && !store.$state.synonymIds.includes(i.synonymId!)).map(d => d.synonymId!).distinct();
     if (insertedForCurrentNote.length)
       store.synonymIds.$merge(insertedForCurrentNote);
-    const deletedForCurrentNote = deleted.filter(i => currentNoteSynonymIds.includes(i.synonymId!)).map(d => d.synonymId!).distinct();
+  }), [activeNoteId]);
+  useEffect(() => store.searchResults.$onArray.$deleted(function activeNoteSearchResultsUpdated(deleted) {
+    const deletedForCurrentNote = deleted.filter(i => store.$state.synonymIds.includes(i.synonymId!)).map(d => d.synonymId!).distinct();
     if (deletedForCurrentNote.length)
       store.synonymIds.$filter.$in(deletedForCurrentNote).$delete();
   }), [activeNoteId]);
