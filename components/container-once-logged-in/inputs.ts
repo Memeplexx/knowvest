@@ -127,35 +127,35 @@ export const useInputs = () => {
     textSearcher.initialize({ notes: store.$state.notes.map(sanitizeNote), tags: store.$state.tags.map(sanitizeTag) });
 
     // Ensure that changes to tags in the store are sent to the worker
-    component.listen = store.tags.$onArray.$inserted(inserted => textSearcher.addTags(inserted.map(sanitizeTag)));
-    component.listen = store.tags.$onArray.$deleted(deleted => textSearcher.removeTags(deleted.map(t => t.id)));
-    component.listen = store.tags.$onArray.$updated(updated => textSearcher.updateTags(updated.map(sanitizeTag)));
+    component.listen = store.tags.$onArray.$elementsInserted(inserted => textSearcher.addTags(inserted.map(sanitizeTag)));
+    component.listen = store.tags.$onArray.$elementsDeleted(deleted => textSearcher.removeTags(deleted.map(t => t.id)));
+    component.listen = store.tags.$onArray.$elementsUpdated(updated => textSearcher.updateTags(updated.map(sanitizeTag)));
 
     // Ensure that changes to notes in the store are sent to the worker
-    component.listen = store.notes.$onArray.$inserted(inserted => textSearcher.addNotes(inserted.map(sanitizeNote)));
-    component.listen = store.notes.$onArray.$deleted(deleted => deleted.forEach(n => textSearcher.removeNote(n.id)));
-    component.listen = store.notes.$onArray.$updated(updated => updated.map(sanitizeNote).forEach(data => textSearcher.updateNote(data)));
+    component.listen = store.notes.$onArray.$elementsInserted(inserted => textSearcher.addNotes(inserted.map(sanitizeNote)));
+    component.listen = store.notes.$onArray.$elementsDeleted(deleted => deleted.forEach(n => textSearcher.removeNote(n.id)));
+    component.listen = store.notes.$onArray.$elementsUpdated(updated => updated.map(sanitizeNote).forEach(data => textSearcher.updateNote(data)));
 
     // Ensure that the indexedDB is updated when the store changes
-    component.listen = store.notes.$onArray.$deleted(deleted => deleteFromDb('notes', deleted.map(n => n.id)));
-    component.listen = store.notes.$onArray.$inserted(inserted => writeToDb('notes', inserted));
-    component.listen = store.notes.$onArray.$updated(updated => writeToDb('notes', updated));
+    component.listen = store.notes.$onArray.$elementsDeleted(deleted => deleteFromDb('notes', deleted.map(n => n.id)));
+    component.listen = store.notes.$onArray.$elementsInserted(inserted => writeToDb('notes', inserted));
+    component.listen = store.notes.$onArray.$elementsUpdated(updated => writeToDb('notes', updated));
 
-    component.listen = store.tags.$onArray.$deleted(deleted => deleteFromDb('tags', deleted.map(t => t.id)));
-    component.listen = store.tags.$onArray.$inserted(inserted => writeToDb('tags', inserted));
-    component.listen = store.tags.$onArray.$updated(updated => writeToDb('tags', updated));
+    component.listen = store.tags.$onArray.$elementsDeleted(deleted => deleteFromDb('tags', deleted.map(t => t.id)));
+    component.listen = store.tags.$onArray.$elementsInserted(inserted => writeToDb('tags', inserted));
+    component.listen = store.tags.$onArray.$elementsUpdated(updated => writeToDb('tags', updated));
 
-    component.listen = store.synonymGroups.$onArray.$deleted(deleted => deleteFromDb('synonymGroups', deleted.map(p => p.id)));
-    component.listen = store.synonymGroups.$onArray.$inserted(inserted => writeToDb('synonymGroups', inserted));
-    component.listen = store.synonymGroups.$onArray.$updated(updated => writeToDb('synonymGroups', updated));
+    component.listen = store.synonymGroups.$onArray.$elementsDeleted(deleted => deleteFromDb('synonymGroups', deleted.map(p => p.id)));
+    component.listen = store.synonymGroups.$onArray.$elementsInserted(inserted => writeToDb('synonymGroups', inserted));
+    component.listen = store.synonymGroups.$onArray.$elementsUpdated(updated => writeToDb('synonymGroups', updated));
 
-    component.listen = store.groups.$onArray.$deleted(deleted => deleteFromDb('groups', deleted.map(p => p.id)));
-    component.listen = store.groups.$onArray.$inserted(inserted => writeToDb('groups', inserted));
-    component.listen = store.groups.$onArray.$updated(updated => writeToDb('groups', updated));
+    component.listen = store.groups.$onArray.$elementsDeleted(deleted => deleteFromDb('groups', deleted.map(p => p.id)));
+    component.listen = store.groups.$onArray.$elementsInserted(inserted => writeToDb('groups', inserted));
+    component.listen = store.groups.$onArray.$elementsUpdated(updated => writeToDb('groups', updated));
 
-    component.listen = store.flashCards.$onArray.$deleted(deleted => deleteFromDb('flashCards', deleted.map(p => p.id)));
-    component.listen = store.flashCards.$onArray.$inserted(inserted => writeToDb('flashCards', inserted));
-    component.listen = store.flashCards.$onArray.$updated(updated => writeToDb('flashCards', updated));
+    component.listen = store.flashCards.$onArray.$elementsDeleted(deleted => deleteFromDb('flashCards', deleted.map(p => p.id)));
+    component.listen = store.flashCards.$onArray.$elementsInserted(inserted => writeToDb('flashCards', inserted));
+    component.listen = store.flashCards.$onArray.$elementsUpdated(updated => writeToDb('flashCards', updated));
   }();
 
   return result;

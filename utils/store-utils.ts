@@ -32,16 +32,16 @@ export const notesSorted = store.notes
   .$descending();
 
 export const searchResultsByNoteId = derive(
-  store.searchResults.$onArray.$inserted,
-  store.searchResults.$onArray.$deleted,
+  store.searchResults.$onArray.$elementsInserted,
+  store.searchResults.$onArray.$elementsDeleted,
 ).$withAccumulator(new Map<NoteId, SearchResult[]>(), (accumulator, inserted, deleted) => {
-  inserted.forEach(i => {
-    const current = accumulator.get(i.noteId) ?? accumulator.set(i.noteId, []).get(i.noteId);
-    current!.push(i);
+  inserted.forEach(searchResult => {
+    const current = accumulator.get(searchResult.noteId) ?? accumulator.set(searchResult.noteId, []).get(searchResult.noteId);
+    current!.push(searchResult);
   });
-  deleted.forEach(d => {
-    const current = accumulator.get(d.noteId);
-    current?.splice(current.findIndex(i => i.synonymId === d.synonymId), 1);
+  deleted.forEach(searchResult => {
+    const current = accumulator.get(searchResult.noteId);
+    current?.splice(current.findIndex(i => i.synonymId === searchResult.synonymId), 1);
   });
 });
 
